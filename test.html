@@ -12,36 +12,47 @@
     <script>
     // Setup
     var jiff_instance = null;
+    var parties = 3;
     $(function() {
-        jiff_instance = jiff("http://localhost", 3000, 3);
+      jiff_instance = jiff("http://localhost", 3000, parties);
     });
     
-    function toString(map) {
-        shares = "";
-        for(var i = 1; i <= 3; i++) {
-            shares = shares + map[i] + ",";
-        }
-        return shares;
+    // MPC
+    
+    // Share the inputs
+    function begin_mpc() {
+      if(jiff_instance == null || !jiff_instance.ready) { 
+        alert("Please wait!"); 
+        return; 
+      }
+      
+      number = parseInt($('#m').val());
+      jiff_instance.share(number).then(sum_shares, error);
     }
     
-    // Share
-    function shareme() {
-        if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
-        
-        number = parseInt($('#m').val());
-        jiff_instance.share(number).then(
-            function(shares) {
-                $("#received_shares").append("<li>" + toString(shares) + "</li>");
-            }, 
-            function() {
-                $("#received_shares").append("<li>" + toString(shares) + "</li>");
-            }
-        );
+    // Sum and open the shares
+    function sum_shares(shares) {
+      var sum = 0;
+      for(var i = 1; i <= parties; i++) {
+        sum = (sum + shares[i]) % mod;
+      }
+      
+      jiff_instance.open(sum).then(output, error);
+    }
+    
+    // Show output
+    function output(result) {
+      $("#received_shares").append("<li>" + result + "</li>");
+    }
+    
+    // Show error
+    function error() {
+      $("#received_shares").append("<li> error </li>");
     }
     </script>
     
     <form action="" onsubmit="return false;">
-      <input id="m" autocomplete="off" /> <input type="submit" onClick="shareme();" value="Share" />
+      <input id="m" autocomplete="off" /> <input type="submit" onClick="begin_mpc();" value="Share and Sum" />
     </form>
   </body>
 </html>
