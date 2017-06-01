@@ -31,6 +31,16 @@ io.on('connection', function(socket){
 
     io.to(socket_map[index]).emit('share', JSON.stringify(json_msg));
   });
+  
+  socket.on('open', function(msg){
+    console.log('open: ' + msg);
+
+    var json_msg = JSON.parse(msg);
+    var index = json_msg["party_id"];
+    json_msg["party_id"] = party_map[socket.id];
+
+    io.to(socket_map[index]).emit('open', JSON.stringify(json_msg));
+  });
 
 });
 
