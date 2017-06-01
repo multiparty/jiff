@@ -11,11 +11,10 @@ io.on('connection', function(socket){
   nclient++;
   socket_map[nclient] = socket.id;
   party_map[socket.id] = nclient;
-  
+
   //Let each user know his/her ID once connected
-  socket.on('init', function(){
-      io.to(socket.id).emit('init', JSON.stringify(nclient));
-  });
+  io.to(socket.id).emit('init', nclient);
+
 
   socket.on('disconnect', function(){
     console.log('user disconnected');
