@@ -11,6 +11,11 @@ io.on('connection', function(socket){
   nclient++;
   socket_map[nclient] = socket.id;
   party_map[socket.id] = nclient;
+  
+  //Let each user know his/her ID once connected
+  socket.on('init', function(){
+      io.to(socket.id).emit('init', JSON.stringify(nclient));
+  });
 
   socket.on('disconnect', function(){
     console.log('user disconnected');
@@ -30,6 +35,6 @@ io.on('connection', function(socket){
 
 });
 
-io.listen(3000, function(){
+http.listen(3000, function(){
   console.log('listening on *:3000');
 });
