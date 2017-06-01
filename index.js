@@ -1,22 +1,33 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
-});
+var socket_map = {};
+var party_map = {};
+var nclient = 0;
 
 io.on('connection', function(socket){
-  console.log('a user connected');
 
-  socket.on('chat message', function(msg){
-    console.log('message: ' + msg);
-    io.emit('chat message', msg);
-  });
-  
+  console.log('user connected');
+  nclient++;
+  socket_map[nclient] = socket.id;
+  party_map[socket.id] = nclient;
+
   socket.on('disconnect', function(){
     console.log('user disconnected');
+    party_map[socket.id] = null;
+    socket_map[nclient] = null;
   });
+
+  socket.on('share', function(msg){
+    console.log('share: ' + msg);
+
+    var json_msg = JSON.parse(msg);
+    var index = json_msg["party_id"];
+    json_msg["party_id"] = party_map[socket.id];
+
+    io.to(socket_map[index]).emit('share', JSON.stringify(json_msg));
+  });
+
 });
 
 io.listen(3000, function(){
