@@ -12,12 +12,16 @@
     <script>
     // Setup
     var jiff_instance = null;
-    var parties = 3;
+    var parties = 2;
+    
     $(function() {
-      jiff_instance = jiff("http://localhost", 3000, parties);
+      jiff_instance = make_jiff("http://localhost", 3000, parties);
+      console.log(jiff_instance);
     });
     
-    // MPC
+    /*
+     * MPC CODE
+     */
     
     // Share the inputs
     function begin_mpc() {
@@ -34,10 +38,10 @@
     function sum_shares(shares) {
       var sum = 0;
       for(var i = 1; i <= parties; i++) {
-        sum = (sum + shares[i]) % mod;
+        sum = (sum + shares[i].value) % mod;
       }
       
-      jiff_instance.open(sum).then(output, error);
+      jiff_instance.open(new secret_share(jiff_instance, sum)).then(output, error);
     }
     
     // Show output
@@ -46,7 +50,8 @@
     }
     
     // Show error
-    function error() {
+    function error(s) {
+      console.log("ERROR "  + s);
       $("#received_shares").append("<li> error </li>");
     }
     </script>

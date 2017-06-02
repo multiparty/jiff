@@ -7,15 +7,16 @@ var mod = Math.pow(2, 31) - 1;
  *   secret:  the secret to share.
  *   return:  a (JQuery) promise to a map (of size equal to 
  *            the number of parties) where the key is the party 
- *            id (from 1 to n) and the value is the share it sent.
+ *            id (from 1 to n) and the value is the share object
+ *            that wrapped the value sent from that party.
  *
 */
 function jiff_share(jiff, secret) {
   var count = jiff.party_count;
   var sum_mod = 0;
   var shares = {};
-  var share_id = "share" + jiff.share_count;  
-  jiff.share_count++;
+  var share_id = "share" + jiff.sharing_count;  
+  jiff.sharing_count++;
   
   // Compute first n-1 shares (random numbers)
   for(var i = 1; i < count; i++) {  
@@ -50,12 +51,14 @@ function jiff_share(jiff, secret) {
  *   jiff:    the jiff instance.
  *   share:   the share of the secret to open that belongs to this party.
  *   return:  a (JQuery) promise to the open value of the secret.
- *
+ *   throws:  error if share does not belong to the passed jiff instance.
 */
 function jiff_open(jiff, share) {
+  if(!(share.jiff === jiff)) { throw "share does not belong to given instance"; }
+  
   var count = jiff.party_count;
-  var share_id = "open" + jiff.share_count;  
-  jiff.share_count++;
+  var share_id = "open" + jiff.sharing_count;  
+  jiff.sharing_count++;
     
   // Setup a deffered for receiving the shares from other parties.
   var deferred = $.Deferred();
@@ -63,9 +66,9 @@ function jiff_open(jiff, share) {
     
   // Shares have been computed, share them.
   for(var i = 1; i <= count; i++) {
-    if(i == jiff.id) { receive_open(jiff, i, share, share_id); continue; }
+    if(i == jiff.id) { receive_open(jiff, i, share.value, share_id); continue; }
     
-    var msg = { party_id: i, share: share, share_id: share_id };
+    var msg = { party_id: i, share: share.value, share_id: share_id };
     jiff.socket.emit('open', JSON.stringify(msg));
   }
   
@@ -89,7 +92,7 @@ function receive_share(jiff, sender_id, share, share_id) {
     }
 
     // Update share
-    jiff.shares[share_id][sender_id] = share;
+    jiff.shares[share_id][sender_id] = new secret_share(jiff, share);
     
     // Check if all shares were received
     var shares = jiff.shares[share_id];
@@ -132,6 +135,47 @@ function receive_open(jiff, sender_id, share, share_id) {
 }
 
 /*
+ * Create a new share. 
+ * A share is a value wrapper with a share object, it has a unique id 
+ * (per computation instance), and a pointer to the instance it belongs to.
+ * A share also has methods for performing operations.
+ *   jiff:    the jiff instance.
+ *   value:   the value of the share.
+ */
+function secret_share(jiff, value) {
+  var self = this;
+  
+  this.jiff = jiff;
+  this.value = value;
+  
+  this.id = "share"+jiff.shares_count;
+  jiff.shares_count++;
+  
+  this.valueOf = function() {
+    return self.value;
+  };
+  
+  this.toString = function() {
+    return self.id + ": " + self.value;
+  }
+  
+  // Implement addition
+  this.add = function(o) {
+    return self;
+  }
+  
+  // Implement addition
+  this.mult = function(o) {
+    return self;
+  }
+  
+  // Implement less than
+  this.less = function(o) {
+    return self;
+  }
+}
+
+/*
  * Create a new jiff instance.
  *   hostname:    server hostname/ip.
  *   port:        server port.
@@ -141,8 +185,9 @@ function receive_open(jiff, sender_id, share, share_id) {
  * The Jiff instance contains the socket, number of parties, functions 
  * to share and perform operations, as well as synchronization flags.
 */
-function jiff(hostname, port, party_count) {
-  var jiff = { party_count: party_count, ready: false};
+function make_jiff(hostname, port, party_count) {
+  var jiff = { party_count: party_count, ready: false };
+  
   jiff.socket = io(hostname+":"+port);
   jiff.share = function(secret) { return jiff_share(jiff, secret); };
   jiff.open = function(share) { return jiff_open(jiff, share); };
@@ -153,9 +198,12 @@ function jiff(hostname, port, party_count) {
     jiff.ready = true;
   });
   
-  // Store share counter which keeps track of the count of sharing 
-  // operations (used to get a unique id for each share operation).
-  jiff.share_count = 0;
+  // Store sharing and shares counter which keeps track of the count of 
+  // sharing operations (share and open) and the total number of shares
+  // respectively (used to get a unique id for each share operation and 
+  // share object).
+  jiff.sharing_count = 0;
+  jiff.shares_count = 0;
   
   // Store a map from a sharing id (which share operation) to the 
   // corresponding deferred and shares array.
