@@ -8,54 +8,54 @@
   </head>
   <body>
     <ul id="received_shares"></ul>
-    
+
     <script>
     // Setup
     var jiff_instance = null;
     var parties = 2;
-    
+
     $(function() {
       jiff_instance = make_jiff("http://localhost", 3000, parties);
       console.log(jiff_instance);
     });
-    
+
     /*
      * MPC CODE
      */
-    
+
     // Share the inputs
     function begin_mpc() {
-      if(jiff_instance == null || !jiff_instance.ready) { 
-        alert("Please wait!"); 
-        return; 
+      if(jiff_instance == null || !jiff_instance.ready) {
+        alert("Please wait!");
+        return;
       }
-      
+
       number = parseInt($('#m').val());
       jiff_instance.share(number).then(sum_shares, error);
     }
-    
+
     // Sum and open the shares
     function sum_shares(shares) {
-      var sum = 0;
-      for(var i = 1; i <= parties; i++) {
-        sum = (sum + shares[i].value) % mod;
+      var sum = shares[1];
+      for(var i = 2; i <= parties; i++) {
+        sum = sum.add(shares[i]);
       }
-      
-      jiff_instance.open(new secret_share(jiff_instance, sum)).then(output, error);
+
+      jiff_instance.open(sum).then(output, error);
     }
-    
+
     // Show output
     function output(result) {
       $("#received_shares").append("<li>" + result + "</li>");
     }
-    
+
     // Show error
     function error(s) {
       console.log("ERROR "  + s);
       $("#received_shares").append("<li> error </li>");
     }
     </script>
-    
+
     <form action="" onsubmit="return false;">
       <input id="m" autocomplete="off" /> <input type="submit" onClick="begin_mpc();" value="Share and Sum" />
     </form>
