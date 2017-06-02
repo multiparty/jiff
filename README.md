@@ -13,6 +13,7 @@ If the client code is served independently, fetch the matching socket.io.js from
 Make sure to include jiff.js **after** socket.io
 
 `<script src="jiff.js"></script>`
+
 Then inside a script tag (and after the page loads), intialize a jiff object and setup a computation:
 
 `var instance = jiff("http://localhost", 3000, parties)`
