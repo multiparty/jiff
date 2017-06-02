@@ -16,7 +16,7 @@ Make sure to include jiff.js **after** socket.io
 
 Then inside a script tag (and after the page loads), intialize a jiff object and setup a computation:
 
-`var instance = jiff("http://localhost", 3000, parties)`
+`var instance = make_jiff("http://localhost", 3000, parties)`
 
 instance will provide methods for sharing, opening, and performing operations on shares.
 
