@@ -12,35 +12,25 @@
     <script>
     // Setup
     var jiff_instance = null;
-    var parties = 2;
+    var parties = 3;
 
     $(function() {
       jiff_instance = make_jiff("http://localhost", 3000, parties);
       console.log(jiff_instance);
     });
 
-    /*
-     * MPC CODE
-     */
-
-    // Share the inputs
-    function begin_mpc() {
-      if(jiff_instance == null || !jiff_instance.ready) {
-        alert("Please wait!");
-        return;
-      }
-
-      number = parseInt($('#m').val());
-      jiff_instance.share(number).then(sum_shares, error);
-    }
-
-    // Sum and open the shares
-    function sum_shares(shares) {
+    // MPC CODE
+    function mpc() {
+      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
+      var number = parseInt($('#m').val());
+            
+      var shares = jiff_instance.share(number);
       var sum = shares[1];
+      
       for(var i = 2; i <= parties; i++) {
         sum = sum.add(shares[i]);
       }
-
+      
       jiff_instance.open(sum).then(output, error);
     }
 
@@ -57,7 +47,7 @@
     </script>
 
     <form action="" onsubmit="return false;">
-      <input id="m" autocomplete="off" /> <input type="submit" onClick="begin_mpc();" value="Share and Sum" />
+      <input id="m" autocomplete="off" /> <input type="submit" onClick="mpc();" value="Share and Sum" />
     </form>
   </body>
 </html>
