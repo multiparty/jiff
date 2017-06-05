@@ -84,9 +84,7 @@ function jiff_open(jiff, share) {
   if(share.ready) jiff_broadcast(jiff, share, op_id);
   
   // Share is not ready, setup sharing as a callback to its promise
-  else {
-    share.promise.then(function() { jiff_broadcast(jiff, share, op_id); }, share.error);
-  }
+  else share.promise.then(function() { jiff_broadcast(jiff, share, op_id); }, share.error);
 
   // Defer accessing the shares until they are back
   return deferred.promise();
@@ -207,6 +205,10 @@ function secret_share(jiff, ready, promise, value) {
     if(self.ready) return o.promise;
     else if(o.ready) return self.promise;
     else return Promise.all([self.promise, o.promise]);
+  }
+  
+  this.open = function(success, failure) {
+    jiff_instance.open(self).then(success, failure);
   }
   
   // addition
