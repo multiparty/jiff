@@ -1,12 +1,13 @@
 // The modulos to be used in additive sharing.
 var mod = Math.pow(2, 31) - 1;
-
+// The secrets are in Zp
+var Zp = 17;
 /*
  * Share given secret to the participating parties.
  *   jiff:      the jiff instance.
  *   secret:    the secret to share.
- *   return:    a map (of size equal to the number of parties) 
- *              where the key is the party id (from 1 to n) 
+ *   return:    a map (of size equal to the number of parties)
+ *              where the key is the party id (from 1 to n)
  *              and the value is the share object that wraps
  *              the value sent from that party (the internal value
  *              maybe deferred).
@@ -14,22 +15,34 @@ var mod = Math.pow(2, 31) - 1;
 */
 function jiff_share(jiff, secret) {
   var count = jiff.party_count;
+  // Each player's random polynomial f must have
+  // degree t < n/2, where n is the number of players
+  var t = Math.ceil(count/ 2) - 1;
   var sum_mod = 0;
   var shares = {};
   var op_id = "share" + jiff.share_op_count;
+  var polynomial_t = [];
   jiff.share_op_count++;
 
-  // Compute first n-1 shares (random numbers)
-  for(var i = 1; i < count; i++) {
-    var share = Math.floor(Math.random() * mod);
-    sum_mod = (sum_mod + share) % mod;
-    shares[i] = share;
+
+  // Each players's random polynomial f must be constructed
+  // such that f(0) = secret
+  polynomial_t[0] = secret;
+
+  // Compute the random polynomial f's coefficients
+  for(var i = 1; i <= t; i++) {
+    polynomial_t[i] = Math.floor(Math.random() * mod) ;
   }
 
-  // Compute last share
-  var share = (secret - sum_mod) % mod;
-  if(share < 0) { share = share + mod; }
-  shares[count] = share;
+  // Compute each players share such that
+  // share[i] = f(i)
+  for(var i = 1; i < count; i++){
+    shares[i] = 0;
+    for(var j = 1; j <= t; j++) {
+
+      shares[i] = (shares[i] + polynomial_t[j]*i^j) % Zp;
+    }
+  }
 
   // Setup a share object for receiving from each party and send each party its share
   var result_map = {};
@@ -40,7 +53,7 @@ function jiff_share(jiff, secret) {
       result_map[i] = new secret_share(jiff, true, null, shares[i]);
       continue;
     }
-    
+
     // Check if the share is ready or not (maybe it was previously received)
     if(jiff.shares[op_id] == undefined || jiff.shares[op_id][i] == undefined) {
       // Not ready, setup a deferred
@@ -52,7 +65,7 @@ function jiff_share(jiff, secret) {
       result_map[i] = new secret_share(jiff, true, null, jiff.shares[op_id][i]);
       jiff.shares[op_id][i] = null;
     }
-    
+
     var msg = { party_id: i, share: shares[i], op_id: op_id };
     jiff.socket.emit('share', JSON.stringify(msg));
   }
@@ -71,7 +84,7 @@ function jiff_share(jiff, secret) {
 */
 function jiff_open(jiff, share) {
   if(!(share.jiff === jiff)) throw "share does not belong to given instance";
-  
+
   var count = jiff.party_count;
   var op_id = "open" + jiff.share_op_count;
   jiff.share_op_count++;
@@ -82,7 +95,7 @@ function jiff_open(jiff, share) {
 
   // The given share has been computed, share it to all parties
   if(share.ready) jiff_broadcast(jiff, share, op_id);
-  
+
   // Share is not ready, setup sharing as a callback to its promise
   else share.promise.then(function() { jiff_broadcast(jiff, share, op_id); }, share.error);
 
@@ -121,11 +134,11 @@ function receive_share(jiff, sender_id, share, op_id) {
       if(jiff.shares[op_id] == undefined) {
         jiff.shares[op_id] = {}
       }
-      
+
       jiff.shares[op_id][sender_id] = share;
       return;
     }
-    
+
     // Deferred is already setup, resolve it.
     jiff.deferreds[op_id][sender_id].resolve(share);
     jiff.deferreds[op_id][sender_id] = null;
@@ -175,54 +188,54 @@ function receive_open(jiff, sender_id, share, op_id) {
  */
 function secret_share(jiff, ready, promise, value) {
   var self = this;
-  
+
   this.jiff = jiff;
   this.ready = ready;
   this.promise = promise;
   this.value = value;
-  
+
   this.id = "share"+jiff.share_obj_count;
   jiff.share_obj_count++;
-  
+
   // misc methods
   this.valueOf = function() {
     if(ready) return self.value;
     else return undefined;
   };
-  
+
   this.toString = function() {
     if(ready) return self.id + ": " + self.value;
     else return self.id + ": <deferred>";
   };
-  
+
   // helper for managing promises.
   this.receive_share = function(value) { self.value = value; self.ready = ready; self.promise = null; };
   this.error = function() { console.log("Error receiving " + self.toString); };
-  
+
   this.pick_promise = function(o) {
     if(self.ready && o.ready) return null;
-  
+
     if(self.ready) return o.promise;
     else if(o.ready) return self.promise;
     else return Promise.all([self.promise, o.promise]);
   }
-  
+
   this.open = function(success, failure) {
     jiff_instance.open(self).then(success, failure);
   }
-  
+
   // addition
   this.ready_add = function(o) {
     return (o.value + self.value) % mod;
   }
-  
+
   this.add = function(o) {
-    if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance"; 
-    
+    if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
+
     if(self.ready && o.ready) // both shares are ready
       return new secret_share(self.jiff, true, null, self.ready_add(o));
-    
-    var promise = self.pick_promise(o);    
+
+    var promise = self.pick_promise(o);
     promise = promise.then(function() { return self.ready_add(o); }, self.error);
     return new secret_share(self.jiff, false, promise, undefined);
   }
@@ -236,7 +249,7 @@ function secret_share(jiff, ready, promise, value) {
   this.less = function(o) {
     return self;
   }
-    
+
   // when the promise is resolved, acquire the value of the share and set ready to true
   if(!ready) this.promise.then(this.receive_share, this.error);
 }
