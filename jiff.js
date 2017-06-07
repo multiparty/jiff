@@ -31,7 +31,7 @@ function jiff_share(jiff, secret) {
 
   // Compute the random polynomial f's coefficients
   for(var i = 1; i <= t; i++) {
-    polynomial_t[i] = Math.floor(Math.random() * mod) ;
+    polynomial_t[i] = Math.floor(Math.random() * Zp) ;
   }
 
   // Compute each players share such that
@@ -175,7 +175,28 @@ function receive_open(jiff, sender_id, share, op_id) {
     jiff.deferreds[op_id] = null;
     jiff.shares[op_id] = null;
 }
+function lagrange (jiff, shares){
 
+  var count = jiff.party_count;
+  var lagrange_coeff = [];
+  var recons_secret = 0;
+
+  // Compute the Langrange coefficients at 0
+  for ( i = 1; i <= count; i++){
+    lagrange_coeff[i] = 1;
+    for ( j = 1; j <= count; j++){
+      if( j != i){
+        lagrange_coeff[i] = lagrange_coeff[i]* ( 0 - j) / (i-j);
+      }
+    }
+  }
+  // Reconstruct the secret via Lagrange interpolation
+  for(i = 1; i <= count; i++){
+    recons_secret = recons_secret + lagrange_coeff[i]*shares[i];
+  }
+
+  return recons_secret;
+}
 /*
  * Create a new share.
  * A share is a value wrapper with a share object, it has a unique id
@@ -239,6 +260,7 @@ function secret_share(jiff, ready, promise, value) {
     promise = promise.then(function() { return self.ready_add(o); }, self.error);
     return new secret_share(self.jiff, false, promise, undefined);
   }
+
 
   // multiplication
   this.mult = function(o) {
