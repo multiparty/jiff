@@ -23,7 +23,7 @@ function jiff_share(jiff, secret) {
   var result = {};
   for(var i = 1; i <= party_count; i++) {
     if(i == jiff.id) { // Keep party's own share
-      result_map[i] = new secret_share(jiff, true, null, shares[i]);
+      result[i] = new secret_share(jiff, true, null, shares[i]);
       continue;
     }
 
@@ -33,12 +33,12 @@ function jiff_share(jiff, secret) {
       // not ready, setup a deferred
       var deferred = $.Deferred();
       jiff.deferreds[op_id][i] = deferred;
-      result_map[i] = new secret_share(jiff, false, deferred.promise(), undefined);
+      result[i] = new secret_share(jiff, false, deferred.promise(), undefined);
     } 
     
     else {
       // ready, put value in secret share
-      result_map[i] = new secret_share(jiff, true, null, jiff.shares[op_id][i]);
+      result[i] = new secret_share(jiff, true, null, jiff.shares[op_id][i]);
       jiff.shares[op_id][i] = null;
     }
 
@@ -92,6 +92,31 @@ function jiff_compute_shares(secret, party_count) {
 }
 
 /*
+ * Store the received share and resolves the corresponding
+ * deferred if needed.
+ *   jiff:      the jiff instance.
+ *   sender_id: the id of the sender.
+ *   share:     the share.
+ *   op_id:     the id of the share operation.
+ *
+ */
+function receive_share(jiff, sender_id, share, op_id) {
+    // Share is received before deferred was setup, store it.
+    if(jiff.deferreds[op_id] == undefined) {
+      if(jiff.shares[op_id] == undefined) {
+        jiff.shares[op_id] = {}
+      }
+
+      jiff.shares[op_id][sender_id] = share;
+      return;
+    }
+
+    // Deferred is already setup, resolve it.
+    jiff.deferreds[op_id][sender_id].resolve(share);
+    jiff.deferreds[op_id][sender_id] = null;
+}
+
+/*
  * Open up the given share to the participating parties.
  *   jiff:      the jiff instance.
  *   share:     the share of the secret to open that belongs to this party.
@@ -120,6 +145,51 @@ function jiff_open(jiff, share) {
   return deferred.promise();
 }
 
+/*
+ * Share the given share to all the parties in the jiff instance.
+ *   jiff:      the jiff instance.
+ *   share:     the share.
+ *   op_id:     the id of the share operation.
+ *
+ */
+function jiff_broadcast(jiff, share, op_id) {
+  for(var i = 1; i <= jiff.party_count; i++) {
+    if(i == jiff.id) { receive_open(jiff, i, share.value, op_id); continue; }
+
+    var msg = { party_id: i, share: share.value, op_id: op_id };
+    jiff.socket.emit('open', JSON.stringify(msg));
+  }
+}
+
+/*
+ * Store the received share of the secret to open, reconstruct
+ * the secret and resolves the corresponding deferred if needed.
+ *   jiff:      the jiff instance.
+ *   sender_id: the id of the sender.
+ *   share:     the share.
+ *   op_id:     the id of the share operation.
+ *
+ */
+function receive_open(jiff, sender_id, share, op_id) {
+    // ensure shares map exists
+    if(jiff.shares[op_id] == undefined) {
+      jiff.shares[op_id] = {}
+    }
+
+    // Update share
+    jiff.shares[op_id][sender_id] = share;
+
+    // Check if all shares were received
+    var shares = jiff.shares[op_id];
+    for(var i = 1; i <= jiff.party_count; i++)
+      if(shares[i] == null) return;
+
+    // Everything was received, resolve the deferred.
+    jiff.deferreds[op_id].resolve(jiff_lagrange(shares, jiff.party_count));
+    jiff.deferreds[op_id] = null;
+    jiff.shares[op_id] = null;
+}
+
 /* 
  * Uses Lagrange polynomials to interpolate the polynomial
  * described by the given shares (points).
@@ -145,79 +215,6 @@ function jiff_lagrange(shares, party_count) {
     recons_secret = (recons_secret + shares[i] * lagrange_coeff[i]) % Zp;
 
   return recons_secret;
-}
-
-/*
- * Share the given share to all the parties in the jiff instance.
- *   jiff:      the jiff instance.
- *   share:     the share.
- *   op_id:     the id of the share operation.
- *
- */
-function jiff_broadcast(jiff, share, op_id) {
-  for(var i = 1; i <= jiff.party_count; i++) {
-    if(i == jiff.id) { receive_open(jiff, i, share.value, op_id); continue; }
-
-    var msg = { party_id: i, share: share.value, op_id: op_id };
-    jiff.socket.emit('open', JSON.stringify(msg));
-  }
-}
-
-/*
- * Store the received share and resolves the corresponding
- * deferred if needed.
- *   jiff:      the jiff instance.
- *   sender_id: the id of the sender.
- *   share:     the share.
- *   op_id:     the id of the share operation.
- *
- */
-function receive_share(jiff, sender_id, share, op_id) {
-    // Share is received before deferred was setup, store it.
-    if(jiff.deferreds[op_id] == undefined) {
-      if(jiff.shares[op_id] == undefined) {
-        jiff.shares[op_id] = {}
-      }
-
-      jiff.shares[op_id][sender_id] = share;
-      return;
-    }
-
-    // Deferred is already setup, resolve it.
-    jiff.deferreds[op_id][sender_id].resolve(share);
-    jiff.deferreds[op_id][sender_id] = null;
-}
-
-/*
- * Store the received share of the secret to open, reconstruct
- * the secret and resolves the corresponding deferred if needed.
- *   jiff:      the jiff instance.
- *   sender_id: the id of the sender.
- *   share:     the share.
- *   op_id:     the id of the share operation.
- *
- */
-function receive_open(jiff, sender_id, share, op_id) {
-    // ensure shares map exists
-    if(jiff.shares[op_id] == undefined) {
-      jiff.shares[op_id] = {}
-    }
-
-    // Update share
-    jiff.shares[op_id][sender_id] = share;
-
-    // Check if all shares were received
-    var shares = jiff.shares[op_id];
-    var sum_mod = 0;
-    for(var i = 1; i <= jiff.party_count; i++) {
-      if(shares[i] == null) return;
-      sum_mod = (sum_mod + shares[i]) % mod;
-    }
-
-    // Everything was received, resolve the deferred.
-    jiff.deferreds[op_id].resolve(sum_mod);
-    jiff.deferreds[op_id] = null;
-    jiff.shares[op_id] = null;
 }
 
 /*
@@ -271,7 +268,7 @@ function secret_share(jiff, ready, promise, value) {
 
   // addition
   this.ready_add = function(o) {
-    return (o.value + self.value) % mod;
+    return (o.value + self.value) % Zp;
   }
 
   this.add = function(o) {
