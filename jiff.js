@@ -175,7 +175,12 @@ function receive_open(jiff, sender_id, share, op_id) {
     jiff.deferreds[op_id] = null;
     jiff.shares[op_id] = null;
 }
-function lagrange (jiff, shares){
+
+/* Quick implementation of Langrange interpolation:
+ * Given all the shares, reconstruct the secret via
+ * interpolation.
+ */
+function lagrange(jiff, shares){
 
   var count = jiff.party_count;
   var lagrange_coeff = [];
