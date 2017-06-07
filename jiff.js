@@ -11,11 +11,11 @@ var Zp = Math.pow(2, 31) - 1;
  *              the value sent from that party (the internal value
  *              maybe deferred).
  *
-*/
+ */
 function jiff_share(jiff, secret) {
   var party_count = jiff.party_count;
   var shares = jiff_compute_shares(secret, party_count);
-  
+
   var op_id = "share" + jiff.share_op_count;
   jiff.share_op_count++;
   jiff.deferreds[op_id] = {}; // setup a map of deferred for every received share
@@ -34,8 +34,8 @@ function jiff_share(jiff, secret) {
       var deferred = $.Deferred();
       jiff.deferreds[op_id][i] = deferred;
       result[i] = new secret_share(jiff, false, deferred.promise(), undefined);
-    } 
-    
+    }
+
     else {
       // ready, put value in secret share
       result[i] = new secret_share(jiff, true, null, jiff.shares[op_id][i]);
@@ -57,13 +57,13 @@ function jiff_share(jiff, secret) {
  *   secret:        the secret to share.
  *   party_count:   the number of parties.
  *   return:        a map between party number (from 1 to parties) and its
- *                  share, this means that (party number, share) is a 
+ *                  share, this means that (party number, share) is a
  *                  point from the polynomial.
  *
  */
 function jiff_compute_shares(secret, party_count) {
   var shares = {}; // Keeps the shares
-  
+
   // Each player's random polynomial f must have
   // degree t = ceil(n/2)-1, where n is the number of players
   var t = Math.ceil(party_count/ 2) - 1;
@@ -81,13 +81,13 @@ function jiff_compute_shares(secret, party_count) {
   for(var i = 1; i <= party_count; i++) {
     shares[i] = polynomial[0];
     power = i;
-    
+
     for(var j = 1; j < polynomial.length; j++) {
       shares[i] = (shares[i] + polynomial[j] * power) % Zp;
       power = power * i;
     }
   }
-  
+
   return shares;
 }
 
@@ -190,7 +190,7 @@ function receive_open(jiff, sender_id, share, op_id) {
     jiff.shares[op_id] = null;
 }
 
-/* 
+/*
  * Uses Lagrange polynomials to interpolate the polynomial
  * described by the given shares (points).
  *   shares:        map between party id (x coordinate) and share (y coordinate).
@@ -208,7 +208,7 @@ function jiff_lagrange(shares, party_count) {
       if(j != i) lagrange_coeff[i] = lagrange_coeff[i] * (0 - j) / (i - j);
     }
   }
-  
+
   // Reconstruct the secret via Lagrange interpolation
   var recons_secret = 0;
   for(var i = 1; i <= party_count; i++)
@@ -282,10 +282,35 @@ function secret_share(jiff, ready, promise, value) {
     return new secret_share(self.jiff, false, promise, undefined);
   }
 
+  this.ready_mult = function(o) {
+    var prod = (self.value * o.value) % Zp;
+    var shares = self.jiff.share(prod);
+    var promises = [];
+    for(var i = 1; i <= jiff.party_count; i++) {
+      promises.push(shares[i].promise);
+    }
+
+    var promise = Promise.all(promises).then(function() {
+      var values = {};
+      for(var i = 1; i <= jiff.party_count; i++) {
+        values[i] = shares[i].value;
+      }
+      return jiff_lagrange(values, jiff.party_count);
+    });
+
+    return new secret_share(self.jiff, false, promise, undefined);
+  }
 
   // multiplication
   this.mult = function(o) {
-    return self;
+    if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
+
+    if(self.ready && o.ready) // both shares are ready
+      return self.ready_mult(o);
+
+    var promise = self.pick_promise(o);
+    promise = promise.then(function() { return self.ready_mult(o); }, self.error);
+    return new secret_share(self.jiff, false, promise, undefined);
   }
 
   // less than
