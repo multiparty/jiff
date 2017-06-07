@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Test the addition</title>
+    <title>Test the multiplication</title>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
     <script src="../jiff.js"></script>
@@ -68,26 +68,26 @@
       var party_index = jiff_instance.id - 1;
       var shares = jiff_instance.share(numbers[party_index]);
       
-      var sum = shares[1];
+      var prod = shares[1];
       for(var i = 2; i <= parties; i++) {
-        sum = sum.add(shares[i]);
+        prod = prod.mult(shares[i]);
       }
       
-      sum.open( function(result) { test_output(index, result) }, error);
-      return sum;
+      prod.open( function(result) { test_output(index, result) }, error);
+      return prod;
     }
 
     // determine if the output is correct
     function test_output(index, result) {
       var numbers = tests[index];
-      var sum = 0;
+      var prod = 1;
       for(var i = 0; i < numbers.length; i++) {
-        sum += numbers[i];
+        prod *= numbers[i];
       }
       
-      if(sum != result) { // sum is incorrect
+      if(prod != result) { // sum is incorrect
         has_failed = true;
-        $("#details").append("<li> sum("+numbers.join(", ")+") = " + sum + " != " +result + "</li>");
+        $("#details").append("<li> product("+numbers.join(", ")+") = " + prod + " != " +result + "</li>");
       }
     }
 
