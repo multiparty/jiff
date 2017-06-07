@@ -3,8 +3,6 @@ from random import randint
 
 parties = int(argv[1])
 tests_count = int(argv[2])
-print parties
-print tests_count
 
 min = 0
 max = 2**20
@@ -12,11 +10,10 @@ max = 2**20
 def gen(parties):
   return [ str(randint(min, max)) for i in range(parties) ]
   
-
-result = "[\n"
+result = "[\n  "
 for i in range(tests_count):
   if i % 3 == 0 and i > 0:
-    result = result + "\n"
+    result = result + "\n  "
     
   tmp = '[' + (', '.join(gen(parties))) + "]"
   result = result + tmp
