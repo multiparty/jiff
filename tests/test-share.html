@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test the secret sharing</title>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
+    <script src="../jiff.js"></script>
+  </head>
+  <body>
+    <script>
+      var tests = [
+          433145, 636141, 567529, 473741, 632884, 720842, 
+          101917, 44789, 972192, 241698, 303917, 783776, 
+          891531, 300428, 655731, 548291, 347312, 631419, 
+          641196, 874678, 121905, 36519, 388606, 812852, 
+          692647, 33183, 169870, 925190, 444201, 672645, 
+          735056, 776615, 72980, 875535, 707244, 476541, 
+          792373, 918216, 167498, 708493, 177899, 666409, 
+          636762, 35327, 340066, 81179, 798239, 792849, 
+          602822, 228500, 23945, 853470, 186414, 1014125, 
+          731874, 76784, 926270, 454309, 662520, 351648
+      ];
+    </script>
+  
+  
+    <div id="result"></div>
+    <ul id="details"></ul>
+
+    <script>
+    // setup
+    var parties = 3;
+    
+    // run all tests
+    function test() {
+      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
+      var ok = true;
+      
+      for(var i = 0; i < tests.length; i++) 
+        ok = ok && single_test(i);
+
+      
+      if(ok) $("#result").append("<font color='red'>Failed</font>");
+      else $("#result").append("<font color='green'>Success</font>");
+    }
+    
+    // run test case at index
+    function single_test(index) {
+      var number = tests[index];
+      
+      var map = jiff_compute_shares(number, parties);
+      var value = jiff_lagrange(map, parties);
+      
+      if(value == number) return true;
+      
+      
+      $("#details").append("<li> shares("+number+") = "+map.toString()+" => open = "+value+"</li>");
+      return false;
+    }
+    </script>
+
+    <button onClick="test();">Start</button>
+  </body>
+</html>
