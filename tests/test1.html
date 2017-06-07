@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test the secret sharing</title>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
+    <script src="../jiff.js"></script>
+  </head>
+  <body>
+    <script>
+      var tests = [
+        [778658, 349537, 80394], [596269, 908718, 284993], [251900, 406514, 7899], 
+        [223369, 882524, 46621], [828695, 13861, 901753], [738445, 1039333, 914393]
+      ];
+    </script>
+  
+  
+    <div id="result"></div>
+    <ul id="details"></ul>
+
+    <script>
+    // Setup
+    var jiff_instance = null;
+    var parties = 3;
+    var has_failed = false;
+
+    $(function() {
+      jiff_instance = make_jiff("http://localhost", 3000, parties);
+    });
+    
+    // MPC CODE
+    function mpc() {
+      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
+      has_failed = false;
+      
+      var promises = []
+      for(var i = 0; i < tests.length; i++) {
+        var share = single_test(i);
+        if(share.promise != null) promises.push(share.promise);
+      }
+      
+      console.log("all tests");
+      
+      Promise.all(promises).then(function() {
+        if(has_failed) $("#result").append("<font color='red'>Failed</font>");
+        else $("#result").append("<font color='green'>Success</font>");
+      });
+    }
+    
+    function single_test(index) {
+      var numbers = tests[index];
+      var party_index = jiff_instance.id - 1;
+      var shares = jiff_instance.share(numbers[party_index]);
+      
+      var sum = shares[1];
+      for(var i = 2; i <= parties; i++) {
+        sum = sum.add(shares[i]);
+      }
+      
+      sum.open( function(result) { test_output(index, result) }, error);
+      return sum;
+    }
+
+    // Show output
+    function test_output(index, result) {
+      var numbers = tests[index];
+      var sum = 0;
+      for(var i = 0; i < numbers.length; i++) {
+        sum += numbers[i];
+      }
+      
+      if(sum != result) { // sum is incorrect
+        has_failed = true;
+        $("#details").append("<li> sum("+numbers.join(", ")+") = " + sum + " != " +result + "</li>");
+      }
+    }
+
+    // Show error
+    function error() {
+      has_failed = true;
+      $("#details").append("<li> communication error </li>");
+    }
+    </script>
+
+    <button onClick="mpc();">Start</button>
+  </body>
+</html>
