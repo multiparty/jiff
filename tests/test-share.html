@@ -32,14 +32,13 @@
     
     // run all tests
     function test() {
-      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
       var ok = true;
       
       for(var i = 0; i < tests.length; i++) 
-        ok = ok && single_test(i);
+        ok = single_test(i) && ok;
 
       
-      if(ok) $("#result").append("<font color='red'>Failed</font>");
+      if(!ok) $("#result").append("<font color='red'>Failed</font>");
       else $("#result").append("<font color='green'>Success</font>");
     }
     

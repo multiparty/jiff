@@ -1,8 +1,5 @@
-// The modulos to be used in additive sharing.
-var mod = Math.pow(2, 31) - 1;
-
-// The secrets are in Zp
-var Zp = 17;
+// The modulos to be used in secret sharing and operations on shares.
+var Zp = Math.pow(2, 31) - 1;
 
 /*
  * Share given secret to the participating parties.
@@ -62,6 +59,7 @@ function jiff_share(jiff, secret) {
  *   return:        a map between party number (from 1 to parties) and its
  *                  share, this means that (party number, share) is a 
  *                  point from the polynomial.
+ *
  */
 function jiff_compute_shares(secret, party_count) {
   var shares = {}; // Keeps the shares
@@ -77,10 +75,10 @@ function jiff_compute_shares(secret, party_count) {
   polynomial[0] = secret;
 
   // Compute the random polynomial f's coefficients
-  for(var i = 1; i <= t; i++) polynomial_t[i] = Math.floor(Math.random() * Zp);
+  for(var i = 1; i <= t; i++) polynomial[i] = Math.floor(Math.random() * Zp);
 
   // Compute each players share such that share[i] = f(i)
-  for(var i = 1; i < party_count; i++) {
+  for(var i = 1; i <= party_count; i++) {
     shares[i] = polynomial[0];
     power = i;
     
@@ -122,11 +120,39 @@ function jiff_open(jiff, share) {
   return deferred.promise();
 }
 
+/* 
+ * Uses Lagrange polynomials to interpolate the polynomial
+ * described by the given shares (points).
+ *   shares:        map between party id (x coordinate) and share (y coordinate).
+ *   party_count:   number of parties (and shares).
+ *   return:       the value of the polynomial at x=0 (the secret value).
+ *
+ */
+function jiff_lagrange(shares, party_count) {
+  var lagrange_coeff = Array(party_count+1);
+
+  // Compute the Langrange coefficients at 0
+  for(var i = 1; i <= party_count; i++) {
+    lagrange_coeff[i] = 1;
+    for(var j = 1; j <= party_count; j++) {
+      if(j != i) lagrange_coeff[i] = lagrange_coeff[i] * (0 - j) / (i - j);
+    }
+  }
+  
+  // Reconstruct the secret via Lagrange interpolation
+  var recons_secret = 0;
+  for(var i = 1; i <= party_count; i++)
+    recons_secret = (recons_secret + shares[i] * lagrange_coeff[i]) % Zp;
+
+  return recons_secret;
+}
+
 /*
  * Share the given share to all the parties in the jiff instance.
  *   jiff:      the jiff instance.
  *   share:     the share.
  *   op_id:     the id of the share operation.
+ *
  */
 function jiff_broadcast(jiff, share, op_id) {
   for(var i = 1; i <= jiff.party_count; i++) {
@@ -136,7 +162,6 @@ function jiff_broadcast(jiff, share, op_id) {
     jiff.socket.emit('open', JSON.stringify(msg));
   }
 }
-
 
 /*
  * Store the received share and resolves the corresponding
@@ -195,32 +220,6 @@ function receive_open(jiff, sender_id, share, op_id) {
     jiff.shares[op_id] = null;
 }
 
-/* Quick implementation of Langrange interpolation:
- * Given all the shares, reconstruct the secret via
- * interpolation.
- */
-function lagrange(jiff, shares){
-
-  var count = jiff.party_count;
-  var lagrange_coeff = [];
-  var recons_secret = 0;
-
-  // Compute the Langrange coefficients at 0
-  for ( i = 1; i <= count; i++){
-    lagrange_coeff[i] = 1;
-    for ( j = 1; j <= count; j++){
-      if( j != i){
-        lagrange_coeff[i] = lagrange_coeff[i]* ( 0 - j) / (i-j);
-      }
-    }
-  }
-  // Reconstruct the secret via Lagrange interpolation
-  for(i = 1; i <= count; i++){
-    recons_secret = recons_secret + lagrange_coeff[i]*shares[i];
-  }
-
-  return recons_secret;
-}
 /*
  * Create a new share.
  * A share is a value wrapper with a share object, it has a unique id
@@ -230,6 +229,7 @@ function lagrange(jiff, shares){
  *   ready:     whether the value of the share is ready or deferred.
  *   promise:   a promise to the value of the share.
  *   value:     the value of the share.
+ *
  */
 function secret_share(jiff, ready, promise, value) {
   var self = this;
@@ -309,6 +309,7 @@ function secret_share(jiff, ready, promise, value) {
  *
  * The Jiff instance contains the socket, number of parties, functions
  * to share and perform operations, as well as synchronization flags.
+ *
 */
 function make_jiff(hostname, port, party_count) {
   var jiff = { party_count: party_count, ready: false };
