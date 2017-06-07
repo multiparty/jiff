@@ -1,7 +1,9 @@
 // The modulos to be used in additive sharing.
 var mod = Math.pow(2, 31) - 1;
+
 // The secrets are in Zp
 var Zp = 17;
+
 /*
  * Share given secret to the participating parties.
  *   jiff:      the jiff instance.
@@ -14,68 +16,85 @@ var Zp = 17;
  *
 */
 function jiff_share(jiff, secret) {
-  var count = jiff.party_count;
-  // Each player's random polynomial f must have
-  // degree t < n/2, where n is the number of players
-  var t = Math.ceil(count/ 2) - 1;
-  var sum_mod = 0;
-  var shares = {};
+  var party_count = jiff.party_count;
+  var shares = jiff_compute_shares(secret, party_count);
+  
   var op_id = "share" + jiff.share_op_count;
-  var polynomial_t = [];
   jiff.share_op_count++;
+  jiff.deferreds[op_id] = {}; // setup a map of deferred for every received share
 
-
-  // Each players's random polynomial f must be constructed
-  // such that f(0) = secret
-  polynomial_t[0] = secret;
-
-  // Compute the random polynomial f's coefficients
-  for(var i = 1; i <= t; i++) {
-    polynomial_t[i] = Math.floor(Math.random() * mod) ;
-  }
-
-  // Compute each players share such that
-  // share[i] = f(i)
-  for(var i = 1; i < count; i++){
-    shares[i] = 0;
-    for(var j = 1; j <= t; j++) {
-
-      shares[i] = (shares[i] + polynomial_t[j]*i^j) % Zp;
-    }
-  }
-
-  // Setup a share object for receiving from each party and send each party its share
-  var result_map = {};
-  jiff.deferreds[op_id] = {};
-  for(var i = 1; i <= count; i++) {
-    // Keep party's own share ready
-    if(i == jiff.id) {
+  var result = {};
+  for(var i = 1; i <= party_count; i++) {
+    if(i == jiff.id) { // Keep party's own share
       result_map[i] = new secret_share(jiff, true, null, shares[i]);
       continue;
     }
 
-    // Check if the share is ready or not (maybe it was previously received)
+    // receive share_i[id] from party i
+    // check if the share is ready or not (maybe it was previously received)
     if(jiff.shares[op_id] == undefined || jiff.shares[op_id][i] == undefined) {
-      // Not ready, setup a deferred
+      // not ready, setup a deferred
       var deferred = $.Deferred();
       jiff.deferreds[op_id][i] = deferred;
       result_map[i] = new secret_share(jiff, false, deferred.promise(), undefined);
-    } else {
-      // Ready, put value in secret share.
+    } 
+    
+    else {
+      // ready, put value in secret share
       result_map[i] = new secret_share(jiff, true, null, jiff.shares[op_id][i]);
       jiff.shares[op_id][i] = null;
     }
 
+    // send shares_id[i] to party i
     var msg = { party_id: i, share: shares[i], op_id: op_id };
     jiff.socket.emit('share', JSON.stringify(msg));
   }
 
-  // Defer accessing the shares until they are back
-  return result_map;
+  return result;
+}
+
+
+/*
+ * Compute the shares of the secret (as many shares as parties) using
+ * a polynomial of degree: ceil(parties/2) - 1 (honest majority).
+ *   secret:        the secret to share.
+ *   party_count:   the number of parties.
+ *   return:        a map between party number (from 1 to parties) and its
+ *                  share, this means that (party number, share) is a 
+ *                  point from the polynomial.
+ */
+function jiff_compute_shares(secret, party_count) {
+  var shares = {}; // Keeps the shares
+  
+  // Each player's random polynomial f must have
+  // degree t = ceil(n/2)-1, where n is the number of players
+  var t = Math.ceil(party_count/ 2) - 1;
+
+  var polynomial = Array(t+1); // stores the coefficients
+
+  // Each players's random polynomial f must be constructed
+  // such that f(0) = secret
+  polynomial[0] = secret;
+
+  // Compute the random polynomial f's coefficients
+  for(var i = 1; i <= t; i++) polynomial_t[i] = Math.floor(Math.random() * Zp);
+
+  // Compute each players share such that share[i] = f(i)
+  for(var i = 1; i < party_count; i++) {
+    shares[i] = polynomial[0];
+    power = i;
+    
+    for(var j = 1; j < polynomial.length; j++) {
+      shares[i] = (shares[i] + polynomial[j] * power) % Zp;
+      power = power * i;
+    }
+  }
+  
+  return shares;
 }
 
 /*
- * Opens up the given share to the participating parties.
+ * Open up the given share to the participating parties.
  *   jiff:      the jiff instance.
  *   share:     the share of the secret to open that belongs to this party.
  *   return:    a (JQuery) promise to the open value of the secret.
@@ -104,7 +123,7 @@ function jiff_open(jiff, share) {
 }
 
 /*
- * Shares the given share to all the parties in the jiff instance.
+ * Share the given share to all the parties in the jiff instance.
  *   jiff:      the jiff instance.
  *   share:     the share.
  *   op_id:     the id of the share operation.
