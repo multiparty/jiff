@@ -65,7 +65,6 @@ function jiff_compute_shares(secret, party_count) {
 
   // Each player's random polynomial f must have
   // degree t = ceil(n/2)-1, where n is the number of players
-  console.log(party_count);
   var t = Math.floor((party_count-1)/ 2);
 
   var polynomial = Array(t+1); // stores the coefficients
@@ -131,7 +130,7 @@ function jiff_open(jiff, share) {
   var op_id = "open" + jiff.open_op_count;
   jiff.open_op_count++;
 
-  // Setup a deffered for receiving the shares from other parties
+  // Setup a deferred for receiving the shares from other parties
   var deferred = $.Deferred();
   jiff.deferreds[op_id] = deferred;
 
@@ -139,7 +138,7 @@ function jiff_open(jiff, share) {
   if(share.ready) jiff_broadcast(jiff, share, op_id);
 
   // Share is not ready, setup sharing as a callback to its promise
-  else share.promise.then(function { jiff_broadcast(jiff, share, op_id); }, share.error);
+  else share.promise.then(function() { jiff_broadcast(jiff, share, op_id); }, share.error);
 
   // Defer accessing the shares until they are back
   return deferred.promise();
@@ -252,11 +251,7 @@ function secret_share(jiff, ready, promise, value) {
 
   // helper for managing promises.
   this.error = function() { console.log("Error receiving " + self.toString); };
-  this.receive_share = function(value) {
-    self.value = value; 
-    self.ready = true; 
-    self.promise = null;
-  };
+  this.receive_share = function(value) { self.value = value; self.ready = true; self.promise = null; };
 
   this.pick_promise = function(o) {
     if(self.ready && o.ready) return null;
@@ -270,19 +265,20 @@ function secret_share(jiff, ready, promise, value) {
     jiff_instance.open(self).then(success, failure);
   }
 
-  // addition
-  this.ready_add = function(o) {
-    return (o.value + self.value) % Zp;
-  }
-
+  /* Addition */
   this.add = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
+    
+    // add the two shares when ready locally
+    var ready_add = function() {
+      return (o.value + self.value) % Zp;
+    }
 
     if(self.ready && o.ready) // both shares are ready
-      return new secret_share(self.jiff, true, null, self.ready_add(o));
+      return new secret_share(self.jiff, true, null, ready_add());
 
-    var promise = self.pick_promise(o);
-    promise = promise.then(function() { return self.ready_add(o); }, self.error);
+    // promise to execute ready_add when both are ready
+    var promise = self.pick_promise(o).then(ready_add, self.error);
     return new secret_share(self.jiff, false, promise, undefined);
   }
 
@@ -294,41 +290,53 @@ function secret_share(jiff, ready, promise, value) {
     return new secret_share(self.jiff, true, null, this.value * cst);
   }
 
-  this.ready_mult = function(o) {
-    var prod = (self.value * o.value) % Zp;
-    var shares = self.jiff.share(prod);
-    var promises = [];
-    for(var i = 1; i <= jiff.party_count; i++) {
-      if(!shares[i].ready) promises.push(shares[i].promise);
-    }
-
-    var recombine = function() {
-      var values = {};
-      for(var i = 1; i <= self.jiff.party_count; i++)
-        values[i] = shares[i].value;
-
-      return jiff_lagrange(values, self.jiff.party_count);
-    };
-    
-    if(promises.length == 0) return recombine();
-    var promise = Promise.all(promises).then(recombine, self.error);
-    return promise;
-  }
-
-  // multiplication
+  /* multiplication */
   this.mult = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
+    
+    // multiplication has communication (multiple internal deferreds)
+    // these deferred are chained inside ready_mult function
+    // their chaining and number may variy
+    // the last deferred resolves this deferred
+    // such that the final numeric answer is passed into result
+    var final_deferred = $.Deferred();
+    var final_promise = final_deferred.promise();
+    var result = new secret_share(self.jiff, false, final_promise, undefined);
+    
+    // this function will be executed when self and o are ready
+    var ready_mult = function() {
+      // point-wise multiplication resulting in polynomial of higher degree
+      var prod = (self.value * o.value) % Zp;
+      var shares = self.jiff.share(prod);
 
-    if(self.ready && o.ready) { // both shares are ready
-      var mul = self.ready_mult(o);
-      
-      if(mul instanceof Promise) return new secret_share(self.jiff, false, mul, undefined);
-      else return new secret_share(self.jiff, true, null, mul);
+      // get all the promises of the shares
+      var promises = [];
+      for(var i = 1; i <= self.jiff.party_count; i++)
+      if(!shares[i].ready) promises.push(shares[i].promise);
+
+      // recombine the shares received from every party (one share from every point-wise product)
+      var recombine = function() {
+        var values = {};
+        for(var i = 1; i <= self.jiff.party_count; i++)
+          values[i] = shares[i].value;
+
+        return jiff_lagrange(values, self.jiff.party_count);
+      };
+
+      // either recombine directly or promise to when shares are ready
+      // and chain the final answer into final_deferred so that 
+      // the value is eventually stored in ``result'' share
+      if(promises.length == 0) final_deferred.resolve(recombine());
+      else Promise.all(promises).then(function() { final_deferred.resolve(recombine()); } , self.error);
     }
-
-    var promise = self.pick_promise(o);
-    promise = promise.then(function() { return self.ready_mult(o); }, self.error);
-    return new secret_share(self.jiff, false, promise, undefined);
+    
+    if(self.ready && o.ready) // both shares are ready
+      ready_mult();
+      
+    else // promise to execute ready_mult when both are ready
+      self.pick_promise(o).then(ready_mult, self.error);    
+    
+    return result;
   }
 
   // less than
