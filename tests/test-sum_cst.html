@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Test the addition</title>
+    <title>Test the constant addition</title>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
     <script src="../jiff.js"></script>
@@ -51,7 +51,7 @@
       var promises = []
       for(var i = 0; i < tests.length; i++) {
         var promise = single_test(i);
-        if(promise != null) promises.push(share.promise);
+        if(promise != null) promises.push(promise);
       }
 
       Promise.all(promises).then(function() {
@@ -69,11 +69,16 @@
       var shares = jiff_instance.share(numbers[party_index]);
 
       var promises = [];
-      for(var i = 1; i <= parties; i++) {
+
+      var tmp = function(i) {
         shares[i] = shares[i].add_cst(c);
         shares[i].open( function(result) { test_output(index, i, result) }, error);
         if(shares[i].promise != null) promises.push(shares[i].promise);
       }
+
+      for(var i = 1; i <= parties; i++)
+        tmp(i);
+
       return Promise.all(promises);
     }
 
@@ -82,11 +87,11 @@
       var numbers = tests[index];
       var c = numbers[numbers.length-1];
       var sum = numbers[party - 1];
-      sum = sum % Zp;
+      sum = (sum + c) % Zp;
 
       if(sum != result && sum != result + Zp) { // sum is incorrect
         has_failed = true;
-        $("#details").append("<li> sum("+numbers.join(", ")+") = " + sum + " != " +result + "</li>");
+        $("#details").append("<li> "+party+" sum("+numbers.join(", ")+") = " + sum + " != " +result + "</li>");
       }
     }
 
