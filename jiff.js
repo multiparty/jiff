@@ -1,5 +1,5 @@
 // The modulos to be used in secret sharing and operations on shares.
-var Zp = 1031;//17; Math.pow(2, 31) - 1;
+var Zp = Math.pow(2, 31) - 1;
 
 /*
  * Share given secret to the participating parties.
@@ -286,14 +286,20 @@ function secret_share(jiff, ready, promise, value) {
     if (!(typeof(cst) == "number")) throw "parameter should be a number";
 
     if(self.ready) // if share is ready
-      return new secret_share(self.jiff, true, null, (this.value + cst)%Zp);
+      return new secret_share(self.jiff, true, null, (self.value + cst)%Zp);
 
-    var promise = self.promise.then(function() { return (this.value + cst)%Zp; }, self.error);
+    var promise = self.promise.then(function() { return (self.value + cst)%Zp; }, self.error);
     return new secret_share(self.jiff, false, promise, undefined);
   }
 
   this.mult_cst = function(cst){
-    return new secret_share(self.jiff, true, null, this.value * cst);
+    if (!(typeof(cst) == "number")) throw "parameter should be a number";
+
+    if(self.ready) // if share is ready
+      return new secret_share(self.jiff, true, null, (self.value * cst)%Zp);
+
+    var promise = self.promise.then(function() { return (self.value * cst)%Zp; }, self.error);
+    return new secret_share(self.jiff, false, promise, undefined);
   }
 
   /* multiplication */
