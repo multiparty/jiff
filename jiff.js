@@ -318,7 +318,7 @@ function secret_share(jiff, ready, promise, value) {
       // get all the promises of the shares
       var promises = [];
       for(var i = 1; i <= self.jiff.party_count; i++)
-      if(!shares[i].ready) promises.push(shares[i].promise);
+        if(!(shares[i].ready)) promises.push(shares[i].promise);
 
       // recombine the shares received from every party (one share from every point-wise product)
       var recombine = function() {
@@ -333,7 +333,7 @@ function secret_share(jiff, ready, promise, value) {
       // and chain the final answer into final_deferred so that 
       // the value is eventually stored in ``result'' share
       if(promises.length == 0) final_deferred.resolve(recombine());
-      else Promise.all(promises).then(function() { final_deferred.resolve(recombine()); } , self.error);
+      else Promise.all(promises).then(function() { final_deferred.resolve(recombine()); }, self.error);
     }
     
     if(self.ready && o.ready) // both shares are ready
