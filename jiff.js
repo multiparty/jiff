@@ -253,8 +253,8 @@ function secret_share(jiff, ready, promise, value) {
   // helper for managing promises.
   this.error = function() { console.log("Error receiving " + self.toString); };
   this.receive_share = function(value) {
-    self.value = value; 
-    self.ready = true; 
+    self.value = value;
+    self.ready = true;
     self.promise = null;
   };
 
@@ -287,7 +287,13 @@ function secret_share(jiff, ready, promise, value) {
   }
 
   this.add_cst = function(cst){
-    return new secret_share(self.jiff, true, null, this.value + cst);
+    if (!(typeof(cst) == "number")) throw "parameter should be a number";
+
+    if(self.read) // if share is ready
+      return new secret_share(self.jiff, true, null, (this.value + cst)%Zp);
+
+    var promise = self.promise.then(function() { return (this.value + cst)%Zp; }, self.error);
+    return new secret_share(self.jiff, false, promise, undefined);
   }
 
   this.mult_cst = function(cst){
@@ -309,7 +315,7 @@ function secret_share(jiff, ready, promise, value) {
 
       return jiff_lagrange(values, self.jiff.party_count);
     };
-    
+
     if(promises.length == 0) return recombine();
     var promise = Promise.all(promises).then(recombine, self.error);
     return promise;
@@ -321,7 +327,7 @@ function secret_share(jiff, ready, promise, value) {
 
     if(self.ready && o.ready) { // both shares are ready
       var mul = self.ready_mult(o);
-      
+
       if(mul instanceof Promise) return new secret_share(self.jiff, false, mul, undefined);
       else return new secret_share(self.jiff, true, null, mul);
     }
