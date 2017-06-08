@@ -4,7 +4,7 @@ from random import randint
 tests_count = int(argv[1])
 
 min = 0
-max = 2**20
+max = 1030
 
 result = "[\n  "
 for i in range(tests_count):

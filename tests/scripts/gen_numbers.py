@@ -5,7 +5,7 @@ parties = int(argv[1])
 tests_count = int(argv[2])
 
 min = 0
-max = 2**20
+max = 1030
 
 def gen(parties):
   return [ str(randint(min, max)) for i in range(parties) ]
