@@ -282,6 +282,14 @@ function secret_share(jiff, ready, promise, value) {
     return new secret_share(self.jiff, false, promise, undefined);
   }
 
+  this.add_cst = function(cst){
+    return new secret_share(self.jiff, true, null, this.value + cst);
+  }
+
+  this.mult_cst = function(cst){
+    return new secret_share(self.jiff, true, null, this.value * cst);
+  }
+
   this.ready_mult = function(o) {
     var prod = (self.value * o.value) % Zp;
     var shares = self.jiff.share(prod);
@@ -321,6 +329,8 @@ function secret_share(jiff, ready, promise, value) {
   // when the promise is resolved, acquire the value of the share and set ready to true
   if(!ready) this.promise.then(this.receive_share, this.error);
 }
+
+
 
 /*
  * Create a new jiff instance.
