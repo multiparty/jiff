@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test the multiplication</title>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
+    <script src="../jiff.js"></script>
+  </head>
+  <body>
+    <script>
+      var tests = [
+          [833593, 415746, 833373], [210906, 768780, 729078], [971598, 290228, 582574],
+          [392906, 769107, 84038], [409931, 560985, 794570], [34753, 951066, 118409],
+          [863777, 692568, 62581], [517824, 748120, 41032], [130519, 171729, 266056],
+          [1041654, 700087, 855519], [769289, 634857, 257205], [536271, 911050, 10108],
+          [697341, 61822, 225836], [767880, 1009001, 605924], [934822, 247780, 749309],
+          [841145, 508759, 708030], [467062, 989355, 433104], [362596, 424131, 869663],
+          [554123, 810968, 59509], [684020, 484382, 887828], [601566, 694084, 879946],
+          [13252, 609043, 255603], [20578, 1007015, 637411], [444254, 467019, 888968],
+          [8669, 460761, 619827], [61195, 75012, 289802], [484605, 529228, 284699],
+          [997963, 186137, 964007], [44301, 630778, 799973], [311323, 668999, 328868],
+          [416077, 811564, 413372], [263035, 45333, 78520], [310782, 339351, 412429],
+          [15331, 321063, 366410], [126089, 235570, 383556], [659833, 146316, 450105],
+          [401507, 622989, 509645], [798644, 559918, 903093], [156708, 331656, 589767],
+          [94444, 517663, 193555], [139341, 407891, 333788], [137660, 442899, 658220],
+          [13511, 238827, 783472], [747056, 226700, 975908], [322791, 285109, 615152],
+          [938522, 115416, 588086], [287566, 1630, 389639], [893565, 4856, 329427],
+          [715020, 862284, 223560], [513873, 207745, 868569]
+        ];
+    </script>
+
+
+    <div id="result"></div>
+    <ul id="details"></ul>
+
+    <script>
+    // setup
+    var jiff_instance = null;
+    var parties = tests[0].length;
+    var has_failed = false;
+
+    $(function() {
+      jiff_instance = make_jiff("http://localhost", 3000, parties);
+    });
+
+    // run all tests
+    function test() {
+      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
+      has_failed = false;
+
+      var promises = []
+      for(var i = 0; i < tests.length; i++) {
+        var share = single_test(i);
+        if(share.promise != null) promises.push(share.promise);
+      }
+
+      console.log("all tests");
+
+      Promise.all(promises).then(function() {
+        if(has_failed) $("#result").append("<font color='red'>Failed</font>");
+        else $("#result").append("<font color='green'>Success</font>");
+      });
+    }
+
+    // run test case at index
+    function single_test(index) {
+      var numbers = tests[index];
+      var party_index = jiff_instance.id - 1;
+      var shares = jiff_instance.share(numbers[party_index]);
+
+      var prod = shares[1];
+      for(var i = 2; i <= parties; i++) {
+        prod = shares[i].mult(3);
+      }
+
+      prod.open( function(result) { test_output(index, result) }, error);
+      return prod;
+    }
+
+    // determine if the output is correct
+    function test_output(index, result) {
+      var numbers = tests[index];
+      var prod = 1;
+      for(var i = 0; i < numbers.length; i++) {
+        prod *= numbers[i];
+      }
+
+      if(prod != result) { // sum is incorrect
+        has_failed = true;
+        $("#details").append("<li> product("+numbers.join(", ")+") = " + prod + " != " +result + "</li>");
+      }
+    }
+
+    // register communication error
+    function error() {
+      has_failed = true;
+      $("#details").append("<li> communication error </li>");
+    }
+    </script>
+
+    <button onClick="test();">Start</button>
+  </body>
+</html>

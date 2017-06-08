@@ -283,7 +283,13 @@ function secret_share(jiff, ready, promise, value) {
   }
 
   this.add_cst = function(cst){
-    return new secret_share(self.jiff, true, null, this.value + cst);
+    if (!(typeof(cst) == "number")) throw "parameter should be a number";
+
+    if(self.read) // if share is ready
+      return new secret_share(self.jiff, true, null, (this.value + cst)%Zp);
+
+    var promise = self.promise.then(function() { return (this.value + cst)%Zp; }, self.error);
+    return new secret_share(self.jiff, false, promise, undefined);
   }
 
   this.mult_cst = function(cst){
