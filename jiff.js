@@ -139,10 +139,7 @@ function jiff_open(jiff, share) {
   if(share.ready) jiff_broadcast(jiff, share, op_id);
 
   // Share is not ready, setup sharing as a callback to its promise
-  else share.promise.then(function handle(res) {
-    if(share.ready) jiff_broadcast(jiff, share, op_id);
-    else res.then(handle, share.error);
-  }, share.error);
+  else share.promise.then(function { jiff_broadcast(jiff, share, op_id); }, share.error);
 
   // Defer accessing the shares until they are back
   return deferred.promise();
@@ -254,18 +251,12 @@ function secret_share(jiff, ready, promise, value) {
   };
 
   // helper for managing promises.
-  this.receive_share = function(value) {
-    if(value instanceof Promise) {
-      self.promise = value;
-      self.promise.then(self.receive_share, self.error);
-      return value;
-    } else {
-      self.value = value; 
-      self.ready = true; 
-      return value;
-    }
-  };
   this.error = function() { console.log("Error receiving " + self.toString); };
+  this.receive_share = function(value) {
+    self.value = value; 
+    self.ready = true; 
+    self.promise = null;
+  };
 
   this.pick_promise = function(o) {
     if(self.ready && o.ready) return null;
