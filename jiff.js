@@ -1,5 +1,5 @@
 // The modulos to be used in secret sharing and operations on shares.
-var Zp = Math.pow(2, 31) - 1;
+var Zp = 1031;
 
 /*
  * Share given secret to the participating parties.
