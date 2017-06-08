@@ -268,7 +268,7 @@ function secret_share(jiff, ready, promise, value) {
   /* Addition */
   this.add = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
-    
+
     // add the two shares when ready locally
     var ready_add = function() {
       return (o.value + self.value) % Zp;
@@ -285,7 +285,7 @@ function secret_share(jiff, ready, promise, value) {
   this.add_cst = function(cst){
     if (!(typeof(cst) == "number")) throw "parameter should be a number";
 
-    if(self.read) // if share is ready
+    if(self.ready) // if share is ready
       return new secret_share(self.jiff, true, null, (this.value + cst)%Zp);
 
     var promise = self.promise.then(function() { return (this.value + cst)%Zp; }, self.error);
@@ -299,7 +299,7 @@ function secret_share(jiff, ready, promise, value) {
   /* multiplication */
   this.mult = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
-    
+
     // multiplication has communication (multiple internal deferreds)
     // these deferred are chained inside ready_mult function
     // their chaining and number may variy
@@ -308,7 +308,7 @@ function secret_share(jiff, ready, promise, value) {
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
     var result = new secret_share(self.jiff, false, final_promise, undefined);
-    
+
     // this function will be executed when self and o are ready
     var ready_mult = function() {
       // point-wise multiplication resulting in polynomial of higher degree
@@ -330,18 +330,18 @@ function secret_share(jiff, ready, promise, value) {
       };
 
       // either recombine directly or promise to when shares are ready
-      // and chain the final answer into final_deferred so that 
+      // and chain the final answer into final_deferred so that
       // the value is eventually stored in ``result'' share
       if(promises.length == 0) final_deferred.resolve(recombine());
       else Promise.all(promises).then(function() { final_deferred.resolve(recombine()); } , self.error);
     }
-    
+
     if(self.ready && o.ready) // both shares are ready
       ready_mult();
-      
+
     else // promise to execute ready_mult when both are ready
-      self.pick_promise(o).then(ready_mult, self.error);    
-    
+      self.pick_promise(o).then(ready_mult, self.error);
+
     return result;
   }
 

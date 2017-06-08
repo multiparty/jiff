@@ -51,7 +51,7 @@
       var promises = []
       for(var i = 0; i < tests.length; i++) {
         var promise = single_test(i);
-        if(promise != null) promises.push(share.promise);
+        if(promise != null) promises.push(promise);
       }
 
       Promise.all(promises).then(function() {
