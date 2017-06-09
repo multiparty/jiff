@@ -9,7 +9,7 @@
   <body>
     <script>
       var tests = [
-          [2, 3, 1]/*, [408, 291, 38], [640, 108, 764], 
+          [2, 3, 1], [408, 291, 38], [640, 108, 764], 
           [129, 238, 182], [494, 1005, 325], [163, 929, 554], 
           [541, 61, 818], [269, 153, 405], [152, 172, 37], 
           [600, 345, 993], [10, 871, 712], [640, 409, 487], 
@@ -25,7 +25,7 @@
           [230, 716, 256], [499, 936, 761], [452, 74, 168], 
           [525, 679, 331], [116, 491, 719], [963, 933, 67], 
           [897, 246, 478], [1019, 502, 245], [154, 78, 717], 
-          [711, 497, 717], [983, 112, 38]*/
+          [711, 497, 717], [983, 112, 38]
         ];
     </script>
   
@@ -66,10 +66,11 @@
       var party_index = jiff_instance.id - 1;
       var shares = jiff_instance.share(numbers[party_index]);
             
-      var prod = shares[1].mult(shares[2]);
-//      for(var i = 2; i <= parties; i++) {
-//        prod = prod.mult(shares[i]);
-//      }
+//      var prod = shares[1].mult(shares[2]);
+      var prod = shares[1];
+      for(var i = 2; i <= parties; i++) {
+        prod = prod.mult(shares[i]);
+      }
       
       prod.open( function(result) { test_output(index, result) }, error);
       return prod;
@@ -78,11 +79,11 @@
     // determine if the output is correct
     function test_output(index, result) {
       var numbers = tests[index];
-      var prod = numbers[0] * numbers[1];
-//      var prod = 1;
-//      for(var i = 0; i < numbers.length; i++) {
-//        prod *= numbers[i];
-//      }
+//      var prod = numbers[0] * numbers[1];
+      var prod = 1;
+      for(var i = 0; i < numbers.length; i++) {
+        prod *= numbers[i];
+      }
       
       prod = prod % Zp;
       
