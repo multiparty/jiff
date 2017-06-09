@@ -5,6 +5,7 @@ var Zp = 1031;
  * Share given secret to the participating parties.
  *   jiff:      the jiff instance.
  *   secret:    the secret to share.
+ *   op_id:     the operation id that matches this operation with received messages [optional].
  *   return:    a map (of size equal to the number of parties)
  *              where the key is the party id (from 1 to n)
  *              and the value is the share object that wraps
@@ -12,12 +13,15 @@ var Zp = 1031;
  *              maybe deferred).
  *
  */
-function jiff_share(jiff, secret) {
+function jiff_share(jiff, secret, op_id) {
   var party_count = jiff.party_count;
   var shares = jiff_compute_shares(secret, party_count);
 
-  var op_id = "share" + jiff.share_op_count;
-  jiff.share_op_count++;
+  if(op_id == undefined) {
+    op_id = "share" + jiff.share_op_count;
+    jiff.share_op_count++;
+  }
+  
   jiff.deferreds[op_id] = {}; // setup a map of deferred for every received share
 
   var result = {};
@@ -86,7 +90,7 @@ function jiff_compute_shares(secret, party_count) {
       power = power * i;
     }
   }
-
+  
   return shares;
 }
 
@@ -119,16 +123,20 @@ function receive_share(jiff, sender_id, share, op_id) {
  * Open up the given share to the participating parties.
  *   jiff:      the jiff instance.
  *   share:     the share of the secret to open that belongs to this party.
+ *   op_id:     the operation id that matches this operation with received messages [optional].
  *   return:    a (JQuery) promise to the open value of the secret.
  *   throws:    error if share does not belong to the passed jiff instance.
  *
 */
-function jiff_open(jiff, share) {
+function jiff_open(jiff, share, op_id) {
   if(!(share.jiff === jiff)) throw "share does not belong to given instance";
 
   var count = jiff.party_count;
-  var op_id = "open" + jiff.open_op_count;
-  jiff.open_op_count++;
+  
+  if(op_id == null) {
+    op_id = "open" + jiff.open_op_count;
+    jiff.open_op_count++;
+  }
 
   // Setup a deferred for receiving the shares from other parties
   var deferred = $.Deferred();
@@ -305,6 +313,10 @@ function secret_share(jiff, ready, promise, value) {
   /* multiplication */
   this.mult = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
+    
+    // operation id for the sharing operation
+    var op_id = self.jiff.share_op_count;
+    self.jiff.share_op_count++;
 
     // multiplication has communication (multiple internal deferreds)
     // these deferred are chained inside ready_mult function
@@ -319,7 +331,7 @@ function secret_share(jiff, ready, promise, value) {
     var ready_mult = function() {
       // point-wise multiplication resulting in polynomial of higher degree
       var prod = (self.value * o.value) % Zp;
-      var shares = self.jiff.share(prod);
+      var shares = jiff_share(self.jiff, prod, op_id);
 
       // get all the promises of the shares
       var promises = [];
