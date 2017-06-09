@@ -23,7 +23,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('share', function(msg){
-    console.log('share: ' + msg);
+    console.log('share from ' + party_map[socket.id] + ' : ' + msg);
 
     var json_msg = JSON.parse(msg);
     var index = json_msg["party_id"];
@@ -33,7 +33,7 @@ io.on('connection', function(socket){
   });
   
   socket.on('open', function(msg){
-    console.log('open: ' + msg);
+    console.log('open from ' + party_map[socket.id] + ' : ' + msg);
 
     var json_msg = JSON.parse(msg);
     var index = json_msg["party_id"];
