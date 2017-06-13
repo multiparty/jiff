@@ -87,9 +87,9 @@
       var numbers = tests[index];
       var c = numbers[numbers.length-1];
       var mult = numbers[party - 1];
-      mult = (mult * c) % Zp;
+      mult = mod((mult * c), Zp);
 
-      if(mult != result && mult != result + Zp) { // multiplication is incorrect
+      if(mult != result) { // multiplication is incorrect
         has_failed = true;
         $("#details").append("<li> "+party+" mult("+numbers.join(", ")+") = " + mult + " != " +result + "</li>");
       }

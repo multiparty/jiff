@@ -21,7 +21,7 @@ function jiff_share(jiff, secret, op_id) {
     op_id = "share" + jiff.share_op_count;
     jiff.share_op_count++;
   }
-  
+
   jiff.deferreds[op_id] = {}; // setup a map of deferred for every received share
 
   var result = {};
@@ -86,11 +86,11 @@ function jiff_compute_shares(secret, party_count) {
     power = i;
 
     for(var j = 1; j < polynomial.length; j++) {
-      shares[i] = (shares[i] + polynomial[j] * power) % Zp;
+      shares[i] = mod((shares[i] + polynomial[j] * power), Zp);
       power = power * i;
     }
   }
-  
+
   return shares;
 }
 
@@ -132,7 +132,7 @@ function jiff_open(jiff, share, op_id) {
   if(!(share.jiff === jiff)) throw "share does not belong to given instance";
 
   var count = jiff.party_count;
-  
+
   if(op_id == null) {
     op_id = "open" + jiff.open_op_count;
     jiff.open_op_count++;
@@ -219,11 +219,18 @@ function jiff_lagrange(shares, party_count) {
   // Reconstruct the secret via Lagrange interpolation
   var recons_secret = 0;
   for(var i = 1; i <= party_count; i++)
-    recons_secret = (recons_secret + shares[i] * lagrange_coeff[i]) % Zp;
+    recons_secret = mod((recons_secret + shares[i] * lagrange_coeff[i]), Zp);
 
   return recons_secret;
 }
 
+function mod(x, y){
+  if (x < 0) {
+      return ((x%y)+y)%y;
+    }
+
+  return x%y;
+}
 /*
  * Create a new share.
  * A share is a value wrapper with a share object, it has a unique id
@@ -279,7 +286,7 @@ function secret_share(jiff, ready, promise, value) {
 
     // add the two shares when ready locally
     var ready_add = function() {
-      return (o.value + self.value) % Zp;
+      return mod((o.value + self.value), Zp);
     }
 
     if(self.ready && o.ready) // both shares are ready
@@ -294,9 +301,9 @@ function secret_share(jiff, ready, promise, value) {
     if (!(typeof(cst) == "number")) throw "parameter should be a number";
 
     if(self.ready) // if share is ready
-      return new secret_share(self.jiff, true, null, (self.value + cst)%Zp);
+      return new secret_share(self.jiff, true, null, mod((self.value + cst), Zp));
 
-    var promise = self.promise.then(function() { return (self.value + cst)%Zp; }, self.error);
+    var promise = self.promise.then(function() { return mod((self.value + cst), Zp); }, self.error);
     return new secret_share(self.jiff, false, promise, undefined);
   }
 
@@ -304,16 +311,16 @@ function secret_share(jiff, ready, promise, value) {
     if (!(typeof(cst) == "number")) throw "parameter should be a number";
 
     if(self.ready) // if share is ready
-      return new secret_share(self.jiff, true, null, (self.value * cst)%Zp);
+      return new secret_share(self.jiff, true, null, mod((self.value * cst),Zp));
 
-    var promise = self.promise.then(function() { return (self.value * cst)%Zp; }, self.error);
+    var promise = self.promise.then(function() { return mod((self.value * cst),Zp); }, self.error);
     return new secret_share(self.jiff, false, promise, undefined);
   }
 
   /* multiplication */
   this.mult = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
-    
+
     // operation id for the sharing operation
     var op_id = self.jiff.share_op_count;
     self.jiff.share_op_count++;
@@ -330,7 +337,7 @@ function secret_share(jiff, ready, promise, value) {
     // this function will be executed when self and o are ready
     var ready_mult = function() {
       // point-wise multiplication resulting in polynomial of higher degree
-      var prod = (self.value * o.value) % Zp;
+      var prod = mod((self.value * o.value), Zp);
       var shares = jiff_share(self.jiff, prod, op_id);
 
       // get all the promises of the shares

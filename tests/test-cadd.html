@@ -87,7 +87,7 @@
       var numbers = tests[index];
       var c = numbers[numbers.length-1];
       var sum = numbers[party - 1];
-      sum = (sum + c) % Zp;
+      sum = mod((sum + c), Zp);
 
       if(sum != result && sum != result + Zp) { // sum is incorrect
         has_failed = true;
