@@ -48,8 +48,8 @@ function jiff_share(jiff, secret, op_id) {
       jiff.shares[op_id][i] = null;
     }
 
-    // send shares_id[i] to party i
-    var msg = { party_id: i, share: shares[i], op_id: op_id };
+    // send encrypted shares_id[i] to party i
+    var msg = { party_id: i, share: cryptico.encrypt(shares[i], jiff.keymap[i]).cipher, op_id: op_id };
     jiff.socket.emit('share', JSON.stringify(msg));
   }
 
@@ -111,8 +111,11 @@ function receive_share(jiff, sender_id, share, op_id) {
       if(jiff.shares[op_id] == undefined) {
         jiff.shares[op_id] = {}
       }
-
-      jiff.shares[op_id][sender_id] = share;
+      if (sender_id == jiff.id )
+        jiff.shares[op_id][sender_id] = share;
+      else
+        jiff.shares[op_id][sender_id] = cryptico.decrypt(share, jiff.secret_key).plaintext;
+        
       return;
     }
 
@@ -165,7 +168,7 @@ function jiff_broadcast(jiff, share, op_id) {
   for(var i = 1; i <= jiff.party_count; i++) {
     if(i == jiff.id) { receive_open(jiff, i, share.value, op_id); continue; }
 
-    var msg = { party_id: i, share: share.value, op_id: op_id };
+    var msg = { party_id: i, share: cryptico.encrypt(share.value, jiff.keymap[i]).cipher, op_id: op_id };
     jiff.socket.emit('open', JSON.stringify(msg));
   }
 }
@@ -186,7 +189,11 @@ function receive_open(jiff, sender_id, share, op_id) {
     }
 
     // Update share
-    jiff.shares[op_id][sender_id] = share;
+    console.log("SHARE:"+share);
+    if (sender_id == jiff.id )
+      jiff.shares[op_id][sender_id] = share;
+    else
+      jiff.shares[op_id][sender_id] = cryptico.decrypt(share, jiff.secret_key).plaintext;
 
     // Check if all shares were received
     var shares = jiff.shares[op_id];
@@ -412,18 +419,18 @@ function make_jiff(hostname, port, party_count) {
 
   // Store the id when server sends it back
   jiff.socket.on('init', function(msg) {
-
     jiff.id = parseInt(msg);
 
     // Size of the Passphrase used in generating an RSA key
     var passphrase_size = 25;
-    jiff.private_key = cryptico.generateRSAKey(random_string(passphrase_size), RSA_bits);
-    jiff.public_key = cryptico.publicKeyString(jiff.private_key );
+    jiff.secret_key = cryptico.generateRSAKey(random_string(passphrase_size), RSA_bits);
+    jiff.public_key = cryptico.publicKeyString(jiff.secret_key);
     jiff.socket.emit("public_key", jiff.public_key);
   });
 
   jiff.socket.on('public_key', function(msg) {
     console.log(msg);
+    jiff.keymap = JSON.parse(msg);
     jiff.ready = true;
   });
 
