@@ -3,7 +3,9 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var socket_map = {};
 var party_map = {};
+var key_map = {};
 var nclient = 0;
+var total_parties = 3;
 
 io.on('connection', function(socket){
 
@@ -11,6 +13,27 @@ io.on('connection', function(socket){
   nclient++;
   socket_map[nclient] = socket.id;
   party_map[socket.id] = nclient;
+
+  // Receive each user's public key
+  socket.on('public_key', function(msg){
+    var party_id = party_map[socket.id];
+
+    key_map[party_id] = msg;
+    console.log('receive public key: ' + msg);
+
+    var full = true;
+    for(var i=1; i <= total_parties; i++){
+
+      if(key_map[i] == null){
+        full = false;
+        break;
+      }
+    }
+
+    if(full){
+      io.emit('public_key', JSON.stringify(key_map));
+    }
+  });
 
   //Let each user know his/her ID once connected
   io.to(socket.id).emit('init', nclient);
@@ -31,7 +54,7 @@ io.on('connection', function(socket){
 
     io.to(socket_map[index]).emit('share', JSON.stringify(json_msg));
   });
-  
+
   socket.on('open', function(msg){
     console.log('open: ' + msg);
 
