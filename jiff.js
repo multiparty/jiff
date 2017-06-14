@@ -1,6 +1,8 @@
 // The modulos to be used in secret sharing and operations on shares.
 var Zp = 1031;
 
+// The length of RSA key in bits.
+var RSA_bits = 1024;
 /*
  * Share given secret to the participating parties.
  *   jiff:      the jiff instance.
@@ -379,6 +381,17 @@ function secret_share(jiff, ready, promise, value) {
   if(!ready) this.promise.then(this.receive_share, this.error);
 }
 
+
+// Randomly generate a string of size length
+function random_string(length){
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for(var i = 0; i < length; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  return text;
+}
 /*
  * Create a new jiff instance.
  *   hostname:    server hostname/ip.
@@ -399,7 +412,18 @@ function make_jiff(hostname, port, party_count) {
 
   // Store the id when server sends it back
   jiff.socket.on('init', function(msg) {
+
     jiff.id = parseInt(msg);
+
+    // Size of the Passphrase used in generating an RSA key
+    var passphrase_size = 25;
+    jiff.private_key = cryptico.generateRSAKey(random_string(passphrase_size), RSA_bits);
+    jiff.public_key = cryptico.publicKeyString(jiff.private_key );
+    jiff.socket.emit("public_key", jiff.public_key);
+  });
+
+  jiff.socket.on('public_key', function(msg) {
+    console.log(msg);
     jiff.ready = true;
   });
 

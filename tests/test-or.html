@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test Or</title>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
+    <script src="../jiff.js"></script>
+  </head>
+  <body>
+    <script>
+      var tests = [
+          [10, 7, 9], [1, 1, 0], [0, 0, 0],
+          [1, 1, 1], [0, 1, 0], [0, 0, 1],
+          [0, 1, 1], [1, 0, 1]
+        ];
+    </script>
+
+
+    <div id="result"></div>
+    <ul id="details"></ul>
+
+    <script>
+    // setup
+    var jiff_instance = null;
+    var parties = tests[0].length;
+    var has_failed = false;
+
+    $(function() {
+      jiff_instance = make_jiff("http://localhost", 3000, parties);
+    });
+
+    // run all tests
+    function test() {
+      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
+      has_failed = false;
+
+      var promises = []
+      for(var i = 0; i < tests.length; i++) {
+        var share = single_test(i);
+        if(share.promise != null) promises.push(share.promise);
+      }
+
+      Promise.all(promises).then(function() {
+        if(has_failed) $("#result").append("<font color='red'>Failed</font>");
+        else $("#result").append("<font color='green'>Success</font>");
+      });
+    }
+
+    // run test case at index
+    function single_test(index) {
+      var numbers = tests[index];
+      var party_index = jiff_instance.id - 1;
+      var shares = jiff_instance.share(numbers[party_index]);
+
+      var sum = shares[1];
+      for(var i = 2; i <= parties; i++) {
+        sum = sum.or(shares[i]);
+      }
+
+      sum.open( function(result) { test_output(index, result) }, error);
+      return sum;
+    }
+
+    // determine if the output is correct
+    function test_output(index, result) {
+      var numbers = tests[index];
+      var sum = 0;
+      for(var i = 0; i < numbers.length; i++) {
+        sum = sum | numbers[i];
+      }
+
+      if(sum != result) { // sum is incorrect
+        has_failed = true;
+        $("#details").append("<li> sum("+numbers.join(", ")+") = " + sum + " != " +result + "</li>");
+      }
+    }
+
+    // register communication error
+    function error() {
+      has_failed = true;
+      $("#details").append("<li> communication error </li>");
+    }
+    </script>
+
+    <button onClick="test();">Start</button>
+  </body>
+</html>
