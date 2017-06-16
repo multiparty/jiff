@@ -115,7 +115,7 @@ function receive_share(jiff, sender_id, share, op_id) {
         jiff.shares[op_id][sender_id] = share;
       else
         jiff.shares[op_id][sender_id] = cryptico.decrypt(share, jiff.secret_key).plaintext;
-        
+
       return;
     }
 
@@ -426,6 +426,12 @@ function make_jiff(hostname, port, party_count) {
     jiff.secret_key = cryptico.generateRSAKey(random_string(passphrase_size), RSA_bits);
     jiff.public_key = cryptico.publicKeyString(jiff.secret_key);
     jiff.socket.emit("public_key", jiff.public_key);
+  });
+
+  // Send the computation id to the server to receive proper
+  // identification
+  jiff.socket.on('connection', function(msg) {
+    jiff.socket.emit("computation_id", '1');
   });
 
   jiff.socket.on('public_key', function(msg) {
