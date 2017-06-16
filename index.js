@@ -3,23 +3,30 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var socket_map = {};
 var party_map = {};
+var client_map = {'1':0, '2':0, '3':0};//total number of parties per computation
+var totalparty_map = {'1':3, '2':3, '3':3};//max number of parties per computation
 var key_map = {};
-var nclient = 0;
 var total_parties = 3;
 
 io.on('connection', function(socket){
 
   console.log('user connected');
-  nclient++;
-  socket_map[nclient] = socket.id;
-  party_map[socket.id] = nclient;
+
+
+  // Receive each user's desired computation
+  socket.on('computation_id', function(msg){
+
+    client_map[msg]++;
+    socket_map[client_map[msg]] = socket.id;
+    party_map[socket.id] = client_map[msg];
+
+  });
 
   // Receive each user's public key
   socket.on('public_key', function(msg){
     var party_id = party_map[socket.id];
 
     key_map[party_id] = msg;
-    console.log('receive public key: ' + msg);
 
     var full = true;
     for(var i=1; i <= total_parties; i++){
@@ -36,13 +43,13 @@ io.on('connection', function(socket){
   });
 
   //Let each user know his/her ID once connected
-  io.to(socket.id).emit('init', nclient);
+  io.to(socket.id).emit('init', party_map[socket.id]);
 
 
   socket.on('disconnect', function(){
     console.log('user disconnected');
     party_map[socket.id] = null;
-    socket_map[nclient] = null;
+    socket_map[party_map[socket.id]] = null;
   });
 
   socket.on('share', function(msg){
