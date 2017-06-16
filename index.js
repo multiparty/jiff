@@ -1,8 +1,9 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var socket_map = {};
+var socket_map = {'1':{},'2':{},'3':{}};
 var party_map = {};
+var computation_map = {};
 var client_map = {'1':0, '2':0, '3':0};//total number of parties per computation
 var totalparty_map = {'1':3, '2':3, '3':3};//max number of parties per computation
 var key_map = {};
@@ -15,8 +16,10 @@ io.on('connection', function(socket){
   // Receive each user's desired computation
   socket.on('computation_id', function(msg){
     client_map[msg]++;
-    socket_map[client_map[msg]] = socket.id;
+    computation_map[socket.id] = msg;
+    socket_map[msg][client_map[msg]] = socket.id;
     party_map[socket.id] = client_map[msg];
+    io.to(socket.id).emit('init', party_map[socket.id]);
   });
 
   // Receive each user's public key
@@ -39,12 +42,11 @@ io.on('connection', function(socket){
     }
   });
 
-  io.to(socket.id).emit('init', party_map[socket.id]);
 
   socket.on('disconnect', function(){
     console.log('user disconnected');
     party_map[socket.id] = null;
-    socket_map[party_map[socket.id]] = null;
+    socket_map[computation_map[socket.id]][party_map[socket.id]] = null;
   });
 
   socket.on('share', function(msg){
@@ -54,7 +56,7 @@ io.on('connection', function(socket){
     var index = json_msg["party_id"];
     json_msg["party_id"] = party_map[socket.id];
 
-    io.to(socket_map[index]).emit('share', JSON.stringify(json_msg));
+    io.to(socket_map[computation_map[socket.id]][index]).emit('share', JSON.stringify(json_msg));
   });
 
   socket.on('open', function(msg){
@@ -64,7 +66,7 @@ io.on('connection', function(socket){
     var index = json_msg["party_id"];
     json_msg["party_id"] = party_map[socket.id];
 
-    io.to(socket_map[index]).emit('open', JSON.stringify(json_msg));
+    io.to(socket_map[computation_map[socket.id]][index]).emit('open', JSON.stringify(json_msg));
   });
 
 });
