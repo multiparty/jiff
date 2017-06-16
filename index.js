@@ -9,17 +9,14 @@ var key_map = {};
 var total_parties = 3;
 
 io.on('connection', function(socket){
-  
-  console.log('user connected');
 
+  console.log('user connected');
 
   // Receive each user's desired computation
   socket.on('computation_id', function(msg){
-
     client_map[msg]++;
     socket_map[client_map[msg]] = socket.id;
     party_map[socket.id] = client_map[msg];
-
   });
 
   // Receive each user's public key
@@ -42,9 +39,7 @@ io.on('connection', function(socket){
     }
   });
 
-  //Let each user know his/her ID once connected
   io.to(socket.id).emit('init', party_map[socket.id]);
-
 
   socket.on('disconnect', function(){
     console.log('user disconnected');
