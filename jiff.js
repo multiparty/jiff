@@ -417,7 +417,10 @@ function make_jiff(hostname, port, party_count) {
 
 
   jiff.socket = io(hostname+":"+port);
+
+  jiff.socket.on('connection', function(msg) {
   jiff.socket.emit("computation_id", '1');
+  });
 
   jiff.share = function(secret) { return jiff_share(jiff, secret); };
   jiff.open = function(share) { return jiff_open(jiff, share); };
@@ -425,7 +428,7 @@ function make_jiff(hostname, port, party_count) {
   // Store the id when server sends it back
   jiff.socket.on('init', function(msg) {
     jiff.id = parseInt(msg);
-
+    console.log(msg);
     // Size of the Passphrase used in generating an RSA key
     var passphrase_size = 25;
     jiff.secret_key = cryptico.generateRSAKey(random_string(passphrase_size), RSA_bits);
