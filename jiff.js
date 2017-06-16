@@ -413,7 +413,12 @@ function random_string(length){
 function make_jiff(hostname, port, party_count) {
   var jiff = { party_count: party_count, ready: false };
 
+
+
+
   jiff.socket = io(hostname+":"+port);
+  jiff.socket.emit("computation_id", '1');
+
   jiff.share = function(secret) { return jiff_share(jiff, secret); };
   jiff.open = function(share) { return jiff_open(jiff, share); };
 
@@ -430,8 +435,9 @@ function make_jiff(hostname, port, party_count) {
 
   // Send the computation id to the server to receive proper
   // identification
-  jiff.socket.on('connection', function(msg) {
-    jiff.socket.emit("computation_id", '1');
+  jiff.socket.on('computation_id', function() {
+    console.log(msg);
+    jiff.ready = true;
   });
 
   jiff.socket.on('public_key', function(msg) {
