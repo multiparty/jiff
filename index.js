@@ -9,7 +9,7 @@ var key_map = {};
 var total_parties = 3;
 
 io.on('connection', function(socket){
-
+  
   console.log('user connected');
 
 
