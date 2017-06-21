@@ -9,7 +9,7 @@ function random_string(length) {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   for(var i = 0; i < length; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
 
   return text;
@@ -71,8 +71,8 @@ function jiff_share(jiff, secret, op_id) {
     }
 
     // send encrypted shares_id[i] to party i
-    //var msg = { party_id: i, share: cryptico.encrypt(shares[i], jiff.keymap[i]).cipher, op_id: op_id };
-    var msg = { party_id: i, share: shares[i], op_id: op_id };
+    var cipher_share = cryptico.encrypt(shares[i].toString(10), jiff.keymap[i]).cipher
+    var msg = { party_id: i, share: cipher_share, op_id: op_id };
     jiff.socket.emit('share', JSON.stringify(msg));
   }
 
@@ -129,17 +129,17 @@ function jiff_compute_shares(secret, party_count) {
  *
  */
 function receive_share(jiff, sender_id, share, op_id) {
+    // Decrypt share
+    if(sender_id != jiff.id)
+      share = parseInt(cryptico.decrypt(share, jiff.secret_key).plaintext, 10);
+
     // Share is received before deferred was setup, store it.
     if(jiff.deferreds[op_id] == undefined) {
       if(jiff.shares[op_id] == undefined) {
         jiff.shares[op_id] = {}
       }
-      if (sender_id == jiff.id )
-        jiff.shares[op_id][sender_id] = share;
-      else
-        //jiff.shares[op_id][sender_id] = cryptico.decrypt(share, jiff.secret_key).plaintext;
-        jiff.shares[op_id][sender_id] = share;
 
+      jiff.shares[op_id][sender_id] = share;
       return;
     }
 
@@ -192,8 +192,9 @@ function jiff_broadcast(jiff, share, op_id) {
   for(var i = 1; i <= jiff.party_count; i++) {
     if(i == jiff.id) { receive_open(jiff, i, share.value, op_id); continue; }
 
-    //var msg = { party_id: i, share: cryptico.encrypt(share.value, jiff.keymap[i]).cipher, op_id: op_id };
-    var msg = { party_id: i, share: share.value, op_id: op_id };
+    // encrypt and send
+    var cipher_share = cryptico.encrypt(share.value.toString(10), jiff.keymap[i]).cipher;
+    var msg = { party_id: i, share: cipher_share, op_id: op_id };
     jiff.socket.emit('open', JSON.stringify(msg));
   }
 }
@@ -213,13 +214,12 @@ function receive_open(jiff, sender_id, share, op_id) {
       jiff.shares[op_id] = {}
     }
 
-    // Update share
-    console.log("SHARE:"+share);
-    if (sender_id == jiff.id )
-      jiff.shares[op_id][sender_id] = share;
-    else
-      //jiff.shares[op_id][sender_id] = cryptico.decrypt(share, jiff.secret_key).plaintext;
-      jiff.shares[op_id][sender_id] = share
+    // Decrypt share
+    if(sender_id != jiff.id)
+      share = parseInt(cryptico.decrypt(share, jiff.secret_key).plaintext);
+
+    // Save share
+    jiff.shares[op_id][sender_id] = share;
 
     // Check if all shares were received
     var shares = jiff.shares[op_id];
@@ -434,7 +434,7 @@ function make_jiff(hostname, port, computation_id, party_count) {
 
   // Store the id when server sends it back
   jiff.socket.on('init', function(msg) {
-    jiff.id = parseInt(msg);
+    jiff.id = parseInt(msg, 10);
 
     // Size of the Passphrase used in generating an RSA key
     var passphrase_size = 25;

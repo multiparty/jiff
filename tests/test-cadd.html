@@ -4,6 +4,7 @@
     <title>Test the constant addition</title>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
+    <script src="../cryptico.min.js"></script>
     <script src="../jiff.js"></script>
   </head>
   <body>
@@ -40,7 +41,7 @@
     var has_failed = false;
 
     $(function() {
-      jiff_instance = make_jiff("http://localhost", 3000, parties);
+      jiff_instance = make_jiff("http://localhost", 3000, '1', parties);
     });
 
     // run all tests
