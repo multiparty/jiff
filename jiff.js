@@ -3,6 +3,28 @@ var Zp = 1031;
 
 // The length of RSA key in bits.
 var RSA_bits = 1024;
+
+// Randomly generate a string of size length
+function random_string(length) {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for(var i = 0; i < length; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  return text;
+}
+
+// Mod instead of javascript's remainder (%)
+function mod(x, y) {
+  if (x < 0) {
+      return ((x%y)+y)%y;
+    }
+
+  return x%y;
+}
+
+
 /*
  * Share given secret to the participating parties.
  *   jiff:      the jiff instance.
@@ -49,7 +71,8 @@ function jiff_share(jiff, secret, op_id) {
     }
 
     // send encrypted shares_id[i] to party i
-    var msg = { party_id: i, share: cryptico.encrypt(shares[i], jiff.keymap[i]).cipher, op_id: op_id };
+    //var msg = { party_id: i, share: cryptico.encrypt(shares[i], jiff.keymap[i]).cipher, op_id: op_id };
+    var msg = { party_id: i, share: shares[i], op_id: op_id };
     jiff.socket.emit('share', JSON.stringify(msg));
   }
 
@@ -114,7 +137,8 @@ function receive_share(jiff, sender_id, share, op_id) {
       if (sender_id == jiff.id )
         jiff.shares[op_id][sender_id] = share;
       else
-        jiff.shares[op_id][sender_id] = cryptico.decrypt(share, jiff.secret_key).plaintext;
+        //jiff.shares[op_id][sender_id] = cryptico.decrypt(share, jiff.secret_key).plaintext;
+        jiff.shares[op_id][sender_id] = share;
 
       return;
     }
@@ -168,7 +192,8 @@ function jiff_broadcast(jiff, share, op_id) {
   for(var i = 1; i <= jiff.party_count; i++) {
     if(i == jiff.id) { receive_open(jiff, i, share.value, op_id); continue; }
 
-    var msg = { party_id: i, share: cryptico.encrypt(share.value, jiff.keymap[i]).cipher, op_id: op_id };
+    //var msg = { party_id: i, share: cryptico.encrypt(share.value, jiff.keymap[i]).cipher, op_id: op_id };
+    var msg = { party_id: i, share: share.value, op_id: op_id };
     jiff.socket.emit('open', JSON.stringify(msg));
   }
 }
@@ -193,7 +218,8 @@ function receive_open(jiff, sender_id, share, op_id) {
     if (sender_id == jiff.id )
       jiff.shares[op_id][sender_id] = share;
     else
-      jiff.shares[op_id][sender_id] = cryptico.decrypt(share, jiff.secret_key).plaintext;
+      //jiff.shares[op_id][sender_id] = cryptico.decrypt(share, jiff.secret_key).plaintext;
+      jiff.shares[op_id][sender_id] = share
 
     // Check if all shares were received
     var shares = jiff.shares[op_id];
@@ -233,13 +259,6 @@ function jiff_lagrange(shares, party_count) {
   return recons_secret;
 }
 
-function mod(x, y){
-  if (x < 0) {
-      return ((x%y)+y)%y;
-    }
-
-  return x%y;
-}
 /*
  * Create a new share.
  * A share is a value wrapper with a share object, it has a unique id
@@ -289,6 +308,28 @@ function secret_share(jiff, ready, promise, value) {
     jiff_instance.open(self).then(success, failure);
   }
 
+  /* Addition with constant */
+  this.add_cst = function(cst){
+    if (!(typeof(cst) == "number")) throw "parameter should be a number";
+
+    if(self.ready) // if share is ready
+      return new secret_share(self.jiff, true, null, mod((self.value + cst), Zp));
+
+    var promise = self.promise.then(function() { return mod((self.value + cst), Zp); }, self.error);
+    return new secret_share(self.jiff, false, promise, undefined);
+  }
+
+  /* Multiplication with constant */
+  this.mult_cst = function(cst){
+    if (!(typeof(cst) == "number")) throw "parameter should be a number";
+
+    if(self.ready) // if share is ready
+      return new secret_share(self.jiff, true, null, mod((self.value * cst),Zp));
+
+    var promise = self.promise.then(function() { return mod((self.value * cst),Zp); }, self.error);
+    return new secret_share(self.jiff, false, promise, undefined);
+  }
+
   /* Addition */
   this.add = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
@@ -306,27 +347,7 @@ function secret_share(jiff, ready, promise, value) {
     return new secret_share(self.jiff, false, promise, undefined);
   }
 
-  this.add_cst = function(cst){
-    if (!(typeof(cst) == "number")) throw "parameter should be a number";
-
-    if(self.ready) // if share is ready
-      return new secret_share(self.jiff, true, null, mod((self.value + cst), Zp));
-
-    var promise = self.promise.then(function() { return mod((self.value + cst), Zp); }, self.error);
-    return new secret_share(self.jiff, false, promise, undefined);
-  }
-
-  this.mult_cst = function(cst){
-    if (!(typeof(cst) == "number")) throw "parameter should be a number";
-
-    if(self.ready) // if share is ready
-      return new secret_share(self.jiff, true, null, mod((self.value * cst),Zp));
-
-    var promise = self.promise.then(function() { return mod((self.value * cst),Zp); }, self.error);
-    return new secret_share(self.jiff, false, promise, undefined);
-  }
-
-  /* multiplication */
+  /* Multiplication */
   this.mult = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
 
@@ -379,7 +400,7 @@ function secret_share(jiff, ready, promise, value) {
     return result;
   }
 
-  // less than
+  /* Less than */
   this.less = function(o) {
     return self;
   }
@@ -388,17 +409,6 @@ function secret_share(jiff, ready, promise, value) {
   if(!ready) this.promise.then(this.receive_share, this.error);
 }
 
-
-// Randomly generate a string of size length
-function random_string(length){
-  var text = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for(var i = 0; i < length; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-
-  return text;
-}
 /*
  * Create a new jiff instance.
  *   hostname:    server hostname/ip.
@@ -410,23 +420,22 @@ function random_string(length){
  * to share and perform operations, as well as synchronization flags.
  *
 */
-function make_jiff(hostname, port, party_count) {
-  var jiff = { party_count: party_count, ready: false };
-
-
-
+function make_jiff(hostname, port, computation_id, party_count) {
+  var jiff = { party_count: party_count, computation_id: computation_id, ready: false };
 
   jiff.socket = io(hostname+":"+port);
+
   // Send the computation id to the server to receive proper
   // identification
-  jiff.socket.emit("computation_id", 1);
+  jiff.socket.emit("computation_id", computation_id);
+
   jiff.share = function(secret) { return jiff_share(jiff, secret); };
   jiff.open = function(share) { return jiff_open(jiff, share); };
 
   // Store the id when server sends it back
   jiff.socket.on('init', function(msg) {
     jiff.id = parseInt(msg);
-    console.log(msg);
+
     // Size of the Passphrase used in generating an RSA key
     var passphrase_size = 25;
     jiff.secret_key = cryptico.generateRSAKey(random_string(passphrase_size), RSA_bits);
@@ -434,10 +443,7 @@ function make_jiff(hostname, port, party_count) {
     jiff.socket.emit("public_key", jiff.public_key);
   });
 
-
-
   jiff.socket.on('public_key', function(msg) {
-    console.log(msg);
     jiff.keymap = JSON.parse(msg);
     jiff.ready = true;
   });
