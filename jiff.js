@@ -124,23 +124,23 @@ function jiff_compute_shares(secret, party_count) {
  *
  */
 function receive_share(jiff, sender_id, share, op_id) {
-    // Decrypt share
-    if(sender_id != jiff.id)
-      share = parseInt(cryptico.decrypt(share, jiff.secret_key).plaintext, 10);
+  // Decrypt share
+  if(sender_id != jiff.id)
+    share = parseInt(cryptico.decrypt(share, jiff.secret_key).plaintext, 10);
 
-    // Share is received before deferred was setup, store it.
-    if(jiff.deferreds[op_id] == undefined) {
-      if(jiff.shares[op_id] == undefined) {
-        jiff.shares[op_id] = {}
-      }
-      
-      jiff.shares[op_id][sender_id] = share;        
-      return;
+  // Share is received before deferred was setup, store it.
+  if(jiff.deferreds[op_id] == undefined) {
+    if(jiff.shares[op_id] == undefined) {
+      jiff.shares[op_id] = {}
     }
+    
+    jiff.shares[op_id][sender_id] = share;        
+    return;
+  }
 
-    // Deferred is already setup, resolve it.
-    jiff.deferreds[op_id][sender_id].resolve(share);
-    jiff.deferreds[op_id][sender_id] = null;
+  // Deferred is already setup, resolve it.
+  jiff.deferreds[op_id][sender_id].resolve(share);
+  jiff.deferreds[op_id][sender_id] = null;
 }
 
 /*
@@ -204,27 +204,27 @@ function jiff_broadcast(jiff, share, op_id) {
  *
  */
 function receive_open(jiff, sender_id, share, op_id) {
-    // ensure shares map exists
-    if(jiff.shares[op_id] == undefined) {
-      jiff.shares[op_id] = {}
-    }
+  // ensure shares map exists
+  if(jiff.shares[op_id] == undefined) {
+    jiff.shares[op_id] = {}
+  }
 
-    // Decrypt share
-    if(sender_id != jiff.id)
-      share = parseInt(cryptico.decrypt(share, jiff.secret_key).plaintext);
+  // Decrypt share
+  if(sender_id != jiff.id)
+    share = parseInt(cryptico.decrypt(share, jiff.secret_key).plaintext);
 
-    // Save share
-    jiff.shares[op_id][sender_id] = share;
+  // Save share
+  jiff.shares[op_id][sender_id] = share;
 
-    // Check if all shares were received
-    var shares = jiff.shares[op_id];
-    for(var i = 1; i <= jiff.party_count; i++)
-      if(shares[i] == null) return;
+  // Check if all shares were received
+  var shares = jiff.shares[op_id];
+  for(var i = 1; i <= jiff.party_count; i++)
+    if(shares[i] == null) return;
 
-    // Everything was received, resolve the deferred.
-    jiff.deferreds[op_id].resolve(jiff_lagrange(shares, jiff.party_count));
-    jiff.deferreds[op_id] = null;
-    jiff.shares[op_id] = null;
+  // Everything was received, resolve the deferred.
+  jiff.deferreds[op_id].resolve(jiff_lagrange(shares, jiff.party_count));
+  jiff.deferreds[op_id] = null;
+  jiff.shares[op_id] = null;
 }
 
 /*
@@ -254,6 +254,49 @@ function jiff_lagrange(shares, party_count) {
   return recons_secret;
 }
 
+/*
+ * Creates 3 shares, a share for every one of three numbers from a beaver triplet.
+ * The server generates and sends the triplets on demand.
+ *   jiff:      the jiff instance.
+ *
+ */
+function jiff_triplet(jiff) {
+  // Get the id of the triplet needed.
+  var op_id = "triplet" + jiff.triplet_op_count;
+  jiff.triplet_op_count++;
+  
+  // Send a request to the server.  
+  jiff.socket.emit('triplet', op_id);
+
+  // Setup deferreds to handle receiving the triplets later.  
+  var a_deferred = $.Deferred();
+  var b_deferred = $.Deferred();
+  var c_deferred = $.Deferred();
+  jiff.deferreds[op_id] = { a: a_deferred, b: b_deferred, c: c_deferred };
+  
+  
+  var a_share = new secret_share(jiff, false, a_deferred.promise(), undefined);
+  var b_share = new secret_share(jiff, false, b_deferred.promise(), undefined);
+  var c_share = new secret_share(jiff, false, c_deferred.promise(), undefined);  
+  
+  return [ a_share, b_share, c_share ];
+} 
+
+/*
+ * Store the received beaver triplet and resolves the corresponding deferred.
+ *   jiff:      the jiff instance.
+ *   op_id:     the id of the triplet.
+ *   triplet:   the triplet (object a -> share_a, b -> share_b, c -> share_c).
+ *
+ */
+function receive_triplet(jiff, op_id, triplet) {
+  // Deferred is already setup, resolve it.
+  jiff.deferreds[op_id]["a"].resolve(triplet["a"]);
+  jiff.deferreds[op_id]["b"].resolve(triplet["b"]);
+  jiff.deferreds[op_id]["c"].resolve(triplet["c"]);
+  jiff.deferreds[op_id] = null;
+}
+ 
 /*
  * Create a new share.
  * A share is a value wrapper with a share object, it has a unique id
@@ -394,6 +437,42 @@ function secret_share(jiff, ready, promise, value) {
 
     return result;
   }
+  
+  /* multiplication via triplets */
+  this.mult_triplet = function(o) {
+    if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
+
+    var final_deferred = $.Deferred();
+    var final_promise = final_deferred.promise();
+    var result = new secret_share(self.jiff, false, final_promise, undefined);
+    
+    // Get shares of triplets.
+    var triplet = jiff.triplet();
+    
+    var a = triplet[0];
+    var b = triplet[1];
+    var c = triplet[2];
+    
+    // d = s - a. e = o - b.
+    var d = self.add(a.mult_cst(-1));
+    var e = o.add(b.mult_cst(-1));
+    
+    // Open d and e.
+    var e_promise = self.open(d);
+    var d_promise = self.open(e);
+    Promise.all([e_promise, d_promise]).then(function(arr) {
+      var e_open = arr[0];
+      var d_open = arr[1];
+            
+      var final_result = c.add_cst(d_open * e_open).add(b.mult_cst(d_open)).add(a.mult_cst(e_open));
+      if(final_result.ready)
+        final_deferred.resolve(final_result.value);
+      else
+        final_result.promise.then(function () { final_deferred.resolve(final_result.value); });
+    });
+    
+    return result;
+  };
 
   // less than
   this.less = function(o) {
@@ -421,6 +500,7 @@ function make_jiff(hostname, port, party_count) {
   jiff.socket = io(hostname+":"+port);
   jiff.share = function(secret) { return jiff_share(jiff, secret); };
   jiff.open = function(share) { return jiff_open(jiff, share); };
+  jiff.triplet = function() { return jiff_triplet(jiff); };
 
   // Store the id when server sends it back
   jiff.socket.on('init', function(msg) {
@@ -444,6 +524,7 @@ function make_jiff(hostname, port, party_count) {
   // share object).
   jiff.share_op_count = 0;
   jiff.open_op_count = 0;
+  jiff.triplet_op_count = 0;
   jiff.share_obj_count = 0;
 
   // Store a map from a sharing id (which share operation) to the
@@ -470,6 +551,15 @@ function make_jiff(hostname, port, party_count) {
     share = json_msg["share"];
 
     receive_open(jiff, sender_id, share, op_id);
+  });
+  
+  jiff.socket.on('triplet', function(msg) {
+    json_msg = JSON.parse(msg);
+
+    triplet = json_msg["triplet"];
+    op_id = json_msg["count"];
+
+    receive_triplet(jiff, op_id, triplet);
   });
 
   return jiff;

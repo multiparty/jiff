@@ -13,7 +13,7 @@
     <script>
     // Setup
     var jiff_instance = null;
-    var parties = 3;
+    var parties = 2;
 
     $(function() {
       jiff_instance = make_jiff("http://localhost", 3000, parties);
@@ -29,7 +29,7 @@
       var sum = shares[1];
 
       for(var i = 2; i <= parties; i++) {
-        sum = sum.add(shares[i]);
+        sum = sum.mult_triplet(shares[i]);
       }
 
       sum.open(output, error);
