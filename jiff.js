@@ -4,20 +4,24 @@ var Zp = 1031;
 // The length of RSA key in bits.
 var RSA_bits = 1024;
 
-// % is the remainder not the mod in javascript
-function mod(x, y) {
-  if (x < 0) return ((x % y) + y) % y;
-  return x % y;
-}
-
 // Randomly generate a string of size length
 function random_string(length) {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for(var i = 0; i < length; i++)
+  for(var i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
 
   return text;
+}
+
+// Mod instead of javascript's remainder (%)
+function mod(x, y) {
+  if (x < 0) {
+      return ((x%y)+y)%y;
+    }
+
+  return x%y;
 }
 
 /*
@@ -28,8 +32,7 @@ function random_string(length) {
  *   return:    a map (of size equal to the number of parties)
  *              where the key is the party id (from 1 to n)
  *              and the value is the share object that wraps
- *              the value sent from that party (the internal value
- *              maybe deferred).
+ *              the value sent from that party (the internal value maybe deferred).
  *
  */
 function jiff_share(jiff, secret, op_id) {
@@ -89,8 +92,8 @@ function jiff_compute_shares(secret, party_count) {
 
   // Each player's random polynomial f must have
   // degree t = ceil(n/2)-1, where n is the number of players
-  var t = Math.floor((party_count-1)/ 2);
-
+  // var t = Math.floor((party_count-1)/ 2);
+  var t = party_count - 1;
   var polynomial = Array(t+1); // stores the coefficients
 
   // Each players's random polynomial f must be constructed
@@ -133,8 +136,8 @@ function receive_share(jiff, sender_id, share, op_id) {
     if(jiff.shares[op_id] == undefined) {
       jiff.shares[op_id] = {}
     }
-    
-    jiff.shares[op_id][sender_id] = share;        
+
+    jiff.shares[op_id][sender_id] = share;
     return;
   }
 
@@ -346,7 +349,29 @@ function secret_share(jiff, ready, promise, value) {
     jiff_instance.open(self).then(success, failure);
   }
 
-  /* addition */
+  /* Addition with constant */
+  this.add_cst = function(cst){
+    if (!(typeof(cst) == "number")) throw "parameter should be a number";
+
+    if(self.ready) // if share is ready
+      return new secret_share(self.jiff, true, null, mod((self.value + cst), Zp));
+
+    var promise = self.promise.then(function() { return mod((self.value + cst), Zp); }, self.error);
+    return new secret_share(self.jiff, false, promise, undefined);
+  }
+
+  /* Multiplication with constant */
+  this.mult_cst = function(cst){
+    if (!(typeof(cst) == "number")) throw "parameter should be a number";
+
+    if(self.ready) // if share is ready
+      return new secret_share(self.jiff, true, null, mod((self.value * cst),Zp));
+
+    var promise = self.promise.then(function() { return mod((self.value * cst),Zp); }, self.error);
+    return new secret_share(self.jiff, false, promise, undefined);
+  }
+
+  /* Addition */
   this.add = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
 
@@ -363,30 +388,9 @@ function secret_share(jiff, ready, promise, value) {
     return new secret_share(self.jiff, false, promise, undefined);
   }
 
-  /* constant Addition */
-  this.add_cst = function(cst){
-    if (!(typeof(cst) == "number")) throw "parameter should be a number";
-
-    if(self.ready) // if share is ready
-      return new secret_share(self.jiff, true, null, mod((self.value + cst), Zp));
-
-    var promise = self.promise.then(function() { return mod((self.value + cst), Zp); }, self.error);
-    return new secret_share(self.jiff, false, promise, undefined);
-  }
-
-  /* constant Multiplication */
-  this.mult_cst = function(cst){
-    if (!(typeof(cst) == "number")) throw "parameter should be a number";
-
-    if(self.ready) // if share is ready
-      return new secret_share(self.jiff, true, null, mod((self.value * cst),Zp));
-
-    var promise = self.promise.then(function() { return mod((self.value * cst),Zp); }, self.error);
-    return new secret_share(self.jiff, false, promise, undefined);
-  }
-
-  /* multiplication */
-  this.mult = function(o) {
+  /* Multiplication */
+  /*
+  this.old_poly_mult_no_triplet = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
 
     // operation id for the sharing operation
@@ -437,9 +441,10 @@ function secret_share(jiff, ready, promise, value) {
 
     return result;
   }
+  */
   
   /* multiplication via triplets */
-  this.mult_triplet = function(o) {
+  this.mult = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
 
     var final_deferred = $.Deferred();
@@ -458,23 +463,33 @@ function secret_share(jiff, ready, promise, value) {
     var e = o.add(b.mult_cst(-1));
     
     // Open d and e.
-    var e_promise = self.open(d);
-    var d_promise = self.open(e);
+    // The only communication cost.
+    var e_promise = self.jiff.open(e);
+    var d_promise = self.jiff.open(d);
     Promise.all([e_promise, d_promise]).then(function(arr) {
       var e_open = arr[0];
       var d_open = arr[1];
-            
-      var final_result = c.add_cst(d_open * e_open).add(b.mult_cst(d_open)).add(a.mult_cst(e_open));
+      
+      // result_share = d_open * e_open + d_open * b_share + e_open * a_share + c.
+      var t1 = d_open * e_open;
+      var t2 = b.mult_cst(d_open);
+      var t3 = a.mult_cst(e_open);
+      
+      // All this happens locally.
+      var final_result = t2.add_cst(t1);
+      final_result = final_result.add(t3);
+      final_result = final_result.add(c);      
+      
       if(final_result.ready)
         final_deferred.resolve(final_result.value);
-      else
+      else // Resolve the deferred when ready.
         final_result.promise.then(function () { final_deferred.resolve(final_result.value); });
     });
     
     return result;
   };
 
-  // less than
+  /* Less than */
   this.less = function(o) {
     return self;
   }
@@ -494,10 +509,15 @@ function secret_share(jiff, ready, promise, value) {
  * to share and perform operations, as well as synchronization flags.
  *
 */
-function make_jiff(hostname, port, party_count) {
-  var jiff = { party_count: party_count, ready: false };
+function make_jiff(hostname, port, computation_id, party_count) {
+  var jiff = { party_count: party_count, computation_id: computation_id, ready: false };
 
   jiff.socket = io(hostname+":"+port);
+
+  // Send the computation id to the server to receive proper
+  // identification
+  jiff.socket.emit("computation_id", computation_id);
+
   jiff.share = function(secret) { return jiff_share(jiff, secret); };
   jiff.open = function(share) { return jiff_open(jiff, share); };
   jiff.triplet = function() { return jiff_triplet(jiff); };
