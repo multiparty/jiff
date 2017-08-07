@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test the secret sharing</title>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
+    <script src="../cryptico.min.js"></script>
+    <script src="../jiff.js"></script>
+  </head>
+  <body>
+    <script>
+      var tests = [
+          -190, -998, -798, -922, -925, -590,
+          -533, -978, -327, -849, -422, -16,
+          -1016, -866, -465, -387, -982, -520,
+          -643, -193, -692, -629, -210, -17,
+          -672, -1026, -44, -55, -513, -836,
+          -143, -412, -177, -408, -249, -256,
+          -919, -928, -408, -81, -611, -131,
+          -587, -726, -283, -410, -765, -468,
+          -997, -638
+        ];
+    </script>
+
+
+    <div id="result"></div>
+    <ul id="details"></ul>
+
+    <script>
+    // setup
+    var parties = 3;
+
+    // run all tests
+    function test() {
+      var ok = true;
+
+      for(var i = 0; i < tests.length; i++)
+        ok = single_test(i) && ok;
+
+
+      if(!ok) $("#result").append("<font color='red'>Failed</font>");
+      else $("#result").append("<font color='green'>Success</font>");
+    }
+
+    // run test case at index
+    function single_test(index) {
+      var number = tests[index];
+
+      var map = jiff_compute_shares(number, parties);
+      var value = jiff_lagrange(map, parties);
+
+      if(value == number) return true;
+
+      $("#details").append("<li> shares("+number+") = "+map.toString()+" => open = "+value+"</li>");
+      return false;
+    }
+    </script>
+
+    <button onClick="test();">Start</button>
+  </body>
+</html>

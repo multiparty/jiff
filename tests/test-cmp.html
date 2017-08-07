@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Test the addition</title>
+    <title>Test the comparison</title>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
     <script src="../cryptico.min.js"></script>
@@ -29,7 +29,6 @@
           [711, 497, 717], [983, 112, 38]
         ];
     </script>
-
 
     <div id="result"></div>
     <ul id="details"></ul>
@@ -67,27 +66,29 @@
       var party_index = jiff_instance.id - 1;
       var shares = jiff_instance.share(numbers[party_index]);
 
-      var sum = shares[1];
-      for(var i = 2; i <= parties; i++) {
-        sum = sum.add(shares[i]);
-      }
-
-      sum.open( function(result) { test_output(index, result) }, error);
-      return sum;
+      var cmp = shares[1].compare(shares[2]);
+      cmp.open( function(result) { test_output(index, result) }, error);
+      return cmp;
     }
 
     // determine if the output is correct
     function test_output(index, result) {
       var numbers = tests[index];
-      var sum = 0;
-      for(var i = 0; i < numbers.length; i++) {
-        sum += numbers[i];
-      }
-      
-      sum = mod(sum, Zp);
-      if(sum != result) { // sum is incorrect
-        has_failed = true;
-        $("#details").append("<li> sum("+numbers.join(", ")+") = " + sum + " != " +result + "</li>");
+      if(numbers[0] < numbers[1]) {
+        if(!(result < 0)) {
+          has_failed = true;
+          $("#details").append("<li> compare("+numbers.join(", ")+") != " + result + "</li>");
+        }
+      } else if(numbers[0] == numbers[1]) {
+        if(result != 0) {
+          has_failed = true;
+          $("#details").append("<li> compare("+numbers.join(", ")+") != " + result + "</li>");
+        }
+      } else {
+        if(!(result > 0)) {
+          has_failed = true;
+          $("#details").append("<li> compare("+numbers.join(", ")+") != " + result + "</li>");
+        }
       }
     }
 
@@ -97,7 +98,6 @@
       $("#details").append("<li> communication error </li>");
     }
     </script>
-
     <button onClick="test();">Start</button>
   </body>
 </html>

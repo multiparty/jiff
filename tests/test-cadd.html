@@ -90,7 +90,7 @@
       var sum = numbers[party - 1];
       sum = mod((sum + c), Zp);
 
-      if(sum != result && sum != result + Zp) { // sum is incorrect
+      if(sum != result) { // sum is incorrect
         has_failed = true;
         $("#details").append("<li> "+party+" sum("+numbers.join(", ")+") = " + sum + " != " +result + "</li>");
       }

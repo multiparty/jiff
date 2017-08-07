@@ -1,5 +1,5 @@
 // The modulos to be used in secret sharing and operations on shares.
-var Zp = 1031;
+var Zp = 2081;
 
 // The length of RSA key in bits.
 var RSA_bits = 1024;
@@ -17,11 +17,13 @@ function random_string(length) {
 
 // Mod instead of javascript's remainder (%)
 function mod(x, y) {
+  return x;
+  /*
   if (x < 0) {
-      return ((x%y)+y)%y;
-    }
+    return ((x%y)+y)%y; 
+  }
 
-  return x%y;
+  return x%y;*/
 }
 
 /*
@@ -377,7 +379,7 @@ function secret_share(jiff, ready, promise, value) {
 
     // add the two shares when ready locally
     var ready_add = function() {
-      return mod((o.value + self.value), Zp);
+      return mod(self.value + o.value, Zp);
     }
 
     if(self.ready && o.ready) // both shares are ready
@@ -387,61 +389,23 @@ function secret_share(jiff, ready, promise, value) {
     var promise = self.pick_promise(o).then(ready_add, self.error);
     return new secret_share(self.jiff, false, promise, undefined);
   }
-
-  /* Multiplication */
-  /*
-  this.old_poly_mult_no_triplet = function(o) {
+  
+  /* subtraction */
+  this.sub = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
 
-    // operation id for the sharing operation
-    var op_id = self.jiff.share_op_count;
-    self.jiff.share_op_count++;
-
-    // multiplication has communication (multiple internal deferreds)
-    // these deferred are chained inside ready_mult function
-    // their chaining and number may variy
-    // the last deferred resolves this deferred
-    // such that the final numeric answer is passed into result
-    var final_deferred = $.Deferred();
-    var final_promise = final_deferred.promise();
-    var result = new secret_share(self.jiff, false, final_promise, undefined);
-
-    // this function will be executed when self and o are ready
-    var ready_mult = function() {
-      // point-wise multiplication resulting in polynomial of higher degree
-      var prod = mod((self.value * o.value), Zp);
-      var shares = jiff_share(self.jiff, prod, op_id);
-
-      // get all the promises of the shares
-      var promises = [];
-      for(var i = 1; i <= self.jiff.party_count; i++)
-        if(!(shares[i].ready)) promises.push(shares[i].promise);
-
-      // recombine the shares received from every party (one share from every point-wise product)
-      var recombine = function() {
-        var values = {};
-        for(var i = 1; i <= self.jiff.party_count; i++)
-          values[i] = shares[i].value;
-
-        return jiff_lagrange(values, self.jiff.party_count);
-      };
-
-      // either recombine directly or promise to when shares are ready
-      // and chain the final answer into final_deferred so that
-      // the value is eventually stored in ``result'' share
-      if(promises.length == 0) final_deferred.resolve(recombine());
-      else Promise.all(promises).then(function() { final_deferred.resolve(recombine()); }, self.error);
+    // add the two shares when ready locally
+    var ready_sub = function() {
+      return mod(self.value - o.value, Zp);
     }
 
     if(self.ready && o.ready) // both shares are ready
-      ready_mult();
+      return new secret_share(self.jiff, true, null, ready_sub());
 
-    else // promise to execute ready_mult when both are ready
-      self.pick_promise(o).then(ready_mult, self.error);
-
-    return result;
+    // promise to execute ready_add when both are ready
+    var promise = self.pick_promise(o).then(ready_sub, self.error);
+    return new secret_share(self.jiff, false, promise, undefined);
   }
-  */
   
   /* multiplication via triplets */
   this.mult = function(o) {
@@ -489,9 +453,19 @@ function secret_share(jiff, ready, promise, value) {
     return result;
   };
 
-  /* Less than */
-  this.less = function(o) {
-    return self;
+  /* comparison: negative number if self < o. 0 if self = i and positive number if self > o. */
+  this.compare = function(o) {
+    if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
+    
+    r = Math.floor(Math.random() * Zp);
+    var shares = self.jiff.share(r);
+    
+    var sum = shares[1];
+    for(var i = 2; i <= self.jiff.party_count; i++) {
+      sum = sum.add(shares[i]);
+    }
+   
+    return (self.sub(o)).mult(sum);
   }
 
   // when the promise is resolved, acquire the value of the share and set ready to true

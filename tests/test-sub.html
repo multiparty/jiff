@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Test the addition</title>
+    <title>Test the subtraction</title>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
     <script src="../cryptico.min.js"></script>
@@ -67,27 +67,27 @@
       var party_index = jiff_instance.id - 1;
       var shares = jiff_instance.share(numbers[party_index]);
 
-      var sum = shares[1];
+      var sub = shares[1];
       for(var i = 2; i <= parties; i++) {
-        sum = sum.add(shares[i]);
+        sub = sub.sub(shares[i]);
       }
-
-      sum.open( function(result) { test_output(index, result) }, error);
-      return sum;
+      
+      sub.open( function(result) { test_output(index, result) }, error);
+      return sub;
     }
 
     // determine if the output is correct
     function test_output(index, result) {
       var numbers = tests[index];
-      var sum = 0;
-      for(var i = 0; i < numbers.length; i++) {
-        sum += numbers[i];
+      var sub = numbers[0];
+      for(var i = 1; i < numbers.length; i++) {
+        sub -= numbers[i];
       }
       
-      sum = mod(sum, Zp);
-      if(sum != result) { // sum is incorrect
+      sub = mod(sub, Zp);
+      if(sub != result) { // sum is incorrect
         has_failed = true;
-        $("#details").append("<li> sum("+numbers.join(", ")+") = " + sum + " != " +result + "</li>");
+        $("#details").append("<li> sub("+numbers.join(", ")+") = " + sub + " != " +result + "</li>");
       }
     }
 
