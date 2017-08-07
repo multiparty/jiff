@@ -132,11 +132,13 @@ http.listen(3000, function(){
 
 // Mod instead of javascript's remainder (%)
 function mod(x, y) {
+  return x;
+  /*
   if (x < 0) {
       return ((x%y)+y)%y;
     }
 
-  return x%y;
+  return x%y;*/
 }
 
 /*
