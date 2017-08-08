@@ -1,16 +1,16 @@
 <!doctype html>
 <html>
   <head>
-    <title>Test the comparison</title>
+    <title>Test the multiplication</title>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
-    <script src="../cryptico.min.js"></script>
-    <script src="../jiff.js"></script>
+    <script src="../../cryptico.min.js"></script>
+    <script src="../../jiff.js"></script>
   </head>
   <body>
     <script>
       var tests = [
-          [674, 474, 663], [408, 291, 38], [640, 108, 764],
+          [2, 3, 1], [408, 291, 38], [640, 108, 764],
           [129, 238, 182], [494, 1005, 325], [163, 929, 554],
           [541, 61, 818], [269, 153, 405], [152, 172, 37],
           [600, 345, 993], [10, 871, 712], [640, 409, 487],
@@ -29,6 +29,7 @@
           [711, 497, 717], [983, 112, 38]
         ];
     </script>
+
 
     <div id="result"></div>
     <ul id="details"></ul>
@@ -66,29 +67,29 @@
       var party_index = jiff_instance.id - 1;
       var shares = jiff_instance.share(numbers[party_index]);
 
-      var cmp = shares[1].compare(shares[2]);
-      cmp.open( function(result) { test_output(index, result) }, error);
-      return cmp;
+      // var prod = shares[1].mult(shares[2]);
+      var prod = shares[1];
+      for(var i = 2; i <= parties; i++) {
+        prod = prod.mult(shares[i]);
+      }
+
+      prod.open( function(result) { test_output(index, result) }, error);
+      return prod;
     }
 
     // determine if the output is correct
     function test_output(index, result) {
       var numbers = tests[index];
-      if(numbers[0] < numbers[1]) {
-        if(!(result < 0)) {
-          has_failed = true;
-          $("#details").append("<li> compare("+numbers.join(", ")+") != " + result + "</li>");
-        }
-      } else if(numbers[0] == numbers[1]) {
-        if(result != 0) {
-          has_failed = true;
-          $("#details").append("<li> compare("+numbers.join(", ")+") != " + result + "</li>");
-        }
-      } else {
-        if(!(result > 0)) {
-          has_failed = true;
-          $("#details").append("<li> compare("+numbers.join(", ")+") != " + result + "</li>");
-        }
+      // var prod = numbers[0] * numbers[1];
+      var prod = 1;
+      for(var i = 0; i < numbers.length; i++) {
+        prod *= numbers[i];
+      }
+
+      prod = mod(prod, Zp);
+      if(prod != result) { // sum is incorrect
+        has_failed = true;
+        $("#details").append("<li> product("+numbers.join(", ")+") = " + prod + " != " +result + "</li>");
       }
     }
 
@@ -98,6 +99,7 @@
       $("#details").append("<li> communication error </li>");
     }
     </script>
+
     <button onClick="test();">Start</button>
   </body>
 </html>
