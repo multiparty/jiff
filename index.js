@@ -3,7 +3,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 // The modulos to be used in secret sharing and operations on shares.
-var Zp = 1031;
+var Zp = 2081;
 
 var socket_map = {'1':{},'2':{},'3':{}};// map of maps [computation id][party id] = socket id
 
@@ -132,13 +132,11 @@ http.listen(3000, function(){
 
 // Mod instead of javascript's remainder (%)
 function mod(x, y) {
-  return x;
-  /*
   if (x < 0) {
       return ((x%y)+y)%y;
     }
 
-  return x%y;*/
+  return x%y;
 }
 
 /*
