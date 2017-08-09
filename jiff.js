@@ -24,6 +24,21 @@ function mod(x, y) {
   return x%y;
 }
 
+// Extended GCD algorithm
+function extended_gcd(a, b) {
+  var x = 0; var lastx = 1;
+  var y = 1; var lasty = 0;
+  while(b != 0) {
+    var quotient = Math.floor(a / b);
+    b = mod(a, b); a = b;
+    
+    lastx = x; x = lastx - quotient;
+    lasty = y; y = lasty - quotient;
+  }
+  
+  return {"lastx": lastx, "lasty": lasty, "a": a};
+}
+
 /*
  * Share given secret to the participating parties.
  *   jiff:      the jiff instance.
@@ -479,18 +494,106 @@ function secret_share(jiff, ready, promise, value) {
     
     return result;
   };
-
-  /* comparison: negative number if self < o. 0 if self = i and positive number if self > o. */
-  this.compare = function(o) {
+  
+  this.xor = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
     
-    // TODO : @ ComparisonToft07Mixin    
-    // To implement: 
-    //  Share a random bit (prss_share_random in passive.py)
-    //  Perhaps convert_bit_share ?? 
-    //  greater_than_equal_preproc part of this preprocessing can be done by server.
-    //  greater_than_equal_online meat of the implementation
-    //  _finish_greater_than_equal
+    return self.add(o).sub(self.mult(o).mult_cst(2));
+  }
+  
+  this.xor_cst = function(o) {    
+    return self.add_cst(o).sub(self.mult_cst(o).mult_cst(2));
+  }
+
+  /* comparison: negative number if self < o. 0 if self = i and positive number if self > o. */
+  this.greater_or_equal = function(o) {
+    if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
+    
+    var final_deferred = $.Deferred();
+    var final_promise = final_deferred.promise();
+    var result = new secret_share(self.jiff, false, final_promise, undefined);
+
+    function finish_compare(result, s_bit, s_sign, mask, r_modl, r_bits, z) {
+      var c = result;
+      var l = Math.ceil(Math.log(Zp)/Math.log(2)) + 1;
+      
+      var c_bits = [];
+      var sumXORs = [];
+      for(var i = 0; i < l; i++) {
+        c_bits[i] = (result >> i) & 1;
+        sumXORs[i] = 0;
+      }
+
+      sumXORs[l-2] = r_bits[l-1].xor_cst(c_bits[l-1]).add_cst(sumXORs[l-1]);
+      for(var i = l-3; i > -1; i--)
+        sumXORs[i] = r_bits[i+1].xor_cst(c_bits[i+1]).add(sumXORs[i+1]);
+            
+      var E_tilde = [];
+      for(var i = 0; i < r_bits.length; i++) {
+        var e_i = r_bits[i].add_cst(-1 * c_bits[i]).add(s_sign);
+        if(typeof(sumXORs[i]) != "number")
+          e_i = e_i.add(sumXORs[i].mult_cst(3));
+        else
+          e_i = e_i.add_cst(3 * sumXORs[i]);
+          
+        E_tilde.push(e_i);
+      }
+              
+      var product = mask;
+      for(var i = 0; i < E_tilde.length; i++)
+        product = product.mult(E_tilde[i]);
+
+      product.open(function(product) {
+        var non_zero = (product != 0) ? 1 : 0;
+        var UF = s_bit.xor_cst(non_zero);
+        var c_mod2l = mod(c, Math.pow(2, l));
+        var result = UF.mult_cst(Math.pow(2, l)).sub(r_modl.add_cst(-1 * c_mod2l));
+        
+        var inverse = extended_gcd(Math.pow(2, l), Zp).lastx;
+        var final_result = z.sub(result).mult_cst(inverse);
+        
+        if(final_result.ready)
+          final_deferred.resolve(final_result.value);
+        else
+          final_result.promise.then(function () { final_deferred.resolve(final_result.value); });
+      });
+    }
+    
+    function preprocess() {
+      var l = Math.ceil(Math.log(Zp)/Math.log(2)) + 1;
+      var k = self.jiff.party_count;
+
+      var r_bits = [ jiff_share_all_number(self.jiff, 1) ];
+      var r_full = r_bits[0];
+      var r_modl;
+      for(var i = 1; i < l + k; i++) {
+        r_bits[i] = jiff_share_all_number(self.jiff, 0);
+        r_full = r_bits[i].mult_cst(Math.pow(2, i)).add(r_full);
+        if(i == l - 1) r_modl = r_full;
+      }
+
+      r_bits = r_bits.slice(0, l);
+      var s_bit = jiff_share_all_number(self.jiff, 0);
+      var s_sign = s_bit.mult_cst(-2).add_cst(1);
+      var mask = jiff_share_all_number(self.jiff, 220);
+      
+      return { "s_bit": s_bit, "s_sign": s_sign, "mask": mask, "r_full": r_full, "r_modl": r_modl, "r_bits": r_bits };
+    }
+    
+    function compare_online(preprocess) {
+      var l = Math.ceil(Math.log(Zp)/Math.log(2)) + 1;
+      var a = self.mult_cst(2).add_cst(1);
+      var b = o.mult_cst(2);
+      
+      var z = a.sub(b).add_cst(Math.pow(2, l));
+      var c = preprocess.r_full.add(z);
+      c.open(function(result) { finish_compare(result, preprocess.s_bit, preprocess.s_sign, preprocess.mask, preprocess.r_modl, preprocess.r_bits, z); });
+    }
+    
+    var pre = preprocess();
+    compare_online(pre);
+    
+    return result;
   }
 
   // when the promise is resolved, acquire the value of the share and set ready to true
