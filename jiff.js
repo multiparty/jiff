@@ -169,6 +169,10 @@ function jiff_open(jiff, share, op_id) {
   var deferred = $.Deferred();
   jiff.deferreds[op_id] = deferred;
 
+  // refresh/reshare, so that the original share remains secret, instead
+  // a new share is sent/open without changing the actual value.
+  share = share.refresh();
+  
   // The given share has been computed, share it to all parties
   if(share.ready) jiff_broadcast(jiff, share, op_id);
 
@@ -299,6 +303,26 @@ function receive_triplet(jiff, op_id, triplet) {
   jiff.deferreds[op_id]["c"].resolve(triplet["c"]);
   jiff.deferreds[op_id] = null;
 }
+
+/**
+ * Can be used to generate shares of a random number, or shares of zero.
+ * For a random number, every party generates a local random number and secret share it,
+ * then every party sums its share, resulting in a single share of an unknown random number for every party.
+ * The same approach is followed for zero, but instead, all the parties know that the total number is zero, but they
+ * do not know the value of any resulting share (except their own).
+ *   n:       the number to share (random or zero or constant etc).
+ *
+ */
+function jiff_share_all_number(jiff, n) {
+  var shares = jiff.share(n);
+    
+  var share = shares[1];
+  for(var i = 2; i <= jiff.party_count; i++) {
+    share = share.add(shares[i]);
+  }
+   
+  return share;
+}
  
 /*
  * Create a new share.
@@ -344,6 +368,11 @@ function secret_share(jiff, ready, promise, value) {
     else if(o.ready) return self.promise;
     else return Promise.all([self.promise, o.promise]);
   }
+  
+  // Reshares/refreshes the sharing of this number, used before opening to keep the share secret.
+  this.refresh = function() {
+    return self.add(self.jiff.share_zero());
+  };
 
   this.open = function(success, failure) {
     jiff_instance.open(self).then(success, failure);
@@ -455,15 +484,13 @@ function secret_share(jiff, ready, promise, value) {
   this.compare = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
     
-    r = Math.floor(Math.random() * Zp);
-    var shares = self.jiff.share(r);
-    
-    var sum = shares[1];
-    for(var i = 2; i <= self.jiff.party_count; i++) {
-      sum = sum.add(shares[i]);
-    }
-   
-    return (self.sub(o)).mult(sum);
+    // TODO : @ ComparisonToft07Mixin    
+    // To implement: 
+    //  Share a random bit (prss_share_random in passive.py)
+    //  Perhaps convert_bit_share ?? 
+    //  greater_than_equal_preproc part of this preprocessing can be done by server.
+    //  greater_than_equal_online meat of the implementation
+    //  _finish_greater_than_equal
   }
 
   // when the promise is resolved, acquire the value of the share and set ready to true
@@ -493,6 +520,8 @@ function make_jiff(hostname, port, computation_id, party_count) {
   jiff.share = function(secret) { return jiff_share(jiff, secret); };
   jiff.open = function(share) { return jiff_open(jiff, share); };
   jiff.triplet = function() { return jiff_triplet(jiff); };
+  jiff.share_random = function() { return jiff_share_all_number(jiff, Math.floor(Math.random() * Zp)); };
+  jiff.share_zero = function() { return jiff_share_all_number(jiff, 0); };
 
   // Store the id when server sends it back
   jiff.socket.on('init', function(msg) {
