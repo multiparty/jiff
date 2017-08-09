@@ -95,17 +95,21 @@ io.on('connection', function(socket) {
   
   // Triplet count is like a program counter for triplets, to ensure all 
   // parties get matching shares of the same triplet.
-  socket.on('triplet', function(triplet_count) {
+  socket.on('triplet', function(msg) {
+    msg = JSON.parse(msg);
+    var triplet_id = msg.triplet_id;
+    var Zp = msg.Zp;
+    
     var computation_id = computation_map[socket.id];
     var from_id = party_map[socket.id];
     
-    console.log('triplet ' + triplet_count + ' from ' + computation_id + "-" + from_id);
+    console.log('triplet ' + triplet_id + ' from ' + computation_id + "-" + from_id + ' Zp ' + Zp);
     
     if(triplets_map[computation_id] == null) 
       triplets_map[computation_id] = {};
       
     var all_triplets = triplets_map[computation_id];  
-    if(all_triplets[triplet_count] == null) { // Generate Triplet.
+    if(all_triplets[triplet_id] == null) { // Generate Triplet.
       var a = Math.floor(Math.random() * Zp);
       var b = Math.floor(Math.random() * Zp);
       var c = mod(a * b, Zp);
@@ -118,10 +122,10 @@ io.on('connection', function(socket) {
       for(var i = 1; i <= totalparty_map[computation_id]; i++)
         triplet_shares[i] = { a: a_shares[i], b: b_shares[i], c: c_shares[i] };
       
-      all_triplets[triplet_count] = triplet_shares;
+      all_triplets[triplet_id] = triplet_shares;
     }
     
-    var triplet_msg = { triplet: all_triplets[triplet_count][from_id], count: triplet_count };
+    var triplet_msg = { triplet: all_triplets[triplet_id][from_id], triplet_id: triplet_id };
     io.to(socket_map[computation_id][from_id]).emit('triplet', JSON.stringify(triplet_msg));
   });
 });
