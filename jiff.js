@@ -1,5 +1,5 @@
 // The modulos to be used in secret sharing and operations on shares.
-var gZp = 2081;
+var gZp = 179424691;
 
 // The length of RSA key in bits.
 var RSA_bits = 1024;
@@ -24,19 +24,16 @@ function mod(x, y) {
   return x%y;
 }
 
-// Extended GCD algorithm
-function extended_gcd(a, b) {
-  var x = 0; var lastx = 1;
-  var y = 1; var lasty = 0;
-  while(b != 0) {
-    var quotient = Math.floor(a / b);
-    b = mod(a, b); a = b;
-    
-    lastx = x; x = lastx - quotient;
-    lasty = y; y = lasty - quotient;
-  }
+//Extended Euclead
+function extended_gcd(a,b) { 
+  if (b == 0)
+    return [1, 0, a];
   
-  return {"lastx": lastx, "lasty": lasty, "a": a};
+  temp = extended_gcd(b, a % b);
+  x = temp[0];
+  y = temp[1];
+  d = temp[2];
+  return [y, x-y*Math.floor(a/b), d];
 }
 
 /*
@@ -521,7 +518,7 @@ function secret_share(jiff, ready, promise, value, Zp) {
 
     function finish_compare(result, s_bit, s_sign, mask, r_modl, r_bits, z) {
       var c = result;
-      var l = Math.ceil(Math.log(self.Zp)/Math.log(2)) + 1;
+      var l = 5; //Math.ceil(Math.log(self.Zp)/Math.log(2)) + 1;
       
       var c_bits = [];
       var sumXORs = [];
@@ -555,7 +552,7 @@ function secret_share(jiff, ready, promise, value, Zp) {
         var c_mod2l = mod(c, Math.pow(2, l));
         var result = UF.mult_cst(Math.pow(2, l)).sub(r_modl.add_cst(-1 * c_mod2l));
         
-        var inverse = extended_gcd(Math.pow(2, l), self.Zp).lastx;
+        var inverse = extended_gcd(Math.pow(2, l), self.Zp)[0];
         var final_result = z.sub(result).mult_cst(inverse);
         
         if(final_result.ready)
@@ -566,7 +563,7 @@ function secret_share(jiff, ready, promise, value, Zp) {
     }
     
     function preprocess() {
-      var l = Math.ceil(Math.log(self.Zp)/Math.log(2)) + 1;
+      var l = 5; //Math.ceil(Math.log(self.Zp)/Math.log(2)) + 1;
       var k = self.jiff.party_count;
 
       var r_bits = [ jiff_share_all_number(self.jiff, 1, 2) ];
@@ -587,7 +584,7 @@ function secret_share(jiff, ready, promise, value, Zp) {
     }
     
     function compare_online(preprocess) {
-      var l = Math.ceil(Math.log(self.Zp)/Math.log(2)) + 1;
+      var l = 5; //Math.ceil(Math.log(self.Zp)/Math.log(2)) + 1;
       var a = self.mult_cst(2).add_cst(1);
       var b = o.mult_cst(2);
       

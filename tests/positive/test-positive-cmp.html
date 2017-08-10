@@ -10,7 +10,7 @@
   <body>
     <script>
       var tests = [
-          [674, 474, 663], [99, 291, 38], [640, 640, 764],
+          [674, 474, 663], [98, 291, 38], [640, 640, 764],
           [129, 238, 182], [494, 1005, 325], [163, 929, 554],
           [541, 61, 818], [269, 153, 405], [152, 172, 37],
           [600, 345, 993], [10, 871, 712], [640, 409, 487],
@@ -49,7 +49,7 @@
       has_failed = false;
 
       var promises = []
-      for(var i = 0; i < tests.length; i++) {
+      for(var i = 0; i < 7; i++) {
         var share = single_test(i);
         if(share.promise != null) promises.push(share.promise);
       }
@@ -64,7 +64,7 @@
     function single_test(index) {
       var numbers = tests[index];
       var party_index = jiff_instance.id - 1;
-      var shares = jiff_instance.share(numbers[party_index]);
+      var shares = jiff_instance.share(numbers[party_index] % 2);
 
       var cmp = shares[1].greater_or_equal(shares[2]);
       cmp.open( function(result) { test_output(index, result) }, error);
@@ -74,8 +74,8 @@
     // determine if the output is correct
     function test_output(index, result) {
       var numbers = tests[index];
-      console.log(numbers[0] + ":: " + numbers[1] + "::" + result);
-      if(numbers[0] >= numbers[1]) {
+      console.log((numbers[0]) + ":: " + (numbers[1]) + "::" + result);
+      if((numbers[0]) >= (numbers[1])) {
         if(result != 1) {
           has_failed = true;
           $("#details").append("<li> compare("+numbers.join(", ")+") != " + result + "</li>");
