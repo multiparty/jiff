@@ -10,6 +10,7 @@
   <body>
     <script>
       var tests = [
+          [10, 20, 11], [15, 15, 38], [21, 19, 22], [0, 1, 22],
           [674, 474, 663], [98, 291, 38], [640, 640, 764],
           [129, 238, 182], [494, 1005, 325], [163, 929, 554],
           [541, 61, 818], [269, 153, 405], [152, 172, 37],
@@ -49,7 +50,7 @@
       has_failed = false;
 
       var promises = []
-      for(var i = 0; i < 7; i++) {
+      for(var i = 0; i < 4; i++) {
         var share = single_test(i);
         if(share.promise != null) promises.push(share.promise);
       }

@@ -1,5 +1,5 @@
 // The modulos to be used in secret sharing and operations on shares.
-var gZp = 179424691;
+var gZp = 196799;
 
 // The length of RSA key in bits.
 var RSA_bits = 1024;
@@ -108,7 +108,7 @@ function jiff_compute_shares(secret, party_count, Zp) {
   // Each player's random polynomial f must have
   // degree t = ceil(n/2)-1, where n is the number of players
   // var t = Math.floor((party_count-1)/ 2);
-  var t = party_count - 1;
+  var t = 1; //party_count - 1;
   var polynomial = Array(t+1); // stores the coefficients
 
   // Each players's random polynomial f must be constructed
@@ -340,6 +340,48 @@ function jiff_share_all_number(jiff, n, Zp) {
    
   return share;
 }
+
+/**
+ * Use the server to generate shares for a random bit, zero, random non-zero number, or a random number.
+ * The parties will not know the value of the number (unless the request is for shares of zero) nor other parties' shares.
+ *   jiff:    the jiff instance.
+ *   Zp:      the modulos (if null then global Zp is used by default).
+ *   options: an object with these properties: { "zero": boolean, "bit": boolean, "nonzero": boolean, "max": number}
+ */
+function jiff_server_share_number(jiff, options, Zp) {
+  if(Zp == null) Zp = gZp;
+  
+  // Get the id of the number.
+  var number_id = "number" + jiff.number_op_count;
+  jiff.number_op_count++;
+  
+  var msg = { number_id: number_id, Zp: Zp };
+  msg = Object.assign(msg, options);
+  
+  // Send a request to the server.  
+  jiff.socket.emit('number', JSON.stringify(msg));
+
+  // Setup deferreds to handle receiving the triplets later.  
+  var deferred = $.Deferred();
+  jiff.deferreds[number_id] = deferred;
+  
+  var share = new secret_share(jiff, false, deferred.promise(), undefined, Zp);
+  return share;
+}
+
+/*
+ * Store the received share of a previously requested number from the server.
+ *   jiff:      the jiff instance.
+ *   number_id:     the id of the number.
+ *   share:   the value of the share.
+ *
+ */
+function receive_server_share_number(jiff, number_id, share) {
+  // Deferred is already setup, resolve it.
+  jiff.deferreds[number_id].resolve(share);
+  jiff.deferreds[number_id] = null;
+}
+
  
 /*
  * Create a new share.
@@ -389,7 +431,7 @@ function secret_share(jiff, ready, promise, value, Zp) {
   
   // Reshares/refreshes the sharing of this number, used before opening to keep the share secret.
   this.refresh = function() {
-    return self.add(self.jiff.share_zero());
+    return self.add(self.jiff.generate_and_share_zero());
   };
 
   this.open = function(success, failure) {
@@ -421,6 +463,7 @@ function secret_share(jiff, ready, promise, value, Zp) {
   /* Addition */
   this.add = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
+    if (!(o.Zp === self.Zp)) throw "shares must belong to the same field";
 
     // add the two shares when ready locally
     var ready_add = function() {
@@ -438,6 +481,7 @@ function secret_share(jiff, ready, promise, value, Zp) {
   /* subtraction */
   this.sub = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
+    if (!(o.Zp === self.Zp)) throw "shares must belong to the same field";
 
     // add the two shares when ready locally
     var ready_sub = function() {
@@ -455,6 +499,7 @@ function secret_share(jiff, ready, promise, value, Zp) {
   /* multiplication via triplets */
   this.mult = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
+    if (!(o.Zp === self.Zp)) throw "shares must belong to the same field";
 
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
@@ -500,6 +545,7 @@ function secret_share(jiff, ready, promise, value, Zp) {
   
   this.xor = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
+    if (!(o.Zp === self.Zp)) throw "shares must belong to the same field";
     
     return self.add(o).sub(self.mult(o).mult_cst(2));
   }
@@ -511,21 +557,25 @@ function secret_share(jiff, ready, promise, value, Zp) {
   /* comparison: negative number if self < o. 0 if self = i and positive number if self > o. */
   this.greater_or_equal = function(o) {
     if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
+    if (!(o.Zp === self.Zp)) throw "shares must belong to the same field";
     
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
-    var result = new secret_share(self.jiff, false, final_promise, undefined, 2);
+    var result = new secret_share(self.jiff, false, final_promise, undefined, self.Zp);
 
     function finish_compare(result, s_bit, s_sign, mask, r_modl, r_bits, z) {
+      result = result;
       var c = result;
-      var l = 5; //Math.ceil(Math.log(self.Zp)/Math.log(2)) + 1;
+      console.log(Math.log(result)/ Math.log(2));
+      var l = 8; //Math.ceil(Math.log(self.Zp)/Math.log(2)) + 1;
       
       var c_bits = [];
-      var sumXORs = [];
-      for(var i = 0; i < l; i++) {
+      for(var i = 0; i < l; i++)
         c_bits[i] = (result >> i) & 1;
+        
+      var sumXORs = [];
+      for(var i = 0; i < l; i++)
         sumXORs[i] = 0;
-      }
 
       sumXORs[l-2] = r_bits[l-1].xor_cst(c_bits[l-1]).add_cst(sumXORs[l-1]);
       for(var i = l-3; i > -1; i--)
@@ -546,15 +596,14 @@ function secret_share(jiff, ready, promise, value, Zp) {
       for(var i = 0; i < E_tilde.length; i++)
         product = product.mult(E_tilde[i]);
 
-      product.open(function(product) {
-        var non_zero = (product != 0) ? 1 : 0;
+      product.open(function(pr) {
+        var non_zero = (pr != 0) ? 1 : 0;
         var UF = s_bit.xor_cst(non_zero);
         var c_mod2l = mod(c, Math.pow(2, l));
-        var result = UF.mult_cst(Math.pow(2, l)).sub(r_modl.add_cst(-1 * c_mod2l));
+        var res = UF.mult_cst(Math.pow(2, l)).sub(r_modl.add_cst(-1 * c_mod2l));
         
         var inverse = extended_gcd(Math.pow(2, l), self.Zp)[0];
-        var final_result = z.sub(result).mult_cst(inverse);
-        
+        var final_result = z.sub(res).mult_cst(inverse);
         if(final_result.ready)
           final_deferred.resolve(final_result.value);
         else
@@ -563,28 +612,38 @@ function secret_share(jiff, ready, promise, value, Zp) {
     }
     
     function preprocess() {
-      var l = 5; //Math.ceil(Math.log(self.Zp)/Math.log(2)) + 1;
-      var k = self.jiff.party_count;
+      var l = 8; //Math.ceil(Math.log(self.Zp)/Math.log(2)) + 1;
+      var k = 1;
+      
+      var max_bound = 100;
 
-      var r_bits = [ jiff_share_all_number(self.jiff, 1, 2) ];
-      var r_full = r_bits[0];
-      var r_modl;
-      for(var i = 1; i < l + k; i++) {
-        r_bits[i] = jiff_share_all_number(self.jiff, 0, 2);
-        r_full = r_bits[i].mult_cst(Math.pow(2, i)).add(r_full);
-        if(i == l - 1) r_modl = r_full;
-      }
+      var assert = Math.pow(2, (l+2)) + Math.pow(2, (l+k));
+      //if(!(self.Zp > assert)) throw "field too small compared to security and bit length (" + assert + ")";
+
+      var r_bits = [];
+      for(var i = 0; i < l + k; i++)
+        r_bits[i] = jiff_server_share_number(self.jiff, { "bit": true, "max": max_bound }, self.Zp);
+           
+      var r_modl = r_bits[0];
+      for(var i = 1; i < l; i++)
+        r_modl = r_modl.add(r_bits[i].mult_cst(Math.pow(2, i)));
+        
+      var r_full = r_modl;
+      for(var i = l; i < l + k; i++)
+        r_full = r_full.add(r_bits[i].mult_cst(Math.pow(2, i)));
 
       r_bits = r_bits.slice(0, l);
-      var s_bit = jiff_share_all_number(self.jiff, 0, 2);
+      
+      var s_bit = jiff_server_share_number(self.jiff, { "bit": true, "max": max_bound }, self.Zp);
       var s_sign = s_bit.mult_cst(-2).add_cst(1);
-      var mask = jiff_share_all_number(self.jiff, 220);
+      
+      var mask = jiff_server_share_number(self.jiff, { "nonzero": true, "max": max_bound }, self.Zp);
       
       return { "s_bit": s_bit, "s_sign": s_sign, "mask": mask, "r_full": r_full, "r_modl": r_modl, "r_bits": r_bits };
     }
     
     function compare_online(preprocess) {
-      var l = 5; //Math.ceil(Math.log(self.Zp)/Math.log(2)) + 1;
+      var l = 8; //Math.ceil(Math.log(self.Zp)/Math.log(2)) + 1;
       var a = self.mult_cst(2).add_cst(1);
       var b = o.mult_cst(2);
       
@@ -626,8 +685,8 @@ function make_jiff(hostname, port, computation_id, party_count) {
   jiff.share = function(secret, Zp) { return jiff_share(jiff, secret, Zp); };
   jiff.open = function(share) { return jiff_open(jiff, share); };
   jiff.triplet = function(Zp) { return jiff_triplet(jiff, Zp); };
-  jiff.share_random = function(Zp) { return jiff_share_all_number(jiff, Math.floor(Math.random() * Zp), Zp); };
-  jiff.share_zero = function(Zp) { return jiff_share_all_number(jiff, 0, Zp); };
+  jiff.generate_and_share_random = function(Zp) { return jiff_share_all_number(jiff, Math.floor(Math.random() * Zp), Zp); };
+  jiff.generate_and_share_zero = function(Zp) { return jiff_share_all_number(jiff, 0, Zp); };
 
   // Store the id when server sends it back
   jiff.socket.on('init', function(msg) {
@@ -652,6 +711,7 @@ function make_jiff(hostname, port, computation_id, party_count) {
   jiff.share_op_count = 0;
   jiff.open_op_count = 0;
   jiff.triplet_op_count = 0;
+  jiff.number_op_count = 0;
   jiff.share_obj_count = 0;
 
   // Store a map from a sharing id (which share operation) to the
@@ -688,6 +748,15 @@ function make_jiff(hostname, port, computation_id, party_count) {
     triplet_id = json_msg["triplet_id"];
 
     receive_triplet(jiff, triplet_id, triplet);
+  });
+  
+  jiff.socket.on('number', function(msg) {
+    json_msg = JSON.parse(msg);
+
+    number = json_msg["number"];
+    number_id = json_msg["number_id"];
+
+    receive_server_share_number(jiff, number_id, number);
   });
 
   return jiff;
