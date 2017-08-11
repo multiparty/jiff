@@ -15,6 +15,7 @@ var totalparty_map = {'1': 3};//max number of parties per computation
 
 var key_map = {};// public key map
 var triplets_map = {};
+var numbers_map = {};
 
 io.on('connection', function(socket) {
   console.log('user connected');
@@ -95,34 +96,75 @@ io.on('connection', function(socket) {
   
   // Triplet count is like a program counter for triplets, to ensure all 
   // parties get matching shares of the same triplet.
-  socket.on('triplet', function(triplet_count) {
+  socket.on('triplet', function(msg) {
+    msg = JSON.parse(msg);
+    var triplet_id = msg.triplet_id;
+    var Zp = msg.Zp;
+    
     var computation_id = computation_map[socket.id];
     var from_id = party_map[socket.id];
     
-    console.log('triplet ' + triplet_count + ' from ' + computation_id + "-" + from_id);
+    console.log('triplet ' + triplet_id + ' from ' + computation_id + "-" + from_id + ' Zp ' + Zp);
     
     if(triplets_map[computation_id] == null) 
       triplets_map[computation_id] = {};
       
     var all_triplets = triplets_map[computation_id];  
-    if(all_triplets[triplet_count] == null) { // Generate Triplet.
+    if(all_triplets[triplet_id] == null) { // Generate Triplet.
       var a = Math.floor(Math.random() * Zp);
       var b = Math.floor(Math.random() * Zp);
       var c = mod(a * b, Zp);
       
-      var a_shares = jiff_compute_shares(a, totalparty_map[computation_id]);
-      var b_shares = jiff_compute_shares(b, totalparty_map[computation_id]);
-      var c_shares = jiff_compute_shares(c, totalparty_map[computation_id]);
+      var a_shares = jiff_compute_shares(a, totalparty_map[computation_id], Zp);
+      var b_shares = jiff_compute_shares(b, totalparty_map[computation_id], Zp);
+      var c_shares = jiff_compute_shares(c, totalparty_map[computation_id], Zp);
       
       var triplet_shares = {};
       for(var i = 1; i <= totalparty_map[computation_id]; i++)
         triplet_shares[i] = { a: a_shares[i], b: b_shares[i], c: c_shares[i] };
       
-      all_triplets[triplet_count] = triplet_shares;
+      all_triplets[triplet_id] = triplet_shares;
     }
     
-    var triplet_msg = { triplet: all_triplets[triplet_count][from_id], count: triplet_count };
+    var triplet_msg = { triplet: all_triplets[triplet_id][from_id], triplet_id: triplet_id };
     io.to(socket_map[computation_id][from_id]).emit('triplet', JSON.stringify(triplet_msg));
+  });
+  
+  // Triplet count is like a program counter for triplets, to ensure all 
+  // parties get matching shares of the same triplet.
+  socket.on('number', function(msg) {
+    msg = JSON.parse(msg);
+    var number_id = msg.number_id;
+    var Zp = msg.Zp;
+    var bit = msg.bit;
+    var zero = msg.zero;
+    var nonzero = msg.nonzero;
+    var max = msg.max;
+    if(max == null) max = Zp;
+    
+    var computation_id = computation_map[socket.id];
+    var from_id = party_map[socket.id];
+    
+    console.log('number ' + number_id + ' from ' + computation_id + "-" + from_id + ' Options ' + JSON.stringify(msg));
+    
+    if(numbers_map[computation_id] == null) 
+      numbers_map[computation_id] = {};
+      
+    var all_numbers = numbers_map[computation_id];  
+    if(all_numbers[number_id] == null) { // Generate shares for number.
+      var number = Math.floor(Math.random() * max);
+      
+      if(zero === true) number = 0;
+      else if(bit === true && nonzero === true) number = 1;
+      else if(bit == true) number = number % 2;
+      else if(nonzero == true && number == 0) number = Math.floor(Math.random() * (max-1)) + 1;
+      
+      var shares = jiff_compute_shares(number, totalparty_map[computation_id], Zp);      
+      all_numbers[number_id] = shares;
+    }
+    
+    var number_msg = { number: all_numbers[number_id][from_id], number_id: number_id };
+    io.to(socket_map[computation_id][from_id]).emit('number', JSON.stringify(number_msg));
   });
 });
 
@@ -144,18 +186,19 @@ function mod(x, y) {
  * a polynomial of degree: ceil(parties/2) - 1 (honest majority).
  *   secret:        the secret to share.
  *   party_count:   the number of parties.
+ *   Zp:            the modulos.
  *   return:        a map between party number (from 1 to parties) and its
  *                  share, this means that (party number, share) is a
  *                  point from the polynomial.
  *
  */
-function jiff_compute_shares(secret, party_count) {
+function jiff_compute_shares(secret, party_count, Zp) {
   var shares = {}; // Keeps the shares
 
   // Each player's random polynomial f must have
   // degree t = ceil(n/2)-1, where n is the number of players
   // var t = Math.floor((party_count-1)/ 2);
-  var t = party_count-1;
+  var t = party_count - 1;
   var polynomial = Array(t+1); // stores the coefficients
 
   // Each players's random polynomial f must be constructed
