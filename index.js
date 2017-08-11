@@ -159,7 +159,7 @@ io.on('connection', function(socket) {
       else if(bit == true) number = number % 2;
       else if(nonzero == true && number == 0) number = Math.floor(Math.random() * (max-1)) + 1;
       
-      var shares = jiff_compute_shares(number, totalparty_map[computation_id], Zp, max);      
+      var shares = jiff_compute_shares(number, totalparty_map[computation_id], Zp);      
       all_numbers[number_id] = shares;
     }
     
@@ -187,20 +187,18 @@ function mod(x, y) {
  *   secret:        the secret to share.
  *   party_count:   the number of parties.
  *   Zp:            the modulos.
- *   max:           maximum value of every coefficent.
  *   return:        a map between party number (from 1 to parties) and its
  *                  share, this means that (party number, share) is a
  *                  point from the polynomial.
  *
  */
-function jiff_compute_shares(secret, party_count, Zp, max) {
-  if(max == null) max = Zp;
+function jiff_compute_shares(secret, party_count, Zp) {
   var shares = {}; // Keeps the shares
 
   // Each player's random polynomial f must have
   // degree t = ceil(n/2)-1, where n is the number of players
   // var t = Math.floor((party_count-1)/ 2);
-  var t = 1;//party_count - 1;
+  var t = party_count - 1;
   var polynomial = Array(t+1); // stores the coefficients
 
   // Each players's random polynomial f must be constructed
@@ -208,7 +206,7 @@ function jiff_compute_shares(secret, party_count, Zp, max) {
   polynomial[0] = secret;
 
   // Compute the random polynomial f's coefficients
-  for(var i = 1; i <= t; i++) polynomial[i] = 0; //Math.floor(Math.random() * max);
+  for(var i = 1; i <= t; i++) polynomial[i] = Math.floor(Math.random() * Zp);
 
   // Compute each players share such that share[i] = f(i)
   for(var i = 1; i <= party_count; i++) {
