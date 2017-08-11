@@ -29,6 +29,7 @@
           [897, 246, 478], [1019, 502, 245], [154, 78, 717],
           [711, 497, 717], [983, 112, 38]
         ];
+      var leftToFinish = tests.length;
     </script>
 
     <div id="result"></div>
@@ -50,22 +51,17 @@
       has_failed = false;
 
       var promises = []
-      for(var i = 0; i < 4; i++) {
+      for(var i = 0; i < tests.length; i++) {
         var share = single_test(i);
         if(share.promise != null) promises.push(share.promise);
       }
-
-      Promise.all(promises).then(function() {
-        if(has_failed) $("#result").append("<font color='red'>Failed</font>");
-        else $("#result").append("<font color='green'>Success</font>");
-      });
     }
 
     // run test case at index
     function single_test(index) {
       var numbers = tests[index];
       var party_index = jiff_instance.id - 1;
-      var shares = jiff_instance.share(numbers[party_index] % 2);
+      var shares = jiff_instance.share(numbers[party_index]);
 
       var cmp = shares[1].greater_or_equal(shares[2]);
       cmp.open( function(result) { test_output(index, result) }, error);
@@ -75,7 +71,6 @@
     // determine if the output is correct
     function test_output(index, result) {
       var numbers = tests[index];
-      console.log((numbers[0]) + ":: " + (numbers[1]) + "::" + result);
       if((numbers[0]) >= (numbers[1])) {
         if(result != 1) {
           has_failed = true;
@@ -86,6 +81,12 @@
           has_failed = true;
           $("#details").append("<li> compare("+numbers.join(", ")+") != " + result + "</li>");
         }
+      }
+      
+      leftToFinish--;
+      if(leftToFinish == 0) {
+        if(has_failed) $("#result").append("<font color='red'>Failed</font>");
+        else $("#result").append("<font color='green'>Success</font>");
       }
     }
 
