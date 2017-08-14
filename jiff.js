@@ -171,48 +171,62 @@ function receive_share(jiff, sender_id, share, op_id) {
  * Open up the given share to the participating parties.
  *   jiff:      the jiff instance.
  *   share:     the share of the secret to open that belongs to this party.
+ *   parties:   an array with party ids (1 to n) of receiving parties [optional].
  *   op_id:     the operation id that matches this operation with received messages [optional].
  *   return:    a (JQuery) promise to the open value of the secret.
  *   throws:    error if share does not belong to the passed jiff instance.
  *
 */
-function jiff_open(jiff, share, op_id) {
+function jiff_open(jiff, share, parties, op_id) {
   if(!(share.jiff === jiff)) throw "share does not belong to given instance";
-
-  var count = jiff.party_count;
+  
+  // Default values
+  if(parties == null || parties == []) {
+    parties = [];
+    for(var i = 1; i <= jiff.party_count; i++)
+      parties.push(i);
+  }
 
   if(op_id == null) {
     op_id = "open" + jiff.open_op_count;
     jiff.open_op_count++;
   }
 
+  // Check if this party is going to receive the result.
+  var is_a_receiver = parties.indexOf(jiff.id) > -1;
+  
   // Setup a deferred for receiving the shares from other parties
-  var deferred = $.Deferred();
-  jiff.deferreds[op_id] = deferred;
+  var deferred;
+  if(is_a_receiver) {
+    deferred = $.Deferred();
+    jiff.deferreds[op_id] = deferred;
+  }
 
   // refresh/reshare, so that the original share remains secret, instead
   // a new share is sent/open without changing the actual value.
   share = share.refresh();
   
   // The given share has been computed, share it to all parties
-  if(share.ready) jiff_broadcast(jiff, share, op_id);
+  if(share.ready) jiff_broadcast(jiff, share, parties, op_id);
 
   // Share is not ready, setup sharing as a callback to its promise
-  else share.promise.then(function() { jiff_broadcast(jiff, share, op_id); }, share.error);
+  else share.promise.then(function() { jiff_broadcast(jiff, share, parties, op_id); }, share.error);
 
   // Defer accessing the shares until they are back
-  return deferred.promise();
+  return is_a_receiver ? deferred.promise() : null;
 }
 
 /*
  * Share the given share to all the parties in the jiff instance.
  *   jiff:      the jiff instance.
  *   share:     the share.
+ *   parties:   the parties to broadcast the share to.
  *   op_id:     the id of the share operation.
  *
  */
-function jiff_broadcast(jiff, share, op_id) {
-  for(var i = 1; i <= jiff.party_count; i++) {
+function jiff_broadcast(jiff, share, parties, op_id) {
+  for(var index = 0; index < parties.length; index++) {
+    var i = parties[index]; // Party id
     if(i == jiff.id) { receive_open(jiff, i, share.value, op_id, share.Zp); continue; }
 
     // encrypt and send
@@ -286,9 +300,12 @@ function jiff_lagrange(shares, party_count, Zp) {
  * Creates 3 shares, a share for every one of three numbers from a beaver triplet.
  * The server generates and sends the triplets on demand.
  *   jiff:      the jiff instance.
+ *   Zp:        the modulos.
  *
  */
 function jiff_triplet(jiff, Zp) {
+  if(Zp == null) Zp = gZp;
+  
   // Get the id of the triplet needed.
   var triplet_id = "triplet" + jiff.triplet_op_count;
   jiff.triplet_op_count++;
@@ -441,7 +458,15 @@ function secret_share(jiff, ready, promise, value, Zp) {
   };
 
   this.open = function(success, failure) {
-    jiff_instance.open(self).then(success, failure);
+    if(failure == null) failure = self.error;
+    var promise = self.jiff.open(self);
+    if(promise != null) promise.then(success, failure);
+  }
+  
+  this.open_to = function(parties, success, failure) {
+    if(failure == null) failure = self.error;
+    var promise = self.jiff.open(self, parties);
+    if(promise != null) promise.then(success, failure);
   }
 
   /* Addition with constant */
@@ -680,7 +705,7 @@ function make_jiff(hostname, port, computation_id, party_count) {
   jiff.socket.emit("computation_id", computation_id);
 
   jiff.share = function(secret, Zp) { return jiff_share(jiff, secret, Zp); };
-  jiff.open = function(share) { return jiff_open(jiff, share); };
+  jiff.open = function(share, parties) { return jiff_open(jiff, share, parties); };
   jiff.triplet = function(Zp) { return jiff_triplet(jiff, Zp); };
   jiff.generate_and_share_random = function(Zp) { return jiff_share_all_number(jiff, Math.floor(Math.random() * Zp), Zp); };
   jiff.generate_and_share_zero = function(Zp) { return jiff_share_all_number(jiff, 0, Zp); };

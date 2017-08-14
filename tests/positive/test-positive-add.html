@@ -52,7 +52,7 @@
       var promises = []
       for(var i = 0; i < tests.length; i++) {
         var share = single_test(i);
-        if(share.promise != null) promises.push(share.promise);
+        if(share != null && share.promise != null) promises.push(share.promise);
       }
 
       Promise.all(promises).then(function() {
@@ -72,7 +72,7 @@
         sum = sum.add(shares[i]);
       }
 
-      sum.open( function(result) { test_output(index, result) }, error);
+      sum.open_to([1], function(result) { test_output(index, result) }, error);
       return sum;
     }
 
@@ -88,6 +88,8 @@
       if(sum != result) { // sum is incorrect
         has_failed = true;
         $("#details").append("<li> sum("+numbers.join(", ")+") = " + sum + " != " +result + "</li>");
+      } else {
+        console.log(numbers.join(" + ") + " = " + result);
       }
     }
 
