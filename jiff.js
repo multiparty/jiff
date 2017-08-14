@@ -479,6 +479,17 @@ function secret_share(jiff, ready, promise, value, Zp) {
     var promise = self.promise.then(function() { return mod((self.value + cst), self.Zp); }, self.error);
     return new secret_share(self.jiff, false, promise, undefined, self.Zp);
   }
+  
+  /* Subtraction with constant */
+  this.sub_cst = function(cst){
+    if (!(typeof(cst) == "number")) throw "parameter should be a number";
+
+    if(self.ready) // if share is ready
+      return new secret_share(self.jiff, true, null, mod((self.value - cst), self.Zp), self.Zp);
+
+    var promise = self.promise.then(function() { return mod((self.value - cst), self.Zp); }, self.error);
+    return new secret_share(self.jiff, false, promise, undefined, self.Zp);
+  }
 
   /* Multiplication with constant */
   this.mult_cst = function(cst){
