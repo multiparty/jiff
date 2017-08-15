@@ -253,7 +253,7 @@ function receive_open(jiff, sender_id, share, op_id, Zp) {
 
   // Decrypt share
   if(sender_id != jiff.id)
-    share = parseInt(cryptico.decrypt(share, jiff.secret_key).plaintext);
+    share = parseInt(cryptico.decrypt(share, jiff.secret_key).plaintext, 10);
 
   // Save share
   jiff.shares[op_id][sender_id] = share;
@@ -335,10 +335,15 @@ function jiff_triplet(jiff, Zp) {
  *
  */
 function receive_triplet(jiff, triplet_id, triplet) {
+  // Decrypt shares
+  var a = parseInt(cryptico.decrypt(triplet["a"], jiff.secret_key).plaintext, 10);
+  var b = parseInt(cryptico.decrypt(triplet["b"], jiff.secret_key).plaintext, 10);
+  var c = parseInt(cryptico.decrypt(triplet["c"], jiff.secret_key).plaintext, 10);
+
   // Deferred is already setup, resolve it.
-  jiff.deferreds[triplet_id]["a"].resolve(triplet["a"]);
-  jiff.deferreds[triplet_id]["b"].resolve(triplet["b"]);
-  jiff.deferreds[triplet_id]["c"].resolve(triplet["c"]);
+  jiff.deferreds[triplet_id]["a"].resolve(a);
+  jiff.deferreds[triplet_id]["b"].resolve(b);
+  jiff.deferreds[triplet_id]["c"].resolve(c);
   jiff.deferreds[triplet_id] = null;
 }
 
@@ -400,6 +405,9 @@ function jiff_server_share_number(jiff, options, Zp) {
  *
  */
 function receive_server_share_number(jiff, number_id, share) {
+  // Decrypt received share.
+  share = parseInt(cryptico.decrypt(share, jiff.secret_key).plaintext, 10);
+  
   // Deferred is already setup, resolve it.
   jiff.deferreds[number_id].resolve(share);
   jiff.deferreds[number_id] = null;
