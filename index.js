@@ -1,6 +1,7 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var cryptico = require('cryptico');
 
 // The modulos to be used in secret sharing and operations on shares.
 var Zp = 2081;
@@ -120,11 +121,18 @@ io.on('connection', function(socket) {
       var c_shares = jiff_compute_shares(c, totalparty_map[computation_id], Zp);
       
       var triplet_shares = {};
-      for(var i = 1; i <= totalparty_map[computation_id]; i++)
-        triplet_shares[i] = { a: a_shares[i], b: b_shares[i], c: c_shares[i] };
+      for(var i = 1; i <= totalparty_map[computation_id]; i++) {
+        // Encrypt and store shares
+        var pkey = key_map[computation_id][i];
+        var a = cryptico.encrypt(a_shares[i].toString(10), pkey).cipher;
+        var b = cryptico.encrypt(b_shares[i].toString(10), pkey).cipher;
+        var c = cryptico.encrypt(c_shares[i].toString(10), pkey).cipher;
+        
+        triplet_shares[i] = { a: a, b: b, c: c };
+      }
       
       all_triplets[triplet_id] = triplet_shares;
-    }
+    }    
     
     var triplet_msg = { triplet: all_triplets[triplet_id][from_id], triplet_id: triplet_id };
     io.to(socket_map[computation_id][from_id]).emit('triplet', JSON.stringify(triplet_msg));
@@ -159,7 +167,14 @@ io.on('connection', function(socket) {
       else if(bit == true) number = number % 2;
       else if(nonzero == true && number == 0) number = Math.floor(Math.random() * (max-1)) + 1;
       
-      var shares = jiff_compute_shares(number, totalparty_map[computation_id], Zp);      
+      // Compute shares
+      var shares = jiff_compute_shares(number, totalparty_map[computation_id], Zp);
+      
+      // Encrypt and store shares
+      for(var i = 1; i <= totalparty_map[computation_id]; i++) {
+        var pkey = key_map[computation_id][i];
+        shares[i] = cryptico.encrypt(shares[i].toString(10), pkey).cipher;
+      }
       all_numbers[number_id] = shares;
     }
     

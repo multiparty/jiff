@@ -4,6 +4,7 @@
   "description": "server side library for performing MPC in JavaScript. handles relaying shares between parties.",
   "dependencies": {
     "express": "^4.15.2",
-    "socket.io": "^2.0.2"
+    "socket.io": "^2.0.2",
+    "cryptico": "^1.0.2"
   }
 }
