@@ -23,13 +23,25 @@ io.on('connection', function(socket) {
 
   // Receive each user's desired computation
   socket.on('computation_id', function(msg) {
-    var party_id = ++(client_map[msg]);
+    msg = JSON.parse(msg);
+    
+    // read message
+    var computation_id = msg['computation_id'];
+    var party_id = msg['party_id'];
+    console.log(party_id);
+    if(party_id == null) party_id = ++(client_map[computation_id]);
 
-    computation_map[socket.id] = msg;
-    party_map[socket.id] = party_id;
-
-    socket_map[msg][party_id] = socket.id;
-    io.to(socket.id).emit('init', party_id);
+    // if party_id has not been claimed yet, claim it.
+    if(socket_map[computation_id][party_id] == null) {
+      socket_map[computation_id][party_id] = socket.id;
+      computation_map[socket.id] = computation_id;
+      party_map[socket.id] = party_id;      
+      
+      io.to(socket.id).emit('init', party_id);
+      console.log(party_id);
+    } else {
+      io.to(socket.id).emit('error', party_id + " is already taken");
+    }
   });
 
   // Receive each user's public key
