@@ -723,31 +723,36 @@ function secret_share(jiff, ready, promise, value, Zp) {
  * to share and perform operations, as well as synchronization flags.
  *
 */
-function make_jiff(hostname, computation_id, party_count, options) {
-  var jiff = { party_count: party_count, computation_id: computation_id, ready: false };
+function make_jiff(hostname, computation_id, options) {
+  if(options == null) options = {};
+  
+  var jiff = { computation_id: computation_id, ready: false };
 
   // Setup sockets.
   jiff.socket = io(hostname);
-  if(options == null || options.triplets_server == null || options.triplets_server == hostname)
+  if(options.triplets_server == null || options.triplets_server == hostname)
     jiff.triplets_socket = jiff.socket;
   else
     jiff.triplets_socket = io(options.triplets_server);
     
-  if(options == null || options.numbers_server == null || options.numbers_server == hostname)
+  if(options.numbers_server == null || options.numbers_server == hostname)
     jiff.numbers_socket = jiff.socket;
   else
     jiff.numbers_socket = io(options.numbers_server);
     
-  if(options != null && options.party_id != null && options.secret_key != null && options.public_keys != null) {
+  if(options.party_id != null && options.secret_key != null && options.public_keys != null) {
     jiff.id = options.party_id;
     jiff.secret_key = options.secret_key;
     jiff.public_key = options.public_keys[jiff.id];
     jiff.keymap = options.public_keys;
   }
+  
+  if(options.party_count != null)
+    jiff.party_count = options.party_count;
 
   // Send the computation id to the server to receive proper
   // identification
-  jiff.socket.emit("computation_id", JSON.stringify({ "computation_id": computation_id, "party_id": jiff.id }));
+  jiff.socket.emit("computation_id", JSON.stringify({ "computation_id": computation_id, "party_id": jiff.id, "party_count": jiff.party_count }));
 
   jiff.share = function(secret, Zp) { return jiff_share(jiff, secret, Zp); };
   jiff.open = function(share, parties) { return jiff_open(jiff, share, parties); };
@@ -758,8 +763,12 @@ function make_jiff(hostname, computation_id, party_count, options) {
 
   // Store the id when server sends it back
   jiff.socket.on('init', function(msg) {
+    msg = JSON.parse(msg);
     if(jiff.id == null) 
-      jiff.id = parseInt(msg, 10);
+      jiff.id = msg.party_id;
+      
+    if(jiff.party_count == null)
+      jiff.party_count = msg.party_count;
 
     if(jiff.public_key == null) {
       // Size of the Passphrase used in generating an RSA key
@@ -774,6 +783,9 @@ function make_jiff(hostname, computation_id, party_count, options) {
   jiff.socket.on('public_key', function(msg) {
     if(jiff.keymap == null) 
       jiff.keymap = JSON.parse(msg);
+
+    if(options.onConnect != null)
+      options.onConnect();
 
     jiff.ready = true;
   });
@@ -836,7 +848,10 @@ function make_jiff(hostname, computation_id, party_count, options) {
   jiff.socket.on('error', function(msg) {
     jiff.socket = null;
     jiff.ready = false;
-    console.log(msg);
+    
+    if(options.onError != null)
+      options.onError(msg);
+    
     throw msg;
   });
 
