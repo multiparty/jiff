@@ -1,7 +1,11 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var cryptico = require('cryptico');
+
+// Server static files
+app.use(express.static("tests"));
 
 // The modulos to be used in secret sharing and operations on shares.
 var Zp = 2081;
@@ -11,8 +15,8 @@ var socket_map = {'1':{},'2':{},'3':{}};// map of maps [computation id][party id
 var party_map = {};// socket.id -> party_id
 var computation_map = {}; // socket.id -> computation_id
 
-var client_map = {'1': 0};//total number of parties per computation
-var totalparty_map = {'1': 3};//max number of parties per computation
+var client_map = {'1': 0}; //total number of parties per computation
+var totalparty_map = {'1': 3}; //max number of parties per computation
 
 var key_map = {};// public key map
 var triplets_map = {};
@@ -28,19 +32,36 @@ io.on('connection', function(socket) {
     // read message
     var computation_id = msg['computation_id'];
     var party_id = msg['party_id'];
-    console.log(party_id);
+    var party_count = msg['party_count'];
+    
+    if(client_map[computation_id] == null) client_map[computation_id] = 0;
+    if(socket_map[computation_id] == null) socket_map[computation_id] = {};
+    
     if(party_id == null) party_id = ++(client_map[computation_id]);
-
-    // if party_id has not been claimed yet, claim it.
-    if(socket_map[computation_id][party_id] == null) {
+    if(party_count == null) party_count = totalparty_map[computation_id];
+    
+    // no party count given or saved.
+    if(party_count == null) {
+      io.to(socket.id).emit('error', "party count is not specified nor pre-saved");
+    }
+    
+    // given party count contradicts the count that is already saved.
+    else if(totalparty_map[computation_id] != null && party_count != totalparty_map[computation_id]) {
+      io.to(socket.id).emit('error', "contradicting party count");
+    }
+    
+    // given party id is already claimed by someone else.
+    else if(socket_map[computation_id][party_id] != null) {
+      io.to(socket.id).emit('error', party_id + " is already taken");
+    }
+    
+    else {      
+      totalparty_map[computation_id] = party_count;
       socket_map[computation_id][party_id] = socket.id;
       computation_map[socket.id] = computation_id;
-      party_map[socket.id] = party_id;      
-      
-      io.to(socket.id).emit('init', party_id);
-      console.log(party_id);
-    } else {
-      io.to(socket.id).emit('error', party_id + " is already taken");
+      party_map[socket.id] = party_id;
+
+      io.to(socket.id).emit('init', JSON.stringify({ party_id: party_id, party_count: party_count }));
     }
   });
 
@@ -72,13 +93,15 @@ io.on('connection', function(socket) {
 
   socket.on('disconnect', function() {
     console.log('user disconnected');
-    var computation_id = computation_map[socket.id];
-    var party_id = party_map[socket.id];
+    try {
+      var computation_id = computation_map[socket.id];
+      var party_id = party_map[socket.id];
 
-    party_map[socket.id] = null;
-    computation_map[socket.id] = null;
-    socket_map[computation_id][party_id] = null;
-    key_map[computation_id][party_id] = null;
+      party_map[socket.id] = null;
+      computation_map[socket.id] = null;
+      socket_map[computation_id][party_id] = null;
+      key_map[computation_id][party_id] = null;
+    } catch(ex) { }
   });
 
   socket.on('share', function(msg) {
