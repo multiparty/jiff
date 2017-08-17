@@ -29,7 +29,19 @@
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
           options.onConnect = function() { $("#output").append("<p>All parties Connected!</p>"); };
           
-          jiff_instance = jiff.make_jiff("localhost:3000", computation_id, options);
+          var hostname = window.location.hostname.trim();
+          var port = window.location.port;
+          if(port == null || port == '') 
+            port = "80";
+          if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
+            hostname = "http://" + hostname;
+          if(hostname.endsWith("/"))
+            hostname = hostname.substring(0, hostname.length-1);
+          if(hostname.indexOf(":") > -1)
+            hostanme = hostname.substring(0, hostname.indexOf(":"));
+  
+          hostname = hostname + ":" + port;
+          jiff_instance = jiff.make_jiff(hostname, computation_id, options);
           $("#sumButton").attr("disabled", false);
         }
       }
