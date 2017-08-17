@@ -188,7 +188,6 @@ io.on('connection', function(socket) {
     var number_id = msg.number_id;
     var Zp = msg.Zp;
     var bit = msg.bit;
-    var zero = msg.zero;
     var nonzero = msg.nonzero;
     var max = msg.max;
     if(max == null) max = Zp;
@@ -205,7 +204,7 @@ io.on('connection', function(socket) {
     if(all_numbers[number_id] == null) { // Generate shares for number.
       var number = Math.floor(Math.random() * max);
       
-      if(zero === true) number = 0;
+      if(msg.number != null) number = msg.number;
       else if(bit === true && nonzero === true) number = 1;
       else if(bit == true) number = number % 2;
       else if(nonzero == true && number == 0) number = Math.floor(Math.random() * (max-1)) + 1;
