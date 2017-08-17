@@ -376,7 +376,7 @@ var jiff = function() {
    * The parties will not know the value of the number (unless the request is for shares of zero) nor other parties' shares.
    *   jiff:    the jiff instance.
    *   Zp:      the modulos (if null then global Zp is used by default).
-   *   options: an object with these properties: { "zero": boolean, "bit": boolean, "nonzero": boolean, "max": number}
+   *   options: an object with these properties: { "number": number, "bit": boolean, "nonzero": boolean, "max": number}
    */
   function jiff_server_share_number(jiff, options, Zp) {
     if(Zp == null) Zp = gZp;
@@ -460,39 +460,39 @@ var jiff = function() {
       if(self.ready) return o.promise;
       else if(o.ready) return self.promise;
       else return Promise.all([self.promise, o.promise]);
-    }
+    };
     
     // Reshares/refreshes the sharing of this number, used before opening to keep the share secret.
     this.refresh = function() {
-      return self.add(self.jiff.server_generate_and_share({"zero": true}, self.Zp));
+      return self.add(self.jiff.server_generate_and_share({"number": 0}, self.Zp));
     };
 
     this.open = function(success, failure) {
       if(failure == null) failure = self.error;
       var promise = self.jiff.open(self);
       if(promise != null) promise.then(success, failure);
-    }
+    };
     
     this.open_to = function(parties, success, failure) {
       if(failure == null) failure = self.error;
       var promise = self.jiff.open(self, parties);
       if(promise != null) promise.then(success, failure);
-    }
+    };
 
     /* Addition with constant */
     this.add_cst = function(cst){
-      if (!(typeof(cst) == "number")) throw "parameter should be a number";
+      if (!(typeof(cst) == "number")) throw "parameter should be a number (+)";
 
       if(self.ready) // if share is ready
         return new secret_share(self.jiff, true, null, mod((self.value + cst), self.Zp), self.Zp);
 
       var promise = self.promise.then(function() { return mod((self.value + cst), self.Zp); }, self.error);
       return new secret_share(self.jiff, false, promise, undefined, self.Zp);
-    }
+    };
     
     /* Subtraction with constant */
     this.sub_cst = function(cst){
-      if (!(typeof(cst) == "number")) throw "parameter should be a number";
+      if (!(typeof(cst) == "number")) throw "parameter should be a number (-)";
 
       if(self.ready) // if share is ready
         return new secret_share(self.jiff, true, null, mod((self.value - cst), self.Zp), self.Zp);
@@ -503,19 +503,19 @@ var jiff = function() {
 
     /* Multiplication with constant */
     this.mult_cst = function(cst){
-      if (!(typeof(cst) == "number")) throw "parameter should be a number";
+      if (!(typeof(cst) == "number")) throw "parameter should be a number (*)";
 
       if(self.ready) // if share is ready
         return new secret_share(self.jiff, true, null, mod((self.value * cst), self.Zp), self.Zp);
 
       var promise = self.promise.then(function() { return mod((self.value * cst), self.Zp); }, self.error);
       return new secret_share(self.jiff, false, promise, undefined, self.Zp);
-    }
+    };
 
     /* Addition */
     this.add = function(o) {
-      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
-      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field";
+      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (+)";
+      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (+)";
 
       // add the two shares when ready locally
       var ready_add = function() {
@@ -528,12 +528,12 @@ var jiff = function() {
       // promise to execute ready_add when both are ready
       var promise = self.pick_promise(o).then(ready_add, self.error);
       return new secret_share(self.jiff, false, promise, undefined, self.Zp);
-    }
+    };
     
     /* subtraction */
     this.sub = function(o) {
-      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
-      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field";
+      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (-)";
+      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (-)";
 
       // add the two shares when ready locally
       var ready_sub = function() {
@@ -546,12 +546,12 @@ var jiff = function() {
       // promise to execute ready_add when both are ready
       var promise = self.pick_promise(o).then(ready_sub, self.error);
       return new secret_share(self.jiff, false, promise, undefined, self.Zp);
-    }
+    };
     
     /* multiplication via triplets */
     this.mult = function(o) {
-      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
-      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field";
+      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (*)";
+      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (*)";
 
       var final_deferred = $.Deferred();
       var final_promise = final_deferred.promise();
@@ -596,20 +596,21 @@ var jiff = function() {
     };
     
     this.xor = function(o) {
-      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
-      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field";
+      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (^)";
+      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (^)";
       
       return self.add(o).sub(self.mult(o).mult_cst(2));
-    }
+    };
     
     this.xor_cst = function(o) {    
+      if (!(typeof(o) == "number")) throw "parameter should be a number (^)";
       return self.add_cst(o).sub(self.mult_cst(o).mult_cst(2));
-    }
+    };
 
     /* comparison: negative number if self < o. 0 if self = i and positive number if self > o. */
     this.greater_or_equal = function(o, l) {
-      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance";
-      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field";
+      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (>=)";
+      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (>=)";
       
       var final_deferred = $.Deferred();
       var final_promise = final_deferred.promise();
@@ -623,7 +624,7 @@ var jiff = function() {
 
         var r_bits = [];
         for(var i = 0; i < l + k; i++)
-          r_bits[i] = jiff_server_share_number(self.jiff, { "bit": true }, self.Zp);
+          r_bits[i] = self.jiff.server_generate_and_share({ "bit": true }, self.Zp);
              
         var r_modl = r_bits[0];
         for(var i = 1; i < l; i++)
@@ -635,10 +636,10 @@ var jiff = function() {
 
         r_bits = r_bits.slice(0, l);
         
-        var s_bit = jiff_server_share_number(self.jiff, { "bit": true }, self.Zp);
+        var s_bit = self.jiff.server_generate_and_share({ "bit": true }, self.Zp);
         var s_sign = s_bit.mult_cst(-2).add_cst(1);
         
-        var mask = jiff_server_share_number(self.jiff, { "nonzero": true }, self.Zp);
+        var mask = self.jiff.server_generate_and_share({ "nonzero": true }, self.Zp);
         
         return { "s_bit": s_bit, "s_sign": s_sign, "mask": mask, "r_full": r_full, "r_modl": r_modl, "r_bits": r_bits };
       }
@@ -699,6 +700,28 @@ var jiff = function() {
       compare_online(pre);
       
       return result;
+    };
+    
+    this.greater_or_equal_cst = function(o, l) {
+      if (!(typeof(o) == "number")) throw "parameter should be a number (>=)";
+      
+      o = self.jiff.server_generate_and_share({"number": o}, self.Zp);
+      return self.greater_than_equal(o);
+    }
+    
+    this.less_than = function(o, l) {
+      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (<)";
+      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (<)";
+      
+      var gteq = self.greater_or_equal(o, l);
+      return gteq.mult_cst(-1).add_cst(1);
+    };
+    
+    this.less_than_cst = function(o, l) {
+      if (!(typeof(o) == "number")) throw "parameter should be a number (<)";
+      
+      o = self.jiff.server_generate_and_share({"number": o}, self.Zp);
+      return self.less_than(o);
     }
 
     // when the promise is resolved, acquire the value of the share and set ready to true
@@ -758,6 +781,24 @@ var jiff = function() {
 
     jiff.share = function(secret, Zp) { return jiff_share(jiff, secret, Zp); };
     jiff.open = function(share, parties) { return jiff_open(jiff, share, parties); };
+    jiff.open_all = function(shares, parties, success, error) {
+      if(error == null) error = shares[0].error;
+
+      var promises = [];
+      for(var i = 0; i < shares.length; i++) {
+        var party = parties;
+        if(parties != null && typeof(parties) != "number")
+          party = parties[i];
+          
+        if(party != null && typeof(party) == "number")
+          party = [ party ];
+        
+        promises.push(jiff.open(shares[i], party));
+      }
+      
+      Promise.all(promises).then(success, error);      
+    };
+    
     jiff.triplet = function(Zp) { return jiff_triplet(jiff, Zp); };
     jiff.generate_and_share_random = function(Zp) { return jiff_share_all_number(jiff, Math.floor(Math.random() * Zp), Zp); };
     jiff.generate_and_share_zero = function(Zp) { return jiff_share_all_number(jiff, 0, Zp); };
