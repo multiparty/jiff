@@ -851,6 +851,8 @@ function make_jiff(hostname, computation_id, options) {
     
     if(options.onError != null)
       options.onError(msg);
+    else
+      console.log(msg);
     
     throw msg;
   });
