@@ -29,7 +29,7 @@
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
           options.onConnect = function() { $("#output").append("<p>All parties Connected!</p>"); };
           
-          jiff_instance = make_jiff("localhost:3000", computation_id, options);
+          jiff_instance = jiff.make_jiff("localhost:3000", computation_id, options);
           $("#sumButton").attr("disabled", false);
         }
       }
