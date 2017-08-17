@@ -41,7 +41,7 @@
     var has_failed = false;
 
     $(function() {
-      jiff_instance = make_jiff("http://localhost:3000", '1', {party_count: parties});
+      jiff_instance = jiff.make_jiff("http://localhost:3000", '1', {party_count: parties});
     });
 
     // run all tests
@@ -84,7 +84,7 @@
         sum += numbers[i];
       }
       
-      sum = mod(sum, Zp);
+      sum = jiff.mod(sum, Zp);
       if(sum != result) { // sum is incorrect
         has_failed = true;
         $("#details").append("<li> sum("+numbers.join(", ")+") = " + sum + " != " +result + "</li>");
