@@ -55,6 +55,14 @@ io.on('connection', function(socket) {
       io.to(socket.id).emit('error', party_id + " is already taken");
     }
     
+    else if(isNaN(party_id) || party_id <= 0) {
+      io.to(socket.id).emit('error', "Invalid party ID");      
+    }
+    
+    else if(party_id > party_count) {
+      io.to(socket.id).emit('error', "Maximum parties capacity reached");
+    }
+    
     else {      
       totalparty_map[computation_id] = party_count;
       socket_map[computation_id][party_id] = socket.id;
