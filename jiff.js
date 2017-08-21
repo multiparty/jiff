@@ -401,9 +401,9 @@ var jiff = function() {
 
   /*
    * Store the received share of a previously requested number from the server.
-   *   jiff:      the jiff instance.
+   *   jiff:          the jiff instance.
    *   number_id:     the id of the number.
-   *   share:   the value of the share.
+   *   share:         the value of the share.
    *
    */
   function receive_server_share_number(jiff, number_id, share) {
@@ -413,6 +413,27 @@ var jiff = function() {
     // Deferred is already setup, resolve it.
     jiff.deferreds[number_id].resolve(share);
     jiff.deferreds[number_id] = null;
+  }
+  
+  /**
+   * Coerce a number into a share.
+   * THIS DOES NOT SHARE THE GIVEN NUMBER. It is a local type-coersion by 
+   *  invoking the constructor on the given parameter, this is useful for
+   *  for operating on constants, not sharing secret data.
+   * If all parties use this function with the same input number, then
+   *  you can think of their shares as being a share of that constant with threshold 1.
+   *  In other words, a trivial sharing scheme where the share is the number itself.
+   *  However, if some parties used differend input numbers, then the actual value
+   *  yielded by reconstruction/opening of all these shares is arbitrary and depends
+   *  on all the input numbers of all parties.
+   *   jiff:    the jiff instance.
+   *   number:  the number to coerce.
+   *   Zp:      the modulos.
+   *
+   */
+  function jiff_coerce_to_share(jiff, number, Zp) {
+    if(Zp == null) Zp = gZp;
+    return new secret_share(jiff, true, null, number, Zp);
   }
 
    
@@ -702,26 +723,82 @@ var jiff = function() {
       return result;
     };
     
-    this.greater_or_equal_cst = function(o, l) {
-      if (!(typeof(o) == "number")) throw "parameter should be a number (>=)";
+    this.greater = function(o, l) {
+      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (>)";
+      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (>)";
       
-      o = self.jiff.server_generate_and_share({"number": o}, self.Zp);
-      return self.greater_than_equal(o);
-    }
+      return o.greater_or_equal(self, l).mult_cst(-1).add_cst(1);
+    };
     
-    this.less_than = function(o, l) {
+    this.less_or_equal = function(o, l) {
+      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (<=)";
+      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (<=)";
+      
+      return o.greater_or_equal(self, l);
+    };
+    
+    this.less = function(o, l) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (<)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (<)";
       
-      var gteq = self.greater_or_equal(o, l);
-      return gteq.mult_cst(-1).add_cst(1);
+      return self.greater_or_equal(o, l).mult_cst(-1).add_cst(1);
     };
     
-    this.less_than_cst = function(o, l) {
+    /* Constant Comparison */
+    this.greater_or_equal_cst = function(o, l) {
+      if (!(typeof(o) == "number")) throw "parameter should be a number (>=)";
+      
+      var share_o = self.jiff.coerce_to_share(o, self.Zp);
+      return self.greater_than_equal(share_o);
+    }
+    
+    this.greater_cst = function(o, l) {
+      if (!(typeof(o) == "number")) throw "parameter should be a number (>)";
+      
+      return o.greater_or_equal_cst(self, l).mult_cst(-1).add_cst(1);
+    };
+    
+    this.less_or_equal_cst = function(o, l) {
+      if (!(typeof(o) == "number")) throw "parameter should be a number (<=)";
+      
+      return o.greater_or_equal_cst(self, l);
+    };
+    
+    this.less_cst = function(o, l) {
       if (!(typeof(o) == "number")) throw "parameter should be a number (<)";
       
-      o = self.jiff.server_generate_and_share({"number": o}, self.Zp);
-      return self.less_than(o);
+      return self.greater_or_equal_cst(o, l).mult_cst(-1).add_cst(1);
+    };
+    
+    /* Equality test */
+    this.eq = function(o, l) {
+      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (==)";
+      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (==)";
+      
+      var one_direction = self.greater_or_equal(o, l);
+      var other_direction = o.greater_or_equal(self, l);
+      return one_direction.mult(other_direction);
+    }
+    
+    this.neq = function(o, l) {
+      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (!=)";
+      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (!=)";
+      
+      return self.eq(o, l).mult_cst(-1).add_cst(1);
+    }
+    
+    /* Constant equality tests */
+    this.eq_cst = function(o, l) {
+      if (!(typeof(o) == "number")) throw "parameter should be a number (==)";
+      
+      var share_o = self.jiff.coerce_to_share(o, self.Zp);
+      return self.eq(share_o);
+    }
+    
+    this.neq_cst = function(o, l) {
+      if (!(typeof(o) == "number")) throw "parameter should be a number (!=)";
+      
+      return self.eq_cst(o, l).mult_cst(-1).add_cst(1);
     }
 
     // when the promise is resolved, acquire the value of the share and set ready to true
@@ -803,6 +880,7 @@ var jiff = function() {
     jiff.generate_and_share_random = function(Zp) { return jiff_share_all_number(jiff, Math.floor(Math.random() * Zp), Zp); };
     jiff.generate_and_share_zero = function(Zp) { return jiff_share_all_number(jiff, 0, Zp); };
     jiff.server_generate_and_share = function(options, Zp) { return jiff_server_share_number(jiff, options, Zp) };
+    jiff.coerce_to_share = function(number, Zp) { return jiff_coerce_to_share(jiff, number, Zp); };
 
     // Store the id when server sends it back
     jiff.socket.on('init', function(msg) {
