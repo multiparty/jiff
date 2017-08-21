@@ -749,7 +749,7 @@ var jiff = function() {
       if (!(typeof(o) == "number")) throw "parameter should be a number (>=)";
       
       var share_o = self.jiff.coerce_to_share(o, self.Zp);
-      return self.greater_than_equal(share_o);
+      return self.greater_or_equal(share_o);
     }
     
     this.greater_cst = function(o, l) {
