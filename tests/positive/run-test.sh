@@ -13,9 +13,13 @@ elif [ "$1" == "*" ]; then
 elif [ "$1" == "c*" ]; then
   firefox test-positive-cmult.html test-positive-cmult.html test-positive-cmult.html &
 elif [ "$1" == ">=" ]; then
-  firefox test-positive-gteq.html test-positive-gteq.html test-positive-gteq.html &
+  firefox test-positive-greater-equal.html test-positive-greater-equal.html test-positive-greater-equal.html &
+elif [ "$1" == ">" ]; then
+  firefox test-positive-greater.html test-positive-greater.html test-positive-greater.html &
+elif [ "$1" == "<=" ]; then
+  firefox test-positive-less-equal.html test-positive-less-equal.html test-positive-less-equal.html &
 elif [ "$1" == "<" ]; then
-  firefox test-positive-lessthan.html test-positive-lessthan.html test-positive-lessthan.html &
+  firefox test-positive-less.html test-positive-less.html test-positive-less.html &
 else
   echo "$1 Not recognizable"
 fi
