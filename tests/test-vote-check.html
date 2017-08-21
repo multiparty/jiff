@@ -76,7 +76,7 @@
           for(var j = 1; j < shares.length; j++) {
             sum = sum.add(shares[j][i]);
           }
-          sum_per_party[i] = sum.less_than_cst(2);
+          sum_per_party[i] = sum.less_cst(2);
         }
         
         // Check that no party has votes greater or equal to 2.
