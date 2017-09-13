@@ -18,11 +18,14 @@
       var jiff_instance;
       
       function connect() {
+        $('#connectButton').prop('disabled', true);
         var computation_id = $('#computation_id').val();
         var party_count = parseInt($('#count').val());
         
-        if(isNaN(party_count))
+        if(isNaN(party_count)) {
           $("#output").append("<p class='error'>Party count must be a valid number!</p>");
+          $('#connectButton').prop('disabled', false);
+        }
         
         else {
           var options = { party_count: party_count};
@@ -89,7 +92,7 @@
   <body>
     <h1>Connect JIFF</h1>
     <label for="computation_id">Computation ID</label><input id="computation_id" value="test-vote"></input> <br><br>
-    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button onclick="connect();">Connect</button>
+    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br> <br>
     
     <hr>
