@@ -63,6 +63,7 @@
       }
       
       function MPC(input) {
+        $("#sumButton").attr("disabled", true);
         $("#output").append("<p>Starting...</p>");
         var shares = jiff_instance.share(input);
         
@@ -75,6 +76,7 @@
       
       function handleResult(result) {
         $("#output").append("<p>Result is: " + result + "</p>");
+        $("#sumButton").attr("disabled", false);
       }
     </script>
   </head>
