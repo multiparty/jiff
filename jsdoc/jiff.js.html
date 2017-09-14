@@ -1,4 +1,32 @@
-/** The modulos to be used in secret sharing and operations on shares. */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: jiff.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: jiff.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** The modulos to be used in secret sharing and operations on shares. */
 var gZp = 1299827;
 
 /** The length of RSA key in bits. */
@@ -16,7 +44,7 @@ var jiff = function() {
   function random_string(length) {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for(var i = 0; i < length; i++) {
+    for(var i = 0; i &lt; length; i++) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 
@@ -31,7 +59,7 @@ var jiff = function() {
    * @return {number} x mod y.
    */
   function mod(x, y) {
-    if (x < 0) {
+    if (x &lt; 0) {
       return ((x%y)+y)%y;
     }
 
@@ -81,7 +109,7 @@ var jiff = function() {
     jiff.deferreds[op_id] = {}; // setup a map of deferred for every received share
 
     var result = {};
-    for(var i = 1; i <= party_count; i++) {
+    for(var i = 1; i &lt;= party_count; i++) {
       if(i == jiff.id) { // Keep party's own share
         result[i] = new secret_share(jiff, true, null, shares[i], Zp);
         continue;
@@ -136,14 +164,14 @@ var jiff = function() {
     polynomial[0] = secret;
 
     // Compute the random polynomial f's coefficients
-    for(var i = 1; i <= t; i++) polynomial[i] = Math.floor(Math.random() * Zp);
+    for(var i = 1; i &lt;= t; i++) polynomial[i] = Math.floor(Math.random() * Zp);
 
     // Compute each players share such that share[i] = f(i)
-    for(var i = 1; i <= party_count; i++) {
+    for(var i = 1; i &lt;= party_count; i++) {
       shares[i] = polynomial[0];
       power = i;
 
-      for(var j = 1; j < polynomial.length; j++) {
+      for(var j = 1; j &lt; polynomial.length; j++) {
         shares[i] = mod((shares[i] + polynomial[j] * power), Zp);
         power = power * i;
       }
@@ -199,7 +227,7 @@ var jiff = function() {
     // Default values
     if(parties == null || parties == []) {
       parties = [];
-      for(var i = 1; i <= jiff.party_count; i++)
+      for(var i = 1; i &lt;= jiff.party_count; i++)
         parties.push(i);
     }
 
@@ -241,7 +269,7 @@ var jiff = function() {
    *
    */
   function jiff_broadcast(jiff, share, parties, op_id) {
-    for(var index = 0; index < parties.length; index++) {
+    for(var index = 0; index &lt; parties.length; index++) {
       var i = parties[index]; // Party id
       if(i == jiff.id) { receive_open(jiff, i, share.value, op_id, share.Zp); continue; }
 
@@ -278,7 +306,7 @@ var jiff = function() {
 
     // Check if all shares were received
     var shares = jiff.shares[op_id];
-    for(var i = 1; i <= jiff.party_count; i++)
+    for(var i = 1; i &lt;= jiff.party_count; i++)
       if(shares[i] == null) return;
 
     // Everything was received, resolve the deferred.
@@ -299,16 +327,16 @@ var jiff = function() {
     var lagrange_coeff = Array(party_count+1);
 
     // Compute the Langrange coefficients at 0
-    for(var i = 1; i <= party_count; i++) {
+    for(var i = 1; i &lt;= party_count; i++) {
       lagrange_coeff[i] = 1;
-      for(var j = 1; j <= party_count; j++) {
+      for(var j = 1; j &lt;= party_count; j++) {
         if(j != i) lagrange_coeff[i] = lagrange_coeff[i] * (0 - j) / (i - j);
       }
     }
 
     // Reconstruct the secret via Lagrange interpolation
     var recons_secret = 0;
-    for(var i = 1; i <= party_count; i++)
+    for(var i = 1; i &lt;= party_count; i++)
       recons_secret = mod((recons_secret + shares[i] * lagrange_coeff[i]), Zp);
 
     return recons_secret;
@@ -381,7 +409,7 @@ var jiff = function() {
     var shares = jiff_share(jiff, n, Zp);
 
     var share = shares[1];
-    for(var i = 2; i <= jiff.party_count; i++) {
+    for(var i = 2; i &lt;= jiff.party_count; i++) {
       share = share.add(shares[i]);
     }
 
@@ -505,7 +533,7 @@ var jiff = function() {
      */
     this.toString = function() {
       if(ready) return self.id + ": " + self.value;
-      else return self.id + ": <deferred>";
+      else return self.id + ": &lt;deferred>";
     };
 
     /**
@@ -528,7 +556,7 @@ var jiff = function() {
      * @returns {promise} the joined promise for both shares (or whichever is pending).
      */
     this.pick_promise = function(o) {
-      if(self.ready && o.ready) return null;
+      if(self.ready &amp;&amp; o.ready) return null;
 
       if(self.ready) return o.promise;
       else if(o.ready) return self.promise;
@@ -632,7 +660,7 @@ var jiff = function() {
         return mod(self.value + o.value, self.Zp);
       }
 
-      if(self.ready && o.ready) // both shares are ready
+      if(self.ready &amp;&amp; o.ready) // both shares are ready
         return new secret_share(self.jiff, true, null, ready_add(), self.Zp);
 
       // promise to execute ready_add when both are ready
@@ -655,7 +683,7 @@ var jiff = function() {
         return mod(self.value - o.value, self.Zp);
       }
 
-      if(self.ready && o.ready) // both shares are ready
+      if(self.ready &amp;&amp; o.ready) // both shares are ready
         return new secret_share(self.jiff, true, null, ready_sub(), self.Zp);
 
       // promise to execute ready_add when both are ready
@@ -761,15 +789,15 @@ var jiff = function() {
         if(!(self.Zp > assert)) throw "field too small compared to security and bit length (" + assert + ")";
 
         var r_bits = [];
-        for(var i = 0; i < l + k; i++)
+        for(var i = 0; i &lt; l + k; i++)
           r_bits[i] = self.jiff.server_generate_and_share({ "bit": true }, self.Zp);
 
         var r_modl = r_bits[0];
-        for(var i = 1; i < l; i++)
+        for(var i = 1; i &lt; l; i++)
           r_modl = r_modl.add(r_bits[i].mult_cst(Math.pow(2, i)));
 
         var r_full = r_modl;
-        for(var i = l; i < l + k; i++)
+        for(var i = l; i &lt; l + k; i++)
           r_full = r_full.add(r_bits[i].mult_cst(Math.pow(2, i)));
 
         r_bits = r_bits.slice(0, l);
@@ -784,11 +812,11 @@ var jiff = function() {
 
       function finish_compare(c, s_bit, s_sign, mask, r_modl, r_bits, z) {
         var c_bits = [];
-        for(var i = 0; i < l; i++)
-          c_bits[i] = (c >> i) & 1;
+        for(var i = 0; i &lt; l; i++)
+          c_bits[i] = (c >> i) &amp; 1;
 
         var sumXORs = [];
-        for(var i = 0; i < l; i++)
+        for(var i = 0; i &lt; l; i++)
           sumXORs[i] = 0;
 
         sumXORs[l-2] = r_bits[l-1].xor_cst(c_bits[l-1]).add_cst(sumXORs[l-1]);
@@ -796,7 +824,7 @@ var jiff = function() {
           sumXORs[i] = r_bits[i+1].xor_cst(c_bits[i+1]).add(sumXORs[i+1]);
 
         var E_tilde = [];
-        for(var i = 0; i < r_bits.length; i++) {
+        for(var i = 0; i &lt; r_bits.length; i++) {
           var e_i = r_bits[i].add_cst(-1 * c_bits[i]).add(s_sign);
           if(typeof(sumXORs[i]) != "number")
             e_i = e_i.add(sumXORs[i].mult_cst(3));
@@ -807,7 +835,7 @@ var jiff = function() {
         }
 
         var product = mask;
-        for(var i = 0; i < E_tilde.length; i++)
+        for(var i = 0; i &lt; E_tilde.length; i++)
           product = product.mult(E_tilde[i]);
 
         product.open(function(product) {
@@ -859,11 +887,11 @@ var jiff = function() {
      * @method
      * @param {share-object} o - the other share.
      * @param {number} l - the maximum bit length of the two shares. [optional]
-     * @return {share-object} this party's share of the result, the final result is 1 if this <= o, and 0 otherwise.
+     * @return {share-object} this party's share of the result, the final result is 1 if this &lt;= o, and 0 otherwise.
      */
     this.less_or_equal = function(o, l) {
-      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (<=)";
-      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (<=)";
+      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (&lt;=)";
+      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (&lt;=)";
 
       return o.greater_or_equal(self, l);
     };
@@ -873,11 +901,11 @@ var jiff = function() {
      * @method
      * @param {share-object} o - the other share.
      * @param {number} l - the maximum bit length of the two shares. [optional]
-     * @return {share-object} this party's share of the result, the final result is 1 if this < o, and 0 otherwise.
+     * @return {share-object} this party's share of the result, the final result is 1 if this &lt; o, and 0 otherwise.
      */
     this.less = function(o, l) {
-      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (<)";
-      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (<)";
+      if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (&lt;)";
+      if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (&lt;)";
 
       return self.greater_or_equal(o, l).mult_cst(-1).add_cst(1);
     };
@@ -914,10 +942,10 @@ var jiff = function() {
      * @method
      * @param {number} cst - the constant to compare with.
      * @param {number} l - the maximum bit length of this share. [optional]
-     * @return {share-object} this party's share of the result, the final result is 1 if this <= cst, and 0 otherwise.
+     * @return {share-object} this party's share of the result, the final result is 1 if this &lt;= cst, and 0 otherwise.
      */
     this.less_or_equal_cst = function(cst, l) {
-      if (!(typeof(cst) == "number")) throw "parameter should be a number (<=)";
+      if (!(typeof(cst) == "number")) throw "parameter should be a number (&lt;=)";
 
       return cst.greater_or_equal_cst(self, l);
     };
@@ -927,10 +955,10 @@ var jiff = function() {
      * @method
      * @param {number} cst - the constant to compare with.
      * @param {number} l - the maximum bit length of this share. [optional]
-     * @return {share-object} this party's share of the result, the final result is 1 if this < cst, and 0 otherwise.
+     * @return {share-object} this party's share of the result, the final result is 1 if this &lt; cst, and 0 otherwise.
      */
     this.less_cst = function(cst, l) {
-      if (!(typeof(cst) == "number")) throw "parameter should be a number (<)";
+      if (!(typeof(cst) == "number")) throw "parameter should be a number (&lt;)";
 
       return self.greater_or_equal_cst(cst, l).mult_cst(-1).add_cst(1);
     };
@@ -1037,7 +1065,7 @@ var jiff = function() {
     else
       jiff.numbers_socket = io(options.numbers_server);
 
-    if(options.party_id != null && options.secret_key != null && options.public_keys != null) {
+    if(options.party_id != null &amp;&amp; options.secret_key != null &amp;&amp; options.public_keys != null) {
       jiff.id = options.party_id;
       jiff.secret_key = options.secret_key;
       jiff.public_key = options.public_keys[jiff.id];
@@ -1057,13 +1085,13 @@ var jiff = function() {
       if(error == null) error = shares[0].error;
 
       var promises = [];
-      for(var i = 0; i < shares.length; i++) {
+      for(var i = 0; i &lt; shares.length; i++) {
         var party = parties;
-        if(parties != null && typeof(parties) != "number")
+        if(parties != null &amp;&amp; typeof(parties) != "number")
           party = parties[i];
 
         // TODO? maybe do this differently, if array of numbers, use it for all shares?
-        if(party != null && typeof(party) == "number")
+        if(party != null &amp;&amp; typeof(party) == "number")
           party = [ party ];
 
         promises.push(jiff.open(shares[i], party));
@@ -1180,3 +1208,26 @@ var jiff = function() {
   return { make_jiff: make_jiff, mod: mod };
 }();
 
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="jiff-client.secret_share.html">secret_share</a></li></ul><h3>Namespaces</h3><ul><li><a href="jiff-client.html">jiff-client</a></li></ul><h3>Global</h3><ul><li><a href="global.html#gZp">gZp</a></li><li><a href="global.html#RSA_bits">RSA_bits</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Sep 14 2017 17:22:40 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
