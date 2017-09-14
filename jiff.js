@@ -1,12 +1,18 @@
-// The modulos to be used in secret sharing and operations on shares.
+/** The modulos to be used in secret sharing and operations on shares. */
 var gZp = 1299827;
 
-// The length of RSA key in bits.
+/** The length of RSA key in bits. */
 var RSA_bits = 1024;
 
-// Wraps the jiff API
+/**
+ * @module jiff-client
+ * @version 1.0
+ * Wraps the jiff API.
+ * @returns {object} object with two function fields: make_jiff and mod.
+ */
 var jiff = function() {
-  // Randomly generate a string of size length
+
+  /** Randomly generate a string of size length */
   function random_string(length) {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -17,20 +23,26 @@ var jiff = function() {
     return text;
   }
 
-  // Mod instead of javascript's remainder (%)
-  function mod(x, y) {  
+  /**
+  * Mod instead of javascript's remainder (%).
+  * @param {number} x
+  * @param {number} y
+  * @return {number} x mod y.
+  * @lends module:jiff-client
+  */
+  function mod(x, y) {
     if (x < 0) {
-      return ((x%y)+y)%y; 
+      return ((x%y)+y)%y;
     }
 
     return x%y;
   }
 
-  //Extended Euclead
-  function extended_gcd(a,b) { 
+  /** Extended Euclead */
+  function extended_gcd(a,b) {
     if (b == 0)
       return [1, 0, a];
-    
+
     temp = extended_gcd(b, a % b);
     x = temp[0];
     y = temp[1];
@@ -38,22 +50,22 @@ var jiff = function() {
     return [y, x-y*Math.floor(a/b), d];
   }
 
-  // Compute the log to a given base (2 by default).
+  /** Compute the log to a given base (2 by default). */
   function bLog(value, base) {
     if(base == null) base = 2;
     return Math.log(value) / Math.log(base);
   }
 
-  /*
+  /**
    * Share given secret to the participating parties.
-   *   jiff:      the jiff instance.
-   *   secret:    the secret to share.
-   *   Zp:        the modulos (if null global Zp will be used).
-   *   op_id:     the operation id that matches this operation with received messages [optional].
-   *   return:    a map (of size equal to the number of parties)
-   *              where the key is the party id (from 1 to n)
-   *              and the value is the share object that wraps
-   *              the value sent from that party (the internal value maybe deferred).
+   * @param {jiff-instance} jiff - the jiff instance.
+   * @param {number} secret - the secret to share.
+   * @param {number} Zp - the modulos (if null global gZp will be used) [optional].
+   * @param {number} op_id - the operation id that matches this operation with received messages [optional].
+   * @returns {object} a map (of size equal to the number of parties)
+   *          where the key is the party id (from 1 to n)
+   *          and the value is the share object that wraps
+   *          the value sent from that party (the internal value maybe deferred).
    *
    */
   function jiff_share(jiff, secret, Zp, op_id) {
@@ -99,15 +111,15 @@ var jiff = function() {
     return result;
   }
 
-  /*
+  /**
    * Compute the shares of the secret (as many shares as parties) using
    * a polynomial of degree: ceil(parties/2) - 1 (honest majority).
-   *   secret:        the secret to share.
-   *   party_count:   the number of parties.
-   *   Zp:            the modulos.
-   *   return:        a map between party number (from 1 to parties) and its
-   *                  share, this means that (party number, share) is a
-   *                  point from the polynomial.
+   * @param {number} secret - the secret to share.
+   * @param {number} party_count - the number of parties.
+   * @param {number} Zp - the modulos.
+   * @returns {object} a map between party number (from 1 to parties) and its
+   *          share, this means that (party number, share) is a
+   *          point from the polynomial.
    *
    */
   function jiff_compute_shares(secret, party_count, Zp) {
@@ -143,10 +155,12 @@ var jiff = function() {
   /*
    * Store the received share and resolves the corresponding
    * deferred if needed.
-   *   jiff:      the jiff instance.
-   *   sender_id: the id of the sender.
-   *   share:     the share.
-   *   op_id:     the id of the share operation.
+   * @param {jiff-instance} jiff - the jiff instance.
+   * @param {number} sender_id - the id of the sender.
+   * @param {string} share - the encrypted share, unless sender
+   *                         is the same as receiver, then it is
+   *                         an unencrypted number.
+   * @param {number} op_id - the id of the share operation.
    *
    */
   function receive_share(jiff, sender_id, share, op_id) {
@@ -171,17 +185,17 @@ var jiff = function() {
 
   /*
    * Open up the given share to the participating parties.
-   *   jiff:      the jiff instance.
-   *   share:     the share of the secret to open that belongs to this party.
-   *   parties:   an array with party ids (1 to n) of receiving parties [optional].
-   *   op_id:     the operation id that matches this operation with received messages [optional].
-   *   return:    a (JQuery) promise to the open value of the secret.
-   *   throws:    error if share does not belong to the passed jiff instance.
+   * @param {jiff-instance} jiff - the jiff instance.
+   * @param {share-object} share - the share of the secret to open that belongs to this party.
+   * @param {array} parties - an array with party ids (1 to n) of receiving parties [optional].
+   * @param {number} op_id - the operation id that matches this operation with received messages [optional].
+   * @returns {promise} a (JQuery) promise to the open value of the secret.
+   * @throws error if share does not belong to the passed jiff instance.
    *
-  */
+   */
   function jiff_open(jiff, share, parties, op_id) {
     if(!(share.jiff === jiff)) throw "share does not belong to given instance";
-    
+
     // Default values
     if(parties == null || parties == []) {
       parties = [];
@@ -196,7 +210,7 @@ var jiff = function() {
 
     // Check if this party is going to receive the result.
     var is_a_receiver = parties.indexOf(jiff.id) > -1;
-    
+
     // Setup a deferred for receiving the shares from other parties
     var deferred;
     if(is_a_receiver) {
@@ -207,7 +221,7 @@ var jiff = function() {
     // refresh/reshare, so that the original share remains secret, instead
     // a new share is sent/open without changing the actual value.
     share = share.refresh();
-    
+
     // The given share has been computed, share it to all parties
     if(share.ready) jiff_broadcast(jiff, share, parties, op_id);
 
@@ -220,10 +234,10 @@ var jiff = function() {
 
   /*
    * Share the given share to all the parties in the jiff instance.
-   *   jiff:      the jiff instance.
-   *   share:     the share.
-   *   parties:   the parties to broadcast the share to.
-   *   op_id:     the id of the share operation.
+   * @param {jiff-instance} jiff - the jiff instance.
+   * @param {number} share - the share.
+   * @param {array} parties - the parties to broadcast the share to.
+   * @param {number} op_id - the id of the share operation.
    *
    */
   function jiff_broadcast(jiff, share, parties, op_id) {
@@ -241,11 +255,13 @@ var jiff = function() {
   /*
    * Store the received share of the secret to open, reconstruct
    * the secret and resolves the corresponding deferred if needed.
-   *   jiff:      the jiff instance.
-   *   sender_id: the id of the sender.
-   *   share:     the share.
-   *   op_id:     the id of the share operation.
-   *   Zp:        the modulos.
+   * @param {jiff_instance} jiff - the jiff instance.
+   * @param {number} sender_id - the id of the sender.
+   * @param {string} share - the encrypted share, unless sender
+   *                         is the same as receiver, then it is
+   *                         an unencrypted number..
+   * @param {number} op_id - the id of the share operation.
+   * @param {number} Zp - the modulos.
    */
   function receive_open(jiff, sender_id, share, op_id, Zp) {
     // ensure shares map exists
@@ -274,9 +290,9 @@ var jiff = function() {
   /*
    * Uses Lagrange polynomials to interpolate the polynomial
    * described by the given shares (points).
-   *   shares:        map between party id (x coordinate) and share (y coordinate).
-   *   party_count:   number of parties (and shares).
-   *   return:       the value of the polynomial at x=0 (the secret value).
+   * @param {object} shares - map between party id (x coordinate) and share (y coordinate).
+   * @param {number} party_count - number of parties (and shares).
+   * @returns {number} the value of the polynomial at x=0 (the secret value).
    *
    */
   function jiff_lagrange(shares, party_count, Zp) {
@@ -301,39 +317,39 @@ var jiff = function() {
   /*
    * Creates 3 shares, a share for every one of three numbers from a beaver triplet.
    * The server generates and sends the triplets on demand.
-   *   jiff:      the jiff instance.
-   *   Zp:        the modulos.
+   * @param {jiff-instance} jiff - the jiff instance.
+   * @param {number} Zp - the modulos (if null then global Zp is used by default) [optional].
    *
    */
   function jiff_triplet(jiff, Zp) {
     if(Zp == null) Zp = gZp;
-    
+
     // Get the id of the triplet needed.
     var triplet_id = "triplet" + jiff.triplet_op_count;
     jiff.triplet_op_count++;
-    
-    // Send a request to the server.  
+
+    // Send a request to the server.
     jiff.triplets_socket.emit('triplet', JSON.stringify({triplet_id: triplet_id, Zp: Zp}));
 
-    // Setup deferreds to handle receiving the triplets later.  
+    // Setup deferreds to handle receiving the triplets later.
     var a_deferred = $.Deferred();
     var b_deferred = $.Deferred();
     var c_deferred = $.Deferred();
     jiff.deferreds[triplet_id] = { a: a_deferred, b: b_deferred, c: c_deferred };
-    
-    
+
+
     var a_share = new secret_share(jiff, false, a_deferred.promise(), undefined, Zp);
     var b_share = new secret_share(jiff, false, b_deferred.promise(), undefined, Zp);
-    var c_share = new secret_share(jiff, false, c_deferred.promise(), undefined, Zp);  
-    
+    var c_share = new secret_share(jiff, false, c_deferred.promise(), undefined, Zp);
+
     return [ a_share, b_share, c_share ];
-  } 
+  }
 
   /*
    * Store the received beaver triplet and resolves the corresponding deferred.
-   *   jiff:      the jiff instance.
-   *   triplet_id:     the id of the triplet.
-   *   triplet:   the triplet (object a -> share_a, b -> share_b, c -> share_c).
+   * @param {jiff-instance} jiff - the jiff instance.
+   * @param {number} triplet_id - the id of the triplet.
+   * @param {object} triplet - the triplet (on the form: { a: share_a, b: share_b, c: share_c }).
    *
    */
   function receive_triplet(jiff, triplet_id, triplet) {
@@ -355,80 +371,82 @@ var jiff = function() {
    * then every party sums its share, resulting in a single share of an unknown random number for every party.
    * The same approach is followed for zero, but instead, all the parties know that the total number is zero, but they
    * do not know the value of any resulting share (except their own).
-   *   jiff:    the jiff instance.
-   *   n:       the number to share (random or zero or constant etc).
-   *   Zp:      the modulos (if null then global Zp is used by default).
+   * @param {jiff-instance} jiff - the jiff instance.
+   * @param {number} n - the number to share.
+   * @param {number} Zp - the modulos (if null then global Zp is used by default) [optional].
+   * @return {share-object} this party's share of the the number.
    */
   function jiff_share_all_number(jiff, n, Zp) {
     if(Zp == null) Zp = gZp;
     var shares = jiff_share(jiff, n, Zp);
-      
+
     var share = shares[1];
     for(var i = 2; i <= jiff.party_count; i++) {
       share = share.add(shares[i]);
     }
-     
+
     return share;
   }
 
   /**
    * Use the server to generate shares for a random bit, zero, random non-zero number, or a random number.
    * The parties will not know the value of the number (unless the request is for shares of zero) nor other parties' shares.
-   *   jiff:    the jiff instance.
-   *   Zp:      the modulos (if null then global Zp is used by default).
-   *   options: an object with these properties: { "number": number, "bit": boolean, "nonzero": boolean, "max": number}
+   * @param {jiff-instance} jiff - the jiff instance.
+   * @param {number} Zp - the modulos (if null then global Zp is used by default) [optional].
+   * @param {object} options - an object with these properties:
+   *                           { "number": number, "bit": boolean, "nonzero": boolean, "max": number}
    */
   function jiff_server_share_number(jiff, options, Zp) {
     if(Zp == null) Zp = gZp;
-    
+
     // Get the id of the number.
     var number_id = "number" + jiff.number_op_count;
     jiff.number_op_count++;
-    
+
     var msg = { number_id: number_id, Zp: Zp };
     msg = Object.assign(msg, options);
-    
-    // Send a request to the server.  
+
+    // Send a request to the server.
     jiff.numbers_socket.emit('number', JSON.stringify(msg));
 
-    // Setup deferreds to handle receiving the triplets later.  
+    // Setup deferreds to handle receiving the triplets later.
     var deferred = $.Deferred();
     jiff.deferreds[number_id] = deferred;
-    
+
     var share = new secret_share(jiff, false, deferred.promise(), undefined, Zp);
     return share;
   }
 
   /*
    * Store the received share of a previously requested number from the server.
-   *   jiff:          the jiff instance.
-   *   number_id:     the id of the number.
-   *   share:         the value of the share.
+   * @param {jiff-instance} jiff - the jiff instance.
+   * @param {number} number_id - the id of the number.
+   * @param share - the value of the share.
    *
    */
   function receive_server_share_number(jiff, number_id, share) {
     // Decrypt received share.
     share = parseInt(cryptico.decrypt(share, jiff.secret_key).plaintext, 10);
-    
+
     // Deferred is already setup, resolve it.
     jiff.deferreds[number_id].resolve(share);
     jiff.deferreds[number_id] = null;
   }
-  
+
   /**
-   * Coerce a number into a share.
-   * THIS DOES NOT SHARE THE GIVEN NUMBER. It is a local type-coersion by 
-   *  invoking the constructor on the given parameter, this is useful for
-   *  for operating on constants, not sharing secret data.
+   * Coerce a number into a share. THIS DOES NOT SHARE THE GIVEN NUMBER.
+   * It is a local type-coersion by invoking the constructor on the given parameter,
+   *  this is useful for for operating on constants, not sharing secret data.
    * If all parties use this function with the same input number, then
    *  you can think of their shares as being a share of that constant with threshold 1.
    *  In other words, a trivial sharing scheme where the share is the number itself.
    *  However, if some parties used differend input numbers, then the actual value
    *  yielded by reconstruction/opening of all these shares is arbitrary and depends
    *  on all the input numbers of all parties.
-   *   jiff:    the jiff instance.
-   *   number:  the number to coerce.
-   *   Zp:      the modulos.
+   *  @param {jiff-instance} jiff - the jiff instance.
+   *  @param {number} number - the number to coerce.
+   *  @param {number} Zp - the modulos [optional].
+   *  @returns {share-object} a share object containing the given number.
    *
    */
   function jiff_coerce_to_share(jiff, number, Zp) {
@@ -436,45 +454,84 @@ var jiff = function() {
     return new secret_share(jiff, true, null, number, Zp);
   }
 
-   
+
   /*
    * Create a new share.
    * A share is a value wrapper with a share object, it has a unique id
    * (per computation instance), and a pointer to the instance it belongs to.
    * A share also has methods for performing operations.
-   *   jiff:      the jiff instance.
-   *   ready:     whether the value of the share is ready or deferred.
-   *   promise:   a promise to the value of the share.
-   *   value:     the value of the share.
+   * @constructor
+   * @param {jiff-instance} jiff - the jiff instance.
+   * @param {boolean} ready - whether the value of the share is ready or deferred.
+   * @param {promise} promise - a promise to the value of the share.
+   * @param {number} value - the value of the share (null if not ready).
+   * @param {number} Zp - the modulos under which this share was created.
+   * @returns {secret-share} the secret share object containing the give value.
+   * @namespace share-object
    *
    */
   function secret_share(jiff, ready, promise, value, Zp) {
     var self = this;
 
+    /** @member {jiff-instance} */
     this.jiff = jiff;
+    /** @member {boolean} */
     this.ready = ready;
+    /** @member {promise} */
     this.promise = promise;
+    /** @member {number} */
     this.value = value;
+    /** @member {number} */
     this.Zp = Zp;
 
+    /** @member {string} */
     this.id = "share"+jiff.share_obj_count;
     jiff.share_obj_count++;
 
-    // misc methods
+    /**
+     * Gets the value of this share.
+     * @method valueOf
+     * @memberof share-object
+     * @returns {number} the value (undefined if not ready yet).
+     */
     this.valueOf = function() {
       if(ready) return self.value;
       else return undefined;
     };
 
+    /**
+     * Gets a string representation of this share.
+     * @method toString
+     * @memberof share-object
+     * @returns {string} the id and value of the share as a string.
+     */
     this.toString = function() {
       if(ready) return self.id + ": " + self.value;
       else return self.id + ": <deferred>";
     };
 
-    // helper for managing promises.
+    /**
+     * Logs an error.
+     * @method error
+     * @memberof share-object
+     */
     this.error = function() { console.log("Error receiving " + self.toString); };
+
+    /**
+     * Receives the value of this share when ready.
+     * @method receive_share
+     * @memberof share-object
+     * @param {number} value - the value of the share.
+     */
     this.receive_share = function(value) { self.value = value; self.ready = true; self.promise = null; };
 
+    /**
+     * Joins the pending promises of this share and the given share.
+     * @method pick_promise
+     * @memberof share-object
+     * @param {share-object} o - the other share object.
+     * @returns {promise} the joined promise for both shares (or whichever is pending).
+     */
     this.pick_promise = function(o) {
       if(self.ready && o.ready) return null;
 
@@ -482,25 +539,51 @@ var jiff = function() {
       else if(o.ready) return self.promise;
       else return Promise.all([self.promise, o.promise]);
     };
-    
-    // Reshares/refreshes the sharing of this number, used before opening to keep the share secret.
+
+    /**
+     * Reshares/refreshes the sharing of this number, used before opening to keep the share secret.
+     * @method refresh
+     * @memberof share-object
+     * @returns {secret-share} a new share of the same number.
+     */
     this.refresh = function() {
       return self.add(self.jiff.server_generate_and_share({"number": 0}, self.Zp));
     };
 
+    /**
+     * Reveals/Opens the value of this share.
+     * @method open
+     * @memberof share-object
+     * @param {function(number)} success - the function to handle successful open.
+     * @param {function(string)} error - the function to handle errors and error messages. [optional]
+     */
     this.open = function(success, failure) {
       if(failure == null) failure = self.error;
       var promise = self.jiff.open(self);
       if(promise != null) promise.then(success, failure);
     };
-    
+
+    /**
+     * Reveals/Opens the value of this share to a specific array of parties.
+     * @method open_to
+     * @memberof share-object
+     * @param {array} parties - the ids of parties to reveal secret to.
+     * @param {function(number)} success - the function to handle successful open.
+     * @param {function(string)} error - the function to handle errors and error messages. [optional]
+     */
     this.open_to = function(parties, success, failure) {
       if(failure == null) failure = self.error;
       var promise = self.jiff.open(self, parties);
       if(promise != null) promise.then(success, failure);
     };
 
-    /* Addition with constant */
+    /**
+     * Addition with a constant.
+     * @method add_cst
+     * @memberof share-object
+     * @param {number} cst - the constant to add.
+     * @return {share-object} this party's share of the result.
+     */
     this.add_cst = function(cst){
       if (!(typeof(cst) == "number")) throw "parameter should be a number (+)";
 
@@ -510,8 +593,14 @@ var jiff = function() {
       var promise = self.promise.then(function() { return mod((self.value + cst), self.Zp); }, self.error);
       return new secret_share(self.jiff, false, promise, undefined, self.Zp);
     };
-    
-    /* Subtraction with constant */
+
+    /**
+     * Subtraction with a constant.
+     * @method sub_cst
+     * @memberof share-object
+     * @param {number} cst - the constant to subtract from this share.
+     * @return {share-object} this party's share of the result.
+     */
     this.sub_cst = function(cst){
       if (!(typeof(cst) == "number")) throw "parameter should be a number (-)";
 
@@ -522,7 +611,13 @@ var jiff = function() {
       return new secret_share(self.jiff, false, promise, undefined, self.Zp);
     }
 
-    /* Multiplication with constant */
+    /**
+     * Multiplication by a constant.
+     * @method mult_cst
+     * @memberof share-object
+     * @param {number} cst - the constant to multiply to this share.
+     * @return {share-object} this party's share of the result.
+     */
     this.mult_cst = function(cst){
       if (!(typeof(cst) == "number")) throw "parameter should be a number (*)";
 
@@ -533,7 +628,13 @@ var jiff = function() {
       return new secret_share(self.jiff, false, promise, undefined, self.Zp);
     };
 
-    /* Addition */
+    /**
+     * Addition of two secret shares.
+     * @method add
+     * @memberof share-object
+     * @param {share-object} o - the share to add to this share.
+     * @return {share-object} this party's share of the result.
+     */
     this.add = function(o) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (+)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (+)";
@@ -550,8 +651,14 @@ var jiff = function() {
       var promise = self.pick_promise(o).then(ready_add, self.error);
       return new secret_share(self.jiff, false, promise, undefined, self.Zp);
     };
-    
-    /* subtraction */
+
+    /**
+     * Subtraction of two secret shares.
+     * @method sub
+     * @memberof share-object
+     * @param {share-object} o - the share to subtract from this share.
+     * @return {share-object} this party's share of the result.
+     */
     this.sub = function(o) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (-)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (-)";
@@ -568,8 +675,14 @@ var jiff = function() {
       var promise = self.pick_promise(o).then(ready_sub, self.error);
       return new secret_share(self.jiff, false, promise, undefined, self.Zp);
     };
-    
-    /* multiplication via triplets */
+
+    /**
+     * Multiplication of two secret shares through Beaver Triplets.
+     * @method mult
+     * @memberof share-object
+     * @param {share-object} o - the share to multiply with.
+     * @return {share-object} this party's share of the result.
+     */
     this.mult = function(o) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (*)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (*)";
@@ -577,18 +690,18 @@ var jiff = function() {
       var final_deferred = $.Deferred();
       var final_promise = final_deferred.promise();
       var result = new secret_share(self.jiff, false, final_promise, undefined, self.Zp);
-      
+
       // Get shares of triplets.
       var triplet = jiff.triplet(self.Zp);
-      
+
       var a = triplet[0];
       var b = triplet[1];
       var c = triplet[2];
-      
+
       // d = s - a. e = o - b.
       var d = self.add(a.mult_cst(-1));
       var e = o.add(b.mult_cst(-1));
-      
+
       // Open d and e.
       // The only communication cost.
       var e_promise = self.jiff.open(e);
@@ -596,80 +709,101 @@ var jiff = function() {
       Promise.all([e_promise, d_promise]).then(function(arr) {
         var e_open = arr[0];
         var d_open = arr[1];
-        
+
         // result_share = d_open * e_open + d_open * b_share + e_open * a_share + c.
         var t1 = d_open * e_open;
         var t2 = b.mult_cst(d_open);
         var t3 = a.mult_cst(e_open);
-        
+
         // All this happens locally.
         var final_result = t2.add_cst(t1);
         final_result = final_result.add(t3);
-        final_result = final_result.add(c);      
-        
+        final_result = final_result.add(c);
+
         if(final_result.ready)
           final_deferred.resolve(final_result.value);
         else // Resolve the deferred when ready.
           final_result.promise.then(function () { final_deferred.resolve(final_result.value); });
       });
-      
+
       return result;
     };
-    
+
+    /**
+     * bitwise-XOR of two secret shares.
+     * @method xor
+     * @memberof share-object
+     * @param {share-object} o - the share to XOR with.
+     * @return {share-object} this party's share of the result.
+     */
     this.xor = function(o) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (^)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (^)";
-      
+
       return self.add(o).sub(self.mult(o).mult_cst(2));
     };
-    
-    this.xor_cst = function(o) {    
-      if (!(typeof(o) == "number")) throw "parameter should be a number (^)";
-      return self.add_cst(o).sub(self.mult_cst(o).mult_cst(2));
+
+    /**
+     * bitwise-XOR with a constant.
+     * @method xor_cst
+     * @memberof share-object
+     * @param {number} cst - the constant to XOR with.
+     * @return {share-object} this party's share of the result.
+     */
+    this.xor_cst = function(cst) {
+      if (!(typeof(cst) == "number")) throw "parameter should be a number (^)";
+      return self.add_cst(cst).sub(self.mult_cst(cst).mult_cst(2));
     };
 
-    /* comparison: negative number if self < o. 0 if self = i and positive number if self > o. */
+    /**
+     * Greater than or equal with another share.
+     * @method greater_or_equal
+     * @memberof share-object
+     * @param {share-object} o - the other share.
+     * @param {number} l - the maximum bit length of the two shares. [optional]
+     * @return {share-object} this party's share of the result, the final result is 1 if this >= o, and 0 otherwise.
+     */
     this.greater_or_equal = function(o, l) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (>=)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (>=)";
-      
+
       var final_deferred = $.Deferred();
       var final_promise = final_deferred.promise();
       var result = new secret_share(self.jiff, false, final_promise, undefined, self.Zp);
-      
+
       var k = self.jiff.party_count;
       if(l == null) l = Math.floor(bLog(self.Zp, 2) - bLog(1 + Math.pow(2, k)) - 1);
-      function preprocess() {      
+      function preprocess() {
         var assert = Math.pow(2, (l+2)) + Math.pow(2, (l+k));
         if(!(self.Zp > assert)) throw "field too small compared to security and bit length (" + assert + ")";
 
         var r_bits = [];
         for(var i = 0; i < l + k; i++)
           r_bits[i] = self.jiff.server_generate_and_share({ "bit": true }, self.Zp);
-             
+
         var r_modl = r_bits[0];
         for(var i = 1; i < l; i++)
           r_modl = r_modl.add(r_bits[i].mult_cst(Math.pow(2, i)));
-          
+
         var r_full = r_modl;
         for(var i = l; i < l + k; i++)
           r_full = r_full.add(r_bits[i].mult_cst(Math.pow(2, i)));
 
         r_bits = r_bits.slice(0, l);
-        
+
         var s_bit = self.jiff.server_generate_and_share({ "bit": true }, self.Zp);
         var s_sign = s_bit.mult_cst(-2).add_cst(1);
-        
+
         var mask = self.jiff.server_generate_and_share({ "nonzero": true }, self.Zp);
-        
+
         return { "s_bit": s_bit, "s_sign": s_sign, "mask": mask, "r_full": r_full, "r_modl": r_modl, "r_bits": r_bits };
       }
-      
-      function finish_compare(c, s_bit, s_sign, mask, r_modl, r_bits, z) {      
+
+      function finish_compare(c, s_bit, s_sign, mask, r_modl, r_bits, z) {
         var c_bits = [];
         for(var i = 0; i < l; i++)
           c_bits[i] = (c >> i) & 1;
-          
+
         var sumXORs = [];
         for(var i = 0; i < l; i++)
           sumXORs[i] = 0;
@@ -677,7 +811,7 @@ var jiff = function() {
         sumXORs[l-2] = r_bits[l-1].xor_cst(c_bits[l-1]).add_cst(sumXORs[l-1]);
         for(var i = l-3; i > -1; i--)
           sumXORs[i] = r_bits[i+1].xor_cst(c_bits[i+1]).add(sumXORs[i+1]);
-              
+
         var E_tilde = [];
         for(var i = 0; i < r_bits.length; i++) {
           var e_i = r_bits[i].add_cst(-1 * c_bits[i]).add(s_sign);
@@ -685,10 +819,10 @@ var jiff = function() {
             e_i = e_i.add(sumXORs[i].mult_cst(3));
           else
             e_i = e_i.add_cst(3 * sumXORs[i]);
-            
+
           E_tilde.push(e_i);
         }
-                
+
         var product = mask;
         for(var i = 0; i < E_tilde.length; i++)
           product = product.mult(E_tilde[i]);
@@ -698,7 +832,7 @@ var jiff = function() {
           var UF = s_bit.xor_cst(non_zero);
           var c_mod2l = mod(c, Math.pow(2, l));
           var res = UF.mult_cst(Math.pow(2, l)).sub(r_modl.add_cst(-1 * c_mod2l));
-          
+
           var inverse = extended_gcd(Math.pow(2, l), self.Zp)[0];
           var final_result = z.sub(res).mult_cst(inverse);
           if(final_result.ready)
@@ -707,98 +841,183 @@ var jiff = function() {
             final_result.promise.then(function () { final_deferred.resolve(final_result.value); });
         });
       }
-          
+
       function compare_online(preprocess) {
         var a = self.mult_cst(2).add_cst(1);
         var b = o.mult_cst(2);
-        
+
         var z = a.sub(b).add_cst(Math.pow(2, l));
         var c = preprocess.r_full.add(z);
         c.open(function(c) { finish_compare(c, preprocess.s_bit, preprocess.s_sign, preprocess.mask, preprocess.r_modl, preprocess.r_bits, z); });
       }
-      
+
       var pre = preprocess();
       compare_online(pre);
-      
+
       return result;
     };
-    
+
+    /**
+     * Greater than with another share.
+     * @method greater
+     * @memberof share-object
+     * @param {share-object} o - the other share.
+     * @param {number} l - the maximum bit length of the two shares. [optional]
+     * @return {share-object} this party's share of the result, the final result is 1 if this > o, and 0 otherwise.
+     */
     this.greater = function(o, l) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (>)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (>)";
-      
+
       return o.greater_or_equal(self, l).mult_cst(-1).add_cst(1);
     };
-    
+
+    /**
+     * Less than or equal with another share.
+     * @method less_or_equal
+     * @memberof share-object
+     * @param {share-object} o - the other share.
+     * @param {number} l - the maximum bit length of the two shares. [optional]
+     * @return {share-object} this party's share of the result, the final result is 1 if this <= o, and 0 otherwise.
+     */
     this.less_or_equal = function(o, l) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (<=)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (<=)";
-      
+
       return o.greater_or_equal(self, l);
     };
-    
+
+    /**
+     * Less than with another share.
+     * @method less
+     * @memberof share-object
+     * @param {share-object} o - the other share.
+     * @param {number} l - the maximum bit length of the two shares. [optional]
+     * @return {share-object} this party's share of the result, the final result is 1 if this < o, and 0 otherwise.
+     */
     this.less = function(o, l) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (<)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (<)";
-      
+
       return self.greater_or_equal(o, l).mult_cst(-1).add_cst(1);
     };
-    
-    /* Constant Comparison */
-    this.greater_or_equal_cst = function(o, l) {
-      if (!(typeof(o) == "number")) throw "parameter should be a number (>=)";
-      
-      var share_o = self.jiff.coerce_to_share(o, self.Zp);
-      return self.greater_or_equal(share_o);
+
+    /**
+     * Greater than or equal with a constant.
+     * @method greater_or_equal_cst
+     * @memberof share-object
+     * @param {number} cst - the constant to compare with.
+     * @param {number} l - the maximum bit length of this share. [optional]
+     * @return {share-object} this party's share of the result, the final result is 1 if this >= cst, and 0 otherwise.
+     */
+    this.greater_or_equal_cst = function(cst, l) {
+      if (!(typeof(cst) == "number")) throw "parameter should be a number (>=)";
+
+      var share_cst = self.jiff.coerce_to_share(cst, self.Zp);
+      return self.greater_or_equal(share_cst);
     }
-    
-    this.greater_cst = function(o, l) {
-      if (!(typeof(o) == "number")) throw "parameter should be a number (>)";
-      
-      return o.greater_or_equal_cst(self, l).mult_cst(-1).add_cst(1);
+
+    /**
+     * Greater than with a constant.
+     * @method greater_cst
+     * @memberof share-object
+     * @param {number} cst - the constant to compare with.
+     * @param {number} l - the maximum bit length of this share. [optional]
+     * @return {share-object} this party's share of the result, the final result is 1 if this > cst, and 0 otherwise.
+     */
+    this.greater_cst = function(cst, l) {
+      if (!(typeof(cst) == "number")) throw "parameter should be a number (>)";
+
+      return cst.greater_or_equal_cst(self, l).mult_cst(-1).add_cst(1);
     };
-    
-    this.less_or_equal_cst = function(o, l) {
-      if (!(typeof(o) == "number")) throw "parameter should be a number (<=)";
-      
-      return o.greater_or_equal_cst(self, l);
+
+    /**
+     * Less than or equal with a constant.
+     * @method less_or_equal_cst
+     * @memberof share-object
+     * @param {number} cst - the constant to compare with.
+     * @param {number} l - the maximum bit length of this share. [optional]
+     * @return {share-object} this party's share of the result, the final result is 1 if this <= cst, and 0 otherwise.
+     */
+    this.less_or_equal_cst = function(cst, l) {
+      if (!(typeof(cst) == "number")) throw "parameter should be a number (<=)";
+
+      return cst.greater_or_equal_cst(self, l);
     };
-    
-    this.less_cst = function(o, l) {
-      if (!(typeof(o) == "number")) throw "parameter should be a number (<)";
-      
-      return self.greater_or_equal_cst(o, l).mult_cst(-1).add_cst(1);
+
+    /**
+     * Less than with a constant.
+     * @method less_cst
+     * @memberof share-object
+     * @param {number} cst - the constant to compare with.
+     * @param {number} l - the maximum bit length of this share. [optional]
+     * @return {share-object} this party's share of the result, the final result is 1 if this < cst, and 0 otherwise.
+     */
+    this.less_cst = function(cst, l) {
+      if (!(typeof(cst) == "number")) throw "parameter should be a number (<)";
+
+      return self.greater_or_equal_cst(cst, l).mult_cst(-1).add_cst(1);
     };
-    
-    /* Equality test */
+
+    /**
+     * Equality test with two shares.
+     * @method eq
+     * @memberof share-object
+     * @param {share-object} o - the share to compare with.
+     * @param {number} l - the maximum bit length of the two shares. [optional]
+     * @return {share-object} this party's share of the result, the final result is 1 if this = o, and 0 otherwise.
+     */
     this.eq = function(o, l) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (==)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (==)";
-      
+
       var one_direction = self.greater_or_equal(o, l);
       var other_direction = o.greater_or_equal(self, l);
       return one_direction.mult(other_direction);
     }
-    
+
+    /**
+     * Unequality test with two shares.
+     * @method neq
+     * @memberof share-object
+     * @param {share-object} o - the share to compare with.
+     * @param {number} l - the maximum bit length of the two shares. [optional]
+     * @return {share-object} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
+     */
     this.neq = function(o, l) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (!=)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (!=)";
-      
+
       return self.eq(o, l).mult_cst(-1).add_cst(1);
     }
-    
-    /* Constant equality tests */
-    this.eq_cst = function(o, l) {
-      if (!(typeof(o) == "number")) throw "parameter should be a number (==)";
-      
-      var share_o = self.jiff.coerce_to_share(o, self.Zp);
-      return self.eq(share_o);
+
+    /**
+     * Equality test with a constant.
+     * @method eq_cst
+     * @memberof share-object
+     * @param {number} cst - the constant to compare with.
+     * @param {number} l - the maximum bit length of this share. [optional]
+     * @return {share-object} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
+     */
+    this.eq_cst = function(cst, l) {
+      if (!(typeof(cst) == "number")) throw "parameter should be a number (==)";
+
+      var share_cst = self.jiff.coerce_to_share(cst, self.Zp);
+      return self.eq(share_cst);
     }
-    
-    this.neq_cst = function(o, l) {
-      if (!(typeof(o) == "number")) throw "parameter should be a number (!=)";
-      
-      return self.eq_cst(o, l).mult_cst(-1).add_cst(1);
+
+    /**
+     * Unequality test with a constant.
+     * @method neq_cst
+     * @memberof share-object
+     * @param {number} cst - the constant to compare with.
+     * @param {number} l - the maximum bit length of this share. [optional]
+     * @return {share-object} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
+     */
+    this.neq_cst = function(cst, l) {
+      if (!(typeof(cst) == "number")) throw "parameter should be a number (!=)";
+
+      return self.eq_cst(cst, l).mult_cst(-1).add_cst(1);
     }
 
     // when the promise is resolved, acquire the value of the share and set ready to true
@@ -807,27 +1026,31 @@ var jiff = function() {
 
   /*
    * Create a new jiff instance.
-   *   hostname:        server hostname/ip and port.
-   *   computation_id:  the id of the computation of this instance.
-   *   party_count:     the number of parties in the computation (> 1).
-   *   options:         javascript object with additonal options [optional]:
-   *                      { "triplets_server": "http://hostname:port", 
-   *                        "numbers_server": "http://hostname:port",
-   *                        "keys_server": "http://hostname:port",
-   *                        "party_id": num,
-   *                        "secret_key": "skey for this party",
-   *                        "public_keys": { 1: "key1", 2: "key2", ... } }
-   *                    all parameters are optional, However, for keys to work all 
-   *                    of "party_id", "secret_key", and "public_keys" should be provided.
-   *   return:          the jiff instance for the described computation.
+   * @param {string} hostname - server hostname/ip and port.
+   * @param {string} computation_id - the id of the computation of this instance.
+   * @param {object} options - javascript object with additonal options [optional],
+   *                           all parameters are optional, However, for predefined public keys to work all
+   *                           of "party_id", "secret_key", and "public_keys" should be provided.
+   *                             {
+   *                              "triplets_server": "http://hostname:port",
+   *                              "numbers_server": "http://hostname:port",
+   *                              "keys_server": "http://hostname:port",
+   *                              "party_id": number,
+   *                              "party_count": number,
+   *                              "secret_key": "skey for this party",
+   *                              "public_keys": { 1: "key1", 2: "key2", ... }
+   *                             }
    *
-   * The Jiff instance contains the socket, number of parties, functions
-   * to share and perform operations, as well as synchronization flags.
+   * @returns {jiff-instance} the jiff instance for the described computation.
+   *                          The Jiff instance contains the socket, number of parties, functions
+   *                          to share and perform operations, as well as synchronization flags.
+   * @lends module:jiff-client
+   * @namespace jiff-instance
    *
-  */
+   */
   function make_jiff(hostname, computation_id, options) {
     if(options == null) options = {};
-    
+
     var jiff = { computation_id: computation_id, ready: false };
 
     // Setup sockets.
@@ -836,19 +1059,19 @@ var jiff = function() {
       jiff.triplets_socket = jiff.socket;
     else
       jiff.triplets_socket = io(options.triplets_server);
-      
+
     if(options.numbers_server == null || options.numbers_server == hostname)
       jiff.numbers_socket = jiff.socket;
     else
       jiff.numbers_socket = io(options.numbers_server);
-      
+
     if(options.party_id != null && options.secret_key != null && options.public_keys != null) {
       jiff.id = options.party_id;
       jiff.secret_key = options.secret_key;
       jiff.public_key = options.public_keys[jiff.id];
       jiff.keymap = options.public_keys;
     }
-    
+
     if(options.party_count != null)
       jiff.party_count = options.party_count;
 
@@ -866,16 +1089,17 @@ var jiff = function() {
         var party = parties;
         if(parties != null && typeof(parties) != "number")
           party = parties[i];
-          
+
+        // TODO? maybe do this differently, if array of numbers, use it for all shares?
         if(party != null && typeof(party) == "number")
           party = [ party ];
-        
+
         promises.push(jiff.open(shares[i], party));
       }
-      
-      Promise.all(promises).then(success, error);      
+
+      Promise.all(promises).then(success, error);
     };
-    
+
     jiff.triplet = function(Zp) { return jiff_triplet(jiff, Zp); };
     jiff.generate_and_share_random = function(Zp) { return jiff_share_all_number(jiff, Math.floor(Math.random() * Zp), Zp); };
     jiff.generate_and_share_zero = function(Zp) { return jiff_share_all_number(jiff, 0, Zp); };
@@ -885,9 +1109,9 @@ var jiff = function() {
     // Store the id when server sends it back
     jiff.socket.on('init', function(msg) {
       msg = JSON.parse(msg);
-      if(jiff.id == null) 
+      if(jiff.id == null)
         jiff.id = msg.party_id;
-        
+
       if(jiff.party_count == null)
         jiff.party_count = msg.party_count;
 
@@ -897,12 +1121,12 @@ var jiff = function() {
         jiff.secret_key = cryptico.generateRSAKey(random_string(passphrase_size), RSA_bits);
         jiff.public_key = cryptico.publicKeyString(jiff.secret_key);
       }
-      
+
       jiff.socket.emit("public_key", jiff.public_key);
     });
 
     jiff.socket.on('public_key', function(msg) {
-      if(jiff.keymap == null) 
+      if(jiff.keymap == null)
         jiff.keymap = JSON.parse(msg);
 
       if(options.onConnect != null)
@@ -947,7 +1171,7 @@ var jiff = function() {
 
       receive_open(jiff, sender_id, share, op_id, Zp);
     });
-    
+
     jiff.triplets_socket.on('triplet', function(msg) {
       json_msg = JSON.parse(msg);
 
@@ -956,7 +1180,7 @@ var jiff = function() {
 
       receive_triplet(jiff, triplet_id, triplet);
     });
-    
+
     jiff.numbers_socket.on('number', function(msg) {
       json_msg = JSON.parse(msg);
 
@@ -965,16 +1189,16 @@ var jiff = function() {
 
       receive_server_share_number(jiff, number_id, number);
     });
-    
+
     jiff.socket.on('error', function(msg) {
       jiff.socket = null;
       jiff.ready = false;
-      
+
       if(options.onError != null)
         options.onError(msg);
       else
         console.log(msg);
-      
+
       throw msg;
     });
 
