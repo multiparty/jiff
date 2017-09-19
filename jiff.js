@@ -321,7 +321,7 @@ var jiff = function() {
    * The server generates and sends the triplets on demand.
    * @param {jiff-instance} jiff - the jiff instance.
    * @param {number} Zp - the modulos (if null then global Zp is used by default) [optional].
-   *
+   * @returns {array<share-object>} an array of 3 share-objects [share_a, share_b, share_c] such that a * b = c.
    */
   function jiff_triplet(jiff, Zp) {
     if(Zp == null) Zp = gZp;
@@ -394,9 +394,9 @@ var jiff = function() {
    * Use the server to generate shares for a random bit, zero, random non-zero number, or a random number.
    * The parties will not know the value of the number (unless the request is for shares of zero) nor other parties' shares.
    * @param {jiff-instance} jiff - the jiff instance.
-   * @param {number} Zp - the modulos (if null then global Zp is used by default) [optional].
    * @param {object} options - an object with these properties:
    *                           { "number": number, "bit": boolean, "nonzero": boolean, "max": number}
+   * @param {number} Zp - the modulos (if null then global Zp is used by default) [optional].
    */
   function jiff_server_share_number(jiff, options, Zp) {
     if(Zp == null) Zp = gZp;
@@ -442,7 +442,7 @@ var jiff = function() {
    * If all parties use this function with the same input number, then
    *  you can think of their shares as being a share of that constant with threshold 1.
    *  In other words, a trivial sharing scheme where the share is the number itself.
-   *  However, if some parties used differend input numbers, then the actual value
+   *  However, if some parties used different input numbers, then the actual value
    *  yielded by reconstruction/opening of all these shares is arbitrary and depends
    *  on all the input numbers of all parties.
    *  @param {jiff-instance} jiff - the jiff instance.
@@ -463,7 +463,6 @@ var jiff = function() {
    * (per computation instance), and a pointer to the instance it belongs to.
    * A share also has methods for performing operations.
    * @memberof jiff
-   * @instance
    * @class
    * @param {jiff-instance} jiff - the jiff instance.
    * @param {boolean} ready - whether the value of the share is ready or deferred.
@@ -1018,15 +1017,17 @@ var jiff = function() {
    * @param {object} options - javascript object with additonal options [optional],
    *                           all parameters are optional, However, for predefined public keys to work all
    *                           of "party_id", "secret_key", and "public_keys" should be provided.
-   *                             {
-   *                              "triplets_server": "http://hostname:port",
-   *                              "numbers_server": "http://hostname:port",
-   *                              "keys_server": "http://hostname:port",
-   *                              "party_id": number,
-   *                              "party_count": number,
-   *                              "secret_key": "skey for this party",
-   *                              "public_keys": { 1: "key1", 2: "key2", ... }
-   *                             }
+  <pre> 
+  {
+    "triplets_server": "http://hostname:port",
+    "numbers_server": "http://hostname:port",
+    "keys_server": "http://hostname:port",
+    "party_id": number,
+    "party_count": number,
+    "secret_key": &lt;RSAKey&gt; [(check Cryptico Library)]{@link https://github.com/wwwtyro/cryptico},
+    "public_keys": { 1: "ascii-armored-key1", 2: "ascii-armored-key2", ... }
+  }
+  </pre>
    *
    * @returns {jiff-instance} the jiff instance for the described computation.
    *                          The Jiff instance contains the socket, number of parties, functions
@@ -1036,7 +1037,23 @@ var jiff = function() {
   function make_jiff(hostname, computation_id, options) {
     if(options == null) options = {};
 
-    var jiff = { computation_id: computation_id, ready: false };
+    var jiff = {};
+    
+    /**
+     * Stores the computation id. [Do not modify]
+     * @member {string} computation_id
+     * @memberof jiff.jiff-instance
+     * @instance
+     */
+    jiff.computation_id = computation_id;
+    
+    /**
+     * Flags whether this instance is connected and the server signaled the start of computation. [Do not modify]
+     * @member {boolean} ready
+     * @memberof jiff.jiff-instance
+     * @instance
+     */
+    jiff.ready = false;
 
     // Setup sockets.
     jiff.socket = io(hostname);
@@ -1051,13 +1068,47 @@ var jiff = function() {
       jiff.numbers_socket = io(options.numbers_server);
 
     if(options.party_id != null && options.secret_key != null && options.public_keys != null) {
+      /**
+       * The id of this party. [Do not modify]
+       * @member {number} id
+       * @memberof jiff.jiff-instance
+       * @instance
+       */
       jiff.id = options.party_id;
+      
+      /**
+       * The secret key of this party as an RSAKey object [(check Cryptico Library)]{@link https://github.com/wwwtyro/cryptico}. [Do not modify]
+       * @member {RSAKey} secret_key
+       * @memberof jiff.jiff-instance
+       * @instance
+       */
       jiff.secret_key = options.secret_key;
+      
+      /**
+       * The public key of this party (as ascii-armored string). [Do not modify]
+       * @member {string} public_key
+       * @memberof jiff.jiff-instance
+       * @instance
+       */
       jiff.public_key = options.public_keys[jiff.id];
+      
+      /**
+       * A map from party id to public key. Where key is the party id (number), and 
+       * value is the public key (ascii-armored string).
+       * @member {object} keymap
+       * @memberof jiff.jiff-instance
+       * @instance
+       */
       jiff.keymap = options.public_keys;
     }
 
     if(options.party_count != null)
+      /**
+       * Total party count in the computation, parties will take ids between 1 to party_count (inclusive).
+       * @member {number} party_count
+       * @memberof jiff.jiff-instance
+       * @instance
+       */
       jiff.party_count = options.party_count;
 
     // Send the computation id to the server to receive proper
@@ -1121,10 +1172,73 @@ var jiff = function() {
       return Promise.all(promises);
     };
 
+    /**
+     * Creates 3 shares, a share for every one of three numbers from a beaver triplet.
+     * The server generates and sends the triplets on demand.
+     * @method triplet
+     * @memberof jiff.jiff-instance
+     * @instance
+     * @param {number} Zp - the modulos (if null then global Zp is used by default) [optional].
+     * @returns an array of 3 share-objects [share_a, share_b, share_c] such that a * b = c.
+     */
     jiff.triplet = function(Zp) { return jiff_triplet(jiff, Zp); };
+    
+    /**
+     * Creates shares of an unknown random number. Every party comes up with its own random number and shares it.
+     * Then every party combines all the received shares to construct one share of the random unknown number.
+     * @method generate_and_share_random
+     * @memberof jiff.jiff-instance
+     * @instance
+     * @param {number} Zp - the modulos (if null then global Zp is used by default) [optional].
+     * @returns {share-object} a secret share of the random number.
+     */
     jiff.generate_and_share_random = function(Zp) { return jiff_share_all_number(jiff, Math.floor(Math.random() * Zp), Zp); };
+    
+    /**
+     * Creates shares of 0, such that no party knows the other parties' shares.
+     * Every party secret shares 0, then every party sums all the shares they received, resulting
+     * in a new share of 0 for every party.
+     * @method generate_and_share_zero
+     * @memberof jiff.jiff-instance
+     * @instance
+     * @param {number} Zp - the modulos (if null then global Zp is used by default) [optional].
+     * @returns {share-object} a secret share of zero.
+     */
     jiff.generate_and_share_zero = function(Zp) { return jiff_share_all_number(jiff, 0, Zp); };
+    
+    
+    /**
+     * Use the server to generate shares for a random bit, zero, random non-zero number, or a random number.
+     * The parties will not know the value of the number (unless the request is for shares of zero) nor other parties' shares.
+     * @method server_generate_and_share
+     * @memberof jiff.jiff-instance
+     * @instance
+     * @param {object} options - an object with these properties:
+     *                           { "number": number, "bit": boolean, "nonzero": boolean, "max": number}
+     * @param {number} Zp - the modulos (if null then global Zp is used by default) [optional].
+     * @returns {share-object} a secret share of zero/random bit/random number/random non-zero number.
+     */
     jiff.server_generate_and_share = function(options, Zp) { return jiff_server_share_number(jiff, options, Zp) };
+    
+    /**
+     * Coerce a number into a share. 
+     * THIS DOES NOT SHARE THE GIVEN NUMBER.
+     * It is a local type-coersion by invoking the constructor on the given parameter,
+     * this is useful for for operating on constants, not sharing secret data.
+     * If all parties use this function with the same input number, then
+     * you can think of their shares as being a share of that constant with threshold 1.
+     * In other words, a trivial sharing scheme where the share is the number itself.
+     * However, if some parties used different input numbers, then the actual value
+     * yielded by reconstruction/opening of all these shares is arbitrary and depends
+     * on all the input numbers of all parties.
+     * @method coerce_to_share
+     * @memberof jiff.jiff-instance
+     * @instance
+     * @param {number} number - the number to coerce.
+     * @param {number} Zp - the modulos [optional].
+     * @returns {share-object} a share object containing the given number.
+     *
+     */
     jiff.coerce_to_share = function(number, Zp) { return jiff_coerce_to_share(jiff, number, Zp); };
 
     // Store the id when server sends it back
