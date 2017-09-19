@@ -5,10 +5,10 @@ var gZp = 1299827;
 var RSA_bits = 1024;
 
 /**
- * @namespace jiff-client
+ * The exposed API from jiff.js (The client side library of JIFF).
+ * Wraps the jiff API. Internal members can be accessed with jiff.&lt;member-name&gt;.
+ * @namespace jiff
  * @version 1.0
- * Wraps the jiff API.
- * @returns {object} object with two function fields: make_jiff and mod.
  */
 var jiff = function() {
 
@@ -25,7 +25,9 @@ var jiff = function() {
 
   /**
    * Mod instead of javascript's remainder (%).
-   * @memberof jiff-client
+   * @memberof jiff
+   * @function mod
+   * @instance
    * @param {number} x
    * @param {number} y
    * @return {number} x mod y.
@@ -460,7 +462,8 @@ var jiff = function() {
    * A share is a value wrapper with a share object, it has a unique id
    * (per computation instance), and a pointer to the instance it belongs to.
    * A share also has methods for performing operations.
-   * @memberof jiff-client
+   * @memberof jiff
+   * @instance
    * @class
    * @param {jiff-instance} jiff - the jiff instance.
    * @param {boolean} ready - whether the value of the share is ready or deferred.
@@ -997,9 +1000,19 @@ var jiff = function() {
   }
 
   /**
+   * The interface defined by an instance of jiff.
+   * You can get an instance of jiff by calling function {@link jiff.make_jiff}.
+   * You can access any of the specified members of function with &lt;jiff-instance&gt;.&lt;member-name&gt;.
+   * @namespace jiff-instance
+   * @memberof jiff
+   * @version 1.0
+   */
+
+  /**
    * Create a new jiff instance.
-   * @memberof jiff-client
-   * @function
+   * @memberof jiff
+   * @function make_jiff
+   * @instance
    * @param {string} hostname - server hostname/ip and port.
    * @param {string} computation_id - the id of the computation of this instance.
    * @param {object} options - javascript object with additonal options [optional],
@@ -1051,25 +1064,61 @@ var jiff = function() {
     // identification
     jiff.socket.emit("computation_id", JSON.stringify({ "computation_id": computation_id, "party_id": jiff.id, "party_count": jiff.party_count }));
 
+    /**
+     * Share a secret input.
+     * @method share
+     * @memberof jiff.jiff-instance
+     * @instance
+     * @param {number} secret - the number to share (this party's input).
+     * @param {number} Zp - the modulos (if null global gZp will be used) [optional].
+     * @returns {object} a map (of size equal to the number of parties)
+     *          where the key is the party id (from 1 to n)
+     *          and the value is the share object that wraps
+     *          the value sent from that party (the internal value maybe deferred).
+     */
     jiff.share = function(secret, Zp) { return jiff_share(jiff, secret, Zp); };
+    
+    /**
+     * Open a secret share to reconstruct secret.
+     * @method open
+     * @memberof jiff.jiff-instance
+     * @instance
+     * @param {share-object} share - this party's share of the secret to reconstruct.
+     * @param {array} parties - an array with party ids (1 to n) of receiving parties [optional].
+     * @returns {promise} a (JQuery) promise to the open value of the secret.
+     * @throws error if share does not belong to the passed jiff instance.
+     */
     jiff.open = function(share, parties) { return jiff_open(jiff, share, parties); };
-    jiff.open_all = function(shares, parties, success, error) {
-      if(error == null) error = shares[0].error;
+    
+    /**
+     * Opens a bunch secret shares.
+     * @method open_all
+     * @memberof jiff.jiff-instance
+     * @instance
+     * @param {array<share-object>} shares - an array containing this party's shares of the secrets to reconstruct.
+     * @param {array} parties - an array with party ids (1 to n) of receiving parties [optional].
+     *                          This must be one of 3 cases:
+     *                          1. null:                       open all shares to all parties.
+     *                          2. array of numbers:           open all shares to all the parties specified in the array.
+     *                          3. array of array of numbers:  open share with index i to the parties specified 
+     *                                                         in the nested array at parties[i]. if parties[i] was null,
+     *                                                         then shares[i] will be opened to all parties.
+     * @returns {promise} a (JQuery) promise to ALL the open values of the secret, the promise will yield
+     *                    an array of values, each corresponding to the given share in the shares parameter
+     *                    at the same index.
+     * @throws error if some shares does not belong to the passed jiff instance.
+     */
+    jiff.open_all = function(shares, parties) {
+      var parties_nested_arrays = (parties != null && (parties[0] == null || typeof(parties[0]) != "number"));
 
       var promises = [];
       for(var i = 0; i < shares.length; i++) {
-        var party = parties;
-        if(parties != null && typeof(parties) != "number")
-          party = parties[i];
-
-        // TODO? maybe do this differently, if array of numbers, use it for all shares?
-        if(party != null && typeof(party) == "number")
-          party = [ party ];
-
+        var party = parties_nested_arrays ? parties[i] : parties;
+        
         promises.push(jiff.open(shares[i], party));
       }
 
-      Promise.all(promises).then(success, error);
+      return Promise.all(promises);
     };
 
     jiff.triplet = function(Zp) { return jiff_triplet(jiff, Zp); };
