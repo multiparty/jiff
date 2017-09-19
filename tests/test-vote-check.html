@@ -97,7 +97,7 @@
           shares[i] = sum.mult(prod_all_parties);
         }
         
-        jiff_instance.open_all(shares, 1, handleResult);
+        jiff_instance.open_all(shares, [1]).then(handleResult, handleError);
       }
       
       function handleResult(results) {
@@ -107,6 +107,10 @@
         }
         
         $("#sumButton").attr("disabled", false);
+      }
+      
+      function handleError() {
+        console.log("Error in open_all");
       }
     </script>
   </head>
