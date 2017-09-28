@@ -30,7 +30,7 @@
         else {
           var options = { party_count: party_count};
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
-          options.onConnect = function() { $("#output").append("<p>All parties Connected!</p>"); };
+          options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
           
           var hostname = window.location.hostname.trim();
           var port = window.location.port;
@@ -45,7 +45,6 @@
   
           hostname = hostname + ":" + port;
           jiff_instance = jiff.make_jiff(hostname, computation_id, options);
-          $("#sumButton").attr("disabled", false);
         }
       }
     
@@ -54,8 +53,8 @@
 
         if(isNaN(input))
           $("#output").append("<p class='error'>Input a valid number!</p>");
-        else if(input > gZp)
-          $("#output").append("<p class='error'>Input a number less than "+gZp+"!</p>");
+        else if(100 < input || input < 0)
+          $("#output").append("<p class='error'>Input a number between 0 and 100!</p>");
         else if(jiff_instance == null || !jiff_instance.ready)
           alert("Please wait!");
         else
@@ -90,7 +89,7 @@
     <hr>
 
     <h1>Sum Numbers under MPC</h1>
-    <label for="number">Input Number</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="sum();" disabled="disabled" id="sumButton">Sum</button> <br>
+    <label for="number">Input Number (Between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="sum();" disabled="disabled" id="sumButton">Sum</button> <br>
     <div id="output"> </div>
   </body>
 </html>
