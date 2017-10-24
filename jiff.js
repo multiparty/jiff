@@ -58,6 +58,18 @@ var jiff = function() {
     return Math.log(value) / Math.log(base);
   }
 
+  function encrypt_and_sign(message, encryption_public_key, signing_private_key) {
+    return cryptico.encrypt(message.toString(10), encryption_public_key, signing_private_key);
+  }
+
+  function decrypt_and_sign(cipher_text, decryption_secret_key, signing_public_key) {
+      var decryption_result = cryptico.decrypt(cipher_text, decryption_secret_key);
+      if(decryption_result.signature == "verified" && decryption_result.publicKeyString == signing_public_key)
+        return parseInt(decryption_result.plaintext, 10);
+      else
+        throw "Bad signature";
+  }
+
   /**
    * Share given secret to the participating parties.
    * @param {jiff-instance} jiff - the jiff instance.
@@ -104,8 +116,8 @@ var jiff = function() {
         jiff.shares[op_id][i] = null;
       }
 
-      // send encrypted shares_id[i] to party i
-      var cipher_share = cryptico.encrypt(shares[i].toString(10), jiff.keymap[i]).cipher
+      // send encrypted and signed shares_id[i] to party i
+      var cipher_share = encrypt_and_sign(shares[i], jiff.keymap[i], jiff.secret_key).cipher;
       var msg = { party_id: i, share: cipher_share, op_id: op_id };
       jiff.socket.emit('share', JSON.stringify(msg));
     }
@@ -168,7 +180,7 @@ var jiff = function() {
   function receive_share(jiff, sender_id, share, op_id) {
     // Decrypt share
     if(sender_id != jiff.id)
-      share = parseInt(cryptico.decrypt(share, jiff.secret_key).plaintext, 10);
+      share = decrypt_and_sign(share, jiff.secret_key, jiff.keymap[sender_id]);
 
     // Share is received before deferred was setup, store it.
     if(jiff.deferreds[op_id] == undefined) {
@@ -247,8 +259,8 @@ var jiff = function() {
       var i = parties[index]; // Party id
       if(i == jiff.id) { receive_open(jiff, i, share.value, op_id, share.Zp); continue; }
 
-      // encrypt and send
-      var cipher_share = cryptico.encrypt(share.value.toString(10), jiff.keymap[i]).cipher;
+      // encrypt, sign and send
+      var cipher_share = encrypt_and_sign(share.value, jiff.keymap[i], jiff.secret_key).cipher;
       var msg = { party_id: i, share: cipher_share, op_id: op_id, Zp: share.Zp };
       jiff.socket.emit('open', JSON.stringify(msg));
     }
@@ -273,7 +285,7 @@ var jiff = function() {
 
     // Decrypt share
     if(sender_id != jiff.id)
-      share = parseInt(cryptico.decrypt(share, jiff.secret_key).plaintext, 10);
+      share = decrypt_and_sign(share, jiff.secret_key, jiff.keymap[sender_id]);
 
     // Save share
     jiff.shares[op_id][sender_id] = share;
@@ -1017,7 +1029,7 @@ var jiff = function() {
    * @param {object} options - javascript object with additonal options [optional],
    *                           all parameters are optional, However, for predefined public keys to work all
    *                           of "party_id", "secret_key", and "public_keys" should be provided.
-  <pre> 
+  <pre>
   {
     "triplets_server": "http://hostname:port",
     "numbers_server": "http://hostname:port",
@@ -1038,7 +1050,7 @@ var jiff = function() {
     if(options == null) options = {};
 
     var jiff = {};
-    
+
     /**
      * Stores the computation id. [Do not modify]
      * @member {string} computation_id
@@ -1046,7 +1058,7 @@ var jiff = function() {
      * @instance
      */
     jiff.computation_id = computation_id;
-    
+
     /**
      * Flags whether this instance is connected and the server signaled the start of computation. [Do not modify]
      * @member {boolean} ready
@@ -1075,7 +1087,7 @@ var jiff = function() {
        * @instance
        */
       jiff.id = options.party_id;
-      
+
       /**
        * The secret key of this party as an RSAKey object [(check Cryptico Library)]{@link https://github.com/wwwtyro/cryptico}. [Do not modify]
        * @member {RSAKey} secret_key
@@ -1083,7 +1095,7 @@ var jiff = function() {
        * @instance
        */
       jiff.secret_key = options.secret_key;
-      
+
       /**
        * The public key of this party (as ascii-armored string). [Do not modify]
        * @member {string} public_key
@@ -1091,9 +1103,9 @@ var jiff = function() {
        * @instance
        */
       jiff.public_key = options.public_keys[jiff.id];
-      
+
       /**
-       * A map from party id to public key. Where key is the party id (number), and 
+       * A map from party id to public key. Where key is the party id (number), and
        * value is the public key (ascii-armored string).
        * @member {object} keymap
        * @memberof jiff.jiff-instance
@@ -1128,7 +1140,7 @@ var jiff = function() {
      *          the value sent from that party (the internal value maybe deferred).
      */
     jiff.share = function(secret, Zp) { return jiff_share(jiff, secret, Zp); };
-    
+
     /**
      * Open a secret share to reconstruct secret.
      * @method open
@@ -1140,7 +1152,7 @@ var jiff = function() {
      * @throws error if share does not belong to the passed jiff instance.
      */
     jiff.open = function(share, parties) { return jiff_open(jiff, share, parties); };
-    
+
     /**
      * Opens a bunch secret shares.
      * @method open_all
@@ -1151,7 +1163,7 @@ var jiff = function() {
      *                          This must be one of 3 cases:
      *                          1. null:                       open all shares to all parties.
      *                          2. array of numbers:           open all shares to all the parties specified in the array.
-     *                          3. array of array of numbers:  open share with index i to the parties specified 
+     *                          3. array of array of numbers:  open share with index i to the parties specified
      *                                                         in the nested array at parties[i]. if parties[i] was null,
      *                                                         then shares[i] will be opened to all parties.
      * @returns {promise} a (JQuery) promise to ALL the open values of the secret, the promise will yield
@@ -1165,7 +1177,7 @@ var jiff = function() {
       var promises = [];
       for(var i = 0; i < shares.length; i++) {
         var party = parties_nested_arrays ? parties[i] : parties;
-        
+
         promises.push(jiff.open(shares[i], party));
       }
 
@@ -1182,7 +1194,7 @@ var jiff = function() {
      * @returns an array of 3 share-objects [share_a, share_b, share_c] such that a * b = c.
      */
     jiff.triplet = function(Zp) { return jiff_triplet(jiff, Zp); };
-    
+
     /**
      * Creates shares of an unknown random number. Every party comes up with its own random number and shares it.
      * Then every party combines all the received shares to construct one share of the random unknown number.
@@ -1193,7 +1205,7 @@ var jiff = function() {
      * @returns {share-object} a secret share of the random number.
      */
     jiff.generate_and_share_random = function(Zp) { return jiff_share_all_number(jiff, Math.floor(Math.random() * Zp), Zp); };
-    
+
     /**
      * Creates shares of 0, such that no party knows the other parties' shares.
      * Every party secret shares 0, then every party sums all the shares they received, resulting
@@ -1205,8 +1217,8 @@ var jiff = function() {
      * @returns {share-object} a secret share of zero.
      */
     jiff.generate_and_share_zero = function(Zp) { return jiff_share_all_number(jiff, 0, Zp); };
-    
-    
+
+
     /**
      * Use the server to generate shares for a random bit, zero, random non-zero number, or a random number.
      * The parties will not know the value of the number (unless the request is for shares of zero) nor other parties' shares.
@@ -1219,9 +1231,9 @@ var jiff = function() {
      * @returns {share-object} a secret share of zero/random bit/random number/random non-zero number.
      */
     jiff.server_generate_and_share = function(options, Zp) { return jiff_server_share_number(jiff, options, Zp) };
-    
+
     /**
-     * Coerce a number into a share. 
+     * Coerce a number into a share.
      * THIS DOES NOT SHARE THE GIVEN NUMBER.
      * It is a local type-coersion by invoking the constructor on the given parameter,
      * this is useful for for operating on constants, not sharing secret data.
@@ -1342,4 +1354,3 @@ var jiff = function() {
 
   return { make_jiff: make_jiff, mod: mod };
 }();
-
