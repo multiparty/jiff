@@ -58,10 +58,27 @@ var jiff = function() {
     return Math.log(value) / Math.log(base);
   }
 
+  /**
+   * Encrypts and signs the given message, the function will execute message.toString(10)
+   * internally to ensure type of message is a string before encrypting.
+   * @param {number} message - the message to encrypt.
+   * @param {string} encryption_public_key - ascii-armored public key to encrypt with.
+   * @param {RSAKey} signing_private_key - the private key of the encrypting party to sign with.
+   * @returns {String} the signed cipher text.
+   */
   function encrypt_and_sign(message, encryption_public_key, signing_private_key) {
-    return cryptico.encrypt(message.toString(10), encryption_public_key, signing_private_key);
+    return cryptico.encrypt(message.toString(10), encryption_public_key, signing_private_key).cipher;
   }
 
+  /**
+   * Decrypts and checks the signature of the given ciphertext, the function will execute
+   * parseInt internally to ensure returned value is a number.
+   * @param {number} cipher_text - the ciphertext to decrypt.
+   * @param {RSAKey} decryption_secret_key - the secret key to decrypt with.
+   * @param {string} signing_public_key - ascii-armored public key to verify against signature.
+   * @returns {number} the decrypted message if the signature was correct.
+   * @throws error if signature was forged/incorrect.
+   */
   function decrypt_and_sign(cipher_text, decryption_secret_key, signing_public_key) {
       var decryption_result = cryptico.decrypt(cipher_text, decryption_secret_key);
       if(decryption_result.signature == "verified" && decryption_result.publicKeyString == signing_public_key)
@@ -117,7 +134,7 @@ var jiff = function() {
       }
 
       // send encrypted and signed shares_id[i] to party i
-      var cipher_share = encrypt_and_sign(shares[i], jiff.keymap[i], jiff.secret_key).cipher;
+      var cipher_share = encrypt_and_sign(shares[i], jiff.keymap[i], jiff.secret_key);
       var msg = { party_id: i, share: cipher_share, op_id: op_id };
       jiff.socket.emit('share', JSON.stringify(msg));
     }
@@ -260,7 +277,7 @@ var jiff = function() {
       if(i == jiff.id) { receive_open(jiff, i, share.value, op_id, share.Zp); continue; }
 
       // encrypt, sign and send
-      var cipher_share = encrypt_and_sign(share.value, jiff.keymap[i], jiff.secret_key).cipher;
+      var cipher_share = encrypt_and_sign(share.value, jiff.keymap[i], jiff.secret_key);
       var msg = { party_id: i, share: cipher_share, op_id: op_id, Zp: share.Zp };
       jiff.socket.emit('open', JSON.stringify(msg));
     }
