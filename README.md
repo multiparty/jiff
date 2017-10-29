@@ -6,7 +6,7 @@ Make sure to use the sockets.io.js script file that **matches exactly** the vers
 ```
 <script src="/socket.io/socket.io.js"></script>
 ```
-If the client code is served independently, fetch the matching socket.io.js from the CDN, or use the file from `<server_dir>/node_modules/socket.io-client/dist`
+If the client code is served independently, fetch the matching socket.io.js from the CDN, or use the file from `<server_dir>/node_modules/socket.io-client/dist`.
 
 ## Documentation
 The documentation can be generated using [JSDoc](http://usejsdoc.org/):
