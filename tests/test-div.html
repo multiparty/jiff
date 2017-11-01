@@ -1,0 +1,100 @@
+<html>
+  <head>
+    <title>Divide one number by another under MPC</title>
+    
+    <style>
+      .error {
+        color: #FF0000;
+      }
+    </style>
+    
+    <!-- jiff and required libraries -->
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
+    <script src="jiff-client/cryptico.min.js"></script>
+    <script src="jiff-client/jiff.js"></script>
+    
+    <script type="text/javascript">
+      var jiff_instance;
+
+      function connect() {
+        $('#connectButton').prop('disabled', true);
+        var computation_id = $('#computation_id').val();
+        var party_count = parseInt($('#count').val());
+
+        if(isNaN(party_count)) {
+          $("#output").append("<p class='error'>Party count must be a valid number!</p>");
+          $('#connectButton').prop('disabled', false);
+        }
+
+        else {
+          var options = { party_count: party_count};
+          options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
+          options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
+
+          var hostname = window.location.hostname.trim();
+          var port = window.location.port;
+          if(port == null || port == '') 
+            port = "80";
+          if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
+            hostname = "http://" + hostname;
+          if(hostname.endsWith("/"))
+            hostname = hostname.substring(0, hostname.length-1);
+          if(hostname.indexOf(":") > -1)
+            hostanme = hostname.substring(0, hostname.indexOf(":"));
+  
+          hostname = hostname + ":" + port;
+          jiff_instance = jiff.make_jiff(hostname, computation_id, options);
+        }
+      }
+
+      function sum() {
+        var input = parseInt($("#number").val());
+
+        if (isNaN(input))
+          $("#output").append("<p class='error'>Input a valid number!</p>");
+        else if (100 < input || input < 0 || input != Math.floor(input))
+          $("#output").append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
+        else if (jiff_instance == null || !jiff_instance.ready)
+          alert("Please wait!");
+        else
+          MPC(input);
+      }
+
+      function div(a_shr, q_shr) {
+        var bits = 3;
+        for (var i = 0; i < bits; i++) {
+          var tmp_q = q_shr[1].add_cst(Math.pow(2, (bits-1)-i));
+          var tmp_m = (tmp_q.mult(a_shr[2])).less_or_equal(a_shr[1]);
+          q_shr[1] = q_shr[1].add(tmp_m.mult_cst(Math.pow(2, (bits-1)-i)));
+        }
+        return q_shr;
+      }
+
+      function MPC(input) {
+        $("#sumButton").attr("disabled", true);
+        $("#output").append("<p>Starting...</p>");
+        var q_shr = jiff_instance.share(0);
+        var a_shr = jiff_instance.share(input);       
+        r = div(a_shr, q_shr);
+        r[1].open(handleResult);
+      }
+
+      function handleResult(result) {
+        $("#output").append("<p>Result is: " + result + "</p>");
+        $("#sumButton").attr("disabled", false);
+      }
+    </script>
+  </head>
+  
+  <body>
+    <h1>Connect JIFF</h1>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-div"></input> <br><br>
+    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
+    <br/><br/>
+    <hr/>
+    <h1>Divide Numbers under MPC</h1>
+    <label for="number">Input Number (Between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="sum();" disabled="disabled" id="sumButton">Divide</button> <br>
+    <div id="output"></div>
+  </body>
+</html>
