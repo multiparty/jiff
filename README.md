@@ -25,12 +25,12 @@ run npm from inside the project directory to install dependencies listed in pack
 ### Client:
 Make sure to include jiff.js **after** socket.io  
 ```
-<script src="lib/jiff-client.js"></script>
+<script src="/lib/jiff-client.js"></script>
 ```  
   
 Then inside a script tag (and after the page loads), intialize a jiff object and setup a computation:  
 ```
-var instance = jiff.make_jiff("http://localhost", 3000, parties)
+var instance = jiff.make_jiff("http://localhost:3000", "<computation_id>", parties)
 ```  
   
 instance will provide methods for sharing, opening, and performing operations on shares.
