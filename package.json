@@ -3,8 +3,33 @@
   "version": "0.0.1",
   "description": "server side library for performing MPC in JavaScript. handles relaying shares between parties.",
   "dependencies": {
-    "express": "^4.15.2",
     "socket.io": "^2.0.2",
     "cryptico": "^1.0.2"
-  }
+  },
+  "main": "jiff-server.js",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+      "express": "^4.15.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/multiparty/jiff-server.git"
+  },
+  "keywords": [
+    "Secure",
+    "Multiparty",
+    "Computation",
+    "Web-MPC"
+  ],
+  "author": "Kinan Dak Albab <babman@bu.edu> (http://cs-people.bu.edu/babman/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/multiparty/jiff-server/issues"
+  },
+  "homepage": "https://github.com/multiparty/jiff-server#readme"
 }
