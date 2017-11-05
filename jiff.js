@@ -91,6 +91,7 @@ var jiff = function() {
    * Share given secret to the participating parties.
    * @param {jiff-instance} jiff - the jiff instance.
    * @param {number} secret - the secret to share.
+   * @param {array} parties_list - array of party ids to share with.
    * @param {number} Zp - the modulos (if null global gZp will be used) [optional].
    * @param {number} op_id - the operation id that matches this operation with received messages [optional].
    * @returns {object} a map (of size equal to the number of parties)
@@ -99,10 +100,10 @@ var jiff = function() {
    *          the value sent from that party (the internal value maybe deferred).
    *
    */
-  function jiff_share(jiff, secret, Zp, op_id) {
+  function jiff_share(jiff, secret, parties_list, Zp, op_id) {
     if(Zp == null) Zp = gZp;
-    var party_count = jiff.party_count;
-    var shares = jiff_compute_shares(secret, party_count, Zp);
+    var party_count = parties_list.length;
+    var shares = jiff_compute_shares(secret, party_count, parties_list, Zp);
 
     if(op_id == undefined) {
       op_id = "share" + jiff.share_op_count;
@@ -112,30 +113,32 @@ var jiff = function() {
     jiff.deferreds[op_id] = {}; // setup a map of deferred for every received share
 
     var result = {};
-    for(var i = 1; i <= party_count; i++) {
-      if(i == jiff.id) { // Keep party's own share
-        result[i] = new secret_share(jiff, true, null, shares[i], Zp);
+    for(var i = 0; i < parties_list.length; i++) {
+      var p_id = parties_list[i];
+
+      if(p_id == jiff.id) { // Keep party's own share
+        result[p_id] = new secret_share(jiff, true, null, shares[p_id], Zp);
         continue;
       }
 
-      // receive share_i[id] from party i
+      // receive share_i[id] from party p_id
       // check if the share is ready or not (maybe it was previously received)
-      if(jiff.shares[op_id] == undefined || jiff.shares[op_id][i] == undefined) {
+      if(jiff.shares[op_id] == undefined || jiff.shares[op_id][p_id] == undefined) {
         // not ready, setup a deferred
         var deferred = $.Deferred();
-        jiff.deferreds[op_id][i] = deferred;
-        result[i] = new secret_share(jiff, false, deferred.promise(), undefined, Zp);
+        jiff.deferreds[op_id][p_id] = deferred;
+        result[p_id] = new secret_share(jiff, false, deferred.promise(), undefined, Zp);
       }
 
       else {
         // ready, put value in secret share
-        result[i] = new secret_share(jiff, true, null, jiff.shares[op_id][i], Zp);
-        jiff.shares[op_id][i] = null;
+        result[p_id] = new secret_share(jiff, true, null, jiff.shares[op_id][p_id], Zp);
+        jiff.shares[op_id][p_id] = null;
       }
 
-      // send encrypted and signed shares_id[i] to party i
-      var cipher_share = encrypt_and_sign(shares[i], jiff.keymap[i], jiff.secret_key);
-      var msg = { party_id: i, share: cipher_share, op_id: op_id };
+      // send encrypted and signed shares_id[p_id] to party p_id
+      var cipher_share = encrypt_and_sign(shares[p_id], jiff.keymap[p_id], jiff.secret_key);
+      var msg = { party_id: p_id, share: cipher_share, op_id: op_id };
       jiff.socket.emit('share', JSON.stringify(msg));
     }
 
@@ -147,13 +150,14 @@ var jiff = function() {
    * a polynomial of degree: ceil(parties/2) - 1 (honest majority).
    * @param {number} secret - the secret to share.
    * @param {number} party_count - the number of parties.
+   * @param {array} parties_list - array of party ids to share with.
    * @param {number} Zp - the modulos.
    * @returns {object} a map between party number (from 1 to parties) and its
    *          share, this means that (party number, share) is a
    *          point from the polynomial.
    *
    */
-  function jiff_compute_shares(secret, party_count, Zp) {
+  function jiff_compute_shares(secret, party_count, parties_list, Zp) {
     var shares = {}; // Keeps the shares
 
     // Each player's random polynomial f must have
@@ -170,13 +174,14 @@ var jiff = function() {
     for(var i = 1; i <= t; i++) polynomial[i] = Math.floor(Math.random() * Zp);
 
     // Compute each players share such that share[i] = f(i)
-    for(var i = 1; i <= party_count; i++) {
-      shares[i] = polynomial[0];
-      power = i;
+    for(var i = 0; i < parties_list.length; i++) {
+      var p_id = parties_list[i];
+      shares[p_id] = polynomial[0];
+      var power = p_id;
 
       for(var j = 1; j < polynomial.length; j++) {
-        shares[i] = mod((shares[i] + polynomial[j] * power), Zp);
-        power = power * i;
+        shares[p_id] = mod((shares[p_id] + polynomial[j] * power), Zp);
+        power = power * p_id;
       }
     }
 
@@ -1150,13 +1155,14 @@ var jiff = function() {
      * @memberof jiff.jiff-instance
      * @instance
      * @param {number} secret - the number to share (this party's input).
+     * @param {array} parties_list - array of party ids to share with.
      * @param {number} Zp - the modulos (if null global gZp will be used) [optional].
      * @returns {object} a map (of size equal to the number of parties)
      *          where the key is the party id (from 1 to n)
      *          and the value is the share object that wraps
      *          the value sent from that party (the internal value maybe deferred).
      */
-    jiff.share = function(secret, Zp) { return jiff_share(jiff, secret, Zp); };
+    jiff.share = function(secret, parties_list, Zp) { return jiff_share(jiff, secret, parties_list, Zp); };
 
     /**
      * Open a secret share to reconstruct secret.
