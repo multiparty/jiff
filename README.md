@@ -28,7 +28,7 @@ Make sure to include jiff.js **after** socket.io
 <script src="/lib/jiff-client.js"></script>
 ```  
   
-Then inside a script tag (and after the page loads), intialize a jiff object and setup a computation:  
+Then inside a script tag (and after the page loads), initialize a jiff object and setup a computation:  
 ```
 var instance = jiff.make_jiff("http://localhost:3000", "<computation_id>", parties)
 ```  
@@ -36,20 +36,20 @@ var instance = jiff.make_jiff("http://localhost:3000", "<computation_id>", parti
 instance will provide methods for sharing, opening, and performing operations on shares.
 
 ## Documentation
-The documentation can be generated using [JSDoc](http://usejsdoc.org/), you will find these docs under docs/jsdocs:  
+The documentation can be generated using [JSDoc](http://usejsdoc.org/); you will find these docs in `docs/jsdocs/`:  
 ```
 ./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json
 ```  
-The latest documentation can be viewed at on the [project page](https://multiparty.github.io/jiff-client/).
+The latest documentation can be viewed at on the [project page](https://multiparty.org/jiff/).
 
 ## Running the application
 To run a sample server:
 
 `$ node index.js`
 
-Then open `localhost:3000/apps/sum.html` (or any other file under apps/) in a browser, for every party open the page in a new tab/window.
+Then open `localhost:3000/apps/sum.html` (or any other file under `apps/`) in a browser, for every party open the page in a new tab/window.
 
-## Collaborators
+## Information and Collaborators
 More information about this project, including collaborators and publications, can be found at [multiparty.org](https://multiparty.org/).
 
 ## License
