@@ -4,6 +4,7 @@
   "description": "server side library for performing MPC in JavaScript. handles relaying shares between parties.",
   "dependencies": {
     "cryptico": "^1.0.2",
+    "jquery-deferred": "^0.3.1",
     "socket.io": "^2.0.2"
   },
   "main": "lib/jiff-server.js",
