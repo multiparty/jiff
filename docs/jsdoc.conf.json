@@ -1,22 +1,26 @@
 {
-    "plugins": [],
-    "recurseDepth": 10,
-    "source": {
-        "includePattern": ".+\\.js(doc|x)?$",
-        "excludePattern": "(^|\\/|\\\\)_",
-        "include": ["./lib/jiff-client.js", "./README.md"]
-    },
-    "sourceType": "module",
-    "tags": {
-        "allowUnknownTags": true,
-        "dictionaries": ["jsdoc","closure"]
-    },
-    "templates": {
-        "cleverLinks": false,
-        "monospaceLinks": false,
-        "default": {"layoutFile": "./docs/jsdoc.layout.tmpl"}
-    },
-    "opts": {
-        "destination": "./docs/jsdoc/"
-    }
+  "plugins": [],
+  "recurseDepth": 10,
+  "source": {
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_",
+    "include": [
+      "./lib/jiff-client.js", 
+      "./lib/jiff-server.js",
+      "./README.md"
+    ]
+  },
+  "sourceType": "module",
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc","closure"]
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false,
+    "default": {"layoutFile": "./docs/jsdoc.layout.tmpl"}
+  },
+  "opts": {
+    "destination": "./docs/jsdoc/"
+  }
 }
