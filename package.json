@@ -21,7 +21,8 @@
     "mocha": "^4.0.1"
   },
   "scripts": {
-    "test": "./tests/mocha/test.sh"
+    "test": "./tests/mocha/test.sh",
+    "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json"
   },
   "repository": {
     "type": "git",

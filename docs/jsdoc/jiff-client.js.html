@@ -32,6 +32,9 @@ var gZp = 1299827;
 /** The length of RSA key in bits. */
 var RSA_bits = 1024;
 
+/** Size of the Passphrase used in generating an RSA key */
+var passphrase_size = 25;
+
 /**
  * The exposed API from jiff.js (The client side library of JIFF).
  * Wraps the jiff API. Internal members can be accessed with jiff.&amp;lt;member-name&amp;gt;.
@@ -97,10 +100,12 @@ var RSA_bits = 1024;
    * @param {number} message - the message to encrypt.
    * @param {string} encryption_public_key - ascii-armored public key to encrypt with.
    * @param {RSAKey} signing_private_key - the private key of the encrypting party to sign with.
+   * @param {boolean} is_string - set to true if message is a string, defaults to false [optional].
    * @returns {String} the signed cipher text.
    */
-  function encrypt_and_sign(message, encryption_public_key, signing_private_key) {
-    return cryptico.encrypt(message.toString(10), encryption_public_key, signing_private_key).cipher;
+  function encrypt_and_sign(message, encryption_public_key, signing_private_key, is_string) {
+    if(is_string == null || is_string == false) message = message.toString(10);
+    return cryptico.encrypt(message, encryption_public_key, signing_private_key).cipher;
   }
 
   /**
@@ -109,13 +114,16 @@ var RSA_bits = 1024;
    * @param {number} cipher_text - the ciphertext to decrypt.
    * @param {RSAKey} decryption_secret_key - the secret key to decrypt with.
    * @param {string} signing_public_key - ascii-armored public key to verify against signature.
+   * @param {boolean} is_string - set to true if decrypted message is expected to be a string, defaults to false [optional].
    * @returns {number} the decrypted message if the signature was correct.
    * @throws error if signature was forged/incorrect.
    */
-  function decrypt_and_sign(cipher_text, decryption_secret_key, signing_public_key) {
+  function decrypt_and_sign(cipher_text, decryption_secret_key, signing_public_key, is_string) {
       var decryption_result = cryptico.decrypt(cipher_text, decryption_secret_key);
-      if(decryption_result.signature == "verified" &amp;&amp; decryption_result.publicKeyString == signing_public_key)
+      if(decryption_result.signature == "verified" &amp;&amp; decryption_result.publicKeyString == signing_public_key) {
+        if(is_string === true) return decryption_result.plaintext;
         return parseInt(decryption_result.plaintext, 10);
+      } 
       else
         throw "Bad signature";
   }
@@ -403,7 +411,8 @@ var RSA_bits = 1024;
     jiff.triplet_op_count++;
 
     // Send a request to the server.
-    jiff.triplets_socket.emit('triplet', JSON.stringify({triplet_id: triplet_id, Zp: Zp}));
+    var msg = JSON.stringify({triplet_id: triplet_id, Zp: Zp});
+    jiff.triplets_socket.emit('triplet', encrypt_and_sign(msg, jiff.keymap["s1"], jiff.secret_key, true));
 
     // Setup deferreds to handle receiving the triplets later.
     var a_deferred = $.Deferred();
@@ -428,9 +437,9 @@ var RSA_bits = 1024;
    */
   function receive_triplet(jiff, triplet_id, triplet) {
     // Decrypt shares
-    var a = parseInt(cryptico.decrypt(triplet["a"], jiff.secret_key).plaintext, 10);
-    var b = parseInt(cryptico.decrypt(triplet["b"], jiff.secret_key).plaintext, 10);
-    var c = parseInt(cryptico.decrypt(triplet["c"], jiff.secret_key).plaintext, 10);
+    var a = decrypt_and_sign(triplet["a"], jiff.secret_key, jiff.keymap["s1"]);
+    var b = decrypt_and_sign(triplet["b"], jiff.secret_key, jiff.keymap["s1"]);
+    var c = decrypt_and_sign(triplet["c"], jiff.secret_key, jiff.keymap["s1"]);
 
     // Deferred is already setup, resolve it.
     jiff.deferreds[triplet_id]["a"].resolve(a);
@@ -479,9 +488,10 @@ var RSA_bits = 1024;
 
     var msg = { number_id: number_id, Zp: Zp };
     msg = Object.assign(msg, options);
+    msg = JSON.stringify(msg);
 
     // Send a request to the server.
-    jiff.numbers_socket.emit('number', JSON.stringify(msg));
+    jiff.numbers_socket.emit('number', encrypt_and_sign(msg, jiff.keymap["s1"], jiff.secret_key, true));
 
     // Setup deferreds to handle receiving the triplets later.
     var deferred = $.Deferred();
@@ -500,7 +510,7 @@ var RSA_bits = 1024;
    */
   function receive_server_share_number(jiff, number_id, share) {
     // Decrypt received share.
-    share = parseInt(cryptico.decrypt(share, jiff.secret_key).plaintext, 10);
+    share = decrypt_and_sign(share, jiff.secret_key, jiff.keymap["s1"]);
 
     // Deferred is already setup, resolve it.
     jiff.deferreds[number_id].resolve(share);
@@ -1182,6 +1192,14 @@ var RSA_bits = 1024;
        * @instance
        */
       jiff.party_count = options.party_count;
+      
+    /**
+     * Total server count in the computation, servers will take ids between "s1" to "s&lt;server_count>" (inclusive).
+     * @member {number} server_count
+     * @memberof jiff.jiff-instance
+     * @instance
+     */
+    jiff.server_count = 1;
 
     // Send the computation id to the server to receive proper
     // identification
@@ -1324,8 +1342,6 @@ var RSA_bits = 1024;
         jiff.party_count = msg.party_count;
 
       if(jiff.public_key == null) {
-        // Size of the Passphrase used in generating an RSA key
-        var passphrase_size = 25;
         jiff.secret_key = cryptico.generateRSAKey(random_string(passphrase_size), RSA_bits);
         jiff.public_key = cryptico.publicKeyString(jiff.secret_key);
       }
@@ -1419,6 +1435,12 @@ var RSA_bits = 1024;
     exports.mod = mod;
     exports.gZp = gZp;
     exports.RSA_bits = RSA_bits;
+    exports.random_string = random_string;
+    exports.encrypt_and_sign = encrypt_and_sign;
+    exports.decrypt_and_sign = decrypt_and_sign;
+    exports.jiff_share = jiff_share;
+    exports.jiff_compute_shares = jiff_compute_shares;
+    exports.passphrase_size = passphrase_size;
   }
   else { // For client
     exports.make_jiff = make_jiff;
@@ -1435,13 +1457,13 @@ var RSA_bits = 1024;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="jiff.secret_share.html">secret_share</a></li></ul><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.jiff-instance.html">jiff-instance</a></li></ul><h3>Global</h3><ul><li><a href="global.html#gZp">gZp</a></li><li><a href="global.html#RSA_bits">RSA_bits</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="jiff.secret_share.html">secret_share</a></li></ul><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.jiff-instance.html">jiff-instance</a></li></ul><h3>Global</h3><ul><li><a href="global.html#gZp">gZp</a></li><li><a href="global.html#passphrase_size">passphrase_size</a></li><li><a href="global.html#RSA_bits">RSA_bits</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Nov 05 2017 21:16:52 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 06 2017 02:18:13 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>
