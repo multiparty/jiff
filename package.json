@@ -21,7 +21,7 @@
     "mocha": "^4.0.1"
   },
   "scripts": {
-    "test": "node_modules/mocha/bin/mocha --reporter nyan tests/test.js"
+    "test": "./tests/mocha/test.sh"
   },
   "repository": {
     "type": "git",
