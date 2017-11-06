@@ -1,3 +1,0 @@
-[submodule "tests/jiff-client"]
-	path = tests/jiff-client
-	url = https://github.com/multiparty/jiff-client.git
