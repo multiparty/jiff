@@ -3,17 +3,17 @@ Server and Client side library for performing MPC in JavaScript. Server handles 
 Clients and Servers can both participate in the computation and provide input data.
 
 ## Requirements
-### Server: 
+### Server:
   Node and npm
 
-### Client: 
+### Client:
 Make sure to use the sockets.io.js script file that **matches exactly** the version **used in the server**.  
-  
+
 If the client code is to be served by the server, use:  
 ```
 <script src="/socket.io/socket.io.js"></script>
 ```  
-  
+
 If the client code is served independently, fetch the matching socket.io.js from the CDN, or use the file from`<server_dir>/node_modules/socket.io-client/dist`
 
 ## Installation
@@ -27,12 +27,12 @@ Make sure to include jiff.js **after** socket.io
 ```
 <script src="/lib/jiff-client.js"></script>
 ```  
-  
+
 Then inside a script tag (and after the page loads), initialize a jiff object and setup a computation:  
 ```
 var instance = jiff.make_jiff("http://localhost:3000", "<computation_id>", parties)
 ```  
-  
+
 instance will provide methods for sharing, opening, and performing operations on shares.
 
 ## Documentation
@@ -48,6 +48,11 @@ To run a sample server:
 `$ node index.js`
 
 Then open `localhost:3000/apps/sum.html` (or any other file under `apps/`) in a browser, for every party open the page in a new tab/window.
+
+## Running the test cases
+To run the test cases:
+
+`$ npm test`
 
 ## Information and Collaborators
 More information about this project, including collaborators and publications, can be found at [multiparty.org](https://multiparty.org/).
