@@ -3,8 +3,8 @@ var expect = require("chai").expect;
 var assert = require("chai").assert;
 
 // Require test cases for every operation
-var add = require("./add.js");
-var mult = require("./mult.js");
+var op = require("./op.js");
+
 
 // Callback to run after each test is done
 function callback(done) {
@@ -21,11 +21,17 @@ describe("MPC Operations", function() {
 
   // +
   it("Addition", function(done) {
-    add.run_test(i++, callback(done));
+    op.run_test(i++, "add", callback(done));
   });
-  
+
+  // -
+  it("Subtraction", function(done) {
+    op.run_test(i++, "sub", callback(done));
+  });
+
   // *
-  it("Multiplication", function(done) {
-    mult.run_test(i++, callback(done));
+  it("Mutliplication", function(done) {
+    op.run_test(i++, "mult", callback(done));
   });
+
 });
