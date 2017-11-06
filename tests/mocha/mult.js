@@ -7,9 +7,9 @@ var has_failed = false;
 
 function run_test(computation_id, callback) {
   for (var i = 0; i < 20; i++){
-    var num1 = Math.floor(Math.random()*jiff.gZp);
-    var num2 = Math.floor(Math.random()*jiff.gZp);
-    var num3 = Math.floor(Math.random()*jiff.gZp);
+    var num1 = Math.floor(Math.random()*jiff.gZp/10);
+    var num2 = Math.floor(Math.random()*jiff.gZp/10);
+    var num3 = Math.floor(Math.random()*jiff.gZp/10);
     tests[i] = [num1, num2, num3];
   }
 
@@ -50,25 +50,25 @@ function single_test(index, jiff_instance) {
   var party_index = jiff_instance.id - 1;
   var shares = jiff_instance.share(numbers[party_index]);
 
-  var sum = shares[1];
+  var product = shares[1];
   for(var i = 2; i <= parties; i++) {
-    sum = sum.mult(shares[i]);
+    product = product.mult(shares[i]);
   }
   var deferred = $.Deferred();
-  sum.open(function(result) { test_output(index, result); deferred.resolve(); }, error);
+  product.open(function(result) { test_output(index, result); deferred.resolve(); }, error);
   return deferred.promise();
 }
 
 // determine if the output is correct
 function test_output(index, result) {
   var numbers = tests[index];
-  var sum = 1;
+  var product = 1;
   for(var i = 0; i < numbers.length; i++) {
-    sum *= numbers[i];
+    product = product * numbers[i];
   }
 
-  sum = jiff.mod(sum, jiff.gZp);
-  if(sum != result) { // sum is incorrect
+  product = jiff.mod(product, jiff.gZp);
+  if(product != result) { // product is incorrect
     has_failed = true;
     console.log(numbers.join(" * ") + " != " + result);
   }
