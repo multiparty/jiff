@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "description": "server side library for performing MPC in JavaScript. handles relaying shares between parties.",
   "dependencies": {
-    "socket.io": "^2.0.2",
-    "cryptico": "^1.0.2"
+    "cryptico": "^1.0.2",
+    "jquery-deferred": "^0.3.1",
+    "socket.io": "^2.0.2"
   },
   "main": "lib/jiff-server.js",
   "directories": {
@@ -31,15 +32,15 @@
   ],
   "author": "Kinan Dak Albab <babman@bu.edu> (http://cs-people.bu.edu/babman/)",
   "contributors": [
-    { 
-      "name" : "Rawane Issa", 
-      "email" : "ra1issa@bu.edu", 
-      "url" : "http://cs-people.bu.edu/ra1issa/"
+    {
+      "name": "Rawane Issa",
+      "email": "ra1issa@bu.edu",
+      "url": "http://cs-people.bu.edu/ra1issa/"
     },
-    { 
-      "name" : "Andrei Lapets", 
-      "email" : "lapets@bu.edu", 
-      "url" : "http://cs-people.bu.edu/lapets/"
+    {
+      "name": "Andrei Lapets",
+      "email": "lapets@bu.edu",
+      "url": "http://cs-people.bu.edu/lapets/"
     }
   ],
   "license": "MIT",
