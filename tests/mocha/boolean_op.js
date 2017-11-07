@@ -5,67 +5,54 @@ var parties = 0;
 var tests = [];
 var has_failed = false;
 
-
+// Operation strings to "lambdas"
 var operations = {
-    "<" : function (operand1, operand2) {
-        return operand1 < operand2;
-    },
-    "less" : function (operand1, operand2) {
-        return operand1.less(operand2);
-    },
-    "<=" : function (operand1, operand2) {
-        return operand1 <= operand2;
-    },
-    "less_or_equal" : function (operand1, operand2) {
-        return operand1.less_or_equal(operand2);
-    },
-    ">" : function (operand1, operand2) {
-        return operand1 > operand2;
-    },
-    "greater" : function (operand1, operand2) {
-        return operand1.greater(operand2);
-    },
-    ">=" : function (operand1, operand2) {
-        return operand1 >= operand2;
-    },
-    "greater_or_equal" : function (operand1, operand2) {
-        return operand1.greater_or_equal(operand2);
-    }
+  "<" : function (operand1, operand2) {
+    return operand1 < operand2;
+  },
+  "less" : function (operand1, operand2) {
+    return operand1.less(operand2);
+  },
+  "<=" : function (operand1, operand2) {
+    return operand1 <= operand2;
+  },
+  "less_or_equal" : function (operand1, operand2) {
+    return operand1.less_or_equal(operand2);
+  },
+  ">" : function (operand1, operand2) {
+    return operand1 > operand2;
+  },
+  "greater" : function (operand1, operand2) {
+    return operand1.greater(operand2);
+  },
+  ">=" : function (operand1, operand2) {
+    return operand1 >= operand2;
+  },
+  "greater_or_equal" : function (operand1, operand2) {
+    return operand1.greater_or_equal(operand2);
+  }
 };
 
-function dual_operation(operator) { //operator has to be add,sub,mult
-  if(operator == "less"){
-    return "<";
-  }else if(operator == "less_or_equal"){
-    return "<=";
-  }else if(operator == "greater"){
-    return ">";
-  }else if(operator == "greater_or_equal"){
-    return ">=";
-  }
-}
+// Maps MPC operation to its open dual
+var dual = { "less": "<", "less_or_equal": "<=", "greater": ">", "greater_or_equal": ">=" };
 
-
-function apply_operation(list, operator) {
-    return list.reduce(operations[operator]);
-}
-
-
+// Entry Point
 function run_test(computation_id, operation, callback) {
-
-  for (var i = 0; i < 20; i++){
-    var num1 = Math.floor(Math.random()*jiff.gZp/10);
-    var num2 = Math.floor(Math.random()*jiff.gZp/10);
-    var num3 = Math.floor(Math.random()*jiff.gZp/10);
+  // Generate Numbers
+  for (var i = 0; i < 2; i++) {
+    var num1 = Math.floor(Math.random() * jiff.gZp / 10);
+    var num2 = Math.floor(Math.random() * jiff.gZp / 10);
+    var num3 = Math.floor(Math.random() * jiff.gZp / 10);
     tests[i] = [num1, num2, num3];
   }
 
+  // Assign values to global variables
   parties = tests[0].length;
   computation_id = computation_id + "";
 
   var counter = 0;
   options = { party_count: parties };
-  options.onConnect = function() { counter++; if(counter == 3) test(callback, operation); };
+  options.onConnect = function() { if(++counter == 3) test(callback, operation); };
 
   var jiff_instance1 = jiff.make_jiff("http://localhost:3000", computation_id, options);
   var jiff_instance2 = jiff.make_jiff("http://localhost:3000", computation_id, options);
@@ -73,61 +60,64 @@ function run_test(computation_id, operation, callback) {
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
 }
 
-// run all tests
-function test(callback, operator) {
+// Run all tests after setup
+function test(callback, mpc_operator) {
+  open_operator = dual[mpc_operator];
 
-  op2 = dual_operation(operator); // +, - or *
-
-  if(jiff_instances[0] == null || !jiff_instances[0].ready) { alert("Please wait!"); return; }
+  if(jiff_instances[0] == null || !jiff_instances[0].ready) { console.log("Please wait!"); return; }
   has_failed = false;
 
-  var promises = []; // wut
+  // Run every test and accumelate all the promises
+  var promises = [];
   for(var i = 0; i < tests.length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
-      var promise = single_test(i, jiff_instances[j], operator, op2);
+      var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
       promises.push(promise);
     }
   }
 
+  // When all is done, check whether any failures were encountered
   Promise.all(promises).then(function() {
     callback(!has_failed);
   });
 }
 
-// run test case at index
-function single_test(index, jiff_instance, operator, op2) {
+// Run test case at index
+function single_test(index, jiff_instance, mpc_operator, open_operator) {
   var numbers = tests[index];
   var party_index = jiff_instance.id - 1;
   var shares = jiff_instance.share(numbers[party_index]);
 
-  var cmp = apply_operation([shares[1], shares[2]], operator);
-  cmp.open( function(result) { test_output(index, result, op2) }, error);
-  return cmp;
+  // Apply operation on shares
+  var res = operations[mpc_operator](shares[1], shares[2]);
+  
+  var deferred = $.Deferred();
+  res.open(function(result) { test_output(index, result, open_operator); deferred.resolve(); }, error);
+  return deferred.promise();
 }
 
-// determine if the output is correct
-function test_output(index, result) {
+// Determine if the output is correct
+function test_output(index, result, open_operator) {
   var numbers = tests[index];
-  var res = apply_operation([numbers[0], numbers[1]], op2);
-  if(res) {
-    if(result != 1) {
-      has_failed = true;
-      console.log("compare("+numbers.join(", ")+") != " + result );
-    }
-  } else {
-    if(result != 0) {
-      has_failed = true;
-      console.log("compare("+numbers.join(", ")+") != " + result);
-    }
+  
+  // Apply operation in the open to test
+  var res = operations[open_operator](numbers[0], numbers[1]);
+  res = jiff.mod(res, jiff.gZp) == 1;
+  
+  // Incorrect result
+  if(res != result) {
+    has_failed = true;
+    console.log(numbers.join(open_operator) + " != " + result);
   }
-
 }
-// register communication error
+
+// Register Communication Error
 function error() {
   has_failed = true;
   console.log("Communication error");
 }
 
+// Export API
 module.exports = {
   run_test: run_test
 };

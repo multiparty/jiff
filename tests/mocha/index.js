@@ -69,6 +69,4 @@ describe("MPC Operations", function() {
       boolean_op.run_test(i++, "greater_or_equal", callback(done));
     });
   });
-
-
 });

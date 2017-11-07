@@ -5,61 +5,48 @@ var parties = 0;
 var tests = [];
 var has_failed = false;
 
-
+// Operation strings to "lambdas"
 var operations = {
-    "+" : function (operand1, operand2) {
-        return operand1 + operand2;
-    },
-    "add_cst" : function (operand1, operand2) {
-        return operand1.add_cst(operand2);
-    },
-    "-" : function (operand1, operand2) {
-        return operand1 - operand2;
-    },
-    "sub_cst" : function (operand1, operand2) {
-        return operand1.sub_cst(operand2);
-    },
-    "*" : function (operand1, operand2) {
-        return operand1 * operand2;
-    },
-    "mult_cst" : function (operand1, operand2) {
-        return operand1.mult_cst(operand2);
-    }
-
+  "+" : function (operand1, operand2) {
+    return operand1 + operand2;
+  },
+  "add_cst" : function (operand1, operand2) {
+    return operand1.add_cst(operand2);
+  },
+  "-" : function (operand1, operand2) {
+    return operand1 - operand2;
+  },
+  "sub_cst" : function (operand1, operand2) {
+    return operand1.sub_cst(operand2);
+  },
+  "*" : function (operand1, operand2) {
+    return operand1 * operand2;
+  },
+  "mult_cst" : function (operand1, operand2) {
+    return operand1.mult_cst(operand2);
+  }
 };
 
-function dual_operation(operator) { //operator has to be add,sub,mult
-  if(operator == "add_cst"){
-    return "+";
-  }else if(operator == "sub_cst"){
-    return "-";
-  }else if(operator == "mult_cst"){
-    return "*";
-  }
-}
+// Maps MPC operation to its open dual
+var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*" };
 
-
-function apply_operation(list, operator) {
-    return list.reduce(operations[operator]);
-}
-
-
+// Entry Point
 function run_test(computation_id, operation, callback) {
-
-  for (var i = 0; i < 20; i++){
-    var num1 = Math.floor(Math.random()*jiff.gZp/10);
-    var num2 = Math.floor(Math.random()*jiff.gZp/10);
-    var num3 = Math.floor(Math.random()*jiff.gZp/10);
-    var num4 = Math.floor(Math.random()*jiff.gZp/10);
-    tests[i] = [num1, num2, num3, num4];
+  // Generate Numbers
+  for (var i = 0; i < 5; i++) {
+    var num1 = Math.floor(Math.random() * jiff.gZp / 10);
+    var num2 = Math.floor(Math.random() * jiff.gZp / 10);
+    var num3 = Math.floor(Math.random() * jiff.gZp / 10);
+    tests[i] = [num1, num2, num3];
   }
 
-  parties = tests[0].length - 1;
+  // Assign values to global variables
+  parties = tests[0].length;
   computation_id = computation_id + "";
 
   var counter = 0;
   options = { party_count: parties };
-  options.onConnect = function() { counter++; if(counter == 3) test(callback, operation); };
+  options.onConnect = function() { if(++counter == 3) test(callback, operation); };
 
   var jiff_instance1 = jiff.make_jiff("http://localhost:3000", computation_id, options);
   var jiff_instance2 = jiff.make_jiff("http://localhost:3000", computation_id, options);
@@ -67,69 +54,64 @@ function run_test(computation_id, operation, callback) {
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
 }
 
-// run all tests
-function test(callback, operator) {
+// Run all tests after setup
+function test(callback, mpc_operator) {
+  var open_operator = dual[mpc_operator];
 
-  op2 = dual_operation(operator); // +, - or *
-
-  if(jiff_instances[0] == null || !jiff_instances[0].ready) { alert("Please wait!"); return; }
+  if(jiff_instances[0] == null || !jiff_instances[0].ready) { console.log("Please wait!"); return; }
   has_failed = false;
 
+  // Run every test and accumelate all the promises
   var promises = [];
   for(var i = 0; i < tests.length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
-      var promise = single_test(i, jiff_instances[j], operator, op2);
+      var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
       promises.push(promise);
     }
   }
 
+  // When all is done, check whether any failures were encountered
   Promise.all(promises).then(function() {
     callback(!has_failed);
   });
 }
 
-// run test case at index
-function single_test(index, jiff_instance, operator, op2) {
+// Run test case at index
+function single_test(index, jiff_instance, mpc_operator, open_operator) {
   var numbers = tests[index];
-  var c = numbers[numbers.length-1];
-
   var party_index = jiff_instance.id - 1;
   var shares = jiff_instance.share(numbers[party_index]);
-
-  var promises = [];
-
-  var tmp = function(i) {
-    shares[i] = apply_operation([shares[i], c], operator);
-    shares[i].open( function(result) { test_output(index, i, result, op2) }, error);
-    if(shares[i].promise != null) promises.push(shares[i].promise);
-  }
-
-  for(var i = 1; i <= parties; i++)
-    tmp(i);
-
-  return Promise.all(promises);
+  
+  // Apply operation on shares
+  var res = operations[mpc_operator](shares[1], numbers[1]);
+  
+  var deferred = $.Deferred();
+  res.open(function(result) { test_output(index, result, open_operator); deferred.resolve(); }, error);
+  return deferred.promise();
 }
-// determine if the output is correct
-function test_output(index, party, result, op2) {
+
+// Determine if the output is correct
+function test_output(index, result, open_operator) {
   var numbers = tests[index];
-  var c = numbers[numbers.length-1];
-  var res = numbers[party - 1];
-
-  res = apply_operation([res, c], op2);
+  
+  // Apply operation in the open to test
+  var res = operations[open_operator](numbers[0], numbers[1]);
   res = jiff.mod(res, jiff.gZp);
-
-  if(res != result) { // sum is incorrect
+  
+  // Incorrect result
+  if(res != result) {
     has_failed = true;
-      console.log(""+party+" "+op2+"("+numbers.join(", ")+") = " + res + " != " +result + "");
+    console.log(numbers.join(open_operator) + " != " + result);
   }
 }
 
-// register communication error
+// Register Communication Error
 function error() {
   has_failed = true;
   console.log("Communication error");
 }
 
+// Export API
 module.exports = {
   run_test: run_test
 };
