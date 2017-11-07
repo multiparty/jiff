@@ -39,10 +39,10 @@ var dual = { "less": "<", "less_or_equal": "<=", "greater": ">", "greater_or_equ
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 2; i++) {
-    var num1 = Math.floor(Math.random() * jiff.gZp / 10);
-    var num2 = Math.floor(Math.random() * jiff.gZp / 10);
-    var num3 = Math.floor(Math.random() * jiff.gZp / 10);
+  for (var i = 0; i < 5; i++) {
+    var num1 = Math.floor(Math.random() * jiff.gZp / 100);
+    var num2 = Math.floor(Math.random() * jiff.gZp / 100);
+    var num3 = Math.floor(Math.random() * jiff.gZp / 100);
     tests[i] = [num1, num2, num3];
   }
 
@@ -53,6 +53,7 @@ function run_test(computation_id, operation, callback) {
   var counter = 0;
   options = { party_count: parties };
   options.onConnect = function() { if(++counter == 3) test(callback, operation); };
+  options.onError = function(error) { console.log(error); has_failed = true; };
 
   var jiff_instance1 = jiff.make_jiff("http://localhost:3000", computation_id, options);
   var jiff_instance2 = jiff.make_jiff("http://localhost:3000", computation_id, options);
@@ -102,12 +103,12 @@ function test_output(index, result, open_operator) {
   
   // Apply operation in the open to test
   var res = operations[open_operator](numbers[0], numbers[1]);
-  res = jiff.mod(res, jiff.gZp) == 1;
+  res = res ? 1 : 0;
   
   // Incorrect result
   if(res != result) {
     has_failed = true;
-    console.log(numbers.join(open_operator) + " != " + result);
+    console.log(numbers[0] + open_operator + numbers[1] + " != " + result);
   }
 }
 

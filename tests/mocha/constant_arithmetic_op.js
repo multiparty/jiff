@@ -33,7 +33,7 @@ var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*" };
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 5; i++) {
+  for (var i = 0; i < 20; i++) {
     var num1 = Math.floor(Math.random() * jiff.gZp / 10);
     var num2 = Math.floor(Math.random() * jiff.gZp / 10);
     var num3 = Math.floor(Math.random() * jiff.gZp / 10);
@@ -47,6 +47,7 @@ function run_test(computation_id, operation, callback) {
   var counter = 0;
   options = { party_count: parties };
   options.onConnect = function() { if(++counter == 3) test(callback, operation); };
+  options.onError = function(error) { console.log(error); has_failed = true; };
 
   var jiff_instance1 = jiff.make_jiff("http://localhost:3000", computation_id, options);
   var jiff_instance2 = jiff.make_jiff("http://localhost:3000", computation_id, options);

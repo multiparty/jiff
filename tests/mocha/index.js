@@ -36,7 +36,7 @@ describe("MPC Operations", function() {
     });
   });
 
-  describe("Constant Arithmetic Operations (i.e. of the form x.cst)", function() {
+  describe("Constant Arithmetic Operations (i.e. of the form)", function() {
     // constant +
     it("Constant Addition", function(done) {
       constant_arithmetic_op.run_test(i++, "add_cst", callback(done));
