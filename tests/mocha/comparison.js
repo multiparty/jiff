@@ -30,11 +30,23 @@ var operations = {
   },
   "greater_or_equal" : function (operand1, operand2) {
     return operand1.greater_or_equal(operand2);
+  },
+  "==" : function (operand1, operand2) {
+      return operand1 == operand2;
+  },
+  "eq" : function (operand1, operand2) {
+    return operand1.eq(operand2);
+  },
+  "!=" : function (operand1, operand2) {
+      return operand1 != operand2;
+  },
+  "neq" : function (operand1, operand2) {
+    return operand1.neq(operand2);
   }
 };
 
 // Maps MPC operation to its open dual
-var dual = { "less": "<", "less_or_equal": "<=", "greater": ">", "greater_or_equal": ">=" };
+var dual = { "less": "<", "less_or_equal": "<=", "greater": ">", "greater_or_equal": ">=","eq": "==", "neq": "!=" };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
@@ -91,7 +103,7 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
 
   // Apply operation on shares
   var res = operations[mpc_operator](shares[1], shares[2]);
-  
+
   var deferred = $.Deferred();
   res.open(function(result) { test_output(index, result, open_operator); deferred.resolve(); }, error);
   return deferred.promise();
@@ -100,11 +112,11 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
 // Determine if the output is correct
 function test_output(index, result, open_operator) {
   var numbers = tests[index];
-  
+
   // Apply operation in the open to test
   var res = operations[open_operator](numbers[0], numbers[1]);
   res = res ? 1 : 0;
-  
+
   // Incorrect result
   if(res != result) {
     has_failed = true;
