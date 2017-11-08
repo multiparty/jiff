@@ -17,91 +17,121 @@ function callback(done) {
   };
 }
 
-// Perform Tests yay
+// Perform Tests
+
 describe("MPC Operations", function() {
   this.timeout(0); // Remove timeout
   var i = 2;
-  //
-  // describe("Arithmetic Operations", function() {
-  //   // +
-  //   it("Addition", function(done) {
-  //     arithmetic_op.run_test(i++, "add", callback(done));
-  //   });
-  //   // -
-  //   it("Subtraction", function(done) {
-  //     arithmetic_op.run_test(i++, "sub", callback(done));
-  //   });
-  //   // *
-  //   it("Mutliplication", function(done) {
-  //     arithmetic_op.run_test(i++, "mult", callback(done));
-  //   });
-  // });
-  //
-  // describe("Constant Arithmetic Operations (i.e. of the form)", function() {
-  //   // constant +
-  //   it("Constant Addition", function(done) {
-  //     constant_arithmetic_op.run_test(i++, "add_cst", callback(done));
-  //   });
-  //   // constant -
-  //   it("Constant Subtraction", function(done) {
-  //     constant_arithmetic_op.run_test(i++, "sub_cst", callback(done));
-  //   });
-  //   // constant *
-  //   it("Constant Mutliplication", function(done) {
-  //     constant_arithmetic_op.run_test(i++, "mult_cst", callback(done));
-  //   });
-  // });
-  //
-  // describe("Comparison", function() {
-  //   // <
-  //   it("Less than", function(done) {
-  //     comparison.run_test(i++, "less", callback(done));
-  //   });
-  //   // <=
-  //   it("Less than or Equal", function(done) {
-  //     comparison.run_test(i++, "less_or_equal", callback(done));
-  //   });
-  //   // >
-  //   it("Greater than", function(done) {
-  //     comparison.run_test(i++, "greater", callback(done));
-  //   });
-  //   // >=
-  //   it("Less than or Equal", function(done) {
-  //     comparison.run_test(i++, "greater_or_equal", callback(done));
-  //   });
-  //   // ==
-  //   it("Equal", function(done) {
-  //     comparison.run_test(i++, "eq", callback(done));
-  //   });
-  //   // !=
-  //   it("Not Equal", function(done) {
-  //     comparison.run_test(i++, "neq", callback(done));
-  //   });
+  describe("Arithmetic Operations", function() {
+    //+
+    it("Addition", function(done) {
+      arithmetic_op.run_test(i++, "add", callback(done));
+    });
 
-    describe("Constant Comparison", function() {
-      // // <
-      // it("Less than", function(done) {
-      //   constant_comparison.run_test(i++, "less_cst", callback(done));
-      // });
-      // // <=
-      // it("Less than or Equal", function(done) {
-      //   constant_comparison.run_test(i++, "less_or_equal_cst", callback(done));
-      // });
-      // // >
-      // it("Greater than", function(done) {
-      //   constant_comparison.run_test(i++, "greater_cst", callback(done));
-      // });
-      // // >=
-      it("Greater than or Equal", function(done) {
-        constant_comparison.run_test(i++, "greater_or_equal_cst", callback(done));
-      });
-      // // ==
-      // it("Equal", function(done) {
-      //   constant_comparison.run_test(i++, "eq_cst", callback(done));
-      // });
-      // // !=
-      // it("Not Equal", function(done) {
-      //   constant_comparison.run_test(i++, "neq_cst", callback(done));
-      // });
+    // -
+    it("Subtraction", function(done) {
+      arithmetic_op.run_test(i++, "sub", callback(done));
+    });
+
+    // *
+    it("Mutliplication", function(done) {
+      arithmetic_op.run_test(i++, "mult", callback(done));
+    });
+
+    /*
+    // ^
+    it("Bitwise XOR", function(done) {
+      arithmetic_op.run_test(i++, "xor", callback(done));
+    });
+    */
+  });
+
+
+  describe("Constant Arithmetic Operations", function() {
+    // constant +
+    it("Constant Addition", function(done) {
+      constant_arithmetic_op.run_test(i++, "add_cst", callback(done));
+    });
+
+    // constant -
+    it("Constant Subtraction", function(done) {
+      constant_arithmetic_op.run_test(i++, "sub_cst", callback(done));
+    });
+
+    // constant *
+    it("Constant Mutliplication", function(done) {
+      constant_arithmetic_op.run_test(i++, "mult_cst", callback(done));
+    });
+
+    /*
+    // constant ^
+    it("Constant Bitwise XOR", function(done) {
+      constant_arithmetic_op.run_test(i++, "xor_cst", callback(done));
+    });
+    */
+  });
+
+  describe("Comparison", function() {
+    // <
+    it("Less than", function(done) {
+      comparison.run_test(i++, "less", callback(done));
+    });
+
+    // <=
+    it("Less than or Equal", function(done) {
+      comparison.run_test(i++, "less_or_equal", callback(done));
+    });
+
+    // >
+    it("Greater than", function(done) {
+      comparison.run_test(i++, "greater", callback(done));
+    });
+
+    // >=
+    it("Less than or Equal", function(done) {
+      comparison.run_test(i++, "greater_or_equal", callback(done));
+    });
+
+    // ==
+    it("Equal", function(done) {
+      comparison.run_test(i++, "eq", callback(done));
+    });
+
+    // !=
+    it("Not Equal", function(done) {
+      comparison.run_test(i++, "neq", callback(done));
+    });
+  });
+
+  describe("Constant Comparison", function() {
+    // <
+    it("Less than", function(done) {
+      constant_comparison.run_test(i++, "less_cst", callback(done));
+    });
+
+    // <=
+    it("Less than or Equal", function(done) {
+      constant_comparison.run_test(i++, "less_or_equal_cst", callback(done));
+    });
+
+    // >
+    it("Greater than", function(done) {
+      constant_comparison.run_test(i++, "greater_cst", callback(done));
+    });
+
+    // >=
+    it("Greater than or Equal", function(done) {
+      constant_comparison.run_test(i++, "greater_or_equal_cst", callback(done));
+    });
+
+    // ==
+    it("Equal", function(done) {
+      constant_comparison.run_test(i++, "eq_cst", callback(done));
+    });
+
+    // !=
+    it("Not Equal", function(done) {
+      constant_comparison.run_test(i++, "neq_cst", callback(done));
+    });
   });
 });

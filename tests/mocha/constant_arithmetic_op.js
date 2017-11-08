@@ -24,11 +24,17 @@ var operations = {
   },
   "mult_cst" : function (operand1, operand2) {
     return operand1.mult_cst(operand2);
+  },
+  "xor_cst" : function (operand1, operand2) {
+    return operand1.xor_cst(operand2);
+  },
+  "^" : function (operand1, operand2) {
+    return operand1 ^ operand2;
   }
 };
 
 // Maps MPC operation to its open dual
-var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*" };
+var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*", "xor_cst": "^" };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
