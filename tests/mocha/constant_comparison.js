@@ -7,42 +7,54 @@ var has_failed = false;
 
 // Operation strings to "lambdas"
 var operations = {
-  "+" : function (operand1, operand2) {
-    return operand1 + operand2;
+  "<" : function (operand1, operand2) {
+    return operand1 < operand2;
   },
-  "add_cst" : function (operand1, operand2) {
-    return operand1.add_cst(operand2);
+  "less_cst" : function (operand1, operand2) {
+    return operand1.less_cst(operand2);
   },
-  "-" : function (operand1, operand2) {
-    return operand1 - operand2;
+  "<=" : function (operand1, operand2) {
+    return operand1 <= operand2;
   },
-  "sub_cst" : function (operand1, operand2) {
-    return operand1.sub_cst(operand2);
+  "less_or_equal_cst" : function (operand1, operand2) {
+    return operand1.less_or_equal_cst(operand2);
   },
-  "*" : function (operand1, operand2) {
-    return operand1 * operand2;
+  ">" : function (operand1, operand2) {
+    return operand1 > operand2;
   },
-  "mult_cst" : function (operand1, operand2) {
-    return operand1.mult_cst(operand2);
+  "greater_cst" : function (operand1, operand2) {
+    return operand1.greater_cst(operand2);
   },
-  "xor_cst" : function (operand1, operand2) {
-    return operand1.xor_cst(operand2);
+  ">=" : function (operand1, operand2) {
+    return operand1 >= operand2;
   },
-  "^" : function (operand1, operand2) {
-    return operand1 ^ operand2;
+  "greater_or_equal_cst" : function (operand1, operand2) {
+    return operand1.greater_or_equal_cst(operand2);
+  },
+  "==" : function (operand1, operand2) {
+      return operand1 == operand2;
+  },
+  "eq_cst" : function (operand1, operand2) {
+    return operand1.eq_cst(operand2);
+  },
+  "!=" : function (operand1, operand2) {
+      return operand1 != operand2;
+  },
+  "neq_cst" : function (operand1, operand2) {
+    return operand1.neq_cst(operand2);
   }
 };
 
 // Maps MPC operation to its open dual
-var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*", "xor_cst": "^" };
+var dual = { "less_cst": "<", "less_or_equal_cst": "<=", "greater_cst": ">", "greater_or_equal_cst": ">=","eq_cst": "==", "neq_cst": "!=" };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 20; i++) {
-    var num1 = Math.floor(Math.random() * jiff.gZp / 10);
-    var num2 = Math.floor(Math.random() * jiff.gZp / 10);
-    var num3 = Math.floor(Math.random() * jiff.gZp / 10);
+  for (var i = 0; i < 5; i++) {
+    var num1 = Math.floor(Math.random() * jiff.gZp / 100);
+    var num2 = Math.floor(Math.random() * jiff.gZp / 100);
+    var num3 = Math.floor(Math.random() * jiff.gZp / 100);
     tests[i] = [num1, num2, num3];
   }
 
@@ -63,7 +75,7 @@ function run_test(computation_id, operation, callback) {
 
 // Run all tests after setup
 function test(callback, mpc_operator) {
-  var open_operator = dual[mpc_operator];
+  open_operator = dual[mpc_operator];
 
   if(jiff_instances[0] == null || !jiff_instances[0].ready) { console.log("Please wait!"); return; }
   has_failed = false;
@@ -102,14 +114,13 @@ function test_output(index, result, open_operator) {
   var numbers = tests[index];
 
   // Apply operation in the open to test
-
   var res = operations[open_operator](numbers[0], numbers[1]);
-  res = jiff.mod(res, jiff.gZp);
+  res = res ? 1 : 0;
 
   // Incorrect result
   if(res != result) {
     has_failed = true;
-    console.log(numbers.join(open_operator) + " != " + result);
+    console.log(numbers[0] + open_operator + numbers[1] + " != " + result);
   }
 }
 

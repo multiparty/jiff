@@ -24,11 +24,17 @@ var operations = {
   },
   "mult" : function (operand1, operand2) {
     return operand1.mult(operand2);
+  },
+  "xor" : function (operand1, operand2) {
+    return operand1.xor(operand2);
+  },
+  "^" : function (operand1, operand2) {
+    return operand1 ^ operand2;
   }
 };
 
 // Maps MPC operation to its open dual
-var dual = { "add": "+", "sub": "-", "mult": "*" };
+var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^" };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
@@ -82,12 +88,12 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
   var numbers = tests[index];
   var party_index = jiff_instance.id - 1;
   var shares = jiff_instance.share(numbers[party_index]);
-    
+
   // Apply operation on shares
   var shares_list = [];
   for(var i = 1; i <= parties; i++) shares_list.push(shares[i]);
   var res = shares_list.reduce(operations[mpc_operator]);
-  
+
   var deferred = $.Deferred();
   res.open(function(result) { test_output(index, result, open_operator); deferred.resolve(); }, error);
   return deferred.promise();
@@ -96,11 +102,11 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
 // Determine if the output is correct
 function test_output(index, result, open_operator) {
   var numbers = tests[index];
-  
+
   // Apply operation in the open to test
   var res = numbers.reduce(operations[open_operator]);
   res = jiff.mod(res, jiff.gZp);
-  
+
   // Incorrect result
   if(res != result) {
     has_failed = true;
