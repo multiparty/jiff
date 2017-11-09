@@ -1,0 +1,150 @@
+<html>
+  <head>
+    <title>PCA vectors under MPC</title>
+    
+    <style>
+      .error {
+        color: #FF0000;
+      }
+    </style>
+    
+    <!-- jiff and required libraries -->
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/lib/cryptico.min.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+    
+    <script type="text/javascript">
+      var jiff_instance;
+      
+      function connect() {
+        $('#connectButton').prop('disabled', true);
+        var computation_id = $('#computation_id').val();
+        var party_count = parseInt($('#count').val());
+        
+        if(isNaN(party_count)) {
+          $("#output").append("<p class='error'>Party count must be a valid number!</p>");
+          $('#connectButton').prop('disabled', false);
+        }
+        
+        else {
+          var options = { party_count: party_count};
+          options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
+          options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
+          
+          var hostname = window.location.hostname.trim();
+          var port = window.location.port;
+          if(port == null || port == '') 
+            port = "80";
+          if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
+            hostname = "http://" + hostname;
+          if(hostname.endsWith("/"))
+            hostname = hostname.substring(0, hostname.length-1);
+          if(hostname.indexOf(":") > -1)
+            hostanme = hostname.substring(0, hostname.indexOf(":"));
+  
+          hostname = hostname + ":" + port;
+          jiff_instance = jiff.make_jiff(hostname, computation_id, options);
+        }
+      }
+    
+      function pca() {
+
+        if(isNaN(input))
+          $("#output").append("<p class='error'>Input a valid number!</p>");
+        else if(100 < input || input < 0 || input != Math.floor(input))
+          $("#output").append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
+        else if(jiff_instance == null || !jiff_instance.ready)
+          alert("Please wait!");
+        else
+          MPC(input);
+      }
+
+      pca_sum = []
+
+      /**
+       * 
+       * @param items An array of items.
+       * @param fn A function that accepts an item from the array and returns a promise.
+       * @returns {Promise}
+       */
+      function forEachPromise(items, fn) {
+          return items.reduce(function (promise, item) {
+              return promise.then(function () {
+                  return fn(item);
+              });
+          }, Promise.resolve());
+      }
+
+      function logItem(item) {
+        return new Promise((resolve, reject) => {
+            process.nextTick(() => {
+                console.log(item);
+                resolve();
+            })
+        });
+    }
+
+            var arr_sum = [];
+            var arr = [1,2,3];
+      
+      function MPC() {
+        $("#sumButton").attr("disabled", true);
+        $("#output").append("<p>Starting...</p>");
+
+        arr.map(function(item){
+          var shares = jiff_instance.share(item);
+          var sum = shares[1];
+          for(var i = 2; i <= jiff_instance.party_count; i++){
+            sum = sum.add(shares[i]);
+          }
+          arr_sum.push(sum.open_to_promise().then(success, failure)); 
+        });
+
+        Promise.all(arr_sum).then(function(results){
+          results = results.map(function(item){
+            return item/jiff_instance.party_count;
+          });
+          console.log(results);
+        });
+
+
+
+        
+        
+                  
+      }
+
+      function success(result) { 
+        console.log("success, result = " + result);
+        return result;
+      }
+
+      function failure(error){
+        console.error("failure, error = " + error);
+      }
+      
+      function handleResult(result) {
+        $("#output").append("<p>Result is: " + result + "</p>");
+        $("#sumButton").attr("disabled", false);
+        // pca_sum.push(result);
+        // console.log(pca_sum);
+        //return result;
+      }
+    </script>
+  </head>
+  
+  <body>
+    <h1>Connect JIFF</h1>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-pca"></input> <br><br>
+    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
+    <br> <br>
+    
+    <hr>
+
+    <h1>Run PCA</h1>
+    <p>[1,2,3]</p>
+    <button onclick="MPC();" disabled="disabled" id="sumButton">PCA</button> <br>
+    <div id="output"> </div>
+  </body>
+</html>
