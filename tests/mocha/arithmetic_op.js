@@ -40,10 +40,18 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^" };
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
-    var num1 = Math.floor(Math.random() * jiff.gZp / 10);
-    var num2 = Math.floor(Math.random() * jiff.gZp / 10);
-    var num3 = Math.floor(Math.random() * jiff.gZp / 10);
-    tests[i] = [num1, num2, num3];
+    // if (operation == "xor") {
+    //   var num1 = Math.round(Math.random());
+    //   var num2 = Math.round(Math.random());
+    //   var num3 = Math.round(Math.random());
+    //   tests[i] = [num1, num2, num3];
+    //
+    // } else {
+      var num1 = Math.floor(Math.random() * jiff.gZp / 10);
+      var num2 = Math.floor(Math.random() * jiff.gZp / 10);
+      var num3 = Math.floor(Math.random() * jiff.gZp / 10);
+      tests[i] = [num1, num2, num3];
+    // }
   }
 
   // Assign values to global variables
