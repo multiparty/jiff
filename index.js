@@ -4,17 +4,15 @@ var http = require('http').Server(app);
 var jiff_instance = require('./lib/jiff-server').make_jiff(http, { logs: false });
 
 // Define a computation with id '1' with a maximum of 3 participants
-jiff_instance.totalparty_map['1'] = 3;
+jiff_instance.totalparty_map['1'] = 2;
 
 jiff_instance.compute('test-sum', function(computation_instance) {
   // Perform server side computation
   console.log("HELLO");
-  var shares = computation_instance.share(10);
-  var arr = [];
-  for(var i in shares)
-    arr.push(shares[i]);
+  var shares = computation_instance.share(10, [1,2], [1, 2, "s1"]);
+  shares = computation_instance.share(null, ["s1"], [1, 2]);
 
-  var r = arr[0].add(arr[1]).mult(arr[2]);
+  var r = shares[1].add(shares[2]).add_cst(1);
   r.open(console.log);
 });
 
