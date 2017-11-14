@@ -47,6 +47,8 @@ function test(callback) {
 
   // When all is done, check whether any failures were encountered
   Promise.all(promises).then(function() {
+    for(var i = 0; i < jiff_instances.length; i++) jiff_instances[i].disconnect();
+    jiff_instances = null;
     callback(!has_failed);
   });
 }

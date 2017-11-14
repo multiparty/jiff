@@ -29,6 +29,7 @@ describe("MPC Operations", function() {
       share.run_test(i++, callback(done));
     });
   });
+  
   describe("Arithmetic Operations", function() {
     //+
     it("Addition", function(done) {
@@ -68,14 +69,13 @@ describe("MPC Operations", function() {
       constant_arithmetic_op.run_test(i++, "mult_cst", callback(done));
     });
 
-    /*
     // constant ^
     it("Constant Bitwise XOR", function(done) {
       constant_arithmetic_op.run_test(i++, "xor_cst", callback(done));
     });
-    */
   });
 
+  
   describe("Comparison", function() {
     // <
     it("Less than", function(done) {
