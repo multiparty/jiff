@@ -78,7 +78,7 @@ You can access any of the specified members of function with &lt;jiff-instance&g
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1082">line 1082</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1160">line 1160</a>
     </li></ul></dd>
     
 
@@ -165,7 +165,7 @@ You can access any of the specified members of function with &lt;jiff-instance&g
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1123">line 1123</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1201">line 1201</a>
     </li></ul></dd>
     
 
@@ -237,7 +237,7 @@ You can access any of the specified members of function with &lt;jiff-instance&g
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1152">line 1152</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1233">line 1233</a>
     </li></ul></dd>
     
 
@@ -310,7 +310,7 @@ value is the public key (ascii-armored string).
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1176">line 1176</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1257">line 1257</a>
     </li></ul></dd>
     
 
@@ -382,7 +382,7 @@ value is the public key (ascii-armored string).
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1187">line 1187</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1268">line 1268</a>
     </li></ul></dd>
     
 
@@ -454,7 +454,7 @@ value is the public key (ascii-armored string).
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1168">line 1168</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1249">line 1249</a>
     </li></ul></dd>
     
 
@@ -526,7 +526,7 @@ value is the public key (ascii-armored string).
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1131">line 1131</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1209">line 1209</a>
     </li></ul></dd>
     
 
@@ -598,7 +598,7 @@ value is the public key (ascii-armored string).
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1160">line 1160</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1241">line 1241</a>
     </li></ul></dd>
     
 
@@ -670,7 +670,7 @@ value is the public key (ascii-armored string).
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1195">line 1195</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1276">line 1276</a>
     </li></ul></dd>
     
 
@@ -698,7 +698,7 @@ value is the public key (ascii-armored string).
     
 
     
-    <h4 class="name" id="coerce_to_share"><span class="type-signature"></span>coerce_to_share<span class="signature">(number, Zp)</span><span class="type-signature"> &rarr; {share-object}</span></h4>
+    <h4 class="name" id="coerce_to_share"><span class="type-signature"></span>coerce_to_share<span class="signature">(number, holders, Zp)</span><span class="type-signature"> &rarr; {share-object}</span></h4>
     
 
     
@@ -774,6 +774,29 @@ on all the input numbers of all parties.
 
         <tr>
             
+                <td class="name"><code>holders</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">array of party ids that will hold the shares, by default, this includes all parties [optional].</td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>Zp</code></td>
             
 
@@ -831,7 +854,7 @@ on all the input numbers of all parties.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1302">line 1302</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1397">line 1397</a>
     </li></ul></dd>
     
 
@@ -989,7 +1012,7 @@ Then every party combines all the received shares to construct one share of the 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1265">line 1265</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1359">line 1359</a>
     </li></ul></dd>
     
 
@@ -1148,7 +1171,7 @@ in a new share of 0 for every party.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1276">line 1276</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1370">line 1370</a>
     </li></ul></dd>
     
 
@@ -1328,7 +1351,7 @@ in a new share of 0 for every party.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1222">line 1222</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1304">line 1304</a>
     </li></ul></dd>
     
 
@@ -1526,7 +1549,7 @@ in a new share of 0 for every party.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1234">line 1234</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1316">line 1316</a>
     </li></ul></dd>
     
 
@@ -1596,7 +1619,165 @@ in a new share of 0 for every party.
     
 
     
-    <h4 class="name" id="server_generate_and_share"><span class="type-signature"></span>server_generate_and_share<span class="signature">(options, Zp)</span><span class="type-signature"> &rarr; {share-object}</span></h4>
+    <h4 class="name" id="receive_open"><span class="type-signature"></span>receive_open<span class="signature">(parties)</span><span class="type-signature"> &rarr; {promise}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Receive shares from the specified parties and reconstruct their secret.
+Use this function in a party that will receive some answer/value but does not have a share of it.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>parties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">an array with party ids (1 to n) specifying the parties sending the shares.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1336">line 1336</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    a (JQuery) promise to the open value of the secret.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="server_generate_and_share"><span class="type-signature"></span>server_generate_and_share<span class="signature">(options, receivers_list, Zp)</span><span class="type-signature"> &rarr; {share-object}</span></h4>
     
 
     
@@ -1665,6 +1846,29 @@ The parties will not know the value of the number (unless the request is for sha
 
         <tr>
             
+                <td class="name"><code>receivers_list</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">array of party ids that want to receive the triplet shares, by default, this includes all parties [optional].</td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>Zp</code></td>
             
 
@@ -1722,7 +1926,7 @@ The parties will not know the value of the number (unless the request is for sha
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1289">line 1289</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1383">line 1383</a>
     </li></ul></dd>
     
 
@@ -1778,7 +1982,7 @@ The parties will not know the value of the number (unless the request is for sha
     
 
     
-    <h4 class="name" id="share"><span class="type-signature"></span>share<span class="signature">(secret, parties_list, Zp)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    <h4 class="name" id="share"><span class="type-signature"></span>share<span class="signature">(secret, receivers_list, senders_list, Zp)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
 
     
@@ -1845,7 +2049,7 @@ The parties will not know the value of the number (unless the request is for sha
 
         <tr>
             
-                <td class="name"><code>parties_list</code></td>
+                <td class="name"><code>receivers_list</code></td>
             
 
             <td class="type">
@@ -1861,7 +2065,30 @@ The parties will not know the value of the number (unless the request is for sha
 
             
 
-            <td class="description last">array of party ids to share with, by default, this includesf all parties [optional].</td>
+            <td class="description last">array of party ids to share with, by default, this includes all parties [optional].</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>senders_list</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">array of party ids to receive from, by default, this includes all parties [optional].</td>
         </tr>
 
     
@@ -1925,7 +2152,7 @@ The parties will not know the value of the number (unless the request is for sha
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1207">line 1207</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1288">line 1288</a>
     </li></ul></dd>
     
 
@@ -1984,7 +2211,7 @@ The parties will not know the value of the number (unless the request is for sha
     
 
     
-    <h4 class="name" id="triplet"><span class="type-signature"></span>triplet<span class="signature">(Zp)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="triplet"><span class="type-signature"></span>triplet<span class="signature">(receivers_list, Zp)</span><span class="type-signature"></span></h4>
     
 
     
@@ -2025,6 +2252,29 @@ The server generates and sends the triplets on demand.
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>receivers_list</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">array of party ids that want to receive the triplet shares, by default, this includes all parties [optional].</td>
+        </tr>
+
     
 
         <tr>
@@ -2086,7 +2336,7 @@ The server generates and sends the triplets on demand.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1254">line 1254</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1347">line 1347</a>
     </li></ul></dd>
     
 
@@ -2146,7 +2396,7 @@ The server generates and sends the triplets on demand.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Nov 07 2017 01:01:17 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Nov 14 2017 00:02:03 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>
