@@ -7,6 +7,7 @@ var arithmetic_op = require("./arithmetic_op.js");
 var constant_arithmetic_op = require("./constant_arithmetic_op.js");
 var comparison = require("./comparison.js");
 var constant_comparison = require("./constant_comparison.js");
+var share = require("./share.js");
 
 
 // Callback to run after each test is done
@@ -22,6 +23,13 @@ function callback(done) {
 describe("MPC Operations", function() {
   this.timeout(0); // Remove timeout
   var i = 2;
+
+  describe("Primitives", function() {
+    it("Sharing", function(done) {
+      share.run_test(i++, callback(done));
+    });
+  });
+  
   describe("Arithmetic Operations", function() {
     //+
     it("Addition", function(done) {
@@ -37,13 +45,11 @@ describe("MPC Operations", function() {
     it("Mutliplication", function(done) {
       arithmetic_op.run_test(i++, "mult", callback(done));
     });
-
-    /*
     // ^
     it("Bitwise XOR", function(done) {
       arithmetic_op.run_test(i++, "xor", callback(done));
     });
-    */
+
   });
 
 
@@ -63,14 +69,13 @@ describe("MPC Operations", function() {
       constant_arithmetic_op.run_test(i++, "mult_cst", callback(done));
     });
 
-    /*
     // constant ^
     it("Constant Bitwise XOR", function(done) {
       constant_arithmetic_op.run_test(i++, "xor_cst", callback(done));
     });
-    */
   });
 
+  
   describe("Comparison", function() {
     // <
     it("Less than", function(done) {
