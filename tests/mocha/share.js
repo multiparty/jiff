@@ -1,6 +1,7 @@
 var jiff = require ("../../lib/jiff-client.js");
+jiff.gZp = 101;
 
-var jiff_instances = null;
+var jiff_instances = [];
 var parties = 0;
 var tests = [];
 var has_failed = false;
@@ -8,26 +9,28 @@ var has_failed = false;
 // Entry Point
 function run_test(computation_id, callback) {
   // Generate Numbers
-  for (var i = 0; i < 20; i++) {
+  for (var i = 0; i < 1; i++) {
     var num1 = Math.floor(Math.random() * jiff.gZp / 10);
     var num2 = Math.floor(Math.random() * jiff.gZp / 10);
     var num3 = Math.floor(Math.random() * jiff.gZp / 10);
-    tests[i] = [num1, num2, num3];
+    var num4 = Math.floor(Math.random() * jiff.gZp / 10);
+    var threshold = Math.ceil(Math.random() * 4);
+    tests[i] = [num1, num2, num3, num4, threshold];
   }
 
   // Assign values to global variables
-  parties = tests[0].length;
+  parties = tests[0].length - 1;
   computation_id = computation_id + "";
 
   var counter = 0;
   options = { party_count: parties };
-  options.onConnect = function() { if(++counter == 3) test(callback); };
+  options.onConnect = function() { if(++counter == parties) test(callback); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
-  var jiff_instance1 = jiff.make_jiff("http://localhost:3000", computation_id, options);
-  var jiff_instance2 = jiff.make_jiff("http://localhost:3000", computation_id, options);
-  var jiff_instance3 = jiff.make_jiff("http://localhost:3000", computation_id, options);
-  jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
+  for(var i = 0; i < parties; i++) {
+    var jiff_instance = jiff.make_jiff("http://localhost:3000", computation_id, options);
+    jiff_instances.push(jiff_instance);
+  }
 }
 
 // Run all tests after setup
@@ -57,24 +60,28 @@ function test(callback) {
 function single_test(index, jiff_instance) {
   var numbers = tests[index];
   var party_index = jiff_instance.id - 1;
-  var shares = jiff_instance.share(numbers[party_index]);
-
+  var threshold = numbers[parties];
+  var shares = jiff_instance.share(numbers[party_index], threshold);
+  
   // Apply operation on shares
   var promises = [];
   for(var i = 1; i <= parties; i++){
     var deferred = $.Deferred();
     promises.push(deferred.promise());
-    (function(i, d) {shares[i].open(function(result) { test_output(numbers[i-1], result); d.resolve(); }, error);})(i, deferred);
+    (function(i, d) {shares[i].open(function(result) { test_output(index, i, result); d.resolve(); }, error);})(i, deferred);
   }
   return Promise.all(promises);
 }
 
 // Determine if the output is correct
-function test_output(real, result) {
+function test_output(test_index, party_index, result) {
+  var numbers = tests[test_index];
+  var real = numbers[party_index - 1];
+  
   // Apply operation in the open to test
   if(real != result) {
     has_failed = true;
-    console.log(real+ " != " + result);
+    console.log("Party: " + party_index + ". Threshold: " + numbers[parties] + ": " + real + " != " + result);
   }
 }
 
