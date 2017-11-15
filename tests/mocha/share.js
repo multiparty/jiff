@@ -14,7 +14,7 @@ function run_test(computation_id, callback) {
     var num3 = Math.floor(Math.random() * jiff.gZp / 10);
     var num4 = Math.floor(Math.random() * jiff.gZp / 10);
     var threshold = Math.ceil(Math.random() * 4);
-    tests[i] = [num1, num2, num3, num4, 2];
+    tests[i] = [num1, num2, num3, num4, threshold];
   }
 
   // Assign values to global variables
