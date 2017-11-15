@@ -14,7 +14,7 @@ function run_test(computation_id, callback) {
     var num3 = Math.floor(Math.random() * jiff.gZp / 10);
     var num4 = Math.floor(Math.random() * jiff.gZp / 10);
     var threshold = Math.ceil(Math.random() * 4);
-    tests[i] = [num1, num2, num3, num4, threshold];
+    tests[i] = [num1, num2, num3, num4, 2];
   }
 
   // Assign values to global variables
@@ -64,16 +64,24 @@ function single_test(index, jiff_instance) {
   
   // Apply operation on shares
   var promises = [];
-  for(var i = 1; i <= parties; i++){
+  for(var i = 1; i <= parties; i++) {
     var deferred = $.Deferred();
     promises.push(deferred.promise());
-    (function(i, d) {shares[i].open(function(result) { test_output(index, i, result); d.resolve(); }, error);})(i, deferred);
+    
+    (function(i, d) { 
+      var p = jiff_instance.open(shares[i], [i]);
+      
+      if(p == null) { d.resolve(); return; }
+      p.then(function(result) {
+        test_output(jiff_instance, index, i, result); d.resolve(); 
+      });
+    })(i, deferred);
   }
   return Promise.all(promises);
 }
 
 // Determine if the output is correct
-function test_output(test_index, party_index, result) {
+function test_output(jiff_instance, test_index, party_index, result) {
   var numbers = tests[test_index];
   var real = numbers[party_index - 1];
   
