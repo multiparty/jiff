@@ -1,5 +1,4 @@
 var jiff = require ("../../lib/jiff-client.js");
-jiff.gZp = 101;
 
 var jiff_instances = [];
 var parties = 0;
