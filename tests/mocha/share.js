@@ -9,7 +9,7 @@ var has_failed = false;
 // Entry Point
 function run_test(computation_id, callback) {
   // Generate Numbers
-  for (var i = 0; i < 1; i++) {
+  for (var i = 0; i < 20; i++) {
     var num1 = Math.floor(Math.random() * jiff.gZp / 10);
     var num2 = Math.floor(Math.random() * jiff.gZp / 10);
     var num3 = Math.floor(Math.random() * jiff.gZp / 10);
