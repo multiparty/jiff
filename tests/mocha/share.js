@@ -3,18 +3,40 @@ var jiff = require ("../../lib/jiff-client.js");
 var jiff_instances = [];
 var parties = 0;
 var tests = [];
+var senders = [];
+var receivers = [];
 var has_failed = false;
 
 // Entry Point
 function run_test(computation_id, callback) {
   // Generate Numbers
-  for (var i = 0; i < 20; i++) {
+  for (var i = 0; i < 30; i++) {
+    // Generate numbers
     var num1 = Math.floor(Math.random() * jiff.gZp / 10);
     var num2 = Math.floor(Math.random() * jiff.gZp / 10);
     var num3 = Math.floor(Math.random() * jiff.gZp / 10);
     var num4 = Math.floor(Math.random() * jiff.gZp / 10);
+    
+    // Generate thresholds
     var threshold = Math.ceil(Math.random() * 4);
     tests[i] = [num1, num2, num3, num4, threshold];
+    
+    var full_array = [];
+    for(var k = 1; k <= 4; k++) full_array.push(k);
+    
+    // Generate how many receivers and senders
+    var sn = Math.ceil(Math.random() * 4); // At least one sender, at most all.
+    var rn = threshold + Math.floor(Math.random() * (4 - threshold)); // At least as many receivers as threshold.
+    
+    // Generate actual receivers and senders arrays
+    senders[i] = full_array.slice();
+    receivers[i] = full_array.slice();
+    
+    // remove random parties until proper counts are reached.
+    while(senders[i].length > sn)
+      senders[i].splice(Math.floor(Math.random() * senders[i].length), 1);
+    while(receivers[i].length > rn)
+      receivers[i].splice(Math.floor(Math.random() * receivers[i].length), 1);
   }
 
   // Assign values to global variables
@@ -43,7 +65,7 @@ function test(callback) {
   for(var i = 0; i < tests.length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j]);
-      promises.push(promise);
+      if(promise != null) promises.push(promise);
     }
   }
 
@@ -59,25 +81,63 @@ function test(callback) {
 function single_test(index, jiff_instance) {
   var numbers = tests[index];
   var party_index = jiff_instance.id - 1;
-  var threshold = numbers[parties];
-  var shares = jiff_instance.share(numbers[party_index], threshold);
   
-  // Apply operation on shares
-  var promises = [];
-  for(var i = 1; i <= parties; i++) {
+  var threshold = numbers[parties];
+  var rs = receivers[index];
+  var ss = senders[index];
+  
+  // Share
+  var shares = jiff_instance.share(numbers[party_index], threshold, rs, ss);  
+  
+  // Nothing to do.
+  if(ss.indexOf(jiff_instance.id) == -1 && rs.indexOf(jiff_instance.id) == -1) return null;
+  
+  // receiver but not sender, must send open shares of each number to its owner.
+  if(rs.indexOf(jiff_instance.id) > -1 && ss.indexOf(jiff_instance.id) == -1) {
     var deferred = $.Deferred();
-    promises.push(deferred.promise());
+    var promise = deferred.promise();
     
-    (function(i, d) { 
-      var p = jiff_instance.open(shares[i], [i]);
+    // Send opens
+    for(var i = 0; i < ss.length; i++)
+      jiff_instance.open(shares[ss[i]], [ss[i]]);
       
-      if(p == null) { d.resolve(); return; }
-      p.then(function(result) {
-        test_output(jiff_instance, index, i, result); d.resolve(); 
-      });
-    })(i, deferred);
+    return null;
   }
-  return Promise.all(promises);
+  
+  // receiver and sender, must send open shares of each number to its owner, and receive one open.
+  if(rs.indexOf(jiff_instance.id) > -1 && ss.indexOf(jiff_instance.id) > -1) {
+    var deferred = $.Deferred();
+    var promise = deferred.promise();
+
+    var promises = [];
+
+    // Send opens
+    for(var i = 0; i < ss.length; i++) {
+      var p = jiff_instance.open(shares[ss[i]], [ss[i]]);
+      if(p != null) promises.push(p);
+    }
+    
+    // Will have exactly one promise, belonging to the opening of the share
+    // initially sent by this party.
+    promises[0].then(function(result) {
+      test_output(jiff_instance, index, jiff_instance.id, result); deferred.resolve();
+    });
+    
+    return promise;    
+  }
+
+  
+  // sender, but not receiver, should get back the number, without sending any shares.
+  if(ss.indexOf(jiff_instance.id) > -1 && rs.indexOf(jiff_instance.id) == -1) {
+    var deferred = $.Deferred();
+    var promise = deferred.promise();
+    
+    jiff_instance.receive_open(rs, threshold).then(function(result) {
+      test_output(jiff_instance, index, jiff_instance.id, result); deferred.resolve();
+    });
+    
+    return promise;
+  }
 }
 
 // Determine if the output is correct
