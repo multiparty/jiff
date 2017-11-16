@@ -1,7 +1,7 @@
 {
-  "name": "jiff-server",
+  "name": "jiff-mpc",
   "version": "0.0.1",
-  "description": "server side library for performing MPC in JavaScript. handles relaying shares between parties.",
+  "description": "Server/Client library for performing MPC in JavaScript. handles relaying shares between parties.",
   "dependencies": {
     "cryptico": "^1.0.2",
     "jquery-deferred": "^0.3.1",
