@@ -13,7 +13,8 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/lib/cryptico.min.js"></script>
     <script src="/lib/jiff-client.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.16.5/math.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"></script>
     <script type="text/javascript">
       var jiff_instance;
       
@@ -86,7 +87,15 @@
     }
 
             var arr_sum = [];
-            var arr = [1,2,3];
+            var arr = [Math.floor(Math.random() * 10),Math.floor(Math.random() * 10),Math.floor(Math.random() * 10)];
+
+      function subtractArrays(arr1, arr2){
+        result = []
+        for (var i = 0; i < arr1.length; i++){
+          result.push(arr1[i] - arr2[i]);
+        }
+        return result;
+      }
       
       function MPC() {
         $("#sumButton").attr("disabled", true);
@@ -102,10 +111,24 @@
         });
 
         Promise.all(arr_sum).then(function(results){
-          results = results.map(function(item){
+          var mean = results.map(function(item){
             return item/jiff_instance.party_count;
           });
-          console.log(results);
+          //arr = math.matrix(arr);
+          //mean = math.matrix(mean);
+          diff = [subtractArrays(arr, mean)];
+          diff_T = numeric.transpose(diff);
+          console.log("arr = " + arr);
+          console.log("mean = " + mean);
+          console.log(diff);
+          console.log(diff_T);
+         
+
+          var scatter = numeric.dot(diff_T, diff);
+
+          console.log(scatter);
+          //console.log(scatter.array());
+          console.log(numeric.eig(scatter));
         });
 
 
