@@ -116,6 +116,7 @@
           });
           //arr = math.matrix(arr);
           //mean = math.matrix(mean);
+          console.log("local arr = " + arr);
           diff = [subtractArrays(arr, mean)];
           diff_T = numeric.transpose(diff);
           console.log("arr = " + arr);
@@ -126,10 +127,73 @@
 
           var scatter = numeric.dot(diff_T, diff);
 
+          console.log("local scatter:");
           console.log(scatter);
+          // console.log("go element by element");
+          // for(var row of scatter){
+          //   for(var value of row){
+          //     console.log(value);
+          //   }
+          // }
+
+          console.log("begin calculating scatter sum")
+          scatter_sum = [];
+          scatter.map(function(row){
+            
+            scatter_sum.push(new Promise(function(resolve, reject) {
+              console.log("sharing row = " + row);
+              row_sum = [];
+              row.map(function(item){
+                console.log("sharing item = " + item)
+                var shares = jiff_instance.share(item);
+                var sum = shares[1];
+                for(var i = 2; i <= jiff_instance.party_count; i++){
+                  sum = sum.add(shares[i]);
+                }
+                row_sum.push(sum.open_to_promise().then(success, failure)); 
+              });
+
+              Promise.all(row_sum).then(function(results){
+                console.log("this row is done = " + results);
+                resolve(results);
+              });
+
+
+
+            }).then(success, failure));
+
+            
+          
+          });
+          
+          Promise.all(scatter_sum).then(function(results){
+                console.log("scatter_sum computed = ");
+                console.log(results);
+                console.log("scatter_sum eig = ");
+                var eig = numeric.eig(results);
+                var eig_copy = Object.assign({}, eig);
+                console.log(eig);
+                console.log("find the two largest eigenvalues");
+                var sorted_eigen_values = eig_copy.lambda.x.sort().reverse().slice(0,2);
+                console.log("two largest eigen values = " + sorted_eigen_values);
+                var corresponding_largest_eigenvectors = []
+                sorted_eigen_values.map(function(item){
+                  corresponding_largest_eigenvectors.push(eig.E.x[eig.lambda.x.indexOf(item)])
+                });
+                corresponding_largest_eigenvectors = numeric.transpose(corresponding_largest_eigenvectors);
+                console.log("corresponding eigenvectors:");
+                console.log(corresponding_largest_eigenvectors);
+
+                var result = numeric.dot(numeric.transpose(corresponding_largest_eigenvectors), arr);
+                console.log("the result is:");
+                console.log(result);
+
+              });
           //console.log(scatter.array());
-          console.log(numeric.eig(scatter));
+          //console.log(numeric.eig(scatter));
         });
+
+
 
 
 
