@@ -69,7 +69,7 @@
 
       var sum = shares[1];
       for(var i = 2; i <= parties; i++) {
-        sum = sum.add(shares[i]);
+        sum = sum.sadd(shares[i]);
       }
 
       sum.open_to([1], function(result) { test_output(index, result) }, error);

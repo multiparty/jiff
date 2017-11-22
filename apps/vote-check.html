@@ -78,23 +78,23 @@
         for(var i = 1; i <= jiff_instance.party_count; i++) {
           var sum = shares[0][i];
           for(var j = 1; j < shares.length; j++) {
-            sum = sum.add(shares[j][i]);
+            sum = sum.sadd(shares[j][i]);
           }
-          sum_per_party[i] = sum.less_cst(2);
+          sum_per_party[i] = sum.clt(2);
         }
         
         // Check that no party has votes greater or equal to 2.
         var prod_all_parties = sum_per_party[1]; 
         for(var i = 2; i <= jiff_instance.party_count; i++) {
-          prod_all_parties = prod_all_parties.mult(sum_per_party[i]);
+          prod_all_parties = prod_all_parties.smult(sum_per_party[i]);
         }
         
         // Aggregate votes
         for(var i = 0; i < shares.length; i++) {
           var sum = shares[i][1];
           for(var j = 2; j <= jiff_instance.party_count; j++)
-            sum = sum.add(shares[i][j]);
-          shares[i] = sum.mult(prod_all_parties);
+            sum = sum.sadd(shares[i][j]);
+          shares[i] = sum.smult(prod_all_parties);
         }
         
         jiff_instance.open_all(shares, [1]).then(handleResult, handleError);

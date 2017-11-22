@@ -16,7 +16,7 @@ jiff_instance.compute('test-sum', function(computation_instance) {
   var shares = computation_instance.share(null, 1, ["s1"], [1, 2]);
   
   // Silly operation on received shares.
-  var r = shares[1].add(shares[2]).add_cst(1);
+  var r = shares[1].sadd(shares[2]).cadd(1);
   
   // Open the result, by default, the receivers of an open are all non-server parties.
   r.open(console.log);

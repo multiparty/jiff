@@ -579,7 +579,7 @@ var passphrase_size = 25;
     var share = shares[1];
     if(share != null) { // only do this if you are a receiving party.
       for(var i = 2; i &lt;= jiff.party_count; i++) {
-        share = share.add(shares[i]);
+        share = share.sadd(shares[i]);
       }
     }
 
@@ -753,7 +753,7 @@ var passphrase_size = 25;
      * @returns {secret-share} a new share of the same number.
      */
     this.refresh = function() {
-      return self.add(self.jiff.server_generate_and_share({"number": 0}, self.holders, self.threshold, self.Zp));
+      return self.sadd(self.jiff.server_generate_and_share({"number": 0}, self.holders, self.threshold, self.Zp));
     };
 
     /**
@@ -783,6 +783,132 @@ var passphrase_size = 25;
       var promise = self.jiff.open(self, parties);
       if(promise != null) promise.then(success, failure);
     };
+    
+    /**
+     * Generic Addition.
+     * Uses either the constant or secret version of this operator depending on type of paramter.
+     * @method
+     * @param {number/share-object} o - the other operand (can be either number or share).
+     * @return {share-object} this party's share of the result.
+     */
+    this.add = function(o) {
+      if(typeof(o) == "number") return self.cadd(o);
+      return self.sadd(o);
+    }
+    
+    /**
+     * Generic Subtraction.
+     * Uses either the constant or secret version of this operator depending on type of paramter.
+     * @method
+     * @param {number/share-object} o - the other operand (can be either number or share).
+     * @return {share-object} this party's share of the result.
+     */
+    this.sub = function(o) {
+      if(typeof(o) == "number") return self.csub(o);
+      return self.ssub(o);
+    }
+    
+    /**
+     * Generic Multiplication.
+     * Uses either the constant or secret version of this operator depending on type of paramter.
+     * @method
+     * @param {number/share-object} o - the other operand (can be either number or share).
+     * @return {share-object} this party's share of the result.
+     */
+    this.mult = function(o) {
+      if(typeof(o) == "number") return self.cmult(o);
+      return self.smult(o);
+    }
+    
+    /**
+     * Generic XOR for bits (both this and o have to be bits to work correctly).
+     * Uses either the constant or secret version of this operator depending on type of paramter.
+     * @method
+     * @param {number/share-object} o - the other operand (can be either number or share).
+     * @return {share-object} this party's share of the result.
+     */
+    this.xor_bit = function(o) {
+      if(typeof(o) == "number") return self.cxor_bit(o);
+      return self.sxor_bit(o);
+    }
+    
+    /**
+     * Generic Greater or equal.
+     * Uses either the constant or secret version of this operator depending on type of paramter.
+     * @method
+     * @param {number/share-object} o - the other operand (can be either number or share).
+     * @param {number} l - the maximum bit length of the two shares. [optional]
+     * @return {share-object} this party's share of the result.
+     */
+    this.gteq = function(o, l) {
+      if(typeof(o) == "number") return self.cgteq(o, l);
+      return self.sgteq(o, l);
+    }
+    
+    /**
+     * Generic Greater than.
+     * Uses either the constant or secret version of this operator depending on type of paramter.
+     * @method
+     * @param {number/share-object} o - the other operand (can be either number or share).
+     * @param {number} l - the maximum bit length of the two shares. [optional]
+     * @return {share-object} this party's share of the result.
+     */
+    this.gt = function(o, l) {
+      if(typeof(o) == "number") return self.cgt(o, l);
+      return self.sgt(o, l);
+    }
+    
+    /**
+     * Generic Less or equal.
+     * Uses either the constant or secret version of this operator depending on type of paramter.
+     * @method
+     * @param {number/share-object} o - the other operand (can be either number or share).
+     * @param {number} l - the maximum bit length of the two shares. [optional]
+     * @return {share-object} this party's share of the result.
+     */
+    this.lteq = function(o, l) {
+      if(typeof(o) == "number") return self.clteq(o, l);
+      return self.slteq(o, l);
+    }
+    
+    /**
+     * Generic Less than.
+     * Uses either the constant or secret version of this operator depending on type of paramter.
+     * @method
+     * @param {number/share-object} o - the other operand (can be either number or share).
+     * @param {number} l - the maximum bit length of the two shares. [optional]
+     * @return {share-object} this party's share of the result.
+     */
+    this.lt = function(o, l) {
+      if(typeof(o) == "number") return self.clt(o, l);
+      return self.slt(o, l);
+    }
+    
+    /**
+     * Generic Equals.
+     * Uses either the constant or secret version of this operator depending on type of paramter.
+     * @method
+     * @param {number/share-object} o - the other operand (can be either number or share).
+     * @param {number} l - the maximum bit length of the two shares. [optional]
+     * @return {share-object} this party's share of the result.
+     */
+    this.eq = function(o, l) {
+      if(typeof(o) == "number") return self.ceq(o, l);
+      return self.seq(o, l);
+    }
+    
+    /**
+     * Generic Not Equals.
+     * Uses either the constant or secret version of this operator depending on type of paramter.
+     * @method
+     * @param {number/share-object} o - the other operand (can be either number or share).
+     * @param {number} l - the maximum bit length of the two shares. [optional]
+     * @return {share-object} this party's share of the result.
+     */
+    this.neq = function(o, l) {
+      if(typeof(o) == "number") return self.cneq(o, l);
+      return self.sneq(o, l);
+    }
 
     /**
      * Addition with a constant.
@@ -790,7 +916,7 @@ var passphrase_size = 25;
      * @param {number} cst - the constant to add.
      * @return {share-object} this party's share of the result.
      */
-    this.add_cst = function(cst){
+    this.cadd = function(cst) {
       if (!(typeof(cst) == "number")) throw "parameter should be a number (+)";
 
       if(self.ready) // if share is ready
@@ -806,7 +932,7 @@ var passphrase_size = 25;
      * @param {number} cst - the constant to subtract from this share.
      * @return {share-object} this party's share of the result.
      */
-    this.sub_cst = function(cst){
+    this.csub = function(cst) {
       if (!(typeof(cst) == "number")) throw "parameter should be a number (-)";
 
       if(self.ready) // if share is ready
@@ -822,7 +948,7 @@ var passphrase_size = 25;
      * @param {number} cst - the constant to multiply to this share.
      * @return {share-object} this party's share of the result.
      */
-    this.mult_cst = function(cst){
+    this.cmult = function(cst) {
       if (!(typeof(cst) == "number")) throw "parameter should be a number (*)";
 
       if(self.ready) // if share is ready
@@ -838,7 +964,7 @@ var passphrase_size = 25;
      * @param {share-object} o - the share to add to this share.
      * @return {share-object} this party's share of the result.
      */
-    this.add = function(o) {
+    this.sadd = function(o) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (+)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (+)";
       if (!(o.holders === self.holders)) throw "shares must be held by the same parties (+)";
@@ -862,7 +988,7 @@ var passphrase_size = 25;
      * @param {share-object} o - the share to subtract from this share.
      * @return {share-object} this party's share of the result.
      */
-    this.sub = function(o) {
+    this.ssub = function(o) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (-)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (-)";
       if (!(o.holders === self.holders)) throw "shares must be held by the same parties (-)";
@@ -886,7 +1012,7 @@ var passphrase_size = 25;
      * @param {share-object} o - the share to multiply with.
      * @return {share-object} this party's share of the result.
      */
-    this.mult = function(o) {
+    this.smult = function(o) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (*)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (*)";
       if (!(o.holders === self.holders)) throw "shares must be held by the same parties (*)";
@@ -903,8 +1029,8 @@ var passphrase_size = 25;
       var c = triplet[2];
 
       // d = s - a. e = o - b.
-      var d = self.add(a.mult_cst(-1));
-      var e = o.add(b.mult_cst(-1));
+      var d = self.sadd(a.cmult(-1));
+      var e = o.sadd(b.cmult(-1));
 
       // Open d and e.
       // The only communication cost.
@@ -916,13 +1042,13 @@ var passphrase_size = 25;
 
         // result_share = d_open * e_open + d_open * b_share + e_open * a_share + c.
         var t1 = d_open * e_open;
-        var t2 = b.mult_cst(d_open);
-        var t3 = a.mult_cst(e_open);
+        var t2 = b.cmult(d_open);
+        var t3 = a.cmult(e_open);
 
         // All this happens locally.
-        var final_result = t2.add_cst(t1);
-        final_result = final_result.add(t3);
-        final_result = final_result.add(c);
+        var final_result = t2.cadd(t1);
+        final_result = final_result.sadd(t3);
+        final_result = final_result.sadd(c);
 
         if(final_result.ready)
           final_deferred.resolve(final_result.value);
@@ -932,6 +1058,17 @@ var passphrase_size = 25;
 
       return result;
     };
+    
+    /**
+     * bitwise-XOR with a constant (BOTH BITS).
+     * @method
+     * @param {number} cst - the constant bit to XOR with (0 or 1).
+     * @return {share-object} this party's share of the result.
+     */
+    this.cxor_bit = function(cst) {
+      if (!(typeof(cst) == "number")) throw "parameter should be a number (^)";
+      return self.cadd(cst).ssub(self.cmult(cst).cmult(2));
+    };
 
     /**
      * bitwise-XOR of two secret shares OF BITS.
@@ -939,23 +1076,12 @@ var passphrase_size = 25;
      * @param {share-object} o - the share to XOR with.
      * @return {share-object} this party's share of the result.
      */
-    this.xor = function(o) {
+    this.sxor_bit = function(o) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (^)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (^)";
       if (!(o.holders === self.holders)) throw "shares must be held by the same parties (^)";
 
-      return self.add(o).sub(self.mult(o).mult_cst(2));
-    };
-
-    /**
-     * bitwise-XOR with a constant (BOTH BITS).
-     * @method
-     * @param {number} cst - the constant bit to XOR with (0 or 1).
-     * @return {share-object} this party's share of the result.
-     */
-    this.xor_cst = function(cst) {
-      if (!(typeof(cst) == "number")) throw "parameter should be a number (^)";
-      return self.add_cst(cst).sub(self.mult_cst(cst).mult_cst(2));
+      return self.sadd(o).ssub(self.smult(o).cmult(2));
     };
 
     /**
@@ -965,7 +1091,7 @@ var passphrase_size = 25;
      * @param {number} l - the maximum bit length of the two shares. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this >= o, and 0 otherwise.
      */
-    this.greater_or_equal = function(o, l) {
+    this.sgteq = function(o, l) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (>=)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (>=)";
       if (!(o.holders === self.holders)) throw "shares must be held by the same parties (>=)";
@@ -986,16 +1112,16 @@ var passphrase_size = 25;
 
         var r_modl = r_bits[0];
         for(var i = 1; i &lt; l; i++)
-          r_modl = r_modl.add(r_bits[i].mult_cst(Math.pow(2, i)));
+          r_modl = r_modl.sadd(r_bits[i].cmult(Math.pow(2, i)));
 
         var r_full = r_modl;
         for(var i = l; i &lt; l + k; i++)
-          r_full = r_full.add(r_bits[i].mult_cst(Math.pow(2, i)));
+          r_full = r_full.sadd(r_bits[i].cmult(Math.pow(2, i)));
 
         r_bits = r_bits.slice(0, l);
 
         var s_bit = self.jiff.server_generate_and_share({ "bit": true }, self.holders, max(self.threshold, o.threshold), self.Zp);
-        var s_sign = s_bit.mult_cst(-2).add_cst(1);
+        var s_sign = s_bit.cmult(-2).cadd(1);
 
         var mask = self.jiff.server_generate_and_share({ "nonzero": true }, self.holders, max(self.threshold, o.threshold), self.Zp);
 
@@ -1011,33 +1137,33 @@ var passphrase_size = 25;
         for(var i = 0; i &lt; l; i++)
           sumXORs[i] = 0;
 
-        sumXORs[l-2] = r_bits[l-1].xor_cst(c_bits[l-1]).add_cst(sumXORs[l-1]);
+        sumXORs[l-2] = r_bits[l-1].cxor_bit(c_bits[l-1]).cadd(sumXORs[l-1]);
         for(var i = l-3; i > -1; i--)
-          sumXORs[i] = r_bits[i+1].xor_cst(c_bits[i+1]).add(sumXORs[i+1]);
+          sumXORs[i] = r_bits[i+1].cxor_bit(c_bits[i+1]).sadd(sumXORs[i+1]);
 
         var E_tilde = [];
         for(var i = 0; i &lt; r_bits.length; i++) {
-          var e_i = r_bits[i].add_cst(-1 * c_bits[i]).add(s_sign);
+          var e_i = r_bits[i].cadd(-1 * c_bits[i]).sadd(s_sign);
           if(typeof(sumXORs[i]) != "number")
-            e_i = e_i.add(sumXORs[i].mult_cst(3));
+            e_i = e_i.sadd(sumXORs[i].cmult(3));
           else
-            e_i = e_i.add_cst(3 * sumXORs[i]);
+            e_i = e_i.cadd(3 * sumXORs[i]);
 
           E_tilde.push(e_i);
         }
 
         var product = mask;
         for(var i = 0; i &lt; E_tilde.length; i++)
-          product = product.mult(E_tilde[i]);
+          product = product.smult(E_tilde[i]);
 
         product.open(function(product) {
           var non_zero = (product != 0) ? 1 : 0;
-          var UF = s_bit.xor_cst(non_zero);
+          var UF = s_bit.cxor_bit(non_zero);
           var c_mod2l = mod(c, Math.pow(2, l));
-          var res = UF.mult_cst(Math.pow(2, l)).sub(r_modl.add_cst(-1 * c_mod2l));
+          var res = UF.cmult(Math.pow(2, l)).ssub(r_modl.cadd(-1 * c_mod2l));
 
           var inverse = extended_gcd(Math.pow(2, l), self.Zp)[0];
-          var final_result = z.sub(res).mult_cst(inverse);
+          var final_result = z.ssub(res).cmult(inverse);
           if(final_result.ready)
             final_deferred.resolve(final_result.value);
           else
@@ -1046,11 +1172,11 @@ var passphrase_size = 25;
       }
 
       function compare_online(preprocess) {
-        var a = self.mult_cst(2).add_cst(1);
-        var b = o.mult_cst(2);
+        var a = self.cmult(2).cadd(1);
+        var b = o.cmult(2);
 
-        var z = a.sub(b).add_cst(Math.pow(2, l));
-        var c = preprocess.r_full.add(z);
+        var z = a.ssub(b).cadd(Math.pow(2, l));
+        var c = preprocess.r_full.sadd(z);
         c.open(function(c) { finish_compare(c, preprocess.s_bit, preprocess.s_sign, preprocess.mask, preprocess.r_modl, preprocess.r_bits, z); });
       }
 
@@ -1067,12 +1193,12 @@ var passphrase_size = 25;
      * @param {number} l - the maximum bit length of the two shares. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this > o, and 0 otherwise.
      */
-    this.greater = function(o, l) {
+    this.sgt = function(o, l) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (>)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (>)";
       if (!(o.holders === self.holders)) throw "shares must be held by the same parties (>)";
 
-      return o.greater_or_equal(self, l).mult_cst(-1).add_cst(1);
+      return o.sgteq(self, l).cmult(-1).cadd(1);
     };
 
     /**
@@ -1082,12 +1208,12 @@ var passphrase_size = 25;
      * @param {number} l - the maximum bit length of the two shares. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this &lt;= o, and 0 otherwise.
      */
-    this.less_or_equal = function(o, l) {
+    this.slteq = function(o, l) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (&lt;=)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (&lt;=)";
       if (!(o.holders === self.holders)) throw "shares must be held by the same parties (&lt;=)";
 
-      return o.greater_or_equal(self, l);
+      return o.sgteq(self, l);
     };
 
     /**
@@ -1097,12 +1223,12 @@ var passphrase_size = 25;
      * @param {number} l - the maximum bit length of the two shares. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this &lt; o, and 0 otherwise.
      */
-    this.less = function(o, l) {
+    this.slt = function(o, l) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (&lt;)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (&lt;)";
       if (!(o.holders === self.holders)) throw "shares must be held by the same parties (&lt;)";
 
-      return self.greater_or_equal(o, l).mult_cst(-1).add_cst(1);
+      return self.sgteq(o, l).cmult(-1).cadd(1);
     };
 
     /**
@@ -1112,11 +1238,11 @@ var passphrase_size = 25;
      * @param {number} l - the maximum bit length of this share. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this >= cst, and 0 otherwise.
      */
-    this.greater_or_equal_cst = function(cst, l) {
+    this.cgteq = function(cst, l) {
       if (!(typeof(cst) == "number")) throw "parameter should be a number (>=)";
 
       var share_cst = self.jiff.coerce_to_share(cst, self.holders, self.Zp);
-      return self.greater_or_equal(share_cst, l);
+      return self.sgteq(share_cst, l);
     }
 
     /**
@@ -1126,11 +1252,11 @@ var passphrase_size = 25;
      * @param {number} l - the maximum bit length of this share. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this > cst, and 0 otherwise.
      */
-    this.greater_cst = function(cst, l) {
+    this.cgt = function(cst, l) {
       if (!(typeof(cst) == "number")) throw "parameter should be a number (>)";
 
       var share_cst = self.jiff.coerce_to_share(cst, self.holders, self.Zp);
-      return self.greater(share_cst, l);
+      return self.sgt(share_cst, l);
     };
 
     /**
@@ -1140,11 +1266,11 @@ var passphrase_size = 25;
      * @param {number} l - the maximum bit length of this share. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this &lt;= cst, and 0 otherwise.
      */
-    this.less_or_equal_cst = function(cst, l) {
+    this.clteq = function(cst, l) {
       if (!(typeof(cst) == "number")) throw "parameter should be a number (&lt;=)";
 
       var share_cst = self.jiff.coerce_to_share(cst, self.holders, self.Zp);
-      return self.less_or_equal(share_cst, l);
+      return self.slteq(share_cst, l);
     };
 
     /**
@@ -1154,11 +1280,11 @@ var passphrase_size = 25;
      * @param {number} l - the maximum bit length of this share. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this &lt; cst, and 0 otherwise.
      */
-    this.less_cst = function(cst, l) {
+    this.clt = function(cst, l) {
       if (!(typeof(cst) == "number")) throw "parameter should be a number (&lt;)";
 
       var share_cst = self.jiff.coerce_to_share(cst, self.holders, self.Zp);
-      return self.less(share_cst, l);
+      return self.slt(share_cst, l);
     };
 
     /**
@@ -1168,14 +1294,14 @@ var passphrase_size = 25;
      * @param {number} l - the maximum bit length of the two shares. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this = o, and 0 otherwise.
      */
-    this.eq = function(o, l) {
+    this.seq = function(o, l) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (==)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (==)";
       if (!(o.holders === self.holders)) throw "shares must be held by the same parties (==)";
 
-      var one_direction = self.greater_or_equal(o, l);
-      var other_direction = o.greater_or_equal(self, l);
-      return one_direction.mult(other_direction);
+      var one_direction = self.sgteq(o, l);
+      var other_direction = o.sgteq(self, l);
+      return one_direction.smult(other_direction);
     }
 
     /**
@@ -1185,12 +1311,12 @@ var passphrase_size = 25;
      * @param {number} l - the maximum bit length of the two shares. [optional]
      * @return {share-object} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
      */
-    this.neq = function(o, l) {
+    this.sneq = function(o, l) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (!=)";
       if (!(o.Zp === self.Zp)) throw "shares must belong to the same field (!=)";
       if (!(o.holders === self.holders)) throw "shares must be held by the same parties (!=)";
 
-      return self.eq(o, l).mult_cst(-1).add_cst(1);
+      return self.seq(o, l).cmult(-1).cadd(1);
     }
 
     /**
@@ -1200,11 +1326,11 @@ var passphrase_size = 25;
      * @param {number} l - the maximum bit length of this share. [optional]
      * @return {share-object} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
      */
-    this.eq_cst = function(cst, l) {
+    this.ceq = function(cst, l) {
       if (!(typeof(cst) == "number")) throw "parameter should be a number (==)";
 
       var share_cst = self.jiff.coerce_to_share(cst, self.holders, self.Zp);
-      return self.eq(share_cst);
+      return self.seq(share_cst);
     }
 
     /**
@@ -1214,10 +1340,10 @@ var passphrase_size = 25;
      * @param {number} l - the maximum bit length of this share. [optional]
      * @return {share-object} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
      */
-    this.neq_cst = function(cst, l) {
+    this.cneq = function(cst, l) {
       if (!(typeof(cst) == "number")) throw "parameter should be a number (!=)";
 
-      return self.eq_cst(cst, l).mult_cst(-1).add_cst(1);
+      return self.ceq(cst, l).cmult(-1).cadd(1);
     }
 
     // when the promise is resolved, acquire the value of the share and set ready to true
@@ -1662,7 +1788,7 @@ var passphrase_size = 25;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Nov 15 2017 05:14:14 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Nov 21 2017 23:40:07 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>

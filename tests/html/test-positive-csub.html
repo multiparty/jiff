@@ -72,7 +72,7 @@
       var promises = [];
 
       var tmp = function(i) {
-        shares[i] = shares[i].sub_cst(c);
+        shares[i] = shares[i].csub(c);
         shares[i].open( function(result) { test_output(index, i, result) }, error);
         if(shares[i].promise != null) promises.push(shares[i].promise);
       }

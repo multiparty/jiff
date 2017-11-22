@@ -67,10 +67,10 @@
       var party_index = jiff_instance.id - 1;
       var shares = jiff_instance.share(numbers[party_index]);
 
-      // var prod = shares[1].mult(shares[2]);
+      // var prod = shares[1].smult(shares[2]);
       var prod = shares[1];
       for(var i = 2; i <= parties; i++) {
-        prod = prod.mult(shares[i]);
+        prod = prod.smult(shares[i]);
       }
 
       prod.open( function(result) { test_output(index, result) }, error);

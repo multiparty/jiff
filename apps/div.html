@@ -64,9 +64,9 @@
       function div(a_shr, q_shr) {
         var bits = 3;
         for (var i = 0; i < bits; i++) {
-          var tmp_q = q_shr[1].add_cst(Math.pow(2, (bits-1)-i));
-          var tmp_m = (tmp_q.mult(a_shr[2])).less_or_equal(a_shr[1]);
-          q_shr[1] = q_shr[1].add(tmp_m.mult_cst(Math.pow(2, (bits-1)-i)));
+          var tmp_q = q_shr[1].cadd(Math.pow(2, (bits-1)-i));
+          var tmp_m = (tmp_q.smult(a_shr[2])).slteq(a_shr[1]);
+          q_shr[1] = q_shr[1].sadd(tmp_m.cmult(Math.pow(2, (bits-1)-i)));
         }
         return q_shr;
       }

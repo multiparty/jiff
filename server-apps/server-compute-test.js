@@ -10,8 +10,8 @@ options.onConnect = function() {
   jiff_instance.share(5, 1, ["s1"], [1, 2]);
 
   // Operate on receive share
-  var r = shares[1].add(shares[1]);
-  r = r.mult(shares["s1"]);
+  var r = shares[1].sadd(shares[1]);
+  r = r.smult(shares["s1"]);
   
   // Open the result of operation and log it.
   var p1 = r.open(console.log);

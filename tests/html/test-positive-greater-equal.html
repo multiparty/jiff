@@ -63,7 +63,7 @@
       var party_index = jiff_instance.id - 1;
       var shares = jiff_instance.share(numbers[party_index]);
 
-      var cmp = shares[1].greater_or_equal(shares[2]);
+      var cmp = shares[1].sgteq(shares[2]);
       cmp.open( function(result) { test_output(index, result) }, error);
       return cmp;
     }

@@ -11,37 +11,37 @@ var operations = {
     return operand1 < operand2;
   },
   "less" : function (operand1, operand2) {
-    return operand1.less(operand2);
+    return operand1.slt(operand2);
   },
   "<=" : function (operand1, operand2) {
     return operand1 <= operand2;
   },
   "less_or_equal" : function (operand1, operand2) {
-    return operand1.less_or_equal(operand2);
+    return operand1.slteq(operand2);
   },
   ">" : function (operand1, operand2) {
     return operand1 > operand2;
   },
   "greater" : function (operand1, operand2) {
-    return operand1.greater(operand2);
+    return operand1.sgt(operand2);
   },
   ">=" : function (operand1, operand2) {
     return operand1 >= operand2;
   },
   "greater_or_equal" : function (operand1, operand2) {
-    return operand1.greater_or_equal(operand2);
+    return operand1.sgteq(operand2);
   },
   "==" : function (operand1, operand2) {
       return operand1 == operand2;
   },
   "eq" : function (operand1, operand2) {
-    return operand1.eq(operand2);
+    return operand1.seq(operand2);
   },
   "!=" : function (operand1, operand2) {
       return operand1 != operand2;
   },
   "neq" : function (operand1, operand2) {
-    return operand1.neq(operand2);
+    return operand1.sneq(operand2);
   }
 };
 

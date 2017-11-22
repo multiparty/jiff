@@ -11,25 +11,25 @@ var operations = {
     return operand1 + operand2;
   },
   "add" : function (operand1, operand2) {
-    return operand1.add(operand2);
+    return operand1.sadd(operand2);
   },
   "-" : function (operand1, operand2) {
     return operand1 - operand2;
   },
   "sub" : function (operand1, operand2) {
-    return operand1.sub(operand2);
+    return operand1.ssub(operand2);
   },
   "*" : function (operand1, operand2) {
     return operand1 * operand2;
   },
   "mult" : function (operand1, operand2) {
-    return operand1.mult(operand2);
-  },
-  "xor" : function (operand1, operand2) {
-    return operand1.xor(operand2);
+    return operand1.smult(operand2);
   },
   "^" : function (operand1, operand2) {
     return operand1 ^ operand2;
+  },
+  "xor" : function (operand1, operand2) {
+    return operand1.sxor_bit(operand2);
   }
 };
 

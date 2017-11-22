@@ -69,7 +69,7 @@
 
       var sub = shares[1];
       for(var i = 2; i <= parties; i++) {
-        sub = sub.sub(shares[i]);
+        sub = sub.ssub(shares[i]);
       }
       
       sub.open( function(result) { test_output(index, result) }, error);

@@ -5,7 +5,7 @@ options.onConnect = function() {
   var shares = jiff_instance.share(3);
   var sum = shares[1];
   for(var i = 2; i <= jiff_instance.party_count; i++)
-    sum = sum.add(shares[i]);
+    sum = sum.sadd(shares[i]);
     
   sum.open(console.log);
 }

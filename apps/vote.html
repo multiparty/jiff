@@ -74,7 +74,7 @@
         for(var i = 0; i < shares.length; i++) {
           var sum = shares[i][1];
           for(var j = 2; j <= jiff_instance.party_count; j++)
-            sum = sum.add(shares[i][j]);
+            sum = sum.sadd(shares[i][j]);
           shares[i] = sum;
         }
         
