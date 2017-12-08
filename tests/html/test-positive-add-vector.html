@@ -33,6 +33,24 @@
         return result;
       }
 
+      function test_result(result) { 
+        console.log("success, result = " + result);
+        has_failed = false;
+        for (i = 0; i < result.length; i++){
+          if (result[i] !== (tests[0][i] * 2)) {
+            has_failed = true;
+          }
+
+        }
+
+        if (has_failed){
+          $("#result").append("<font color='red'>Failed</font>");
+        } else {
+          $("#result").append("<font color='green'>Success</font>");
+        }
+        return result;
+      }
+
       function failure(error){
         console.error("failure, error = " + error);
       }
@@ -56,10 +74,9 @@
         results.push(sum.open_to_promise().then(success, failure));
       }
 
-      console.log(results);
 
 
-      Promise.all(results).then(success, failure);
+      Promise.all(results).then(test_result, failure);
 
     }
 
