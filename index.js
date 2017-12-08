@@ -13,7 +13,7 @@ jiff_instance.compute('1', function(computation_instance) {
 
 // Server static files
 app.use("/apps", express.static("apps"));
-app.use("/lib", express.static("lib"));
+app.use("/lib", express.static("lib", { maxAge: 1 }));
 app.use("/tests", express.static("tests/html"));
 http.listen(3000, function() {
   console.log('listening on *:3000');
