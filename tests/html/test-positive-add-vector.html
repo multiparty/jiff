@@ -28,29 +28,6 @@
       jiff_instance = jiff.make_jiff("http://localhost:3000", 'test-add', {party_count: parties});
     });
 
-    // run all tests
-    function test() {
-      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
-      has_failed = false;
-
-      var results = [];
-      var shares_2d = jiff_instance.share_vec(tests[0]);
-      for(var i = 0; i < shares_2d.length; i++) {
-        var shares = shares_2d[i];
-        var sum = shares[1];
-        for(var i = 2; i <= parties; i++) {
-          sum = sum.sadd(shares[i]);
-        }
-        results.push(sum.open_to_promise().then(success, failure));
-      }
-
-      Promise.all(results).then(function(result) {
-        console.log("RESULTS");
-        console.log(result);
-        if(has_failed) $("#result").append("<font color='red'>Failed</font>");
-        else $("#result").append("<font color='green'>Success</font>");
-      });
-
       function success(result) { 
         console.log("success, result = " + result);
         return result;
@@ -59,6 +36,31 @@
       function failure(error){
         console.error("failure, error = " + error);
       }
+
+    // run all tests
+    function test() {
+      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
+      has_failed = false;
+
+      var results = [];
+      var shares_2d = jiff_instance.share_vec(tests[0]);
+
+      for(var i = 0; i < shares_2d.length; i++) {
+        var shares = shares_2d[i];
+
+        var sum = shares[1];
+
+        for(var j = 2; j <= parties; j++) {
+          sum = sum.sadd(shares[j]);
+        }
+        results.push(sum.open_to_promise().then(success, failure));
+      }
+
+      console.log(results);
+
+
+      Promise.all(results).then(success, failure);
+
     }
 
     // // run test case at index
