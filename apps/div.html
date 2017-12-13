@@ -11,11 +11,12 @@
     <!-- jiff and required libraries -->
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/lib/cryptico.min.js"></script>
+    <script src="/lib/sodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
     
     <script type="text/javascript">
       var jiff_instance;
+      var bits = 8;
 
       function connect() {
         $('#connectButton').prop('disabled', true);
@@ -29,7 +30,7 @@
 
         else {
           var options = { party_count: party_count};
-          options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
+          options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); $('#connectButton').prop('disabled', false); };
           options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
 
           var hostname = window.location.hostname.trim();
@@ -48,36 +49,24 @@
         }
       }
 
-      function sum() {
+      function start() {
         var input = parseInt($("#number").val());
 
         if (isNaN(input))
           $("#output").append("<p class='error'>Input a valid number!</p>");
-        else if (100 < input || input < 0 || input != Math.floor(input))
-          $("#output").append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
+        else if (256 <= input || input < 0 || input != Math.floor(input))
+          $("#output").append("<p class='error'>Input a WHOLE number between 0 and 256!</p>");
         else if (jiff_instance == null || !jiff_instance.ready)
           alert("Please wait!");
         else
           MPC(input);
       }
 
-      function div(a_shr, q_shr) {
-        var bits = 3;
-        for (var i = 0; i < bits; i++) {
-          var tmp_q = q_shr[1].cadd(Math.pow(2, (bits-1)-i));
-          var tmp_m = (tmp_q.smult(a_shr[2])).slteq(a_shr[1]);
-          q_shr[1] = q_shr[1].sadd(tmp_m.cmult(Math.pow(2, (bits-1)-i)));
-        }
-        return q_shr;
-      }
-
       function MPC(input) {
         $("#sumButton").attr("disabled", true);
         $("#output").append("<p>Starting...</p>");
-        var q_shr = jiff_instance.share(0);
-        var a_shr = jiff_instance.share(input);       
-        r = div(a_shr, q_shr);
-        r[1].open(handleResult);
+        var a = jiff_instance.share(input);
+        a[1].sdiv(a[2], bits).open(handleResult);
       }
 
       function handleResult(result) {
@@ -94,7 +83,7 @@
     <br/><br/>
     <hr/>
     <h1>Divide Numbers under MPC</h1>
-    <label for="number">Input Number (Between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="sum();" disabled="disabled" id="sumButton">Divide</button> <br>
+    <label for="number">Input Number (Between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="start();" disabled="disabled" id="sumButton">Divide</button> <br>
     <div id="output"></div>
   </body>
 </html>

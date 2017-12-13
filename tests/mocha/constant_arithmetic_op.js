@@ -30,17 +30,24 @@ var operations = {
   },
   "xor_cst" : function (operand1, operand2) {
     return operand1.cxor_bit(operand2);
-  }
+  },
+  "/" : function (operand1, operand2) {
+    return Math.floor(operand1 / operand2);
+  },
+  "div_cst" : function (operand1, operand2) {
+    return operand1.cdiv(operand2);
+  },
 };
 
 // Maps MPC operation to its open dual
-var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*", "xor_cst": "^" };
+var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*", "xor_cst": "^", "div_cst": "/" };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
     var m = operation == "xor_cst" ? 2 : jiff.gZp;
+    m = operation == "div_cst" ? Math.pow(2, 8) : m;
     var num1 = Math.floor(Math.random() * jiff.gZp / 10) % m;
     var num2 = Math.floor(Math.random() * jiff.gZp / 10) % m;
     var num3 = Math.floor(Math.random() * jiff.gZp / 10) % m;
@@ -71,7 +78,8 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  for(var i = 0; i < tests.length; i++) {
+  var length = mpc_operator == "div_cst" ? 5 : tests.length;
+  for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
       promises.push(promise);

@@ -30,21 +30,28 @@ var operations = {
   },
   "xor" : function (operand1, operand2) {
     return operand1.sxor_bit(operand2);
-  }
+  },
+  "/" : function (operand1, operand2) {
+    return Math.floor(operand1 / operand2);
+  },
+  "div" : function (operand1, operand2) {
+    return operand1.sdiv(operand2);
+  },
 };
 
 // Maps MPC operation to its open dual
-var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^" };
+var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "div": "/" };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
-      var m = operation == "xor" ? 2 : jiff.gZp;
-      var num1 = Math.floor(Math.random() * jiff.gZp / 10) % m;
-      var num2 = Math.floor(Math.random() * jiff.gZp / 10) % m;
-      var num3 = Math.floor(Math.random() * jiff.gZp / 10) % m;
-      tests[i] = [num1, num2, num3];
+    var m = operation == "xor" ? 2 : jiff.gZp;
+    m = operation == "div" ? Math.pow(2, 8) : m;
+    var num1 = Math.floor(Math.random() * jiff.gZp / 10) % m;
+    var num2 = Math.floor(Math.random() * jiff.gZp / 10) % m;
+    var num3 = Math.floor(Math.random() * jiff.gZp / 10) % m;
+    tests[i] = [num1, num2, num3];
   }
 
   // Assign values to global variables
@@ -71,7 +78,8 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  for(var i = 0; i < tests.length; i++) {
+  var length = mpc_operator == "div" ? 5 : tests.length;
+  for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
       promises.push(promise);
