@@ -47,7 +47,7 @@
 
     // run all tests
     function test() {
-      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
+      if(jiff_instance == null || !jiff_instance.isReady()) { alert("Please wait!"); return; }
       has_failed = false;
 
       var promises = []

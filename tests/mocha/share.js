@@ -57,7 +57,7 @@ function run_test(computation_id, callback) {
 // Run all tests after setup
 function test(callback) {
 
-  if(jiff_instances[0] == null || !jiff_instances[0].ready) { console.log("Please wait!"); return; }
+  if(jiff_instances[0] == null || !jiff_instances[0].isReady()) { console.log("Please wait!"); return; }
   has_failed = false;
 
   // Run every test and accumelate all the promises
