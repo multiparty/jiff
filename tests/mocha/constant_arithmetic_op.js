@@ -4,6 +4,8 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
+var Zp = 1299827;
+function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
 
 // Operation strings to "lambdas"
 var operations = {
@@ -46,11 +48,12 @@ var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*", "xor_cst": "^", "d
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
-    var m = operation == "xor_cst" ? 2 : jiff.gZp;
-    m = operation == "div_cst" ? Math.pow(2, 8) : m;
-    var num1 = Math.floor(Math.random() * jiff.gZp / 10) % m;
-    var num2 = Math.floor(Math.random() * jiff.gZp / 10) % m;
-    var num3 = Math.floor(Math.random() * jiff.gZp / 10) % m;
+    var m = operation == "xor_cst" ? 2 : Zp;
+    m = operation == "div_cst" ? Math.pow(2, 8) - 1 : m;
+    var o = operation == "div_cst" ? 1 : 0; // ensure not to divide by zero
+    var num1 = Math.floor(Math.random() * Zp / 10) % m;
+    var num2 = (Math.floor(Math.random() * Zp / 10) % m) + o;
+    var num3 = (Math.floor(Math.random() * Zp / 10) % m) + o;
     tests[i] = [num1, num2, num3];
   }
 
@@ -59,7 +62,7 @@ function run_test(computation_id, operation, callback) {
   computation_id = computation_id + "";
 
   var counter = 0;
-  options = { party_count: parties };
+  options = { party_count: parties, Zp: Zp };
   options.onConnect = function() { if(++counter == 3) test(callback, operation); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
@@ -115,7 +118,7 @@ function test_output(index, result, open_operator) {
   // Apply operation in the open to test
 
   var res = operations[open_operator](numbers[0], numbers[1]);
-  res = jiff.mod(res, jiff.gZp);
+  res = mod(res, Zp);
 
   // Incorrect result
   if(res != result) {

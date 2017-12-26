@@ -9,6 +9,7 @@
   </head>
   <body>
     <script>
+      function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
       var tests = [
           [674, 474, 663], [408, 291, 38], [640, 108, 764],
           [129, 238, 182], [494, 1005, 325], [163, 929, 554],
@@ -92,7 +93,7 @@
         sum += numbers[i];
       }
 
-      sum = jiff.mod(sum, Zp);
+      sum = mod(sum, Zp);
       if(sum != result) { // sum is incorrect
         has_failed = true;
         $("#details").append("<li> sum("+numbers.join(", ")+") = " + sum + " != " +result + "</li>");

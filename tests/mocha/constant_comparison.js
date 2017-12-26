@@ -4,6 +4,7 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
+var Zp = 1299827;
 
 // Operation strings to "lambdas"
 var operations = {
@@ -52,9 +53,9 @@ var dual = { "less_cst": "<", "less_or_equal_cst": "<=", "greater_cst": ">", "gr
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 5; i++) {
-    var num1 = Math.floor(Math.random() * jiff.gZp / 100);
-    var num2 = Math.floor(Math.random() * jiff.gZp / 100);
-    var num3 = Math.floor(Math.random() * jiff.gZp / 100);
+    var num1 = Math.floor(Math.random() * Zp / 100);
+    var num2 = Math.floor(Math.random() * Zp / 100);
+    var num3 = Math.floor(Math.random() * Zp / 100);
     tests[i] = [num1, num2, num3];
   }
 
@@ -63,7 +64,7 @@ function run_test(computation_id, operation, callback) {
   computation_id = computation_id + "";
 
   var counter = 0;
-  options = { party_count: parties };
+  options = { party_count: parties, Zp: Zp };
   options.onConnect = function() { if(++counter == 3) test(callback, operation); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
