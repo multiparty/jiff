@@ -100,7 +100,7 @@ describe("MPC Operations", function() {
     });
 
     // >=
-    it("Less than or Equal", function(done) {
+    it("Greater than or Equal", function(done) {
       comparison.run_test(i++, "greater_or_equal", callback(done));
     });
 
