@@ -12,7 +12,7 @@ var instance = make_jiff('hostname', 'computation_id', options);
 
 These are the possible hooks:
 #### beforeShare[Array]: function(instance, secret, threshold, receivers_list, senders_list, Zp)
-Initially, parameters are as passed to jiff.share in client code:
+Initially, parameters are as passed to jiff_instance.share in client code:
 1. instance: the jiff instance
 2. secret: the secret to share
 3. threshold: the threshold for sharing
@@ -118,7 +118,7 @@ Hooks allow to customize the following flows in JIFF without having to explicity
 
 #### Share flow:
 Determines how shares are generated and sent to parties:
-(1) jiff.share -> (2) hook: beforeShare -> (3) hook: computeShare -> (4) hook: afterComputeShare -> (5) hook: encryptSign (operation_type = 'share') -> (6) send shares to parties -> (7) party receives share -> (8) hook: decryptSign (operation_type = 'share') -> (9) hook: receiveShare -> (10) resolve value into corresponding secret_share object.
+(1) jiff_instance.share -> (2) hook: beforeShare -> (3) hook: computeShare -> (4) hook: afterComputeShare -> (5) hook: encryptSign (operation_type = 'share') -> (6) send shares to parties -> (7) party receives share -> (8) hook: decryptSign (operation_type = 'share') -> (9) hook: receiveShare -> (10) resolve value into corresponding secret_share object.
 
 The party may be receiving a share without sharing anything, in which case only steps (1) and (7) to (10) are executed.
 
@@ -126,23 +126,23 @@ The party may be sharing a value without receiving shares of anything, in which 
 
 #### Open flow:
 Determine show parties can open (reveal) a share and get the result:
-(1) jiff.open/share.open -> (2) hook: beforeOpen -> (3) share is refreshed and refreshed value is used forward -> (4) hook: encryptSign (operation_type = 'open') -> (5) send share to parties -> (6) party receives share to open -> (7) hook: decryptSign (operation_type = 'open') -> (8) hook: receiveOpen ---[enough shares received]--> (9) hook: reconstructShare -> (10) hook: afterReconstructShare -> (11) resolve reconstructed value into open promise/callback.
+(1) jiff_instance.open/share.open -> (2) hook: beforeOpen -> (3) share is refreshed and refreshed value is used forward -> (4) hook: encryptSign (operation_type = 'open') -> (5) send share to parties -> (6) party receives share to open -> (7) hook: decryptSign (operation_type = 'open') -> (8) hook: receiveOpen ---[enough shares received]--> (9) hook: reconstructShare -> (10) hook: afterReconstructShare -> (11) resolve reconstructed value into open promise/callback.
 
 Alternatively, a party may receive the result for a share that it does not own, in which case the flow becomes:
-(1) jiff.receive_open -> step (6) in the flow above and onwards.
+(1) jiff_instance.receive_open -> step (6) in the flow above and onwards.
 
 A party may also hold a share of the result but not receive the result, in which case only steps (1) to (5) of the original flow are executed.
 
 #### Triplet request:
-(1) jiff.triplet (e.g. when a multiplication is performed) -> (2) hook: encryptSign (operation_type = 'triplet') -> (3) request is sent to server -> (4) server replies -> (5) hook: decryptSign (operation_type = 'triplet') -> (6) hook: receiveTriplet -> (7) resolve triplet into corresponding secret_share objects.
+(1) jiff_instance.triplet (e.g. when a multiplication is performed) -> (2) hook: encryptSign (operation_type = 'triplet') -> (3) request is sent to server -> (4) server replies -> (5) hook: decryptSign (operation_type = 'triplet') -> (6) hook: receiveTriplet -> (7) resolve triplet into corresponding secret_share objects.
 
 #### Number request:
-(1) jiff.server_generate_and_share (e.g. when a share refresh is performed) -> (2) hook: encryptSign (operation_type = 'number') -> (3) request is sent to server -> (4) server replies -> (5) hook: decryptSign (operation_type = 'number') -> (6) hook: receiveNumber -> (7) resolve triplet into corresponding secret_share objects.
+(1) jiff_instance.server_generate_and_share (e.g. when a share refresh is performed) -> (2) hook: encryptSign (operation_type = 'number') -> (3) request is sent to server -> (4) server replies -> (5) hook: decryptSign (operation_type = 'number') -> (6) hook: receiveNumber -> (7) resolve triplet into corresponding secret_share objects.
 
 
 #### Creation of secret_share objects:
 This allows the user to modify the implementation of a secret_share, including changing how operations are implemented (e.g. addition, multiplication, etc), registering callbacks for when the share is computed, or adding additional operations. This is particularly useful when developing modules for JIFF.
-(1) a share needs to be created (e.g. by jiff.share or by operating on shares) -> (2) new secret_share is called -> (3) the default secret_share object is created -> (4) hook: createSecretShare -> (5) returned secret_share object is used by JIFF.
+(1) a share needs to be created (e.g. by jiff_instance.share or by operating on shares) -> (2) new secret_share is called -> (3) the default secret_share object is created -> (4) hook: createSecretShare -> (5) returned secret_share object is used by JIFF.
 
 
 

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Hooks</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Hooks</h1>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><p>Hooks can be passed to an instance at creation time through the options</p>
+<pre class="prettyprint source"><code>var options = {};
+options.hooks = {
+  /* Example hooks */
+  'beforeShare': function(instance, secret, threshold, receivers_list, senders_list, Zp) { /* some code */ return modified_secret; },
+  'computeShares': function(secret, party_count, parties_list, threshold, Zp) { /* some code */ return shares_map; }
+};
+var instance = make_jiff('hostname', 'computation_id', options);</code></pre><p>These are the possible hooks:</p>
+<h3>beforeShare[Array]: function(instance, secret, threshold, receivers_list, senders_list, Zp)</h3><p>Initially, parameters are as passed to jiff_instance.share in client code:</p>
+<ol>
+<li>instance: the jiff instance</li>
+<li>secret: the secret to share</li>
+<li>threshold: the threshold for sharing</li>
+<li>receivers_list: array of ids of receiving parties</li>
+<li>senders_list: array of ids of sending parties (parties that have secrets)</li>
+<li>Zp: the modulos</li>
+</ol>
+<p>Return: must return the (possibly modified) secret to share, this is used as the secret for subsequent hooks in the array.</p>
+<h3>computeShares[Single]: function(instance, secret, parties_list, threshold, Zp)</h3><ol>
+<li>instance: the jiff instance</li>
+<li>secret: the secret to share</li>
+<li>parties_list: array of ids of parties for which to create shares of the secret</li>
+<li>threshold: the threshold for sharing</li>
+<li>Zp: the modulos</li>
+</ol>
+<p>Return: must return a map from party_id to its corresponding share value (for every party_id in parties_list).</p>
+<h3>afterComputeShare[Array]: function(instance, shares, threshold, receivers_list, senders_list, Zp)</h3><ol>
+<li>instance: the jiff instance</li>
+<li>shares: a map from party_id to the corresponding share value</li>
+<li>threshold: the threshold for sharing</li>
+<li>receivers_list: array of ids of receiving parties</li>
+<li>senders_list: array of ids of sending parties (parties that have secrets)</li>
+<li>Zp: the modulos</li>
+</ol>
+<p>Return: must return a map from party_id to its corresponding share value (for every party_id in receivers_list).</p>
+<h3>encryptSign[Single]: function(message, encryption_public_key, signing_private_key, operation_type)</h3><ol>
+<li>message: the message to encrypt (message type depends on operation type)</li>
+<li>encryption_public_key: public key to encrypt with (corresponding to the receiving party)</li>
+<li>signing_private_key: secret key to sign with (corresponding to this party)</li>
+<li>operation_type: the operation for which this encryption is performed, one of the following: 'share', 'open', 'triplet', 'number'</li>
+</ol>
+<p>Return: the signed cipher with any additional properties desired to be sent with it (tags, meta-info, etc) as a javascript object</p>
+<h3>decryptSign[Single]: function(cipher_text, decryption_secret_key, signing_public_key, operation_type)</h3><ol>
+<li>cipher_text: the cipher_text to decrypt, the format and type matches that returned by encryptSign</li>
+<li>decryption_secret_key: secret key to decrypt with (corresponding to this party)</li>
+<li>signing_public_key: public key to verify signature with (corresponding to sending party)</li>
+<li>operation_type: the operation for which this encryption is performed, one of the following: 'share', 'open', 'triplet', 'number'</li>
+</ol>
+<p>Throw: if signature did not check out correctly
+Return: the decrypted message, format and type must match that of the message passed to the corresponding encryptSign.</p>
+<h3>receiveShare[Array]: function(instance, sender_id, share)</h3><ol>
+<li>instance: the jiff instance</li>
+<li>sender_id: party_id of the sender</li>
+<li>share: the received share (after decryption)</li>
+</ol>
+<p>Return: the share (possibly modified), this is used as share for the subsequent hooks in the array.</p>
+<h3>beforeOpen[Array]: function(instance, share, parties)</h3><ol>
+<li>instance: the jiff instance</li>
+<li>share: the share to open {type: secret_share}</li>
+<li>parties: the parties that will recieve the open</li>
+</ol>
+<p>Return: the share to open (possibly modified), this is used as share for the subsequent hooks in the array.</p>
+<h3>receiveOpen[Array]: function(instance, sender_id, share, Zp)</h3><ol>
+<li>instance: the jiff instance</li>
+<li>sender_id: party_id of the sender</li>
+<li>share: the received share (after decryption)</li>
+<li>Zp: the modulos</li>
+</ol>
+<p>Return: the share (possibly modified), this is used as share for the subsequent hooks in the array.</p>
+<h3>reconstructShare[Single]: function(instance, shares)</h3><ol>
+<li>instance: the jiff instance</li>
+<li>shares: a map from party_id to its corresponding object: { &quot;value&quot;: share, &quot;sender_id&quot;: sender_id, &quot;Zp&quot;: Zp }</li>
+</ol>
+<p>Return: the reconstructed secret.</p>
+<h3>afterReconstructShare[Array]: function(instance, value)</h3><ol>
+<li>instance: the jiff instance</li>
+<li>value: the reconstructed value as returned by reconstructShare</li>
+</ol>
+<p>Return: the reconstructed secret (possibly modified), this is used as value for the subsequent hooks in the array.</p>
+<h3>receiveTriplet[Array]: function(instance, triplet)</h3><ol>
+<li>instance: the jiff instance</li>
+<li>triplet: the received triplet (after decryption), a map from 'a', 'b', 'c' to the corresponding shares, such that a*b = c</li>
+</ol>
+<p>Return: the triplet (possibly modified), this is used as triplet for the subsequent hooks in the array.</p>
+<h3>receiveNumber[Array]: function(instance, number)</h3><ol>
+<li>instance: the jiff instance</li>
+<li>number: the received share (after decryption)</li>
+</ol>
+<p>Return: the number share (possibly modified), this is used as number for the subsequent hooks in the array.</p>
+<h3>createSecretShare[Array]: function(instance, secret_share)</h3><ol>
+<li>instance: the jiff instance</li>
+<li>secret_share: the secret_share object as created by JIFF</li>
+</ol>
+<p>Return: the secret_share object to be used by JIFF (possibly modified), this is used for the subsequent hooks in the array.</p>
+<br class="clear"><h2>Flows Supported By Hooks</h2><p>Hooks allow to customize the following flows in JIFF without having to explicity modify JIFF's source code.</p>
+<h3>Share flow:</h3><p>Determines how shares are generated and sent to parties:
+(1) jiff_instance.share -&gt; (2) hook: beforeShare -&gt; (3) hook: computeShare -&gt; (4) hook: afterComputeShare -&gt; (5) hook: encryptSign (operation_type = 'share') -&gt; (6) send shares to parties -&gt; (7) party receives share -&gt; (8) hook: decryptSign (operation_type = 'share') -&gt; (9) hook: receiveShare -&gt; (10) resolve value into corresponding secret_share object.</p>
+<p>The party may be receiving a share without sharing anything, in which case only steps (1) and (7) to (10) are executed.</p>
+<p>The party may be sharing a value without receiving shares of anything, in which case only steps (1) to (6) are executed.</p>
+<h3>Open flow:</h3><p>Determine show parties can open (reveal) a share and get the result:
+(1) jiff_instance.open/share.open -&gt; (2) hook: beforeOpen -&gt; (3) share is refreshed and refreshed value is used forward -&gt; (4) hook: encryptSign (operation_type = 'open') -&gt; (5) send share to parties -&gt; (6) party receives share to open -&gt; (7) hook: decryptSign (operation_type = 'open') -&gt; (8) hook: receiveOpen ---[enough shares received]--&gt; (9) hook: reconstructShare -&gt; (10) hook: afterReconstructShare -&gt; (11) resolve reconstructed value into open promise/callback.</p>
+<p>Alternatively, a party may receive the result for a share that it does not own, in which case the flow becomes:
+(1) jiff_instance.receive_open -&gt; step (6) in the flow above and onwards.</p>
+<p>A party may also hold a share of the result but not receive the result, in which case only steps (1) to (5) of the original flow are executed.</p>
+<h3>Triplet request:</h3><p>(1) jiff_instance.triplet (e.g. when a multiplication is performed) -&gt; (2) hook: encryptSign (operation_type = 'triplet') -&gt; (3) request is sent to server -&gt; (4) server replies -&gt; (5) hook: decryptSign (operation_type = 'triplet') -&gt; (6) hook: receiveTriplet -&gt; (7) resolve triplet into corresponding secret_share objects.</p>
+<h3>Number request:</h3><p>(1) jiff_instance.server_generate_and_share (e.g. when a share refresh is performed) -&gt; (2) hook: encryptSign (operation_type = 'number') -&gt; (3) request is sent to server -&gt; (4) server replies -&gt; (5) hook: decryptSign (operation_type = 'number') -&gt; (6) hook: receiveNumber -&gt; (7) resolve triplet into corresponding secret_share objects.</p>
+<h3>Creation of secret_share objects:</h3><p>This allows the user to modify the implementation of a secret_share, including changing how operations are implemented (e.g. addition, multiplication, etc), registering callbacks for when the share is computed, or adding additional operations. This is particularly useful when developing modules for JIFF.
+(1) a share needs to be created (e.g. by jiff_instance.share or by operating on shares) -&gt; (2) new secret_share is called -&gt; (3) the default secret_share object is created -&gt; (4) hook: createSecretShare -&gt; (5) returned secret_share object is used by JIFF.</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.jiff-instance.html">jiff-instance</a></li><li><a href="jiff.jiff-instance.helpers.html">helpers</a></li><li><a href="jiff.secret-share.html">secret-share</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Dec 26 2017 19:13:20 GMT-0500 (EST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
