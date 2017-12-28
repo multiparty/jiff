@@ -12,5 +12,5 @@ options.onConnect = function() {
 }
 
 var base_instance = require('../lib/jiff-client').make_jiff("http://localhost:3000", 'test-sum', options);
-jiff_instance = require('../lib/jiff-client-fixedpoint').make_jiff(base_instance, { bits: 8 }); // Max bits allowed after decimal.
+jiff_instance = require('../modules/jiff-client-fixedpoint').make_jiff(base_instance, { bits: 8 }); // Max bits allowed after decimal.
 

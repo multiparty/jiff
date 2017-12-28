@@ -2,7 +2,7 @@
 /**
  * This defines a library module for for fixed point arithmetic in JIFF.
  * This wraps and exposes the jiff_fixedpoint API. Exposed members can be accessed with jiff_fixedpoint.&lt;member-name&gt;
- * in browser JS, or by using require('jiff-client-fixedpoint').&lt;member-name&gt; as usual in nodejs.
+ * in browser JS, or by using require('./modules/jiff-client-fixedpoint').&lt;member-name&gt; as usual in nodejs.
  * @namespace jiff
  * @version 1.0
  *

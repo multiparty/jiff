@@ -1,13 +1,17 @@
 var client_bignumber = require('./jiff-client-bignumber');
-
-function random(max) {
-  return BigNumber.random().times(max).floor();
-}
-    
+  
 module.exports = {
   // Create a server instance that can be used to manage all the computations and run server side code.
-  make_jiff: function(base_instance) {  
+  make_jiff: function(base_instance, options) {  
     var jiff = base_instance;
+
+    // hooks: TODO
+
+    // helpers
+    jiff.helpers = {};
+    jiff.helpers.random = function(max) {
+      return BigNumber.random().times(max).floor();
+    };
 
     var base_compute = jiff.compute;
     jiff.compute = function(computation_id, options) {
@@ -33,14 +37,14 @@ module.exports = {
 
       var all_triplets = jiff.triplets_map[computation_id];
       if(all_triplets[triplet_id] == null) { // Generate Triplet.
-        var a = random(Zp);
-        var b = random(Zp);
+        var a = jiff.helpers.random(Zp);
+        var b = jiff.helpers.random(Zp);
         var c = a.times(b).mod(Zp);
 
         var jiff_client_imitation = {
           party_count: jiff.totalparty_map[computation_id],
           helpers: { 
-            random: random,
+            random: jiff.helpers.random,
             mod: function(x, y) {
               x = new BigNumber(x); y = new BigNumber(y);
               if (x.isNeg()) return x.mod(y).plus(y);
@@ -97,18 +101,18 @@ module.exports = {
 
       var all_numbers = jiff.numbers_map[computation_id];
       if(all_numbers[number_id] == null) { // Generate shares for number.
-        var number = random(max);
+        var number = jiff.helpers.random(max);
 
         if(msg.number != null) number = new BigNumber(msg.number);
         else if(bit === true && nonzero === true) number = new BigNumber(1);
         else if(bit == true) number = number.mod(2);
-        else if(nonzero == true && number == 0) number = random(max.minus(1)).plus(1);
+        else if(nonzero == true && number == 0) number = jiff.helpers.random(max.minus(1)).plus(1);
 
         // Compute shares
         var jiff_client_imitation = {
           party_count: jiff.totalparty_map[computation_id],
           helpers: {
-            random: random,
+            random: jiff.helpers.random,
             mod: function(x, y) {
               x = new BigNumber(x); y = new BigNumber(y);
               if (x.isNeg()) return x.mod(y).plus(y);

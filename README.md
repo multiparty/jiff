@@ -55,6 +55,35 @@ To run the test cases:
 
 `$ npm test`
 
+## Hooks
+JIFF client and server instances support hooks. Hooks can be provided in the options parameter at creation time, or can be provided/modified 
+after creation. Hooks allow users to provide custom functionality to be executed at critical times during the computation, or to provide different
+implementations of specified primitives and operations (e.g. using a different sharing scheme).
+
+Check out the client side [hooks documentation](hooks.md). If hooks are used to provide important reusable funcationality, then it is recommended to bundle
+these hooks in a JIFF module (next section).
+
+## Modules
+JIFF supports implementing modules on top of the base implementation to provide additional extended functionality. Two important modules
+are implemented and provided in this repository: bignumbers and fixedpoint arithmetic (in progress). The modules can be found under modules/.
+Check out the documentation inside modules/jiff-client-fixedpoint.js for instructions on how to create modules.
+
+Both client and server supports modules. Some modules requires customizing both server and clients to behave properly (like bignumbers modules).
+Other modules may require only server or client side modification (fixedpoint arithmetic module is only client side). A server that partipicates
+in the computation will require only the client side module to get the additional functionality (unless that module depends on server side 
+modification as well like bignumbers).
+
+For examples on how to use a module, check out the following files:
+
+1. index-bignumber.js: using the server with the bignumbers module.
+2. tests/mocha-bignumber: test suite for the bignumber module in nodejs.
+3. apps/sum-fixed.html: using fixedpoint arithmetic module in the browser.
+4. server-apps/sum-fixed.html: using fixedpoint arithmetic in nodejs.
+
+To run the bignumber test suite:
+
+`$ npm run-script test-bignumber`
+
 ## Information and Collaborators
 More information about this project, including collaborators and publications, can be found at [multiparty.org](https://multiparty.org/).
 
