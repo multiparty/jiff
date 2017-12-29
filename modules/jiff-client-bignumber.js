@@ -383,7 +383,7 @@
 
     /* ALTERNATE IMPLEMENTATION */
     var old_coerce = jiff.coerce_to_share;
-    jiff.jiff_coerce_to_share = function(number, holders, Zp) { return old_coerce(new BigNumber(number), holders, Zp); };
+    jiff.coerce_to_share = function(number, holders, Zp) { return old_coerce(new BigNumber(number), holders, Zp); };
 
     /* HOOKS */
     jiff.hooks.decryptSign = decrypt_and_sign;
@@ -409,4 +409,4 @@
   exports.make_jiff = make_jiff;
   exports.utils = { 'decrypt_and_sign': decrypt_and_sign };
   exports.sharing_schemes = { 'shamir_share': jiff_compute_shares, 'shamir_reconstruct': jiff_lagrange };
-}((typeof exports == 'undefined' ? this.jiff_fixedpoint = {} : exports), typeof exports != 'undefined'));
+}((typeof exports == 'undefined' ? this.jiff_bignumber = {} : exports), typeof exports != 'undefined'));

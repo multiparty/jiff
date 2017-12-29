@@ -34,6 +34,7 @@ app.use("/apps", express.static("apps"));
 app.use("/lib", express.static("lib"));
 app.use("/modules", express.static("modules"));
 app.use("/tests", express.static("tests/positive"));
+app.use("/bignumber.js", express.static("node_modules/bignumber.js"));
 http.listen(3000, function() {
   console.log('listening on *:3000');
 });
