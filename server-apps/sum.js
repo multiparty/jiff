@@ -7,7 +7,7 @@ options.onConnect = function() {
   for(var i = 2; i <= jiff_instance.party_count; i++)
     sum = sum.sadd(shares[i]);
     
-  sum.open(console.log);
+  sum.open(function(v) { console.log(v); jiff_instance.disconnect(); });
 }
 
 jiff_instance = require('../lib/jiff-client').make_jiff("http://localhost:3000", 'test-sum', options);
