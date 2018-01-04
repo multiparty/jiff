@@ -20,7 +20,7 @@
         $('#connectButton').prop('disabled', true);
         var computation_id = $('#computation_id').val();
         var party_count = parseInt($('#count').val());
-        
+
         if(isNaN(party_count)) {
           $("#output").append("<p class='error'>Party count must be a valid number!</p>");
           $('#connectButton').prop('disabled', false);
@@ -28,7 +28,7 @@
           var options = {party_count: 2, Zp: new BigNumber(32416190071) };
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
           options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
-          
+
           var hostname = window.location.hostname.trim();
           var port = window.location.port;
           if(port == null || port == '') 
@@ -39,7 +39,7 @@
             hostname = hostname.substring(0, hostname.length-1);
           if(hostname.indexOf(":") > -1)
             hostanme = hostname.substring(0, hostname.indexOf(":"));
-  
+
           hostname = hostname + ":" + port;
           jiff_instance = jiff.make_jiff(hostname, computation_id, options);
           jiff_instance = jiff_bignumber.make_jiff(jiff_instance, options)
@@ -71,7 +71,7 @@
 
         sum.open(handleResult);          
       }
-      
+
       function handleResult(result) {
         $("#output").append("<p>Result is: " + result.toString(10) + "</p>");
         $("#sumButton").attr("disabled", false);
@@ -80,12 +80,12 @@
   </head>
   <body>
     <h1>Connect JIFF</h1>
-    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-sum"></input> <br><br>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-sum"></input><br/><br/>
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
     <h1>Sum Numbers under MPC</h1>
-    <label for="number">Input Number (between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="sum();" disabled="disabled" id="sumButton">Sum</button> <br>
+    <label for="number">Input Number (between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="sum();" disabled="disabled" id="sumButton">Sum</button><br/>
     <div id="output"></div>
   </body>
 </html>

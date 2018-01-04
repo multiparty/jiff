@@ -1,19 +1,15 @@
 <html>
   <head>
     <title>Divide one number by another under MPC</title>
-    
     <style>
       .error {
         color: #FF0000;
       }
     </style>
-    
-    <!-- jiff and required libraries -->
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/lib/sodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
-    
     <script type="text/javascript">
       var jiff_instance;
       var bits = 8;
@@ -26,9 +22,7 @@
         if(isNaN(party_count)) {
           $("#output").append("<p class='error'>Party count must be a valid number!</p>");
           $('#connectButton').prop('disabled', false);
-        }
-
-        else {
+        } else {
           var options = { party_count: party_count};
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); $('#connectButton').prop('disabled', false); };
           options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
@@ -75,15 +69,14 @@
       }
     </script>
   </head>
-  
   <body>
     <h1>Connect JIFF</h1>
-    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-div"></input> <br><br>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-div"></input><br/><br/>
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
     <h1>Divide Numbers under MPC</h1>
-    <label for="number">Input Number (Between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="start();" disabled="disabled" id="sumButton">Divide</button> <br>
+    <label for="number">Input Number (Between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="start();" disabled="disabled" id="sumButton">Divide</button><br/>
     <div id="output"></div>
   </body>
 </html>
