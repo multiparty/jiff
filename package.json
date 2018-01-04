@@ -1,7 +1,7 @@
 {
   "name": "jiff-mpc",
   "version": "0.0.1",
-  "description": "Server/Client library for performing MPC in JavaScript. handles relaying shares between parties.",
+  "description": "Server/client library for building MPC applications using JavaScript; handles relaying shares between parties.",
   "dependencies": {
     "bignumber.js": "^5.0.0",
     "jquery-deferred": "^0.3.1",
@@ -10,9 +10,9 @@
   },
   "main": "lib/jiff-server.js",
   "directories": {
-    "test": "tests",
-    "examples": "apps",
     "lib": "lib",
+    "test": "tests",
+    "example": "demos",
     "doc": "docs/jsdoc"
   },
   "devDependencies": {
