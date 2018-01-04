@@ -10,7 +10,7 @@ Running the server requires [Node](https://nodejs.org/en/) and [npm](https://www
 
 ### Client
 
-Make sure to use the sockets.io.js script file that **matches exactly** the version **used in the server**.
+Make sure to use the `sockets.io.js` script file that **matches exactly** the version **used in the server**.
 
 If the client code is to be served by the server, use:  
 ```html
@@ -22,7 +22,7 @@ If the client code is served independently, fetch the matching version of socket
 
 ### Server
 
-run npm from inside the project directory to install automatically the dependencies listed in `package.json`:
+Run npm from inside the project directory to install automatically the dependencies listed in `package.json`:
 ```shell
 npm install
 ```
@@ -33,9 +33,9 @@ Make sure to include the library **after** socket.io:
 ```html
 <script src="/lib/jiff-client.js"></script>
 ```  
-Then inside a script tag (and after the page loads), initialize a jiff object and set up a computation:
+Then inside a script tag (and after the page loads), initialize a JIFF object and set up a computation:
 ```javascript
-var instance = jiff.make_jiff("http://localhost:3000", "<computation_id>", parties)
+var instance = jiff.make_jiff("http://localhost:8080", "<computation_id>", parties)
 ```  
 The instance object provides methods for sharing, opening, and performing operations on shares.
 
@@ -64,13 +64,13 @@ npm test
 
 ## Development
 
-The JIFF libraries allow developers to customize or extend their functionality in two ways.
+The JIFF libraries allow developers to customize or extend their functionality by introducing new *hooks*. Multiple hooks can be combined to form a library *extension*.
 
 ### Hooks
 
 The JIFF client and server libraries support hooks. Hooks can be provided in the options parameter during instantiation or afterwards. Hooks allow the introduction of custom functionality to be executed at critical times during the computation, or the introduction of different implementations of specified primitives and operations (e.g. using a different sharing scheme).
 
-The client-side [hooks documentation](hooks.md) provides more details. If hooks are used to provide important reusable functionality, then it is recommended to bundle these hooks in a JIFF extension.
+The client-side [hooks documentation](src/ext/README.md) provides more details. If hooks are used to provide important reusable functionality, then it is recommended to bundle these hooks within a JIFF extension.
 
 ### Extensions
 
@@ -85,7 +85,7 @@ For examples on how to use an extension, see out the following files:
 3. `demos/sum-fixed/sum-fixed.html`: using fixed point arithmetic module in the browser.
 4. `demos/sum-fixed/sum-fixed.html`: using fixed point arithmetic in nodejs.
 
-To run the bignumber test suite:
+Run the bignumber test suite in the following way:
 ```javascript
 npm run-script test-bignumber
 ```
