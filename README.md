@@ -39,22 +39,21 @@ var instance = jiff.make_jiff("http://localhost:3000", "<computation_id>", parti
 ```  
 The instance object provides methods for sharing, opening, and performing operations on shares.
 
+## Running Demos and Examples
+
+Run a sample server from one of the demos under `demos` in the following way:
+```javascript
+node index.js demos/sum/server
+```
+The output from the example server will direct you to open `localhost:8080/demos/sum/client.html` in a browser (you must open an instance in a separate window/tab for every distinct party participating in the protocol). You can then proceed with the protocol using the client interfaces.
+
 ## Documentation
 
-The documentation can be generated using [JSDoc](http://usejsdoc.org/); you will find these docs in `docs/jsdocs/`: 
+The latest documentation can be viewed at on the [project page](https://multiparty.org/jiff/). The documentation can be generated using [JSDoc](http://usejsdoc.org/); you will find these docs in `docs/jsdocs/`: 
 ```shell
 ./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json
 npm run-script gen-docs # shortcut
-```  
-The latest documentation can be viewed at on the [project page](https://multiparty.org/jiff/).
-
-## Running Demos and Examples
-
-Run a sample server in the following way:
-```javascript
-node index.js
 ```
-Then open `localhost:3000/demos/sum/sum.html` (or any client example file under `demos/`) in a browser (you must open an instance in a separate window/tab for every distinct party participating in the protocol).
 
 ## Running Tests
 
@@ -63,13 +62,17 @@ The test cases can be run in the following way:
 npm test
 ```
 
-## Hooks
+## Development
+
+The JIFF libraries allow developers to customize or extend their functionality in two ways.
+
+### Hooks
 
 The JIFF client and server libraries support hooks. Hooks can be provided in the options parameter during instantiation or afterwards. Hooks allow the introduction of custom functionality to be executed at critical times during the computation, or the introduction of different implementations of specified primitives and operations (e.g. using a different sharing scheme).
 
 The client-side [hooks documentation](hooks.md) provides more details. If hooks are used to provide important reusable functionality, then it is recommended to bundle these hooks in a JIFF extension.
 
-## Extensions
+### Extensions
 
 JIFF supports implementing extensions on top of the base implementations that can provide additional extended functionality. Some extensions can be found under `lib/ext`. Two important modules are implemented and provided in this repository: bignumbers and fixed point arithmetic. See the documentation inside `src/ext/jiff-client-fixedpoint.js` for instructions on how to create additional extensions.
 

@@ -1,32 +1,28 @@
 <html>
   <head>
     <title>Sum numbers under MPC</title>
-    
     <style>
       .error {
         color: #FF0000;
       }
     </style>
-    
-    <!-- jiff and required libraries -->
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/lib/sodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
-    
     <script type="text/javascript">
       var jiff_instance;
-      
+
       function connect() {
         $('#connectButton').prop('disabled', true);
         var computation_id = $('#computation_id').val();
         var party_count = parseInt($('#count').val());
-        
+
         if(isNaN(party_count)) {
           $("#output").append("<p class='error'>Party count must be a valid number!</p>");
           $('#connectButton').prop('disabled', false);
         }
-        
+
         else {
           var options = { party_count: party_count};
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
@@ -47,7 +43,7 @@
           jiff_instance = jiff.make_jiff(hostname, computation_id, options);
         }
       }
-    
+
       function sum() {
         var input = parseInt($("#number").val());
 
@@ -60,7 +56,7 @@
         else
           MPC(input);
       }
-      
+
       function MPC(input) {
         $("#sumButton").attr("disabled", true);
         $("#output").append("<p>Starting...</p>");
@@ -72,24 +68,21 @@
           
         sum.open(handleResult);          
       }
-      
+
       function handleResult(result) {
         $("#output").append("<p>Result is: " + result + "</p>");
         $("#sumButton").attr("disabled", false);
       }
     </script>
   </head>
-  
   <body>
     <h1>Connect JIFF</h1>
     <label for="computation_id">Computation ID</label><input id="computation_id" value="test-sum"></input> <br><br>
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
-    <br> <br>
-    
-    <hr>
-
+    <br/> <br/>
+    <hr/>
     <h1>Sum Numbers under MPC</h1>
-    <label for="number">Input Number (Between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="sum();" disabled="disabled" id="sumButton">Sum</button> <br>
-    <div id="output"> </div>
+    <label for="number">Input Number (between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="sum();" disabled="disabled" id="sumButton">Sum</button><br/>
+    <div id="output"></div>
   </body>
 </html>
