@@ -70,7 +70,7 @@ The JIFF libraries allow developers to customize or extend their functionality b
 
 The JIFF client and server libraries support hooks. Hooks can be provided in the options parameter during instantiation or afterwards. Hooks allow the introduction of custom functionality to be executed at critical times during the computation, or the introduction of different implementations of specified primitives and operations (e.g. using a different sharing scheme).
 
-The client-side [hooks documentation](src/ext/README.md) provides more details. If hooks are used to provide important reusable functionality, then it is recommended to bundle these hooks within a JIFF extension.
+The client-side [hooks documentation](lib/ext/README.md) provides more details. If hooks are used to provide important reusable functionality, then it is recommended to bundle these hooks within a JIFF extension.
 
 ### Extensions
 
