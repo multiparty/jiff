@@ -7,8 +7,16 @@ Hooks can be passed to an instance at creation time via an options object:
 var options = {};
 options.hooks = {
   /* Example hooks. */
-  'beforeShare': function(instance, secret, threshold, receivers_list, senders_list, Zp) { /* Some code. */ return modified_secret; },
-  'computeShares': function(secret, party_count, parties_list, threshold, Zp) { /* Some code. */ return shares_map; }
+  'beforeShare':
+    function(instance, secret, threshold, receivers_list, senders_list, Zp) {
+      /* Some code. */
+      return modified_secret;
+    },
+  'computeShares':
+    function(secret, party_count, parties_list, threshold, Zp) {
+      /* Some code. */
+      return shares_map;
+    }
 };
 var instance = make_jiff('hostname', 'computation_id', options);
 ```
@@ -66,33 +74,28 @@ Below we enumerate the possible hooks:
     * ` instance`: the JIFF instance
     * ` sender_id`: party_id of the sender
     * ` share`: the received share (after decryption)
-    * ` Zp`: the modulos
+    * ` Zp`: the modulus
   * Return: the share, possibly modified (this is used as share for the subsequent hooks in the array).
-
-* `reconstructShare[Single]: function(instance, shares)
-    * ` instance: the JIFF instance
-    * ` shares: a map from party_id to its corresponding object: { "value": share, "sender_id": sender_id, "Zp": Zp }
+* `reconstructShare[Single]: function(instance, shares)`
+    * ` instance`: the JIFF instance
+    * ` shares`: a map from party_id to its corresponding object: `{"value":share, "sender_id":sender_id, "Zp":Zp }`
   * Return: the reconstructed secret.
-
-* `afterReconstructShare[Array]: function(instance, value)
-    * ` instance: the JIFF instance
-    * ` value: the reconstructed value as returned by reconstructShare
-  * Return: the reconstructed secret (possibly modified), this is used as value for the subsequent hooks in the array.
-
-* `receiveTriplet[Array]: function(instance, triplet)
-    * ` instance: the JIFF instance
-    * ` triplet: the received triplet (after decryption), a map from 'a', 'b', 'c' to the corresponding shares, such that a*b = c
-  * Return: the triplet (possibly modified), this is used as triplet for the subsequent hooks in the array.
-
-* `receiveNumber[Array]: function(instance, number)
-    * `instance: the JIFF instance
-    * `number: the received share (after decryption)
-  * Return: the number share (possibly modified), this is used as number for the subsequent hooks in the array.
-
-* `createSecretShare[Array]: function(instance, secret_share)
+* `afterReconstructShare[Array]: function(instance, value)`
+    * ` instance`: the JIFF instance
+    * ` value`: the reconstructed value as returned by reconstructShare
+  * Return: the reconstructed secret, possibly modified (this is used as value for the subsequent hooks in the array).
+* `receiveTriplet[Array]: function(instance, triplet)`
+    * ` instance`: the JIFF instance
+    * ` triplet`: the received triplet after decryption (a map from *a*, *b*, *c* to the corresponding shares such that *a* * *b* = *c*`)
+  * Return: the triplet, possibly modified (this is used as triplet for the subsequent hooks in the array).
+* `receiveNumber[Array]: function(instance, number)`
+    * `instance`: the JIFF instance
+    * `number`: the received share (after decryption)
+  * Return: the number share, possibly modified (this is used as number for the subsequent hooks in the array).
+* `createSecretShare[Array]: function(instance, secret_share)`
     * `instance`: the JIFF instance
     * `secret_share`: the secret_share object as created by JIFF
-  * Return: the secret_share object to be used by JIFF (possibly modified), this is used for the subsequent hooks in the array.
+  * Return: the `secret_share` object to be used by JIFF, possibly modified (this is used for the subsequent hooks in the array).
 
 ## Flows Supported By Hooks
 
