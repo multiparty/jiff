@@ -11,9 +11,11 @@
     <!-- jiff and required libraries -->
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/bignumber.js/bignumber.min.js"></script>
     <script src="/lib/sodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
-    <script src="/lib/jiff-client-fixedpoint.js"></script>
+    <script src="/modules/jiff-client-bignumber.js"></script>
+    <script src="/modules/jiff-client-fixedpoint.js"></script>
     
     <script type="text/javascript">
       var jiff_instance;
@@ -29,7 +31,7 @@
         }
         
         else {
-          var options = { party_count: party_count};
+          var options = {party_count: 2, Zp: new BigNumber(32416190071) };
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
           options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
           
@@ -46,7 +48,8 @@
   
           hostname = hostname + ":" + port;
           jiff_instance = jiff.make_jiff(hostname, computation_id, options);
-          jiff_instance = jiff_fixedpoint.make_jiff(jiff_instance, { bits: 8 }); // Max bits after decimal allowed
+          jiff_instance = jiff_bignumber.make_jiff(jiff_instance, options)
+          jiff_instance = jiff_fixedpoint.make_jiff(jiff_instance, { digits: 4 }); // Max bits after decimal allowed
         }
       }
     
@@ -76,7 +79,7 @@
       }
       
       function handleResult(result) {
-        $("#output").append("<p>Result is: " + result + "</p>");
+        $("#output").append("<p>Result is: " + result.toString(10) + "</p>");
         $("#sumButton").attr("disabled", false);
       }
     </script>

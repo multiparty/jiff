@@ -2,7 +2,7 @@
 /**
  * This defines a library module for for fixed point arithmetic in JIFF.
  * This wraps and exposes the jiff_fixedpoint API. Exposed members can be accessed with jiff_fixedpoint.&lt;member-name&gt;
- * in browser JS, or by using require('jiff-client-fixedpoint').&lt;member-name&gt; as usual in nodejs.
+ * in browser JS, or by using require('./modules/jiff-client-fixedpoint').&lt;member-name&gt; as usual in nodejs.
  * @namespace jiff
  * @version 1.0
  *
@@ -147,10 +147,10 @@
       var nfraction_part = self.fraction_part.sadd(o.fraction_part);
 
       // Resolve carry from fraction into int part
-      var carry = nfraction_part.cgteq(Math.pow(10, self.jiff.options.digits));
-      nint_part = nint_part.sadd(carry);
-      nfraction_part = nfraction_part.ssub(carry.cmult(Math.pow(10, self.jiff.options.digits)));
+      var carry = nfraction_part.cgteq(self.jiff.magnitude);
 
+      nint_part = nint_part.sadd(carry);
+      nfraction_part = nfraction_part.ssub(carry.cmult(self.jiff.magnitude));
       return new fixedpoint_secret_share(self.jiff, nint_part, nfraction_part);
     };
     
@@ -163,14 +163,15 @@
     this.smult = function(o) {
       // Multiply int and fraction parts
       var nint_part = self.int_part.smult(o.int_part);
-      var nfraction_part = self.fraction_part.smult(o.fraction_part).cdiv(Math.pow(10, self.jiff.options.digits));
+      
+      var nfraction_part = self.fraction_part.smult(o.fraction_part).cdiv(self.jiff.magnitude, 2 * self.jiff.options.bits);
       nfraction_part = nfraction_part.sadd(self.int_part.smult(o.fraction_part));
       nfraction_part = nfraction_part.sadd(self.fraction_part.smult(o.int_part));
       
-      var carry = nfraction_part.cdiv(Math.pow(10, self.jiff.options.digits));
+      var carry = nfraction_part.cdiv(self.jiff.magnitude, 2 * self.jiff.options.bits);
       nint_part = nint_part.sadd(carry);
-      nfraction_part = nfraction_part.ssub(carry.cmult(Math.pow(10, self.jiff.options.digits)));
-      
+      nfraction_part = nfraction_part.ssub(carry.cmult(self.jiff.magnitude));
+
       return new fixedpoint_secret_share(self.jiff, nint_part, nfraction_part);
     };
     
@@ -195,11 +196,12 @@
   function make_jiff(base_instance, options) {
     var jiff = {};
     jiff.base = base_instance;
-    
+        
     // Parse Options
     if(options == null) options = {};
-    if(options.bits == null) options.bits = 8;
-    options.digits = Math.floor(base_instance.helpers.bLog(Math.pow(2, options.bits), 10));
+    if(options.bits == null && options.digits == null) options.bits = 8;
+    if(options.digits == null) options.digits = Math.floor(options.bits / (Math.log(10) / Math.log(2)));
+    if(options.bits == null) options.bits = Math.floor(options.digits * (Math.log(10) / Math.log(2)));
     jiff.options = options;
 
     // Copy all functions and memebers from base to jiff.
@@ -208,13 +210,42 @@
       if(!base_instance.hasOwnProperty(key)) continue;
       jiff[key] = base_instance[key];
     }
+
+    // Add module name
+    if(jiff.modules == null) jiff.modules = [];
+    jiff.modules.push('fixedpoint');
     
+    // Handle the case if the base instance has bignumber support.
+    jiff.hasBigNumber = function() {
+      return jiff.base.modules.indexOf("bignumber") > -1;
+    }
+
+    jiff.BigNumber = function(n) {
+      if(jiff._BigNumber == null) {
+        if(node) jiff._BigNumber = require('bignumber.js');
+        else jiff._BigNumber = BigNumber;
+      }
+
+      return new jiff._BigNumber(n);
+    }
+
+    // This is used in arithmetic operations.
+    jiff.magnitude = jiff.hasBigNumber() ? jiff.BigNumber(10).pow(jiff.options.digits).floor() : Math.pow(10, jiff.options.digits);
+
     // Override functions according to this module's functionality.
     jiff.share = function(secret, threshold, receivers_list, senders_list, Zp) {
       // Compute Parts
-      var int_part = Math.floor(secret);
-      var fraction_part = Math.floor((secret - int_part) * Math.pow(10, options.digits));
-      
+      var int_part, fraction_part;
+
+      if(jiff.hasBigNumber()) { 
+        secret = new BigNumber(secret);     
+        int_part = secret.floor();
+        fraction_part = secret.minus(int_part).times(jiff.magnitude).floor();
+      } else {
+        int_part = Math.floor(secret);
+        fraction_part = Math.floor((secret - int_part) * jiff.magnitude);
+      }
+
       // Share parts
       var int_parts = base_instance.share(int_part, threshold, receivers_list, senders_list, Zp);
       var fraction_parts = base_instance.share(fraction_part, threshold, receivers_list, senders_list, Zp);
@@ -228,13 +259,15 @@
       return shares;
     };
     
-    
     jiff.open = function(share, parties) {
       var p1 = base_instance.open(share.int_part, parties);
       var p2 = base_instance.open(share.fraction_part, parties);
       
       return Promise.all([p1, p2]).then(function(results) {
-        return results[0] + (results[1] / Math.pow(10, options.digits));
+        if(jiff.hasBigNumber)
+          return results[0].plus(results[1].div(jiff.magnitude));
+        else
+          return results[0] + (results[1] / jiff.magnitude);
       });
     };
     
@@ -242,9 +275,5 @@
   }
 
   // Expose the functions that consitute the API for this module.
-  if(node) { // For nodejs
-    exports.make_jiff = make_jiff;
-  } else { // For client
-    exports.make_jiff = make_jiff;
-  }
+  exports.make_jiff = make_jiff;
 }((typeof exports == 'undefined' ? this.jiff_fixedpoint = {} : exports), typeof exports != 'undefined'));

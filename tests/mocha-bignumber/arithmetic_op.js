@@ -1,40 +1,42 @@
 var jiff = require ("../../lib/jiff-client.js");
+var jiffBigNumber = require ("../../modules/jiff-client-bignumber.js");
+var BigNumber = require('bignumber.js');
 
 var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = 1299827;
-function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
+var Zp = new BigNumber(32416190071);
+function mod(x, y) { if (x.isNeg()) return x.mod(y).plus(y); return x.mod(y); }
 
 // Operation strings to "lambdas"
 var operations = {
   "+" : function (operand1, operand2) {
-    return operand1 + operand2;
+    return operand1.plus(operand2);
   },
   "add" : function (operand1, operand2) {
     return operand1.sadd(operand2);
   },
   "-" : function (operand1, operand2) {
-    return operand1 - operand2;
+    return operand1.minus(operand2);
   },
   "sub" : function (operand1, operand2) {
     return operand1.ssub(operand2);
   },
   "*" : function (operand1, operand2) {
-    return operand1 * operand2;
+    return operand1.times(operand2);
   },
   "mult" : function (operand1, operand2) {
     return operand1.smult(operand2);
   },
   "^" : function (operand1, operand2) {
-    return operand1 ^ operand2;
+    return operand1.eq(operand2) ? new BigNumber(0) : new BigNumber(1);
   },
   "xor" : function (operand1, operand2) {
     return operand1.sxor_bit(operand2);
   },
   "/" : function (operand1, operand2) {
-    return Math.floor(operand1 / operand2);
+    return operand1.div(operand2).floor();
   },
   "div" : function (operand1, operand2) {
     return operand1.sdiv(operand2);
@@ -49,11 +51,11 @@ function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
     var m = operation == "xor" ? 2 : Zp;
-    m = operation == "div" ? Math.pow(2, 8) - 1 : m;
+    m = operation == "div" ? new BigNumber(2).pow(15).minus(1).floor() : m;
     var o = operation == "div" ? 1 : 0; // ensure not to divide by zero
-    var num1 = Math.floor(Math.random() * Zp / 10) % m;
-    var num2 = (Math.floor(Math.random() * Zp / 10) % m) + o;
-    var num3 = (Math.floor(Math.random() * Zp / 10) % m) + o;
+    var num1 = BigNumber.random().times(Zp).floor().mod(m);
+    var num2 = BigNumber.random().times(Zp).floor().mod(m).plus(o);
+    var num3 = BigNumber.random().times(Zp).floor().mod(m).plus(o);
     tests[i] = [num1, num2, num3];
   }
 
@@ -62,14 +64,17 @@ function run_test(computation_id, operation, callback) {
   computation_id = computation_id + "";
 
   var counter = 0;
-  options = { party_count: parties, Zp: Zp };
+  options = { party_count: parties, Zp: Zp, autoConnect: false };
   options.onConnect = function() { if(++counter == 3) test(callback, operation); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
-  var jiff_instance1 = jiff.make_jiff("http://localhost:3000", computation_id, options);
-  var jiff_instance2 = jiff.make_jiff("http://localhost:3000", computation_id, options);
-  var jiff_instance3 = jiff.make_jiff("http://localhost:3000", computation_id, options);
+  var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
+  jiff_instance1.connect();
+  jiff_instance2.connect();
+  jiff_instance3.connect();
 }
 
 // Run all tests after setup
@@ -122,7 +127,7 @@ function test_output(index, result, open_operator) {
   res = mod(res, Zp);
 
   // Incorrect result
-  if(res != result) {
+  if(!(res.eq(result))) {
     has_failed = true;
     console.log(numbers.join(open_operator) + " != " + result);
   }

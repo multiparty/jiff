@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Server/Client library for performing MPC in JavaScript. handles relaying shares between parties.",
   "dependencies": {
-    "big-integer": "^1.6.26",
+    "bignumber.js": "^5.0.0",
     "jquery-deferred": "^0.3.1",
     "libsodium-wrappers": "^0.7.2",
     "socket.io": "^2.0.2"
@@ -23,6 +23,7 @@
   },
   "scripts": {
     "test": "./tests/mocha/test.sh",
+    "test-bignumber": "./tests/mocha-bignumber/test.sh",
     "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json"
   },
   "repository": {
