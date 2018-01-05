@@ -1,5 +1,5 @@
 var jiff = require ("../../lib/jiff-client.js");
-var jiffBigNumber = require ("../../modules/jiff-client-bignumber.js");
+var jiffBigNumber = require ("../../lib/ext/jiff-client-bignumber.js");
 var BigNumber = require('bignumber.js');
 
 var jiff_instances = [];
