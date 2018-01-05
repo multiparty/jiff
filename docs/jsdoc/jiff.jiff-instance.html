@@ -38,9 +38,7 @@
     <div class="container-overview">
     
         
-            <div class="description">The interface defined by an instance of jiff.
-You can get an instance of jiff by calling function jiff.make_jiff.
-You can access any of the specified members of function with &lt;jiff-instance&gt;.&lt;member-name&gt;.</div>
+            <div class="description">The interface defined by an instance of jiff.You can get an instance of jiff by calling function jiff.make_jiff.You can access any of the specified members of function with &lt;jiff-instance&gt;.&lt;member-name&gt;.</div>
         
 
         
@@ -268,8 +266,7 @@ You can access any of the specified members of function with &lt;jiff-instance&g
 
 
 <div class="description">
-    The hooks for this instance. 
-Checkout the <a href="hooks.html">hooks documentation</a>
+    The hooks for this instance. Checkout the <a href="hooks.html">hooks documentation</a>
 </div>
 
 
@@ -413,8 +410,7 @@ Checkout the <a href="hooks.html">hooks documentation</a>
 
 
 <div class="description">
-    A map from party id to public key. Where key is the party id (number), and
-value is the public key (Uint8Array).
+    A map from party id to public key. Where key is the party id (number), andvalue is the public key (Uint8Array).
 </div>
 
 
@@ -872,11 +868,7 @@ value is the public key (Uint8Array).
 
 
 <div class="description">
-    The function used by JIFF to create a new share. This can be used by modules to create custom shares.
-Modifying this will modify how shares are generated in the BASE JIFF implementation.
-A share is a value wrapper with a share object, it has a unique id
-(per computation instance), and a pointer to the instance it belongs to.
-A share also has methods for performing operations.
+    The function used by JIFF to create a new share. This can be used by modules to create custom shares.Modifying this will modify how shares are generated in the BASE JIFF implementation.A share is a value wrapper with a share object, it has a unique id(per computation instance), and a pointer to the instance it belongs to.A share also has methods for performing operations.
 </div>
 
 
@@ -1171,16 +1163,7 @@ A share also has methods for performing operations.
 
 
 <div class="description">
-    Coerce a number into a share.
-THIS DOES NOT SHARE THE GIVEN NUMBER.
-It is a local type-coersion by invoking the constructor on the given parameter,
-this is useful for for operating on constants, not sharing secret data.
-If all parties use this function with the same input number, then
-you can think of their shares as being a share of that constant with threshold 1.
-In other words, a trivial sharing scheme where the share is the number itself.
-However, if some parties used different input numbers, then the actual value
-yielded by reconstruction/opening of all these shares is arbitrary and depends
-on all the input numbers of all parties.
+    Coerce a number into a share.THIS DOES NOT SHARE THE GIVEN NUMBER.It is a local type-coersion by invoking the constructor on the given parameter,this is useful for for operating on constants, not sharing secret data.If all parties use this function with the same input number, thenyou can think of their shares as being a share of that constant with threshold 1.In other words, a trivial sharing scheme where the share is the number itself.However, if some parties used different input numbers, then the actual valueyielded by reconstruction/opening of all these shares is arbitrary and dependson all the input numbers of all parties.
 </div>
 
 
@@ -1383,8 +1366,7 @@ on all the input numbers of all parties.
 
 
 <div class="description">
-    Execute all hooks attached to the given name in order.
-Hooks are executed sequentially such that the first hook's return value is passed into the second and so on.
+    Execute all hooks attached to the given name in order.Hooks are executed sequentially such that the first hook's return value is passed into the second and so on.
 </div>
 
 
@@ -1482,8 +1464,7 @@ Hooks are executed sequentially such that the first hook's return value is passe
 
             
 
-            <td class="description last">the index in params in which the result of the hooks must be saved, if no hooks
-                            exist for the name, then params[acc_index] is returned.</td>
+            <td class="description last">the index in params in which the result of the hooks must be saved, if no hooks                            exist for the name, then params[acc_index] is returned.</td>
         </tr>
 
     
@@ -1576,8 +1557,7 @@ Hooks are executed sequentially such that the first hook's return value is passe
 
 
 <div class="description">
-    Creates shares of an unknown random number. Every party comes up with its own random number and shares it.
-Then every party combines all the received shares to construct one share of the random unknown number.
+    Creates shares of an unknown random number. Every party comes up with its own random number and shares it.Then every party combines all the received shares to construct one share of the random unknown number.
 </div>
 
 
@@ -1803,9 +1783,7 @@ Then every party combines all the received shares to construct one share of the 
 
 
 <div class="description">
-    Creates shares of 0, such that no party knows the other parties' shares.
-Every party secret shares 0, then every party sums all the shares they received, resulting
-in a new share of 0 for every party.
+    Creates shares of 0, such that no party knows the other parties' shares.Every party secret shares 0, then every party sums all the shares they received, resultingin a new share of 0 for every party.
 </div>
 
 
@@ -2406,13 +2384,7 @@ in a new share of 0 for every party.
 
             
 
-            <td class="description last">an array with party ids (1 to n) of receiving parties [optional].
-                         This must be one of 3 cases:
-                         1. null:                       open all shares to all parties.
-                         2. array of numbers:           open all shares to all the parties specified in the array.
-                         3. array of array of numbers:  open share with index i to the parties specified
-                                                        in the nested array at parties[i]. if parties[i] was null,
-                                                        then shares[i] will be opened to all parties.</td>
+            <td class="description last">an array with party ids (1 to n) of receiving parties [optional].                         This must be one of 3 cases:                         1. null:                       open all shares to all parties.                         2. array of numbers:           open all shares to all the parties specified in the array.                         3. array of array of numbers:  open share with index i to the parties specified                                                        in the nested array at parties[i]. if parties[i] was null,                                                        then shares[i] will be opened to all parties.</td>
         </tr>
 
     
@@ -2492,9 +2464,7 @@ in a new share of 0 for every party.
 
         
 <div class="param-desc">
-    a (JQuery) promise to ALL the open values of the secret, the promise will yield
-                   an array of values, each corresponding to the given share in the shares parameter
-                   at the same index.
+    a (JQuery) promise to ALL the open values of the secret, the promise will yield                   an array of values, each corresponding to the given share in the shares parameter                   at the same index.
 </div>
 
 
@@ -2531,8 +2501,7 @@ in a new share of 0 for every party.
 
 
 <div class="description">
-    Receive shares from the specified parties and reconstruct their secret.
-Use this function in a party that will receive some answer/value but does not have a share of it.
+    Receive shares from the specified parties and reconstruct their secret.Use this function in a party that will receive some answer/value but does not have a share of it.
 </div>
 
 
@@ -2735,8 +2704,7 @@ Use this function in a party that will receive some answer/value but does not ha
 
 
 <div class="description">
-    Use the server to generate shares for a random bit, zero, random non-zero number, or a random number.
-The parties will not know the value of the number (unless the request is for shares of zero) nor other parties' shares.
+    Use the server to generate shares for a random bit, zero, random non-zero number, or a random number.The parties will not know the value of the number (unless the request is for shares of zero) nor other parties' shares.
 </div>
 
 
@@ -2788,8 +2756,7 @@ The parties will not know the value of the number (unless the request is for sha
 
             
 
-            <td class="description last">an object with these properties:
-                          { "number": number, "bit": boolean, "nonzero": boolean, "max": number}</td>
+            <td class="description last">an object with these properties:                          { "number": number, "bit": boolean, "nonzero": boolean, "max": number}</td>
         </tr>
 
     
@@ -3175,10 +3142,7 @@ The parties will not know the value of the number (unless the request is for sha
 
         
 <div class="param-desc">
-    a map (of size equal to the number of parties)
-         where the key is the party id (from 1 to n)
-         and the value is the share object that wraps
-         the value sent from that party (the internal value maybe deferred).
+    a map (of size equal to the number of parties)         where the key is the party id (from 1 to n)         and the value is the share object that wraps         the value sent from that party (the internal value maybe deferred).
 </div>
 
 
@@ -3215,8 +3179,7 @@ The parties will not know the value of the number (unless the request is for sha
 
 
 <div class="description">
-    Creates 3 shares, a share for every one of three numbers from a beaver triplet.
-The server generates and sends the triplets on demand.
+    Creates 3 shares, a share for every one of three numbers from a beaver triplet.The server generates and sends the triplets on demand.
 </div>
 
 
@@ -3415,7 +3378,7 @@ The server generates and sends the triplets on demand.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Dec 28 2017 14:43:48 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jan 04 2018 22:12:53 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
