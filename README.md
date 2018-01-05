@@ -45,7 +45,11 @@ Run a sample server from one of the demos under `demos` in the following way:
 ```javascript
 node index.js demos/sum/server
 ```
-The output from the example server will direct you to open `localhost:8080/demos/sum/client.html` in a browser (you must open an instance in a separate window/tab for every distinct party participating in the protocol). It will also suggest the possibility of running a server-based party that can also participate in the protocol by executing `node index.js demos/sum/party`. You can then proceed with the protocol using the client interfaces. Several other demos are also included:
+The output from the example server will direct you to open `localhost:8080/demos/sum/client.html` in a browser (you must open an instance in a separate window/tab for every distinct party participating in the protocol). You can then proceed with the protocol using the client interfaces. Note that the server script will also suggest the possibility of running a server-based party that can also participate in the protocol by executing (e.g., in a separate terminal):
+```javascript
+node index.js demos/sum/party
+```
+Several other demos are also included:
 ```javascript
 node index.js demos/sum-fixed/server
 node index.js demos/div/server
