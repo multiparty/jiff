@@ -138,8 +138,8 @@ Determine show parties can open (reveal) a share and get the result:
 
 Alternatively, a party may receive the result for a share that it does not own, in which case the flow becomes:
 
-1. jiff_instance.receive_open
-6. party receives share to open
+* `jiff_instance.receive_open`
+* party receives share to open (step 6 from above sequence)
 * steps 7-11 from above sequence
 
 A party may also hold a share of the result but not receive the result, in which case only steps 1-5 of the original flow are executed.
@@ -168,8 +168,8 @@ A party may also hold a share of the result but not receive the result, in which
 
 This flow is particularly useful when developing modules for JIFF. This allows the user to modify the implementation of a `secret_share` object, including changing how operations are implemented (e.g. addition, multiplication, etc.), registering callbacks for when the share is computed, or adding additional operations:
 
-(1) a share is created (e.g. by `jiff_instance.share` or by operating on shares)
-(2) `new secret_share` is invoked
-(3) the default `secret_share` object is created
-(4) hook: `createSecretShare`
-(5) returned `secret_share` object is used by JIFF
+1. a share is created (e.g. by `jiff_instance.share` or by operating on shares)
+2. `new secret_share` is invoked
+3. the default `secret_share` object is created
+4. hook: `createSecretShare`
+5. returned `secret_share` object is used by JIFF
