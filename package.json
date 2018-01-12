@@ -47,11 +47,12 @@
   },
   "dependencies": {
     "bignumber.js": "^5.0.0",
+    "carousels": "^0.1.0",
     "jquery-deferred": "^0.3.1",
     "libsodium-wrappers": "^0.7.2",
-    "socket.io": "^2.0.2",
+    "marked": "^0.3.9",
     "minimist": "^1.2.0",
-    "marked": "^0.3.9"
+    "socket.io": "^2.0.2"
   },
   "devDependencies": {
     "chai": "^4.1.2",
