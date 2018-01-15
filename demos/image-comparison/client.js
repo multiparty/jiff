@@ -1,13 +1,5 @@
 var jiff_instance;
 
-// function createRandomArr(len) {
-//   var arr = [];
-//   for (var i = 0; i < len; i++) {
-//     arr.push(Math.floor(Math.random() * 10));
-//   }
-//   return arr;
-// }
-
 
 function compare(hashed) {
 
@@ -29,8 +21,6 @@ function compare(hashed) {
     resultDiv.appendChild(h);
   });
 }
-
-
 
 
 String.prototype.hashCode = function() {
