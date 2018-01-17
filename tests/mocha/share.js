@@ -6,16 +6,17 @@ var tests = [];
 var senders = [];
 var receivers = [];
 var has_failed = false;
+var Zp = 1299827;
 
 // Entry Point
 function run_test(computation_id, callback) {
   // Generate Numbers
   for (var i = 0; i < 30; i++) {
     // Generate numbers
-    var num1 = Math.floor(Math.random() * jiff.gZp / 10);
-    var num2 = Math.floor(Math.random() * jiff.gZp / 10);
-    var num3 = Math.floor(Math.random() * jiff.gZp / 10);
-    var num4 = Math.floor(Math.random() * jiff.gZp / 10);
+    var num1 = Math.floor(Math.random() * Zp / 10);
+    var num2 = Math.floor(Math.random() * Zp / 10);
+    var num3 = Math.floor(Math.random() * Zp / 10);
+    var num4 = Math.floor(Math.random() * Zp / 10);
     
     // Generate thresholds
     var threshold = Math.ceil(Math.random() * 4);
@@ -44,7 +45,7 @@ function run_test(computation_id, callback) {
   computation_id = computation_id + "";
 
   var counter = 0;
-  options = { party_count: parties };
+  options = { party_count: parties, Zp: Zp };
   options.onConnect = function() { if(++counter == parties) test(callback); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
@@ -57,7 +58,7 @@ function run_test(computation_id, callback) {
 // Run all tests after setup
 function test(callback) {
 
-  if(jiff_instances[0] == null || !jiff_instances[0].ready) { console.log("Please wait!"); return; }
+  if(jiff_instances[0] == null || !jiff_instances[0].isReady()) { console.log("Please wait!"); return; }
   has_failed = false;
 
   // Run every test and accumelate all the promises

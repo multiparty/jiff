@@ -43,27 +43,36 @@
 
 
     <section>
-        <article><p>Server and Client side library for performing MPC in JavaScript. Server handles relaying shares between parties.
-Clients and Servers can both participate in the computation and provide input data.</p>
-<h2>Requirements</h2><h3>Server:</h3><p>  Node and npm</p>
-<h3>Client:</h3><p>Make sure to use the sockets.io.js script file that <strong>matches exactly</strong> the version <strong>used in the server</strong>.  </p>
+        <article><p>Server- and client-side library for building JavaScript application that have secure multi-party computation features. Parties running the server-side application can handle the relaying of shares between parties. Both client and server parties can act as input data contributors and as compute parties.</p>
+<h2>Requirements</h2><h3>Server</h3><p>Running the server requires <a href="https://nodejs.org/en/">Node</a> and <a href="https://www.npmjs.com/">npm</a>.</p>
+<h3>Client</h3><p>Make sure to use the <code>sockets.io.js</code> script file that <strong>matches exactly</strong> the version <strong>used in the server</strong>.</p>
 <p>If the client code is to be served by the server, use:  </p>
-<pre class="prettyprint source"><code>&lt;script src=&quot;/socket.io/socket.io.js&quot;>&lt;/script></code></pre><p>If the client code is served independently, fetch the matching socket.io.js from the CDN, or use the file from<code>&lt;server_dir&gt;/node_modules/socket.io-client/dist</code></p>
-<h2>Installation</h2><h3>Server:</h3><p>run npm from inside the project directory to install dependencies listed in package.json automatically:</p>
-<p><code>$ npm install</code></p>
-<h3>Client:</h3><p>Make sure to include jiff.js <strong>after</strong> socket.io  </p>
-<pre class="prettyprint source"><code>&lt;script src=&quot;/lib/jiff-client.js&quot;>&lt;/script></code></pre><p>Then inside a script tag (and after the page loads), initialize a jiff object and setup a computation:  </p>
-<pre class="prettyprint source"><code>var instance = jiff.make_jiff(&quot;http://localhost:3000&quot;, &quot;&lt;computation_id>&quot;, parties)</code></pre><p>instance will provide methods for sharing, opening, and performing operations on shares.</p>
-<h2>Documentation</h2><p>The documentation can be generated using <a href="http://usejsdoc.org/">JSDoc</a>; you will find these docs in <code>docs/jsdocs/</code>:  </p>
-<pre class="prettyprint source"><code>./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json
-npm run-script gen-docs # shortcut</code></pre><p>The latest documentation can be viewed at on the <a href="https://multiparty.org/jiff/">project page</a>.</p>
-<h2>Running the application</h2><p>To run a sample server:</p>
-<p><code>$ node index.js</code></p>
-<p>Then open <code>localhost:3000/apps/sum.html</code> (or any other file under <code>apps/</code>) in a browser, for every party open the page in a new tab/window.</p>
-<h2>Running the test cases</h2><p>To run the test cases:</p>
-<p><code>$ npm test</code></p>
-<h2>Information and Collaborators</h2><p>More information about this project, including collaborators and publications, can be found at <a href="https://multiparty.org/">multiparty.org</a>.</p>
-<h2>License</h2><p>MIT</p></article>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;/socket.io/socket.io.js&quot;>&lt;/script></code></pre><p>If the client code is served independently, fetch the matching version of socket.io.js from a CDN, or use the file found in <code>&lt;server_dir&gt;/node_modules/socket.io-client/dist</code>.</p>
+<h2>Installation</h2><h3>Server</h3><p>Run npm from inside the project directory to install automatically the dependencies listed in <code>package.json</code>:</p>
+<pre class="prettyprint source lang-shell"><code>npm install</code></pre><h3>Client</h3><p>Make sure to include the library <strong>after</strong> socket.io:</p>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;/lib/jiff-client.js&quot;>&lt;/script></code></pre><p>Then inside a script tag (and after the page loads), initialize a JIFF object and set up a computation:</p>
+<pre class="prettyprint source lang-javascript"><code>var instance = jiff.make_jiff(&quot;http://localhost:8080&quot;, &quot;&lt;computation_id>&quot;, parties)</code></pre><p>The instance object provides methods for sharing, opening, and performing operations on shares.</p>
+<h2>Running Demos and Examples</h2><p>Run a sample server from one of the demos under <code>demos</code> in the following way:</p>
+<pre class="prettyprint source lang-shell"><code>node index.js demos/sum/server</code></pre><p>The output from the example server will direct you to open <code>localhost:8080/demos/sum/client.html</code> in a browser (you must open an instance in a separate window/tab for every distinct party participating in the protocol). You can then proceed with the protocol using the client interfaces. Note that the server script will also suggest the possibility of running a server-based party that can also participate in the protocol by executing (e.g., in a separate terminal):</p>
+<pre class="prettyprint source lang-shell"><code>node index.js demos/sum/party</code></pre><p>Several other demos are also included:</p>
+<pre class="prettyprint source lang-shell"><code>node index.js demos/sum-fixed/server
+node index.js demos/div/server
+node index.js demos/vote/server</code></pre><h2>Documentation</h2><p>The latest documentation can be viewed at on the <a href="https://multiparty.org/jiff/">project page</a>. The documentation can be generated using <a href="http://usejsdoc.org/">JSDoc</a>; you will find these docs in <code>docs/jsdocs/</code>: </p>
+<pre class="prettyprint source lang-shell"><code>./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json
+npm run-script gen-docs # shortcut</code></pre><h2>Running Tests</h2><p>The test cases can be run in the following way:</p>
+<pre class="prettyprint source lang-shell"><code>npm test</code></pre><h2>Development</h2><p>The JIFF libraries allow developers to customize or extend their functionality by introducing new <em>hooks</em>. Multiple hooks can be combined to form a library <em>extension</em>.</p>
+<h3>Hooks</h3><p>The JIFF client and server libraries support hooks. Hooks can be provided in the options parameter during instantiation or afterwards. Hooks allow the introduction of custom functionality to be executed at critical times during the computation, or the introduction of different implementations of specified primitives and operations (e.g. using a different sharing scheme).</p>
+<p>The client-side <a href="lib/ext/README.md">hooks documentation</a> provides more details. If hooks are used to provide important reusable functionality, then it is recommended to bundle these hooks within a JIFF extension.</p>
+<h3>Extensions</h3><p>JIFF supports implementing extensions on top of the base implementations that can provide additional extended functionality. Some extensions can be found under <code>lib/ext</code>. Two important modules are implemented and provided in this repository: bignumbers and fixed point arithmetic. See the documentation inside <code>src/ext/jiff-client-fixedpoint.js</code> for instructions on how to create additional extensions.</p>
+<p>Both client and server libraries support extensions. Some extensions require customizing both the server and client libraries to behave properly (such as the bignumbers extension). Other extensions may require only server- or client-side modifications (e.g., the fixed point arithmetic module is only client-side). A server that wants to participate in the computation would require only the client-side extension to use the additional functionality (unless, of course, that extension depends on additional server-side modifications, as well, as in bignumbers).</p>
+<p>For examples on how to use an extension, see out the following files:</p>
+<ol>
+<li><code>demos/sum-fixed/server.js</code>: using the server with the Node bignumber.js module.</li>
+<li><code>demos/sum-fixed/client.html</code>: using fixed point arithmetic extension in the browser.</li>
+<li><code>tests/mocha-bignumber</code>: test suite of usage with the Node bignumber.js module.</li>
+</ol>
+<p>Run the bignumber test suite in the following way:</p>
+<pre class="prettyprint source lang-shell"><code>npm run-script test-bignumber</code></pre><h2>Information and Collaborators</h2><p>More information about this project, including collaborators and publications, can be found at <a href="https://multiparty.org/">multiparty.org</a>.</p></article>
     </section>
 
 
@@ -74,13 +83,13 @@ npm run-script gen-docs # shortcut</code></pre><p>The latest documentation can b
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="jiff.secret_share.html">secret_share</a></li></ul><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.jiff-instance.html">jiff-instance</a></li></ul><h3>Global</h3><ul><li><a href="global.html#gZp">gZp</a></li><li><a href="global.html#passphrase_size">passphrase_size</a></li><li><a href="global.html#RSA_bits">RSA_bits</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.jiff-instance.html">jiff-instance</a></li><li><a href="jiff.jiff-instance.helpers.html">helpers</a></li><li><a href="jiff.secret-share.html">secret-share</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Nov 29 2017 02:33:35 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jan 04 2018 22:12:53 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

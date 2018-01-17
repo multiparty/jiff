@@ -1,0 +1,158 @@
+<html>
+  <head>
+    <title>Stats under MPC</title>
+
+    <style>
+      .error {
+        color: #FF0000;
+      }
+    </style>
+
+    <!-- jiff and required libraries -->
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+
+    <script type="text/javascript">
+      var jiff_instance;
+
+      function connect() {
+        $('#connectButton').prop('disabled', true);
+        var computation_id = $('#computation_id').val();
+        var party_count = parseInt($('#count').val());
+
+        if(isNaN(party_count)) {
+          $("#output").append("<p class='error'>Party count must be a valid number!</p>");
+          $('#connectButton').prop('disabled', false);
+        }
+
+        else {
+          var options = { party_count: party_count};
+          options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
+          options.onConnect = function() { $("#output").append("<p>All parties Connected!</p>"); $("#goButton").attr("disabled", false); };
+
+          var hostname = window.location.hostname.trim();
+          var port = window.location.port;
+          if(port == null || port == '')
+            port = "80";
+          if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
+            hostname = "http://" + hostname;
+          if(hostname.endsWith("/"))
+            hostname = hostname.substring(0, hostname.length-1);
+          if(hostname.indexOf(":") > -1)
+            hostanme = hostname.substring(0, hostname.indexOf(":"));
+
+          hostname = hostname + ":" + port;
+          jiff_instance = jiff.make_jiff(hostname, computation_id, options);
+        }
+      }
+
+      function go() {
+        var inputs = [];
+        var radios = $("input[type=radio]");
+        var oneChecked = false;
+        for(var i = 0; i < radios.length; i++) {
+
+          if(radios[i].checked) {
+            if (i < 4) {
+              inputs[0]=i;
+            }
+            else {
+              inputs[1]=i-4;
+            }
+          }
+          oneChecked = oneChecked || radios[i].checked;
+        }
+
+        if(!oneChecked) {
+          $("#output").append("<p class='error'>Please make a selection!</p>");
+        } else {
+          MPC(inputs);
+        }
+      }
+
+      function MPC(inputs) {
+        $("#goButton").attr("disabled", true);
+        $("#output").append("<p>Starting...</p>");
+        var shares = [];
+        for(var i = 0; i < inputs.length; i++)
+          shares.push(jiff_instance.share(inputs[i]));
+
+        x = shares[0]; // Holds all parties' shares of answers for question 1
+        y = shares[1]; // Holds all parties' shares of answers for question 2
+
+        // Mean calculation
+        var xsum = x[1];
+        for (var i = 2; i <= jiff_instance.party_count; i++)
+        {
+          xsum = xsum.sadd(x[i]);
+        }
+        var xmean = xsum.div(jiff_instance.party_count);
+
+        // Mean calculation
+        var ysum = y[1];
+        for (var i = 2; i <= jiff_instance.party_count; i++)
+        {
+          ysum = ysum.sadd(y[i]);
+        }
+        var ymean = ysum.div(jiff_instance.party_count);
+
+        // Dot product
+        var dot = x[1].mult(y[1])
+        for (var i = 2; i <= jiff_instance.party_count; i++)
+        {
+          dot = dot.add(x[i].mult(y[i]));
+        }
+
+
+        shares[0] = dot;
+        shares[1] = xmean;
+        shares.push(ymean);
+
+        jiff_instance.open_all(shares, [1]).then(handleResult, handleError);
+      }
+
+      function handleResult(results) {
+        for(var i = 0; i < 1; i++) {
+          if(results[i] == null) continue;
+          $("#output").append("<p> Dot product is: " + results[0] + "</p>");
+          $("#output").append("<p> Average Value for Question 1 is: " + results[1] + "</p>");
+          $("#output").append("<p> Average Value for Question 2 is: " + results[2] + "</p>");
+        }
+
+        $("#goButton").attr("disabled", false);
+      }
+
+      function handleError() {
+        console.log("Error in open_all");
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>Connect JIFF</h1>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-corr"></input> <br><br>
+    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
+    <br> <br>
+
+    <hr>
+
+    <h1>Age</h1>
+    <label><input type="radio" name="age"/> 0: Less than 20yrs old</label> &nbsp; <span id="res0"></span> <br>
+    <label><input type="radio" name="age"/> 1: 20-39yrs old</label> &nbsp; <span id="res1"></span> <br>
+    <label><input type="radio" name="age"/> 2: 40-59yrs old</label> &nbsp; <span id="res2"></span> <br>
+    <label><input type="radio" name="age"/> 3: More than 60yrs old</label> &nbsp; <span id="res3"></span> <br>
+    <br>
+
+    <h1>Income</h1>
+    <label><input type="radio" name="income"/> 0: Less than $20,000 / year</label> &nbsp; <span id="res4"></span> <br>
+    <label><input type="radio" name="income"/> 1: $20,000 - $49,000 / year</label> &nbsp; <span id="res5"></span> <br>
+    <label><input type="radio" name="income"/> 2: $50,000 - $79,000 / year</label> &nbsp; <span id="res6"></span> <br>
+    <label><input type="radio" name="income"/> 3: More than $80,000 / year</label> &nbsp; <span id="res7"></span> <br>
+    <br>
+
+    <button onclick="go()" id="goButton" disabled="disabled">Go</button>
+    <div id="output"> </div>
+  </body>
+</html>
