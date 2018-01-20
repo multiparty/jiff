@@ -82,8 +82,9 @@ function bubblesort(arr) {
    
       var a = arr[j];
       var b = arr[j+1];
-      var c = a.lt(b);
-      var d = c.not();
+      console.log(a.not())
+      // var c = a.lt(b);
+      // var d = c.not();
       arr[j] = a.mult(c).add(b.mult(d));
       arr[j+1] = a.mult(d).add(b).mult(c); 
     }
