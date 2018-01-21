@@ -70,10 +70,24 @@ function mpc(arr) {
       arr_shares[i] = jiff_instance.share(arr[i]);
   }
 
-  var sorted = bubblesort(arr_shares);
-  
+  for (var i = 0; i < arr_shares.length; i++) {
+    arr_shares[i] = arr_shares[i][1].add(arr_shares[i][2]);
+    arr_shares[i].open(function(result){
+      console.log(result);
+    });
+  }
 
-  // equal.open(function(result) { displayResult(result === 1); }); // Reveal the result
+  // var sorted = bubblesort(arr_shares);
+
+  // var final = [];
+  // for (var i = 0; i < sorted.length; i++) {
+  //   sorted[i].open(function(result) {    
+  //     console.log('result:',result);
+  //     // final[i]=result;
+  //   });
+  // }
+  // console.log('final result:', final);
+  
 }
 
 function bubblesort(arr) {
@@ -82,9 +96,8 @@ function bubblesort(arr) {
    
       var a = arr[j];
       var b = arr[j+1];
-      console.log(a.not())
-      // var c = a.lt(b);
-      // var d = c.not();
+      var c = a.lt(b);
+      var d = c.not();
       arr[j] = a.mult(c).add(b.mult(d));
       arr[j+1] = a.mult(d).add(b).mult(c); 
     }
