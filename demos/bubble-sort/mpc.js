@@ -72,25 +72,19 @@ function mpc(arr) {
 
   for (var i = 0; i < arr_shares.length; i++) {
     arr_shares[i] = arr_shares[i][1].add(arr_shares[i][2]);
-    arr_shares[i].open(function(result){
-      console.log(result);
-    });
   }
 
-  // var sorted = bubblesort(arr_shares);
+  var sorted = bubblesort(arr_shares);
 
-  // var final = [];
-  // for (var i = 0; i < sorted.length; i++) {
-  //   sorted[i].open(function(result) {    
-  //     console.log('result:',result);
-  //     // final[i]=result;
-  //   });
-  // }
-  // console.log('final result:', final);
+  displayResults(sorted);
+}
+
+function displayResults(sorted) {
   
 }
 
 function bubblesort(arr) {
+
   for (var i = 0; i < arr.length; i++) {
     for (var j = 0; j < (arr.length - i - 1); j++) {
    
@@ -98,10 +92,12 @@ function bubblesort(arr) {
       var b = arr[j+1];
       var c = a.lt(b);
       var d = c.not();
-      arr[j] = a.mult(c).add(b.mult(d));
-      arr[j+1] = a.mult(d).add(b).mult(c); 
+
+      arr[j] = (a.mult(c)).add((b.mult(d)));
+      arr[j+1] = (a.mult(d)).add((b.mult(c)));
     }
   }
+
   return arr; 
 }
 
