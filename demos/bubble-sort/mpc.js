@@ -80,7 +80,17 @@ function mpc(arr) {
 }
 
 function displayResults(sorted) {
-  
+  var allPromises = [];
+  for (var i = 0; i < sorted.length; i++) {
+    var p = sorted[i].open(function(result) {
+      Promise.resolve(result);
+    });
+    allPromises.push(p)
+  }
+
+  Promise.all(allPromises).then(function(values) {
+    document.getElementById("resultText").value = values;
+  });
 }
 
 function bubblesort(arr) {
