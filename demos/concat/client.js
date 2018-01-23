@@ -33,3 +33,18 @@ function MPCconnect(hostname, computation_id, party_count) {
 
   jiff_instance = jiff.make_jiff(hostname, computation_id, options);
 }
+
+function process() {
+  $('#concatBtn').attr('disabled', true);
+
+  var arr = JSON.parse(document.getElementById('inputText').value);
+
+  for (var i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== 'number') {
+      return;
+    }
+  }
+
+  mpc(arr);
+
+}
