@@ -24,29 +24,6 @@ function connect() {
   MPCconnect(hostname, computation_id, party_count);
 }
 
-// Called when the process button is clicked: load image and hash it, then use the hash as an input to the MPC comparison.
-function process() {
-  $("#compareBtn").attr("disabled", true);
-  var file = document.getElementById('fileUpload');
-  file = file.files[0];
-  var reader = new FileReader();
-  reader.onload = function() {
-    var img = new Image();
-    img.onload = function() {
-      var canvas = document.getElementById('canvas');
-      var ctx = canvas.getContext('2d');
-      ctx.drawImage(img,0,0);
-      var base64 = canvas.toDataURL('image/png');
-      base64 = base64.replace(/^data:image\/(png|jpg);base64,/, "")
-      base64 = hashImage(base64);
-
-      // Begin MPC comparison
-      MPC(base64);
-    };
-    img.src = reader.result;
-  };
-  reader.readAsDataURL(file);
-}
 
 var jiff_instance = null;
 
@@ -117,7 +94,7 @@ function process() {
   $("#sortBtn").attr("disabled", true);
   var arr = JSON.parse(document.getElementById('inputText').value);
 
-  for (var i = 0; i < arr; i++) {
+  for (var i = 0; i < arr.length; i++) {
     if (typeof arr[i] !== 'number') {
       return;
     }
