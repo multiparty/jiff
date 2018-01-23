@@ -49,55 +49,42 @@ function process() {
 
 function shareElems(arr, maxLen) {
   var i = 0;
-
   var shares = [];
 
   for (var i = 0; i < arr.length; i++) {
     shares.push(jiff_instance.share(arr[i]));
   }
-
   var lenDiff = maxLen - arr.length;
-  console.log('diff', lenDiff)
 
   for (var i = 0; i < lenDiff; i++) {
     shares.push(jiff_instance.share(0));
   }
 
-
-  for (var i = 0; i < arr.length; i++) {
-    p = shares[i][pId].open(function(result) {
-      Promise.resolve(result);
-    });
-    allPromises.push(p);
-  }
-  
-
   return shares;
 }
-
-function concat(shares, myLen, pLen, myId, pId) {
-  var sharesArr = shares;
+function concat(shares, l1, l2) {
 
   var allPromises = [];
-  var p;
 
-  for (var i = 0; i < myLen; i++) {
-    p = shares[i][myId].open(function(result) {
+  for (var i = 0; i < l1; i++) {
+    var p = shares[i][1].open(function(result) {
       Promise.resolve(result);
     });
     allPromises.push(p);
   }
 
-  for (var i = 0; i < pLen; i++) {
-    p = shares[i][pId].open(function(result) {
+  for (var i = 0; i < l2; i++) {
+    var p = shares[i][2].open(function(result) {
       Promise.resolve(result);
     });
     allPromises.push(p);
   }
-  
+
   Promise.all(allPromises).then(function(values) {
-    console.log('values', values);
+    document.getElementById('outputText').value = values;
   });
+
+  return shares;
 }
 
 function mpc(arr){
@@ -105,25 +92,20 @@ function mpc(arr){
   var lens = jiff_instance.share(len);
 
   var shares, myLen, pLen, myId, pId;
-  console.log('array',arr);
 
   lens[1].open(function(result) {
     var l1 = result;
     lens[2].open(function(result) {
       var l2 = result;
-      var e = (l1 === arr.length) ? 1 : 0;
-      var f = (!e) ? 1 : 0;
-      myLen = (l1 * e) + (l2 * f);
-      pLen = (l1 * f) + (l2 * e);
-      myId = e ? 1 : 2;
-      pId = f ? 1 : 2;
-
+    
       if (l1 > l2) {
-        shares = shareElems(arr, l1);
+        maxLen = l1;
       } else {
-        shares = shareElems(arr, l2);
+        maxLen = l2;
       }
-      concat(shares, myLen, pLen, myId, pId);
+
+      shares = shareElems(arr, maxLen);
+      concat(shares, l1, l2);
     });
   });
 }
