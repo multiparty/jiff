@@ -62,6 +62,8 @@ function shareElems(arr, maxLen) {
 
   return shares;
 }
+
+
 function concat(shares, l1, l2) {
 
   var allPromises = [];
@@ -88,10 +90,7 @@ function concat(shares, l1, l2) {
 }
 
 function mpc(arr){
-  var len = arr.length;
-  var lens = jiff_instance.share(len);
-
-  var shares, myLen, pLen, myId, pId;
+  var lens = jiff_instance.share(arr.length);
 
   lens[1].open(function(result) {
     var l1 = result;
@@ -104,7 +103,7 @@ function mpc(arr){
         maxLen = l2;
       }
 
-      shares = shareElems(arr, maxLen);
+      var shares = shareElems(arr, maxLen);
       concat(shares, l1, l2);
     });
   });
