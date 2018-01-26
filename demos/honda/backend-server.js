@@ -17,17 +17,17 @@ function compute(jiff_instance, callback, array_size) {
     jiff_instance.share(array.length, 1, receivers, senders);
 
     for(var i = 0; i < array.length; i++) // Now share every element of the array
-    jiff_instance.share(array[i], receivers.length, receivers, senders);
+      jiff_instance.share(array[i], receivers.length, receivers, senders);
 
     // Front end servers will now do some computation, then send the result here.
-    var promise_array = []; // Store promises corresponding to the results.
-    for(var i = 0; i < array.length; i++) // Set up to receive the results
-        promise_array[i] = jiff_instance.receive_open(receivers, receivers.length);
+    for(var i = 0; i < array.length; i++)
+      array[i] = jiff_instance.share(0, 1, senders, [ receivers[0] ])[receivers[0]];
 
     // When all the results are received, disconnect.
-    Promise.all(promise_array).then(function(results) {
+    jiff_instance.open_all(array, senders).then(function(results) {
         jiff_instance.disconnect();
-        callback(results[0] == array[0] + 2);
+        console.log(results);
+        callback(true);
     });
 }
 
