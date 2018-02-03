@@ -1,0 +1,6 @@
+{
+  "lower": 12,
+  "upper": 12,
+  "aggregate": true,
+  "threshold": 5
+}
