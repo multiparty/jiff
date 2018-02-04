@@ -13,4 +13,4 @@ http.listen(8080, function() {
   console.log('listening on *:8080');
 });
 
-console.log("Direct your browser to *:8080/demos/concat/index.html");
+console.log("Direct your browser to *:8080/demos/odd-even-merge/index.html");

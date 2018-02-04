@@ -29,13 +29,13 @@ function connect() {
 function MPCconnect(hostname, computation_id, party_count) {
   var options = { 'party_count': party_count };
   options.onError = function(error) { $("#result").append("<p class='error'>"+error+"</p>"); };
-  options.onConnect = function() { $("#concatBtn").attr("disabled", false); $("#result").append("<p>All parties Connected!</p>"); };
+  options.onConnect = function() { $("#sortBtn").attr("disabled", false); $("#result").append("<p>All parties Connected!</p>"); };
 
   jiff_instance = jiff.make_jiff(hostname, computation_id, options);
 }
 
 function process() {
-  $('#concatBtn').attr('disabled', true);
+  $('#sortBtn').attr('disabled', true);
 
   var arr = JSON.parse(document.getElementById('inputText').value);
 

@@ -1,46 +1,76 @@
-function createSubArr(a, index) {
-  var subA = [];
-  while (index < a.length) {
-    subA.push(a[index]);
-    index += 2;
-  }
-  return subA;
-}
 
 function compareExchange(a, i, j) {
+  // console.log('arr', i,j)
   var c = a[i] < a[j];
   c = c ? 1 : 0;
-  d = 1 - c;
+  var d = 1 - c;
 
-  a[i] = (c * a[i]) + (d * a[j]);
-  a[j] = (d * a[i]) + (c * a[j]);
+  var x = a[i];
+  var y = a[j];
 
-  return a;
+  a[i] = (c * x) + (d * y);
+  a[j] = (d * x) + (c * y);
+
+  // console.log('arr', a[i], a[j])
 }
 
 
-function odd_even_merge(a) {
-  if (a.length > 2) {
-    var evens = createSubArr(a, 0);
-    var odds = createSubArr(a, 1);
-    a = odd_even_merge(evens);
-    a = odd_even_merge(odds);
+function getIndices(indices, start) {
+  var skipped = [];
 
-    for (var i = 0; i < a.length; i+=2) {
-      // compare exchange
-      a = compareExchange(a, i, i+1);
+  for (var i = start; i < indices.length; i+=2) {
+    skipped.push(indices[i]);
+  }
+
+  return skipped;
+}
+
+function oddEvenMerge(a, indices) {
+ 
+
+  if (indices.length > 2) {
+    evens = getIndices(indices, 0);
+    oddEvenMerge(a, evens);
+    odds = getIndices(indices,1);
+    oddEvenMerge(a, odds);
+
+    for (var i = 0; i < indices.length; i+=2) {
+      // console.log('i',indices[i], indices[i+1], indices)
+      compareExchange(a, indices[i], indices[i+1]);
     }
-  } else {
-    a = compareExchange(a, 0, 1);
+
+  } else if (indices.length === 2) {
+    compareExchange(a, indices[0], indices[1]);
   }
-  // return a;
 }
 
-function odd_even_sort(a) {
-  if (a.length > 1) {
-    var mid = a.length / 2;
-    odd_even_sort(a.slice(0,mid));
-    odd_even_sort(a.slice(mid, a.length));
-    odd_even_merge(a);
-  }
+
+function oddEvenSort(a, lo, hi) {
+  if ((hi - lo) >= 1) {
+    var mid = Math.floor(lo + ((hi - lo) / 2));
+    // console.log(lo, mid, hi)
+    oddEvenSort(a, lo, mid);
+    oddEvenSort(a, mid+1, hi);
+    var indices = initialIndices(lo,hi);
+    // console.log(lo, hi)
+    console.log(lo, hi,indices)
+    oddEvenMerge(a, indices);
+  } 
 }
+
+function initialIndices(start,end) {
+  var indices = [];
+
+  for (var i = start; i <= end; i++) {
+    indices.push(i);
+  }
+
+  return indices;
+
+}
+
+var a = [1,0,1,0,1,0,1,0];
+// console.log(a.length)
+
+oddEvenSort(a, 0, a.length-1)
+console.log('sorted',a)
