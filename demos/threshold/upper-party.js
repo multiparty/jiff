@@ -2,7 +2,7 @@ var jiff_instance;
 var jiff = require('../../lib/jiff-client');
 let config = require('./config.json');
 
-var options = {party_count: config.lower + config.upper, autoConnect: false};
+var options = {party_count: config.lower + config.upper, autoConnect: false, Zp: "2425967623052370772757633156976982469681"};
 options.onConnect = function() {
 
   // Benchmark id.
@@ -17,16 +17,22 @@ options.onConnect = function() {
 //  console.time("computation time " + id);
 
   // Operate on received shares.
-  var result = shares[1].cgteq(config.threshold);
+  var result = shares[1].cgteq(config.threshold, 5);
+  if(!result.ready) result.promise.then(function() {console.log("progress"); });
+
   if (config.aggregate) {
     // Compute the total number of lower parties satisfying the threshold.
     for (var i = 2; i <= config.lower; i++) {
-      result = result.sadd(shares[i].cgteq(config.threshold));
+      var cmp = shares[i].cgteq(config.threshold, 5);
+      if(!cmp.ready) cmp.promise.then(function() {console.log("progress"); });
+      result = result.sadd(cmp);
     }
   } else {
     // Compute if all of lower parties satisfy the threshold.
     for (var i = 2; i <= config.lower; i++) {
-      result = result.smult(shares[i].cgteq(config.threshold));
+      var cmp = shares[i].cgteq(config.threshold, 5);
+      if(!cmp.ready) cmp.promise.then(function() {console.log("progress"); });
+      result = result.smult(cmp);
     }
   }
 
@@ -35,8 +41,8 @@ options.onConnect = function() {
 
   // Disconnect the party.
   Promise.all([p1]).then(function(x) {
-  //  console.timeEnd("computation time " + id);
-//    return jiff_instance.disconnect();
+    // console.timeEnd("computation time " + id);
+    jiff_instance.disconnect();
   });
 }
 

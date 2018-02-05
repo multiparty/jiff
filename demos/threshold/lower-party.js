@@ -2,7 +2,7 @@ var jiff_instance;
 var jiff = require('../../lib/jiff-client');
 let config = require('./config.json');
 
-var options = {party_count: config.lower + config.upper, autoConnect: false};
+var options = {party_count: config.lower + config.upper, autoConnect: false, Zp: "2425967623052370772757633156976982469681"};
 options.onConnect = function() {
 
   // Generate a random value between 0 and 19 inclusive.
