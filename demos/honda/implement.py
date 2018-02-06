@@ -1,5 +1,16 @@
 import random
-p = 1299721
+p = 15485867
+
+keys = [ 9441934,
+  290863,
+  10865761,
+  8308953,
+  1715709,
+  5242753,
+  11903601,
+  3864140,
+  4577249,
+  9896234 ]
 
 def inverse(x):
   return pow(x, p-2, p)
@@ -21,6 +32,7 @@ def prf(x, k):
   s = [ pow(2, i) * nLag(k[i] + x + k[i]) for i in range(0, len(k)) ]
   return sum(s) % p
 
+""""
 def fprf(x, keys, initial=10, interval=5):
   outputs = []
   def tmp(x):
@@ -34,6 +46,8 @@ def fprf(x, keys, initial=10, interval=5):
     outputs.append(o)
   for xi in x: tmp(xi)
   return outputs
+""""
+
 
 
 x = range(1, 50001)

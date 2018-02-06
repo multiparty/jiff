@@ -24,7 +24,7 @@ var options = {
   party_id: 1,
   onConnect: startServer
 };
-var jiff_instance = jiff_client.make_jiff("http://localhost:3000", 'shortest-path-1', options);
+var jiff_instance = jiff_client.make_jiff("http://localhost:8080", 'shortest-path-1', options);
 
 function startServer() {
   var express = require('express');
@@ -33,14 +33,14 @@ function startServer() {
   // when http://localhost:8080/compute/<input> is called,
   // server recomputes shortest paths according to what is
   // defined in the file: ./<input>.json
-  app.get('/recompute/:input', function(req, res)) {
+  app.get('/recompute/:input', function(req, res) {
     console.log("Recomputation requested!");
 
-    var shortest_path_table = compute_shortest_path(req.params.id);
+    var shortest_path_table = compute_shortest_path(req.params.input);
     mpc_preprocess(shortest_path_table);
 
     res.send("Recomputed! MPC Preprocessing now underway");
-  }
+  });
 
   // Listen to queries from frontends
   jiff_instance.listen("query", mpc_query);
@@ -81,35 +81,43 @@ function mpc_preprocess(table) {
 
     // Front end servers will now do some computation, then send the result here.
     var promises = [];
+    var shares = [];
     for(var i = 0; i < table.length; i++) {
-      encryptedTable[i] = [];
-
       // Receive the ith row indices from frontends and open them.
       // These indices are shuffled and hidden (by utilizing a PRF).
-      promises.push(jiff_instance.receive_open(frontends));
-      promises.push(jiff_instance.receive_open(frontends));
-
+      var share1 = jiff_instance.share(null, 1, backends, [frontends[0]], null, "src"+i)[frontends[0]];
+      shares.push(share1);
+      promises.push(share1.promise);
+      
+      var share2 = jiff_instance.share(null, 1, backends, [frontends[0]], null, "dist"+i)[frontends[0]];
+      shares.push(share2);
+      promises.push(share2.promise);
+      
       // Receive each share of the ith table value from the frontends parties, but do not open them.
       // These shares will be encrypted and stored as is.
-      var encrypted_shares = jiff_instance.share(null, 1, backends, frontends);
-      for(var j = 0; j < table.length; j++)
-        promises.push(encrypted_shares[frontends[j]]);
+      var encrypted_shares = jiff_instance.share(null, 1, backends, frontends, null, "enc"+i);
+      for(var j = 0; j < frontends.length; j++) {
+        shares.push(encrypted_shares[frontends[j]]);
+        promises.push(encrypted_shares[frontends[j]].promise);
+      }
     }
     
     // Expand results into a table for fast access.
-    Promise.all(promises).then(results) {
+    Promise.all(promises).then(function(results) {
+      var offset = 2 + frontends.length;
+
       // encrypted_table will have the form:
       // encrypted_table[prf(source)][prf(destination)] = [encrypted_share_of_value1, encrypted_share_of_value2, ..]
       var encrypted_table = {};
       for(var i = 0; i < table.length; i++)
-        encrypted_table[results[i*3]] = {};
+        encrypted_table[results[i*offset]] = {};
 
       for(var i = 0; i < table.length; i++) {
         var encrypted_shares_of_value = [];
         for(var j = 0; j < frontends.length; j++)
-          encrypted_shares_of_value.push(results[i*3 + 2 + j]);
+          encrypted_shares_of_value.push(shares[i*offset + 2 + j].value);
 
-        encrypted_table[results[i*3]][results[i*3 + 1]] = encrypted_shares_of_value.value;
+        encrypted_table[results[i*offset]][results[i*offset + 1]] = encrypted_shares_of_value;
       }
 
       // Store the encrypted table at the appropriate index
@@ -118,7 +126,12 @@ function mpc_preprocess(table) {
       // Delete old tables
       if(recompute_number - 3 >= 0)
         encrypted_tables[recompute_number - 3] = null;
-    }
+
+      console.log(encrypted_table);
+
+      // Tell frontends to use this table from now on.
+      jiff_instance.emit('update', frontends, JSON.stringify( { "recompute_number": recompute_number } ));
+    });
 }
 
 /* Handles a query in MPC */
@@ -145,23 +158,26 @@ function mpc_query(_, query_info) {
 
   // All is good, can begin computation
   // Receive and open the source and destination (hidden by applying the PRF).
-  var source = jiff_instance.receive_open(frontends, frontends.length, null, "source:"+query_number);
-  var destination = jiff_instance.receive_open(frontends, frontends.length, null, "destination:"+query_number);
+  var source = jiff_instance.share(null, 1, backends, [ frontends[0] ], null, "source:"+query_number)[frontends[0]];
+  var destination = jiff_instance.share(null, 1, backends, [ frontends[0] ], null, "destination:"+query_number)[frontends[0]];
 
   // Get the corresponding value
-  var encrypted_shares_of_value = encrypted_table[source][destination];
+  Promise.all([ source.promise, destination.promise ]).then(function() {
+    if(encrypted_table[source.value] == null || encrypted_table[source.value][destination.value] == null) {
+      console.log("QUERY ERROR 2: compute: " + recompute_number + ". #: " + query_number );
+      jiff_instance.emit('query', frontends, JSON.stringify( { "query_number": query_number, "error": "invalid source or destination"  }));
+      return;
+    }
+    
+    // All good
+    var encrypted_shares_of_value = encrypted_table[source.value][destination.value];
 
-  if(encrypted_share_of_value == null) {
-    console.log("QUERY ERROR 2: compute: " + recompute_number + ". #: " + query_number );
-    jiff_instance.emit('query', frontends, JSON.stringify( { "query_number": query_number, "error": "invalid source or destination"  }));
-    return;
-  }
-  
-  // Send each encrypted share to its origin
-  for(var i = 0; i < frontends.length; i++)
-    jiff_instance.emit('query', [frontends[i]], JSON.stringify( { "query_number": query_number, "result": encrypted_shares_of_value[i] }));
+    // Send each encrypted share to its origin
+    for(var i = 0; i < frontends.length; i++)
+      jiff_instance.emit('query', [frontends[i]], JSON.stringify( { "query_number": query_number, "result": encrypted_shares_of_value[i] }));
 
-  console.log("QUERY SUCCESS: compute: " + recompute_number + ". #: " + query_number );
+    console.log("QUERY SUCCESS: compute: " + recompute_number + ". #: " + query_number );
+  });
 }
 
 

@@ -6,11 +6,19 @@ var jiff_instance = require('../../lib/jiff-server').make_jiff(http, { logs: fal
 // Define a computation with id '1' with 4 participants (max).
 jiff_instance.totalparty_map['shortest-path-1'] = 4;
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control");
+  next();
+});
+
 // Serve static files.
-app.use("/demos", express.static("demos"));
-app.use("/lib", express.static("lib"));
-app.use("/lib/ext", express.static("lib/ext"));
-http.listen(3000, function() {
-  console.log('listening on *:3000');
+app.use("/", express.static("."));
+app.use("/lib", express.static("../../lib"));
+app.use("/lib/ext", express.static("../../lib/ext"));
+http.listen(8080, function() {
+  console.log('listening on *:8080');
 });
 
