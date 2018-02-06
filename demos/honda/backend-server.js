@@ -5,6 +5,19 @@
  * 3. Executes the pre-processing protocol with frontend servers (oblivious shuffle + collision free PRF) on the all pairs shortests paths every time they are computed.
  * 4. When a frontend server demands: executes retrival protocol (local access by index).
  */
+
+
+/*
+ * Global variables and counter,
+ * in reality, should be stored in a database.
+ */
+// Keeps track of how many times we recomputed.
+var recompute_count = 0;
+// Maps index i to the resulting encrypted table of the ith preprocessing/recomputation.
+// Old tables must be stored for a while, since we may need to service old queries during
+// or just after preprocessing/recomputation.
+var encrypted_tables = [];
+
 var jiff_client = require('../../lib/jiff-client');
 
 var options = {
@@ -13,7 +26,7 @@ var options = {
 };
 var jiff_instance = jiff_client.make_jiff("http://localhost:3000", 'shortest-path-1', options);
 
-function startServer(jiff) {
+function startServer() {
   var express = require('express');
   var app = express();
 
@@ -24,10 +37,13 @@ function startServer(jiff) {
     console.log("Recomputation requested!");
 
     var shortest_path_table = compute_shortest_path(req.params.id);
-    mpc_preprocess_table(shortest_path_table);
+    mpc_preprocess(shortest_path_table);
 
     res.send("Recomputed! MPC Preprocessing now underway");
   }
+
+  // Listen to queries from frontends
+  jiff_instance.listen("query", mpc_query);
 
   // Start listening on port 9111
   app.listen(9111, function() {
@@ -42,15 +58,17 @@ function compute_shortest_path(input_file) {
 }
 
 /* Preprocess the table in MPC, then start listening and handling secure requests */
-function mpc_preprocess_table(table) {
+function mpc_preprocess(table) {
     console.log("PREPROCESSING START");
 
     // Read configurations
     var config = require('./config.json');
-    
-    // Share the table
     var backends = [ 1 ]; // Backend server is the only sender and always has ID 1.
     var frontends = config.frontends; // Frontend servers are the receivers.
+    var recompute_number = recompute_count++;
+
+    // Announce to frontends the start of the preprocessing.
+    jiff_instance.emit("preprocess", frontends, JSON.stringify( { "recompute_number": recompute_number } ));
 
     // First share the length of the table (i.e. number of rows), each row has 3 cols
     // use threshold 1 so that the sharing is public.
@@ -91,18 +109,61 @@ function mpc_preprocess_table(table) {
         for(var j = 0; j < frontends.length; j++)
           encrypted_shares_of_value.push(results[i*3 + 2 + j]);
 
-        encrypted_table[results[i*3]][results[i*3 + 1]] = encrypted_shares_of_value;
+        encrypted_table[results[i*3]][results[i*3 + 1]] = encrypted_shares_of_value.value;
       }
 
+      // Store the encrypted table at the appropriate index
+      encrypted_tables[recompute_number] = encrypted_table;
 
-      
+      // Delete old tables
+      if(recompute_number - 3 >= 0)
+        encrypted_tables[recompute_number - 3] = null;
     }
-
-    // When all the results are received, disconnect.
-    jiff_instance.open_all(array, backends).then(function(results) {
-        jiff_instance.disconnect();
-        console.log(results);
-        callback(true);
-    });
 }
+
+/* Handles a query in MPC */
+function mpc_query(_, query_info) {
+  // Parse the query info
+  query_info = JSON.parse(query_info);
+  var recompute_number = query_info.recompute_number;
+  var query_number = query_info.query_number;
+
+  console.log("QUERY START: compute: " + recompute_number + ". #: " + query_number );
+
+  // Read configurations
+  var config = require('./config.json');
+  var backends = [ 1 ]; // Backend server is the only sender and always has ID 1.
+  var frontends = config.frontends; // Frontend servers are the receivers.
+
+  // Get the appropriate table
+  var encrypted_table = encrypted_tables[recompute_number];
+  if(encrypted_table == null) {
+    console.log("QUERY ERROR 1: compute: " + recompute_number + ". #: " + query_number );
+    jiff_instance.emit('query', frontends, JSON.stringify( { "query_number": query_number, "error": "recompute number not available"  }));
+    return;
+  }
+
+  // All is good, can begin computation
+  // Receive and open the source and destination (hidden by applying the PRF).
+  var source = jiff_instance.receive_open(frontends, frontends.length, null, "source:"+query_number);
+  var destination = jiff_instance.receive_open(frontends, frontends.length, null, "destination:"+query_number);
+
+  // Get the corresponding value
+  var encrypted_shares_of_value = encrypted_table[source][destination];
+
+  if(encrypted_share_of_value == null) {
+    console.log("QUERY ERROR 2: compute: " + recompute_number + ". #: " + query_number );
+    jiff_instance.emit('query', frontends, JSON.stringify( { "query_number": query_number, "error": "invalid source or destination"  }));
+    return;
+  }
+  
+  // Send each encrypted share to its origin
+  for(var i = 0; i < frontends.length; i++)
+    jiff_instance.emit('query', [frontends[i]], JSON.stringify( { "query_number": query_number, "result": encrypted_shares_of_value[i] }));
+
+  console.log("QUERY SUCCESS: compute: " + recompute_number + ". #: " + query_number );
+}
+
+
+
 
