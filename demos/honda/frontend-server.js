@@ -145,7 +145,6 @@ function startServer() {
       }
       
       Promise.all(promises).then(function(results) {
-        console.log(results);
         for(var i = 0; i < array_size; i++) {
           // party 2 sends the result of prfs
           if(jiff_instance.id == frontends[0]) {

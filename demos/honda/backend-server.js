@@ -128,6 +128,7 @@ function mpc_preprocess(table) {
         encrypted_tables[recompute_number - 3] = null;
 
       console.log(encrypted_table);
+      console.log("PREPROCESSING FINISHED");
 
       // Tell frontends to use this table from now on.
       jiff_instance.emit('update', frontends, JSON.stringify( { "recompute_number": recompute_number } ));
