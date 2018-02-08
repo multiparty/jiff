@@ -1748,25 +1748,7 @@
     // Parse options
     if(options.onError == null) options.onError = console.log;
 
-    if(options.party_id != null &amp;&amp; options.secret_key != null &amp;&amp; options.public_keys != null) {
-      if(options.public_key != null) options.public_keys[options.party_id] = options.public_key;
-
-      /**
-       * The secret key of this party [(check Library Specs)]{@link https://download.libsodium.org/doc/public-key_cryptography/authenticated_encryption.html}. [Do not modify]
-       * @member {Uint8Array} secret_key
-       * @memberof jiff.jiff-instance
-       * @instance
-       */
-      jiff.secret_key = options.secret_key;
-
-      /**
-       * The public key of this party [(check Library Specs)]{@link https://download.libsodium.org/doc/public-key_cryptography/authenticated_encryption.html}. [Do not modify]
-       * @member {Uint8Array} public_key
-       * @memberof jiff.jiff-instance
-       * @instance
-       */
-      jiff.public_key = options.public_keys[jiff.id];
-
+    if(options.public_keys != null) {
       /**
        * A map from party id to public key. Where key is the party id (number), and
        * value is the public key (Uint8Array).
@@ -1778,7 +1760,19 @@
     }
 
     else if(options.secret_key != null &amp;&amp; options.public_key != null) {
+      /**
+       * The secret key of this party [(check Library Specs)]{@link https://download.libsodium.org/doc/public-key_cryptography/authenticated_encryption.html}. [Do not modify]
+       * @member {Uint8Array} secret_key
+       * @memberof jiff.jiff-instance
+       * @instance
+       */
       jiff.secret_key = options.secret_key;
+      /**
+       * The public key of this party [(check Library Specs)]{@link https://download.libsodium.org/doc/public-key_cryptography/authenticated_encryption.html}. [Do not modify]
+       * @member {Uint8Array} public_key
+       * @memberof jiff.jiff-instance
+       * @instance
+       */
       jiff.public_key = options.public_key;
     }
 
@@ -1841,6 +1835,66 @@
       return params[acc_index];
     };
 
+    /**
+     * Stores the parties and callbacks for every .wait_for() registered.
+     * @member {array} wait_callbacks
+     * @memberof jiff.jiff-instance
+     * @instance
+     */
+    jiff.wait_callbacks = [];
+
+    /**
+     * Wait until the public keys of these parties are known.
+     * The public keys may be known before the parties connect (if provided in the options),
+     * or they could be sent by the server after the parties connect.
+     * Computation specified in the callback may assume that these parties are connected,
+     * if they are not, the server will handle storing and relaying the needed messages
+     * to them when they connect.
+     * @memberof jiff.jiff-instance
+     * @instance
+     * @param {array} parties - an array of party ids to wait for.
+     * @param {function(jiff-instance)} callback - the function to execute when these parties are known.
+     */
+    jiff.wait_for = function(parties, callback) {
+      // server is always needed
+      if(parties.indexOf("s1") == -1) parties.push("s1");
+
+      jiff.wait_callbacks.push({ parties: parties, callback: callback });
+      jiff.execute_wait_callbacks(); // See if the callback can be executed immediadtly
+      // TODO: what if server was not connected? does sockets.io keep emits in a back log then send them or are they lost?
+    }
+
+    /**
+     * Executes all callbacks for which the wait condition has been satisified.
+     * Remove all executed callbacks so that they would not be executed in the future.
+     * @memberof jiff.jiff-instance
+     * @instance
+     */
+    jiff.execute_wait_callbacks = function() {
+      if(jiff.secret_key == null || jiff.public_key == null) return;
+
+      var new_waits = [];
+      for(var i = 0; i &lt; jiff.wait_callbacks.length; i++) {
+        var wait = jiff.wait_callbacks[i];
+        var parties = wait.parties;
+        var callback = wait.callback;
+
+        // Check if the parties to wait for are now known
+        var parties_satisified = true;
+        for(var j = 0; j &lt; parties.length; j++) {
+          var party_id = parties[j];
+          if(jiff.keymap == null || jiff.keymap[party_id] == null) {
+            parties_satisified = false;
+            break;
+          }
+        }
+
+        if(parties_satisified) callback(jiff);
+        else new_waits.push(wait);
+      };
+
+      jiff.wait_callbacks = new_waits;
+    }
 
     /**
      * Total server count in the computation, servers will take ids between "s1" to "s&lt;server_count>" (inclusive).
@@ -2231,30 +2285,40 @@
         if(jiff.party_count == null)
           jiff.party_count = msg.party_count;
 
-        if(jiff.public_key == null) {
-          // public and secret key for server
+        if(jiff.secret_key == null || jiff.public_key == null) {
+          // this party's public and secret key
           var genkey = sodium.crypto_box_keypair();
           jiff.secret_key = genkey.privateKey;
           jiff.public_key = genkey.publicKey;
         }
 
         jiff.socket.emit("public_key", '['+jiff.public_key.toString()+']');
+        jiff.execute_wait_callbacks();
       });
     });
 
     jiff.socket.on('public_key', function(msg) {
       sodium_promise.then(function() {
-        if(jiff.keymap == null)
-          jiff.keymap = JSON.parse(msg);
+        jiff.keymap = JSON.parse(msg);
 
         for(var i in jiff.keymap)
           if(jiff.keymap.hasOwnProperty(i))
             jiff.keymap[i] = new Uint8Array(JSON.parse(jiff.keymap[i]));
 
-        jiff.__ready = true;
-        jiff.listen_to_messages();
-        if(options.onConnect != null)
-          options.onConnect(jiff);
+        // Resolve any pending waits that have satisfied conditions
+        jiff.execute_wait_callbacks();
+
+        // Check if all keys have been received
+        if(jiff.keymap["s1"] == null) return;
+        for(var i = 1; i &lt;= jiff.party_count; i++)
+          if(jiff.keymap[i] == null) return;
+
+        // check if all parties are connected
+        if(jiff.__ready !== true) {
+          jiff.__ready = true;
+          if(options.onConnect != null)
+            options.onConnect(jiff);
+        }
       });
     });
 
@@ -2345,7 +2409,6 @@
     jiff.deferreds = {}; // Stores deferred that are resolved when required messages arrive.
 
     // Setup receiving matching shares
-    jiff.listen_to_messages = function() {
     jiff.socket.on('share', function(msg) {
       // parse message
       var json_msg = JSON.parse(msg);
@@ -2406,7 +2469,6 @@
 
       receive_server_share_number(jiff, number_id, number);
     });
-    };
 
     jiff.socket.on('error', function(msg) {
       console.log("RECEIVED ERROR FROM SERVER");
@@ -2444,7 +2506,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Feb 07 2018 01:06:40 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Feb 08 2018 18:15:27 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>
