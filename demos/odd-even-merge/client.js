@@ -129,9 +129,7 @@ function openShares(arr) {
   }
 
   Promise.all(allPromises).then(function(values) {
-  
-    console.log('sorted values', values);
-
+    document.getElementById("resultText").value = values;  
   });
 
 
