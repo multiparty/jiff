@@ -1,6 +1,5 @@
 
 function compareExchange(a, i, j) {
-  // console.log('arr', i,j)
   var c = a[i] < a[j];
   c = c ? 1 : 0;
   var d = 1 - c;
@@ -10,67 +9,85 @@ function compareExchange(a, i, j) {
 
   a[i] = (c * x) + (d * y);
   a[j] = (d * x) + (c * y);
-
-  // console.log('arr', a[i], a[j])
 }
 
 
-function getIndices(indices, start) {
-  var skipped = [];
+function oddEvenMerge(a, lo, n, r) {
+  var m = r * 2;
+  if (m < n) {
+    oddEvenMerge(a, lo, n, m);
+    oddEvenMerge(a, lo+r, n, m);
 
-  for (var i = start; i < indices.length; i+=2) {
-    skipped.push(indices[i]);
+    for (var i = (lo+r); (i+r)<(lo+n); i+=m)  {
+      compareExchange(a, i, i+r);
+    }
+  } else {
+    compareExchange(a,lo,lo+r);
   }
-
-  return skipped;
 }
 
-function oddEvenMerge(a, indices) {
- 
+function oddEvenSort(a, lo, n) {
+  if (n > 1) {
+    var m = n/2;
+    oddEvenSort(a, lo, m);
+    oddEvenSort(a, lo+m, m);
+    oddEvenMerge(a, lo, n, 1);
+  }
+}
 
-  if (indices.length > 2) {
-    evens = getIndices(indices, 0);
-    oddEvenMerge(a, evens);
-    odds = getIndices(indices,1);
-    oddEvenMerge(a, odds);
 
-    for (var i = 0; i < indices.length; i+=2) {
-      // console.log('i',indices[i], indices[i+1], indices)
-      compareExchange(a, indices[i], indices[i+1]);
+function generateRand(n) {
+  var arr = [];
+  for (var i = 0; i < n; i++) {
+      arr[i] = Math.floor(Math.random() * n);
+  }
+  return arr;
+}
+  
+function arrayEquality(a, b) {
+  for (var i = 0; i < a.length; i++) {
+    if (a[i] != b[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+
+function checkSorted(a) {
+  for (var i = 0; i < a.length-1; i++) {
+    if (a[i] > a[i+1]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function test() {
+
+  for (var i = 0; i < 100; i++) {
+    var a = generateRand(128);
+  
+    oddEvenSort(a, 0, a.length);
+
+    if (!checkSorted(a)) {
+      console.log('TEST FAILED: ' + i);
     }
 
-  } else if (indices.length === 2) {
-    compareExchange(a, indices[0], indices[1]);
   }
+  console.log('ALL TESTS DONE')
+    // var n = 128;
+    // // for (var i = 0; i < n; i=i/2) {
+    //     var a = generateRand(100);
+    //     // console.log(a)
+    //     var sorted = a.sort();
+    //     var oddEvenSorted = oddEvenSort(a, 0, a.length);
+
+    //     if (!arrayEquality(sorted, oddEvenSorted)) {
+    //         console.log('Test failed:');
+    //     }
+    // // }
+    // console.log("All tests passed");
 }
 
-
-function oddEvenSort(a, lo, hi) {
-  if ((hi - lo) >= 1) {
-    var mid = Math.floor(lo + ((hi - lo) / 2));
-    // console.log(lo, mid, hi)
-    oddEvenSort(a, lo, mid);
-    oddEvenSort(a, mid+1, hi);
-    var indices = initialIndices(lo,hi);
-    // console.log(lo, hi)
-    console.log(lo, hi,indices)
-    oddEvenMerge(a, indices);
-  } 
-}
-
-function initialIndices(start,end) {
-  var indices = [];
-
-  for (var i = start; i <= end; i++) {
-    indices.push(i);
-  }
-
-  return indices;
-
-}
-
-var a = [1,0,1,0,1,0,1,0];
-// console.log(a.length)
-
-oddEvenSort(a, 0, a.length-1)
-console.log('sorted',a)
+  test();

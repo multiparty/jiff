@@ -68,7 +68,10 @@ function concat(shares, l1, l2) {
 
   var allPromises = [];
 
+  var concat_shares = [];
+
   for (var i = 0; i < l1; i++) {
+    concat_shares.push(shares[i][1]);
     var p = shares[i][1].open(function(result) {
       Promise.resolve(result);
     });
@@ -80,13 +83,20 @@ function concat(shares, l1, l2) {
       Promise.resolve(result);
     });
     allPromises.push(p);
+    concat_shares.push(shares[i][2]);
   }
 
   Promise.all(allPromises).then(function(values) {
-    document.getElementById('outputText').value = values;
+    console.log('before',values);
+    // oddEvenSort(values,0,values.length);
+  
+    oddEvenSort(values,0,values.length);
+    console.log('after', values);
+
   });
 
-  return shares;
+  // return shares;
+  return concat_shares;
 }
 
 function mpc(arr){
@@ -104,7 +114,45 @@ function mpc(arr){
       }
 
       var shares = shareElems(arr, maxLen);
-      concat(shares, l1, l2);
+      var concatShares = concat(shares, l1, l2);
+      // var sorted = oddEvenSort(a, 0, sorted.length);
     });
   });
+}
+
+/* SORTING */
+
+function oddEvenMerge(a, lo, n, r) {
+  var m = r * 2;
+  if (m < n) {
+    oddEvenMerge(a, lo, n, m);
+    oddEvenMerge(a, lo+r, n, m);
+
+    for (var i = (lo+r); (i+r)<(lo+n); i+=m)  {
+      compareExchange(a, i, i+r);
+    }
+  } else {
+    compareExchange(a,lo,lo+r);
+  }
+}
+
+function oddEvenSort(a, lo, n) {
+  if (n > 1) {
+    var m = n/2;
+    oddEvenSort(a, lo, m);
+    oddEvenSort(a, lo+m, m);
+    oddEvenMerge(a, lo, n, 1);
+  }
+}
+
+function compareExchange(a, i, j) {
+  var c = a[i] < a[j];
+  c = c ? 1 : 0;
+  var d = 1 - c;
+
+  var x = a[i];
+  var y = a[j];
+
+  a[i] = (c * x) + (d * y);
+  a[j] = (d * x) + (c * y);
 }
