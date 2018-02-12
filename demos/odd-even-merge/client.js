@@ -66,34 +66,32 @@ function shareElems(arr, maxLen) {
 
 function concat(shares, l1, l2) {
 
-  var allPromises = [];
+  // var allPromises = [];
 
   var concat_shares = [];
 
   for (var i = 0; i < l1; i++) {
     concat_shares.push(shares[i][1]);
-    var p = shares[i][1].open(function(result) {
-      Promise.resolve(result);
-    });
-    allPromises.push(p);
+    // var p = shares[i][1].open(function(result) {
+    //   Promise.resolve(result);
+    // });
+    // allPromises.push(p);
   }
 
   for (var i = 0; i < l2; i++) {
-    var p = shares[i][2].open(function(result) {
-      Promise.resolve(result);
-    });
-    allPromises.push(p);
+    // var p = shares[i][2].open(function(result) {
+    //   Promise.resolve(result);
+    // });
+    // allPromises.push(p);
     concat_shares.push(shares[i][2]);
   }
 
-  Promise.all(allPromises).then(function(values) {
-    console.log('before',values);
-    // oddEvenSort(values,0,values.length);
+  // Promise.all(allPromises).then(function(values) {
   
-    oddEvenSort(values,0,values.length);
-    console.log('after', values);
+  //   oddEvenSort(values,0,values.length);
+  //   console.log('after', values);
 
-  });
+  // });
 
   // return shares;
   return concat_shares;
@@ -115,9 +113,28 @@ function mpc(arr){
 
       var shares = shareElems(arr, maxLen);
       var concatShares = concat(shares, l1, l2);
-      // var sorted = oddEvenSort(a, 0, sorted.length);
+      oddEvenSort(concatShares,0,concatShares.length);
+      openShares(concatShares);
     });
   });
+}
+
+function openShares(arr) {
+  var allPromises = [];
+  for (var i = 0; i < arr.length; i++) {
+    var p = arr[i].open(function(result) {
+      Promise.resolve(result);
+    });
+    allPromises.push(p);
+  }
+
+  Promise.all(allPromises).then(function(values) {
+  
+    console.log('sorted values', values);
+
+  });
+
+
 }
 
 /* SORTING */
@@ -146,13 +163,15 @@ function oddEvenSort(a, lo, n) {
 }
 
 function compareExchange(a, i, j) {
-  var c = a[i] < a[j];
-  c = c ? 1 : 0;
-  var d = 1 - c;
 
   var x = a[i];
   var y = a[j];
 
-  a[i] = (c * x) + (d * y);
-  a[j] = (d * x) + (c * y);
+  var c = x.lt(y);
+  
+  var d = c.not();
+
+  a[i] = (x.mult(c)).add((y.mult(d)));
+  a[j] = (x.mult(d)).add((y.mult(c)));
+
 }
