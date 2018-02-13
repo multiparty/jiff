@@ -47,59 +47,29 @@ function process() {
   mpc(arr);
 }
 
-function shareElems(arr, maxLen) {
-  var i = 0;
-  var shares = [];
 
+function shareElems(arr) {
+  var shares = [];
   for (var i = 0; i < arr.length; i++) {
     shares.push(jiff_instance.share(arr[i]));
   }
-  var lenDiff = maxLen - arr.length;
-
-  for (var i = 0; i < lenDiff; i++) {
-    shares.push(jiff_instance.share(0));
-  }
-
   return shares;
 }
 
-
-function concat(shares, l1, l2) {
-
-  var concat_shares = [];
-
-  for (var i = 0; i < l1; i++) {
-    concat_shares.push(shares[i][1]);
+function addShares(shares) {
+  var addedShares = [];
+  for (var i = 0; i < shares.length; i++) {
+    addedShares.push(shares[i][1].add(shares[i][2]));
   }
-
-  for (var i = 0; i < l2; i++) {
-    concat_shares.push(shares[i][2]);
-  }
-
-  return concat_shares;
+  return addedShares;
 }
 
 
 function mpc(arr){
-  var lens = jiff_instance.share(arr.length);
-
-  lens[1].open(function(result) {
-    var l1 = result;
-    lens[2].open(function(result) {
-      var l2 = result;
-    
-      if (l1 > l2) {
-        maxLen = l1;
-      } else {
-        maxLen = l2;
-      }
-
-      var shares = shareElems(arr, maxLen);
-      var concatShares = concat(shares, l1, l2);
-      oddEvenSort(concatShares, 0, concatShares.length);
-      openShares(concatShares);
-    });
-  });
+  var shares = shareElems(arr);
+  shares = addShares(shares);
+  oddEvenSort(shares, 0, shares.length);
+  openShares(shares);
 }
 
 // opens all shares in array
