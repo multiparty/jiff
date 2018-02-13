@@ -66,36 +66,19 @@ function shareElems(arr, maxLen) {
 
 function concat(shares, l1, l2) {
 
-  // var allPromises = [];
-
   var concat_shares = [];
 
   for (var i = 0; i < l1; i++) {
     concat_shares.push(shares[i][1]);
-    // var p = shares[i][1].open(function(result) {
-    //   Promise.resolve(result);
-    // });
-    // allPromises.push(p);
   }
 
   for (var i = 0; i < l2; i++) {
-    // var p = shares[i][2].open(function(result) {
-    //   Promise.resolve(result);
-    // });
-    // allPromises.push(p);
     concat_shares.push(shares[i][2]);
   }
 
-  // Promise.all(allPromises).then(function(values) {
-  
-  //   oddEvenSort(values,0,values.length);
-  //   console.log('after', values);
-
-  // });
-
-  // return shares;
   return concat_shares;
 }
+
 
 function mpc(arr){
   var lens = jiff_instance.share(arr.length);
@@ -113,12 +96,13 @@ function mpc(arr){
 
       var shares = shareElems(arr, maxLen);
       var concatShares = concat(shares, l1, l2);
-      oddEvenSort(concatShares,0,concatShares.length);
+      oddEvenSort(concatShares, 0, concatShares.length);
       openShares(concatShares);
     });
   });
 }
 
+// opens all shares in array
 function openShares(arr) {
   var allPromises = [];
   for (var i = 0; i < arr.length; i++) {
@@ -127,18 +111,17 @@ function openShares(arr) {
     });
     allPromises.push(p);
   }
-
   Promise.all(allPromises).then(function(values) {
     document.getElementById("resultText").value = values;  
   });
-
-
 }
+
 
 /* SORTING */
 
+// lo: lower bound of indices, n: number of elements, r: step
 function oddEvenMerge(a, lo, n, r) {
-  var m = r * 2;
+  var m = r * 2; 
   if (m < n) {
     oddEvenMerge(a, lo, n, m);
     oddEvenMerge(a, lo+r, n, m);
@@ -165,8 +148,7 @@ function compareExchange(a, i, j) {
   var x = a[i];
   var y = a[j];
 
-  var c = x.lt(y);
-  
+  var c = x.lt(y);  
   var d = c.not();
 
   a[i] = (x.mult(c)).add((y.mult(d)));
