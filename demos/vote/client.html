@@ -1,37 +1,31 @@
 <html>
   <head>
-    <title>Vote (with checking) under MPC</title>
-    
+    <title>Vote under MPC</title>
     <style>
       .error {
         color: #FF0000;
       }
     </style>
-    
-    <!-- jiff and required libraries -->
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/lib/cryptico.min.js"></script>
+    <script src="/lib/sodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
-    
     <script type="text/javascript">
       var jiff_instance;
-      
+
       function connect() {
         $('#connectButton').prop('disabled', true);
         var computation_id = $('#computation_id').val();
         var party_count = parseInt($('#count').val());
-        
+
         if(isNaN(party_count)) {
           $("#output").append("<p class='error'>Party count must be a valid number!</p>");
           $('#connectButton').prop('disabled', false);
-        }
-        
-        else {
+        } else {
           var options = { party_count: party_count};
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
           options.onConnect = function() { $("#output").append("<p>All parties Connected!</p>"); $("#voteButton").attr("disabled", false); };
-          
+
           var hostname = window.location.hostname.trim();
           var port = window.location.port;
           if(port == null || port == '') 
@@ -47,14 +41,13 @@
           jiff_instance = jiff.make_jiff(hostname, computation_id, options);
         }
       }
-    
+
       function vote() {
-        var vote = $("#cheat").prop("checked") ? 2 : 1;
         var inputs = [];
         var radios = $("input[type=radio]");
         var oneChecked = false;
         for(var i = 0; i < radios.length; i++) {
-          inputs.push( radios[i].checked ? vote : 0 );
+          inputs.push( radios[i].checked ? 1 : 0 );
           oneChecked = oneChecked || radios[i].checked;
         }
 
@@ -64,72 +57,51 @@
           MPC(inputs);
         }
       }
-      
+
       function MPC(inputs) {
         $("#sumButton").attr("disabled", true);
         $("#output").append("<p>Starting...</p>");
         var shares = [];
         for(var i = 0; i < inputs.length; i++)
           shares.push(jiff_instance.share(inputs[i]));
-        
-        // Check that the sum of the number of votes one party sends (across all options)
-        // is less than 2.
-        var sum_per_party = [];
-        for(var i = 1; i <= jiff_instance.party_count; i++) {
-          var sum = shares[0][i];
-          for(var j = 1; j < shares.length; j++) {
-            sum = sum.sadd(shares[j][i]);
-          }
-          sum_per_party[i] = sum.clt(2);
-        }
-        
-        // Check that no party has votes greater or equal to 2.
-        var prod_all_parties = sum_per_party[1]; 
-        for(var i = 2; i <= jiff_instance.party_count; i++) {
-          prod_all_parties = prod_all_parties.smult(sum_per_party[i]);
-        }
-        
-        // Aggregate votes
+
         for(var i = 0; i < shares.length; i++) {
           var sum = shares[i][1];
           for(var j = 2; j <= jiff_instance.party_count; j++)
             sum = sum.sadd(shares[i][j]);
-          shares[i] = sum.smult(prod_all_parties);
+          shares[i] = sum;
         }
-        
+
         jiff_instance.open_all(shares, [1]).then(handleResult, handleError);
       }
-      
+
       function handleResult(results) {
         for(var i = 0; i < results.length; i++) {
           if(results[i] == null) continue;
           $("#res"+i).html(results[i]);
         }
-        
+
         $("#sumButton").attr("disabled", false);
       }
-      
+
       function handleError() {
         console.log("Error in open_all");
       }
     </script>
   </head>
-  
   <body>
     <h1>Connect JIFF</h1>
-    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-vote-check"></input> <br><br>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-vote"></input><br/><br/>
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
-    <br> <br>
-    
-    <hr>
-
+    <br/><br/>
+    <hr/>
     <h1>Vote for the best beer</h1>
-    <label><input type="radio" name="beer"/> Harpoon IPA</label> &nbsp; <span id="res0"></span> <br>
-    <label><input type="radio" name="beer"/> Samuel Adams Octoberfest</label> &nbsp; <span id="res1"></span> <br>
-    <label><input type="radio" name="beer"/> Chimay Grande Reserve Blue</label> &nbsp; <span id="res2"></span> <br>
-    <label><input type="radio" name="beer"/> Guinness Stout</label> &nbsp; <span id="res3"></span> <br>
-    <br>
-    <button onclick="vote()" id="voteButton" disabled="disabled">Vote</button> <label> <input type="checkbox" id="cheat"> Cheat</label>
-    <div id="output"> </div>
+    <label><input type="radio" name="beer"/> Harpoon IPA</label> &nbsp; <span id="res0"></span><br/>
+    <label><input type="radio" name="beer"/> Samuel Adams Octoberfest</label> &nbsp; <span id="res1"></span><br/>
+    <label><input type="radio" name="beer"/> Chimay Grande Reserve Blue</label> &nbsp; <span id="res2"></span><br/>
+    <label><input type="radio" name="beer"/> Guinness Stout</label> &nbsp; <span id="res3"></span><br/>
+    <br/>
+    <button onclick="vote()" id="voteButton" disabled="disabled">Vote</button>
+    <div id="output"></div>
   </body>
 </html>

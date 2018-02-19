@@ -22,5 +22,3 @@ for i in range(tests_count):
 
 result = result + "\n]"
 print result    
-
-
