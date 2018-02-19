@@ -49,11 +49,11 @@
 
         if(isNaN(input1) || isNaN(input2) || isNaN(input3))
           $("#output").append("<p class='error'>Input a valid number1!</p>");
-        else if(100 < input1 || input1 < 0 || input1 != Math.floor(input1))
+        else if(100 < input1 || input1 != Math.floor(input1))
           $("#output").append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
-        else if(100 < input2 || input2 < 0 || input2 != Math.floor(input2))
+        else if(100 < input2 || input2 != Math.floor(input2))
           $("#output").append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
-        else if(100 < input3 || input3 < 0 || input3 != Math.floor(input3))
+        else if(100 < input3 || input3 != Math.floor(input3))
           $("#output").append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
         else if(jiff_instance == null || !jiff_instance.isReady())
           alert("Please wait!");
