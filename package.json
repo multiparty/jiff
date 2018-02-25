@@ -46,9 +46,11 @@
     "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json"
   },
   "dependencies": {
+    "bignumber": "^1.1.0",
     "bignumber.js": "^5.0.0",
     "jquery-deferred": "^0.3.1",
     "libsodium-wrappers": "^0.7.2",
+    "mathjs": "^3.20.2",
     "socket.io": "^2.0.2"
   },
   "devDependencies": {
