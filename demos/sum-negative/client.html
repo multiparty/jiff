@@ -1,0 +1,91 @@
+<html>
+  <head>
+    <title>Sum fixed point rational numbers under MPC</title>
+    <style>
+      .error {
+        color: #FF0000;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/bignumber.js/bignumber.min.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+    <script src="/lib/ext/jiff-client-bignumber.js"></script>
+    <script src="/lib/ext/jiff-client-negativenumber.js"></script>
+    <script type="text/javascript">
+      var jiff_instance;
+
+      function connect() {
+        $('#connectButton').prop('disabled', true);
+        var computation_id = $('#computation_id').val();
+        var party_count = parseInt($('#count').val());
+
+        if(isNaN(party_count)) {
+          $("#output").append("<p class='error'>Party count must be a valid number!</p>");
+          $('#connectButton').prop('disabled', false);
+        } else {
+          var options = {party_count: 2, Zp: new BigNumber(32416190071) };
+          options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
+          options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
+
+          var hostname = window.location.hostname.trim();
+          var port = window.location.port;
+          if(port == null || port == '') 
+            port = "80";
+          if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
+            hostname = "http://" + hostname;
+          if(hostname.endsWith("/"))
+            hostname = hostname.substring(0, hostname.length-1);
+          if(hostname.indexOf(":") > -1)
+            hostanme = hostname.substring(0, hostname.indexOf(":"));
+
+          hostname = hostname + ":" + port;
+          jiff_instance = jiff.make_jiff(hostname, computation_id, options);
+          jiff_instance = jiff_bignumber.make_jiff(jiff_instance, options)
+          jiff_instance = jiff_negativenumber.make_jiff(jiff_instance, { offset: 10 }); // Max bits after decimal allowed
+        }
+      }
+
+      function sum() {
+        var input = parseFloat($("#number").val());
+
+        if(isNaN(input))
+          $("#output").append("<p class='error'>Input a valid number!</p>");
+        else if(100 < input)
+          $("#output").append("<p class='error'>Input a number between 0 and 100!</p>");
+        else if(jiff_instance == null || !jiff_instance.isReady())
+          alert("Please wait!");
+        else
+          MPC(input);
+      }
+
+      function MPC(input) {
+        $("#sumButton").attr("disabled", true);
+        $("#output").append("<p>Starting...</p>");
+        var shares = jiff_instance.share(input);
+
+        var sum = shares[1];
+        for(var i = 2; i <= jiff_instance.party_count; i++)
+          sum = sum.sadd(shares[i]);
+
+        sum.open(handleResult);          
+      }
+
+      function handleResult(result) {
+        $("#output").append("<p>Result is: " + result.toString(10) + "</p>");
+        $("#sumButton").attr("disabled", false);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Connect JIFF</h1>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-sum-negative"></input><br/><br/>
+    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
+    <br/><br/>
+    <hr/>
+    <h1>Sum Numbers under MPC</h1>
+    <label for="number">Input Number (between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="sum();" disabled="disabled" id="sumButton">Sum</button><br/>
+    <div id="output"></div>
+  </body>
+</html>
