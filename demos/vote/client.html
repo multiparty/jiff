@@ -61,18 +61,24 @@
       function MPC(inputs) {
         $("#sumButton").attr("disabled", true);
         $("#output").append("<p>Starting...</p>");
-        var shares = [];
-        for(var i = 0; i < inputs.length; i++)
-          shares.push(jiff_instance.share(inputs[i]));
 
-        for(var i = 0; i < shares.length; i++) {
-          var sum = shares[i][1];
+        //This array holds the shares for each option in the voting
+        var option_shares = [];
+
+        for(var i = 0; i < inputs.length; i++)
+          //save shares across parties for each option 
+          option_shares.push(jiff_instance.share(inputs[i]));
+
+        //Get a patial tally for each option in the vote by adding the shares across parties together.
+        for(var i = 0; i < option_shares.length; i++) {
+          var sum = option_shares[i][1];
           for(var j = 2; j <= jiff_instance.party_count; j++)
-            sum = sum.sadd(shares[i][j]);
-          shares[i] = sum;
+            sum = sum.sadd(option_shares[i][j]);
+          option_shares[i] = sum;
         }
 
-        jiff_instance.open_all(shares, [1]).then(handleResult, handleError);
+        //Now finally redistribute the partial tallys to compute a total tally across each client.
+        jiff_instance.open_all(option_shares, [1]).then(handleResult, handleError);
       }
 
       function handleResult(results) {
