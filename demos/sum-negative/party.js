@@ -1,18 +1,21 @@
 var BigNumber = require('bignumber.js');
 var jiff_instance;
 
-var options = {party_count: 2, Zp: new BigNumber(32416190071), autoConnect: false };
+console.log("i'm here")
+
+var options = {party_count: 2, Zp: new BigNumber(32416190071), offset: 10 };
 options.onConnect = function() {
-  var shares = jiff_instance.share(3.223);
+	console.log("i'm in onConnect")
+  var shares = jiff_instance.share(2.1);
   var sum = shares[1];
   
   for(var i = 2; i <= jiff_instance.party_count; i++)
-    sum = sum.sadd(shares[i]);
+    sum = sum.smult(shares[i]);
     
   sum.open(function(r) { console.log(r.toString(10)); } );
 }
 
-var base_instance = require('../lib/jiff-client').make_jiff("http://localhost:3000", 'test-sum', options);
-var bignum_instance = require('../modules/jiff-client-bignumber').make_jiff(base_instance, options)
-jiff_instance = require('../modules/jiff-client-fixedpoint').make_jiff(base_instance, { digits: 4}); // Max bits allowed after decimal.
-jiff_instance.connect();
+jiff_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", 'sum-negative', options);
+jiff_instance = require('../../lib/ext/jiff-client-bignumber').make_jiff(jiff_instance);
+jiff_instance = require('../../lib/ext/jiff-client-fixedpoint').make_jiff(jiff_instance, options); // Max bits allowed after decimal.
+
