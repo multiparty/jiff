@@ -25,7 +25,7 @@
           $("#output").append("<p class='error'>Party count must be a valid number!</p>");
           $('#connectButton').prop('disabled', false);
         } else {
-          var options = {party_count: 2, Zp: new BigNumber(32416190071) };
+          var options = {party_count: 2, Zp: new BigNumber(32416190071), digits: 2, bits:2 };
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
           options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
 
@@ -67,7 +67,7 @@
 
         var sum = shares[1];
         for(var i = 2; i <= jiff_instance.party_count; i++)
-          sum = sum.sadd(shares[i]);
+          sum = sum.smult(shares[i]);
 
         sum.open(handleResult);          
       }

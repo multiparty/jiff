@@ -10,12 +10,12 @@ options.onConnect = function() {
   var sum = shares[1];
   
   for(var i = 2; i <= jiff_instance.party_count; i++)
-    sum = sum.smult(shares[i]);
+    sum = sum.cadd(2.0);
     
   sum.open(function(r) { console.log(r.toString(10)); } );
 }
 
 jiff_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", 'sum-negative', options);
 jiff_instance = require('../../lib/ext/jiff-client-bignumber').make_jiff(jiff_instance);
-jiff_instance = require('../../lib/ext/jiff-client-fixedpoint').make_jiff(jiff_instance, options); // Max bits allowed after decimal.
+jiff_instance = require('../../lib/ext/jiff-client-negativenumber').make_jiff(jiff_instance, options); // Max bits allowed after decimal.
 
