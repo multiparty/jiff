@@ -6,11 +6,19 @@
   </head>
   <body style="width:100%; height:100%; margin:0; padding:0;">
 	<div id="leaflet" style="width:100vw; height:100vh;"></div>
-	<script>
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous">
+  </script>
 
-// var obj ={}
-var obj = {
-  "features": [
+	<script>
+    $( document ).ready(function() {
+     console.log( "ready!" );
+     document.getElementById('leaflet').style.cursor = 'crosshair';
+    });
+    var obj = {
+      "features": [
     {
       "coordinates": [
         -71.0702179,
@@ -3322,11 +3330,11 @@ var obj = {
       ],
       "type": "Point"
     }
-
-  ],
-  "type": "geoql"
-};
-  </script>
+    
+      ],
+      "type": "geoql"
+    };
+      </script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
 	<script>
       var pointCount = 0
