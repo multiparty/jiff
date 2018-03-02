@@ -3329,12 +3329,24 @@ var obj = {
   </script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
 	<script>
-      var pointCount = 1
+      var pointCount = 0
       function randomColor() {
         var color = '', letters = '0123456'; //789ABCDEF
         for (var i=0; i<6; i++) {color += letters[Math.floor(Math.random() * letters.length)];}
         return '#' + color;
       }
+
+      function drawLineBetweenPoints(start,stop){
+        //start and stop are strng arrays containng start and stop latlns respectively
+        var latlngs = Array();
+        latlngs.push([parseFloat(start.split(",")[0]), parseFloat(start.split(",")[1])])
+        latlngs.push([parseFloat(stop.split(",")[0]), parseFloat(stop.split(",")[1])])
+        var polyline = L.polyline(latlngs, {color: 'midnightblue'}).addTo(leaflet);
+        //Optional, enable for zooming in on the map area with line
+        //leaflet.fitBounds(polyline.getBounds());
+
+      }
+
       var leaflet = L.map('leaflet').setView([42.35439273125373, -71.06362542969399], 13);
       L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom:18, attribution:'', id:'mapbox.light'
@@ -3342,14 +3354,6 @@ var obj = {
       function onEachFeature(feature, layer) {
         // if (feature.properties) {
           var popupContent = " Helllo!<p>" + feature.coordinates[0] + '-' + feature.coordinates[1] + ".</p>";
-          // L.marker([feature.coordinates[0], feature.coordinates[1]]).addTo(leaflet)
-          // console.log("Adding "+ feature.coordinates[0] + " " + feature.coordinates[1])
-          window.localStorage.setItem("Start",[feature.coordinates[0],feature.coordinates[1]])
-          console.log(window.localStorage.getItem("Start"));
-
-          // if (feature.properties.popupContent){
-              // popupContent += feature.properties.popupContent;
-          // }
           layer.bindPopup(popupContent);
         }
       L.geoJson(obj, {
@@ -3358,7 +3362,20 @@ var obj = {
         style: function (feature) { return {"color": randomColor()}; },
         pointToLayer:
           function (feature, latlng) {
-            return L.circleMarker(latlng, {radius:4, weight:0.1, fillColor:"#6666AA", color:"#6666AA", opacity:1, fillOpacity:1});
+            var circle = L.circleMarker(latlng, {radius:4, weight:0.1, fillColor:"#6666AA", color:"#6666AA", opacity:1, fillOpacity:1});
+            circle.on('mouseover', function(){
+              circle.setStyle({ color: 'red' });
+            });
+            circle.on('click', function(){
+              lat = circle._latlng["lat"];
+              lng = circle._latlng["lng"]
+              console.log(lat + " " + lng)              
+              var marker = L.marker([lat, lng]).addTo(leaflet);
+              pointCount == 0 ? window.localStorage.setItem("Start",[lat,lng]):window.localStorage.setItem("Stop",[lat,lng]);
+              pointCount++;
+              // circle.openPopup(latlng);
+            });
+            return circle;
           }
       }).addTo(leaflet);
 	</script>
