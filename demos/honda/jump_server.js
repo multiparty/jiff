@@ -97,7 +97,11 @@ function get_one_step(source, dist, jumps, callback) {
     var result = jiff.sharing_schemes.shamir_reconstruct(jiff_instance, shares);
     console.log(" -> " + result);
     jumps.push(result);
+    console.log("result, dist, jumps");
+    console.log(result, dist, jumps);
     if(result != dist){
+      console.log("passing in")
+      console.log(result, dist)
       get_one_step(result, dist, jumps, callback);
     }else{
       //return ajax response with jumps array and let ui keep associations
