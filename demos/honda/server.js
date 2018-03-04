@@ -18,7 +18,7 @@ app.use(function(req, res, next) {
 app.use("/", express.static("."));
 app.use("/lib", express.static("../../lib"));
 app.use("/lib/ext", express.static("../../lib/ext"));
-http.listen(8080, function() {
-  console.log('listening on *:8080');
+http.listen(3000, function() {
+  console.log('listening on *:3000');
 });
 

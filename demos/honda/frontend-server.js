@@ -21,7 +21,7 @@ var response_map = {};
 // Maps query numbers to recomputation numbers
 var query_to_recomputation_numbers = {};
 // How many keys in a batch
-var KEY_BATCH_SIZE = 5;
+var KEY_BATCH_SIZE = 13;
 
 var jiff_client = require('../../lib/jiff-client');
 
@@ -29,7 +29,7 @@ var options = {
   party_id: parseInt(process.argv[2], 10),
   onConnect: startServer
 };
-var jiff_instance = jiff_client.make_jiff("http://localhost:8080", 'shortest-path-1', options);
+var jiff_instance = jiff_client.make_jiff("http://localhost:3000", 'shortest-path-1', options);
 
 function startServer() {
   // Compute inverse of two mod Zp (will be used later in evaluatePRF)
@@ -134,7 +134,7 @@ function startServer() {
       }
 
       // Shuffle table
-      table = shuffleMPC(table);
+      // table = shuffleMPC(table);
       
       // Evaluate PRF and Local Symmetric Encryption
       var promises = [];
