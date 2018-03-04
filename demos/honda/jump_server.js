@@ -1,4 +1,54 @@
 var jiff = require('../../lib/jiff-client');
+var jiff_instance = jiff.make_jiff("dummy", "dummy", { autoConnect: false});
+jiff_instance.party_count = 4;
+
+var query_count = 1;
+
+var source = parseInt(process.argv[2], 10);
+var dist = parseInt(process.argv[3], 10);
+
+
+function startServer() {
+  var express = require('express');
+  var app = express();
+
+  // when http://localhost:8080/compute/<input> is called,
+  // server recomputes shortest paths according to what is
+  // defined in the file: ./<input>.json
+  app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+  });
+
+  app.get('/calculate/:input', function(req, res) {
+    console.log("Shortest Path Calculation requested!");
+    var params = req.params.input.split(",")
+    // var shortest_path_table = compute_shortest_path(req.params.input);
+    // mpc_preprocess(shortest_path_table);
+    console.log(parseInt(params[0]), parseInt(params[1]))
+    var jumps = new Array();
+    jumps.push(parseInt(params[0]))
+    get_one_step(parseInt(params[0]), parseInt(params[1]), jumps,function(){
+      console.log("jumps is" + jumps);
+      res.json({ result: jumps });
+
+    });
+    // res.send("Recomputed! MPC Preprocessing now underway");
+    // res.res.json({ a: 1 });(jumps)
+  });
+
+  // Listen to queries from frontends
+  // jiff_instance.listen("query", mpc_query);
+
+  // Start listening on port 9111
+  app.listen(9115, function() {
+    console.log('Jump server is up and listening on 9115');
+  });
+}
+
+
+
 
 const getRequest = function(url) {
   // return new pending promise
@@ -22,15 +72,7 @@ const getRequest = function(url) {
   });
 };
 
-var jiff_instance = jiff.make_jiff("dummy", "dummy", { autoConnect: false});
-jiff_instance.party_count = 4;
-
-var query_count = 1;
-
-var source = parseInt(process.argv[2], 10);
-var dist = parseInt(process.argv[3], 10);
-var jumps = new Array();
-function get_one_step(source, dist) {
+function get_one_step(source, dist, jumps, callback) {
   var query_number = query_count++;
   var source_shares = jiff.sharing_schemes.shamir_share(jiff_instance, source, [2, 3, 4], 3, jiff_instance.Zp);
   var dist_shares = jiff.sharing_schemes.shamir_share(jiff_instance, dist, [2, 3, 4], 3, jiff_instance.Zp);
@@ -56,12 +98,12 @@ function get_one_step(source, dist) {
     console.log(" -> " + result);
     jumps.push(result);
     if(result != dist){
-      get_one_step(result, dist);
+      get_one_step(result, dist, jumps, callback);
     }else{
       //return ajax response with jumps array and let ui keep associations
-      
+      callback();
     }
   }).catch(console.log);
 }
-
-get_one_step(source, dist);
+startServer();
+// get_one_step(source, dist);
