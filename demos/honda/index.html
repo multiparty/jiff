@@ -97,7 +97,7 @@
                 // //make ajax call to server
                       $.ajax({
                         type: 'GET',
-                        url: 'http://localhost:9115/calculate/'+ window.localStorage.getItem("StartPointId")+","+window.localStorage.getItem("StopPointId"),
+                        url: 'http://128.31.25.45:3006/calculate/'+ window.localStorage.getItem("StartPointId")+","+window.localStorage.getItem("StopPointId"),
                         datatype: 'json',
                         success: function (data) {
                           //drawLines between points
