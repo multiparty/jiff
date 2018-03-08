@@ -69,7 +69,7 @@
       }).addTo(leaflet);
       function onEachFeature(feature, layer) {
         // if (feature.properties) {
-          var popupContent = " You have selected:!<p>" + feature.coordinates[0] + '-' + feature.coordinates[1] + ".</p>";
+          var popupContent = " You have selected:<p>" + feature.coordinates[0] + ' , ' + feature.coordinates[1] + ".</p>";
           layer.bindPopup(popupContent);
         }
       L.geoJson(obj, {
