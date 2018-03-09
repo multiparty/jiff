@@ -23,7 +23,7 @@ fs.readFile('/users/mikegajda/Documents/keystone_bu_2017_2018/mgajda-khc-keyston
             data_0 = JSON.parse(data);
 
             for(index in data_0){
-                data_0[index] = data_0[index].toFixed(5)
+                data_0[index] = data_0[index].toFixed(4)
             }
 
             final_1_test = []
@@ -69,9 +69,9 @@ function success(result) {
   }
 
 
-var options = {party_count: 2, Zp: new BigNumber(32416190071)};
+var options = {party_count: 2, Zp: new BigNumber(32416190071), offset: 100, bits: 8, digits: 5 };
 options.onConnect = function() {
-    console.log("connected");
+    console.log("in onConnect");
     var results = [];
     var shares_2d = jiff_instance.share_vec(data_0);
 
@@ -120,9 +120,6 @@ options.onConnect = function() {
 
 }
 
-var base_instance = require('../../lib/jiff-client').make_jiff("http://localhost:3000", 'test-sum', options);
+var base_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", 'test-neural-net', options);
 var bignum_instance = require('../../lib/ext/jiff-client-bignumber').make_jiff(base_instance, options)
-jiff_instance = require('../../lib/ext/jiff-client-fixedpoint').make_jiff(base_instance, { digits: 4}); // Max bits allowed after decimal.
-jiff_instance.connect();
-
-jiff_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", 'test-neural-net', options);
+jiff_instance = require('../../lib/ext/jiff-client-negativenumber').make_jiff(base_instance, options); // Max bits allowed after decimal.

@@ -1,4 +1,5 @@
 var jiff_instance;
+var BigNumber = require('bignumber.js');
 
 var data_0 = [
     -3.4309652228725955,
@@ -339,64 +340,30 @@ var data_0 = [
 //   for(var i = 2; i <= jiff_instance.party_count; i++)
 //     sum = sum.sadd(shares[i]);
 //   sum.open(function(v) { console.log(v); jiff_instance.disconnect(); });
-// }
+// var BigNumber = require('bignumber.js');
+var jiff_instance;
 
-// jiff_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", 'test-neural-net', options);
+console.log("i'm here")
 
-// Called when the connect button is clicked: connect to the server and intialize the MPC.
-function connect() {
-  // Disable connect button
-  $('#connectBtn').prop('disabled', true);
+var options = {party_count: 2, Zp: new BigNumber(32416190071), offset: 100, bits: 8, digits: 5 };
+options.onConnect = function() {
+    console.log("in onConnect");
 
-  var options = { 'party_count': 2, Zp: new BigNumber(32416190071)  };
-  options.onError = function(error) { $("#result").append("<p class='error'>"+error+"</p>"); };
-  options.onConnect = function() { $("#computeBtn").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
-
-  jiff_instance = jiff.make_jiff("http://localhost:8080", "test-neural-net", options);
-  jiff_instance = jiff_bignumber.make_jiff(jiff_instance, options)
-  jiff_instance = jiff_fixedpoint.make_jiff(jiff_instance, { digits: 4 }); // Max bits after decimal
-}
-
-function success(result) { 
-    console.log("success, result = " + result);
-    return result;
-  }
-
-  function test_result(result) { 
-    var formattedResult = "[" + result[0] + ", " + result[1] + ", " + result[2] + "]";
-    handleResult(formattedResult);
-  }
-
-  function failure(error){
-    console.error("failure, error = " + error);
-  }
-  function handleResult(result) {
-        $("#output").append("<p>Result is: " + result + "</p>");
-        $("#computeButton").attr("disabled", false);
-      }
-
-function compute() {
-	console.log("in compute")
-	for(index in data_0){
-                data_0[index] = data_0[index].toFixed(4)
-                console.log(data_0[index])
-            }
-	var results = [];
-    var shares_2d = jiff_instance.share_vec(data_0);
-
-    for(var i = 0; i < shares_2d.length; i++) {
-      var shares = shares_2d[i];
-
-      var sum = shares[1];
-
-      for(var j = 2; j <= 2; j++) {
-        sum = sum.sadd(shares[j]);
-      }
-      //console.log(sum.open());
-      results.push(sum.open().then(success, failure));
+    for(index in data_0){
+        data_0[index] = data_0[index].toFixed(4)
     }
 
-
-
-    Promise.all(results).then(test_result, failure);  
+  var shares = jiff_instance.share_vec(data_0);
+  var sum = shares[1];
+  
+  for(var i = 2; i <= jiff_instance.party_count; i++)
+    // sum = sum.smult(shares[i]);
+    sum = sum.sadd(shares[i])
+    
+  sum.open(function(r) { console.log(r.toString(10)); } );
 }
+
+jiff_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", 'test-neural-net', options);
+jiff_instance = require('../../lib/ext/jiff-client-bignumber').make_jiff(jiff_instance);
+jiff_instance = require('../../lib/ext/jiff-client-negativenumber').make_jiff(jiff_instance, options); // Max bits allowed after decimal.
+
