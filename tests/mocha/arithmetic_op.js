@@ -4,6 +4,8 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
+var Zp = 1299827;
+function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
 
 // Operation strings to "lambdas"
 var operations = {
@@ -11,38 +13,47 @@ var operations = {
     return operand1 + operand2;
   },
   "add" : function (operand1, operand2) {
-    return operand1.add(operand2);
+    return operand1.sadd(operand2);
   },
   "-" : function (operand1, operand2) {
     return operand1 - operand2;
   },
   "sub" : function (operand1, operand2) {
-    return operand1.sub(operand2);
+    return operand1.ssub(operand2);
   },
   "*" : function (operand1, operand2) {
     return operand1 * operand2;
   },
   "mult" : function (operand1, operand2) {
-    return operand1.mult(operand2);
-  },
-  "xor" : function (operand1, operand2) {
-    return operand1.xor(operand2);
+    return operand1.smult(operand2);
   },
   "^" : function (operand1, operand2) {
     return operand1 ^ operand2;
-  }
+  },
+  "xor" : function (operand1, operand2) {
+    return operand1.sxor_bit(operand2);
+  },
+  "/" : function (operand1, operand2) {
+    return Math.floor(operand1 / operand2);
+  },
+  "div" : function (operand1, operand2) {
+    return operand1.sdiv(operand2);
+  },
 };
 
 // Maps MPC operation to its open dual
-var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^" };
+var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "div": "/" };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
-    var num1 = Math.floor(Math.random() * jiff.gZp / 10);
-    var num2 = Math.floor(Math.random() * jiff.gZp / 10);
-    var num3 = Math.floor(Math.random() * jiff.gZp / 10);
+    var m = operation == "xor" ? 2 : Zp;
+    m = operation == "div" ? Math.pow(2, 8) - 1 : m;
+    var o = operation == "div" ? 1 : 0; // ensure not to divide by zero
+    var num1 = Math.floor(Math.random() * Zp / 10) % m;
+    var num2 = (Math.floor(Math.random() * Zp / 10) % m) + o;
+    var num3 = (Math.floor(Math.random() * Zp / 10) % m) + o;
     tests[i] = [num1, num2, num3];
   }
 
@@ -51,7 +62,7 @@ function run_test(computation_id, operation, callback) {
   computation_id = computation_id + "";
 
   var counter = 0;
-  options = { party_count: parties };
+  options = { party_count: parties, Zp: Zp };
   options.onConnect = function() { if(++counter == 3) test(callback, operation); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
@@ -65,12 +76,13 @@ function run_test(computation_id, operation, callback) {
 function test(callback, mpc_operator) {
   open_operator = dual[mpc_operator];
 
-  if(jiff_instances[0] == null || !jiff_instances[0].ready) { console.log("Please wait!"); return; }
+  if(jiff_instances[0] == null || !jiff_instances[0].isReady()) { console.log("Please wait!"); return; }
   has_failed = false;
 
   // Run every test and accumelate all the promises
   var promises = [];
-  for(var i = 0; i < tests.length; i++) {
+  var length = mpc_operator == "div" ? 5 : tests.length;
+  for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
       promises.push(promise);
@@ -79,6 +91,8 @@ function test(callback, mpc_operator) {
 
   // When all is done, check whether any failures were encountered
   Promise.all(promises).then(function() {
+    for(var i = 0; i < jiff_instances.length; i++) jiff_instances[i].disconnect();
+    jiff_instances = null;
     callback(!has_failed);
   });
 }
@@ -105,7 +119,7 @@ function test_output(index, result, open_operator) {
 
   // Apply operation in the open to test
   var res = numbers.reduce(operations[open_operator]);
-  res = jiff.mod(res, jiff.gZp);
+  res = mod(res, Zp);
 
   // Incorrect result
   if(res != result) {

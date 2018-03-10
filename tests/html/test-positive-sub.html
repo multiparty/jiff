@@ -4,11 +4,12 @@
     <title>Test the subtraction</title>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
-    <script src="/lib/cryptico.min.js"></script>
+    <script src="/lib/libsodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
   </head>
   <body>
     <script>
+      function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
       var tests = [
           [674, 474, 663], [408, 291, 38], [640, 108, 764],
           [129, 238, 182], [494, 1005, 325], [163, 929, 554],
@@ -46,7 +47,7 @@
 
     // run all tests
     function test() {
-      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
+      if(jiff_instance == null || !jiff_instance.isReady()) { alert("Please wait!"); return; }
       has_failed = false;
 
       var promises = []
@@ -69,7 +70,7 @@
 
       var sub = shares[1];
       for(var i = 2; i <= parties; i++) {
-        sub = sub.sub(shares[i]);
+        sub = sub.ssub(shares[i]);
       }
       
       sub.open( function(result) { test_output(index, result) }, error);
@@ -84,7 +85,7 @@
         sub -= numbers[i];
       }
       
-      sub = jiff.mod(sub, Zp);
+      sub = mod(sub, Zp);
       if(sub != result) { // sum is incorrect
         has_failed = true;
         $("#details").append("<li> sub("+numbers.join(", ")+") = " + sub + " != " +result + "</li>");

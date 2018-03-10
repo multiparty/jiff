@@ -4,11 +4,12 @@
     <title>Test the constant multiplication</title>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
-    <script src="/lib/cryptico.min.js"></script>
+    <script src="/lib/libsodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
   </head>
   <body>
     <script>
+      function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
       var tests = [
         [511, 147, 124, 200], [229, 520, 863, 502], [585, 723, 240, 5],
         [542, 49, 652, 409], [827, 439, 416, 253], [176, 438, 855, 487],
@@ -46,7 +47,7 @@
 
     // run all tests
     function test() {
-      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
+      if(jiff_instance == null || !jiff_instance.isReady()) { alert("Please wait!"); return; }
       has_failed = false;
 
       var promises = []
@@ -72,7 +73,7 @@
       var promises = [];
 
       var tmp = function(i) {
-        shares[i] = shares[i].mult_cst(c);
+        shares[i] = shares[i].cmult(c);
         shares[i].open( function(result) { test_output(index, i, result) }, error);
         if(shares[i].promise != null) promises.push(shares[i].promise);
       }

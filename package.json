@@ -1,38 +1,21 @@
 {
-  "name": "jiff-server",
+  "name": "jiff-mpc",
   "version": "0.0.1",
-  "description": "server side library for performing MPC in JavaScript. handles relaying shares between parties.",
-  "dependencies": {
-    "cryptico": "^1.0.2",
-    "jquery-deferred": "^0.3.1",
-    "socket.io": "^2.0.2"
-  },
-  "main": "lib/jiff-server.js",
-  "directories": {
-    "test": "tests",
-    "examples": "apps",
-    "lib": "lib",
-    "doc": "docs/jsdoc"
-  },
-  "devDependencies": {
-    "chai": "^4.1.2",
-    "express": "^4.15.2",
-    "jsdoc": "^3.5.5",
-    "mocha": "^4.0.1"
-  },
-  "scripts": {
-    "test": "./tests/mocha/test.sh",
-    "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/multiparty/jiff-server.git"
-  },
+  "description": "Server/client library for building MPC applications using JavaScript; handles relaying shares between parties.",
   "keywords": [
-    "Secure-Multiparty-Computation",
-    "MPC",
-    "Web-MPC"
+    "secure-multiparty-computation",
+    "secure-multi-party-computation",
+    "secure-mpc",
+    "mpc",
+    "multiparty",
+    "multi-party",
+    "web-mpc"
   ],
+  "homepage": "https://multiparty.org/jiff",
+  "bugs": {
+    "url": "https://github.com/multiparty/jiff/issues"
+  },
+  "license": "MIT",
   "author": "Kinan Dak Albab <babman@bu.edu> (http://cs-people.bu.edu/babman/)",
   "contributors": [
     {
@@ -46,9 +29,34 @@
       "url": "http://cs-people.bu.edu/lapets/"
     }
   ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/multiparty/jiff-server/issues"
+  "main": "lib/jiff-server.js",
+  "directories": {
+    "lib": "lib",
+    "test": "tests",
+    "example": "demos",
+    "doc": "docs/jsdoc"
   },
-  "homepage": "https://github.com/multiparty/jiff-server#readme"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/multiparty/jiff-server.git"
+  },
+  "scripts": {
+    "test": "./tests/mocha/test.sh",
+    "test-bignumber": "./tests/mocha-bignumber/test.sh",
+    "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json"
+  },
+  "dependencies": {
+    "bignumber.js": "^5.0.0",
+    "jquery-deferred": "^0.3.1",
+    "libsodium-wrappers": "^0.7.2",
+    "socket.io": "^2.0.2"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "express": "^4.15.2",
+    "jsdoc": "^3.5.5",
+    "mocha": "^4.0.1",
+    "minimist": "^1.2.0",
+    "marked": "^0.3.9"
+  }
 }

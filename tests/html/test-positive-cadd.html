@@ -4,11 +4,12 @@
     <title>Test the constant addition</title>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
-    <script src="/lib/cryptico.min.js"></script>
+    <script src="/lib/libsodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
   </head>
   <body>
     <script>
+      function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
       var tests = [
           [612, 335, 512, 542], [700, 642, 883, 374], [684, 54, 480, 402],
           [839, 579, 18, 662], [126, 121, 520, 409], [250, 474, 820, 242],
@@ -46,7 +47,7 @@
 
     // run all tests
     function test() {
-      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
+      if(jiff_instance == null || !jiff_instance.isReady()) { alert("Please wait!"); return; }
       has_failed = false;
 
       var promises = []
@@ -72,7 +73,7 @@
       var promises = [];
 
       var tmp = function(i) {
-        shares[i] = shares[i].add_cst(c);
+        shares[i] = shares[i].cadd(c);
         shares[i].open( function(result) { test_output(index, i, result) }, error);
         if(shares[i].promise != null) promises.push(shares[i].promise);
       }
@@ -89,7 +90,7 @@
       var c = numbers[numbers.length-1];
       var sum = numbers[party - 1];
       
-      sum = jiff.mod((sum + c), Zp);
+      sum = mod((sum + c), Zp);
       if(sum != result) { // sum is incorrect
         has_failed = true;
         $("#details").append("<li> "+party+" sum("+numbers.join(", ")+") = " + sum + " != " +result + "</li>");

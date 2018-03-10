@@ -4,11 +4,12 @@
     <title>Test the multiplication</title>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
-    <script src="/lib/cryptico.min.js"></script>
+    <script src="/lib/libsodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
   </head>
   <body>
     <script>
+      function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
       var tests = [
           [2, 3, 1], [408, 291, 38], [640, 108, 764],
           [129, 238, 182], [494, 1005, 325], [163, 929, 554],
@@ -46,7 +47,7 @@
 
     // run all tests
     function test() {
-      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
+      if(jiff_instance == null || !jiff_instance.isReady()) { alert("Please wait!"); return; }
       has_failed = false;
 
       var promises = []
@@ -67,10 +68,10 @@
       var party_index = jiff_instance.id - 1;
       var shares = jiff_instance.share(numbers[party_index]);
 
-      // var prod = shares[1].mult(shares[2]);
+      // var prod = shares[1].smult(shares[2]);
       var prod = shares[1];
       for(var i = 2; i <= parties; i++) {
-        prod = prod.mult(shares[i]);
+        prod = prod.smult(shares[i]);
       }
 
       prod.open( function(result) { test_output(index, result) }, error);
@@ -86,7 +87,7 @@
         prod *= numbers[i];
       }
 
-      prod = jiff.mod(prod, Zp);
+      prod = mod(prod, Zp);
       if(prod != result) { // sum is incorrect
         has_failed = true;
         $("#details").append("<li> product("+numbers.join(", ")+") = " + prod + " != " +result + "</li>");

@@ -4,6 +4,7 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
+var Zp = 1299827;
 
 // Operation strings to "lambdas"
 var operations = {
@@ -11,37 +12,37 @@ var operations = {
     return operand1 < operand2;
   },
   "less_cst" : function (operand1, operand2) {
-    return operand1.less_cst(operand2);
+    return operand1.clt(operand2);
   },
   "<=" : function (operand1, operand2) {
     return operand1 <= operand2;
   },
   "less_or_equal_cst" : function (operand1, operand2) {
-    return operand1.less_or_equal_cst(operand2);
+    return operand1.clteq(operand2);
   },
   ">" : function (operand1, operand2) {
     return operand1 > operand2;
   },
   "greater_cst" : function (operand1, operand2) {
-    return operand1.greater_cst(operand2);
+    return operand1.cgt(operand2);
   },
   ">=" : function (operand1, operand2) {
     return operand1 >= operand2;
   },
   "greater_or_equal_cst" : function (operand1, operand2) {
-    return operand1.greater_or_equal_cst(operand2);
+    return operand1.cgteq(operand2);
   },
   "==" : function (operand1, operand2) {
       return operand1 == operand2;
   },
   "eq_cst" : function (operand1, operand2) {
-    return operand1.eq_cst(operand2);
+    return operand1.ceq(operand2);
   },
   "!=" : function (operand1, operand2) {
       return operand1 != operand2;
   },
   "neq_cst" : function (operand1, operand2) {
-    return operand1.neq_cst(operand2);
+    return operand1.cneq(operand2);
   }
 };
 
@@ -52,9 +53,9 @@ var dual = { "less_cst": "<", "less_or_equal_cst": "<=", "greater_cst": ">", "gr
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 5; i++) {
-    var num1 = Math.floor(Math.random() * jiff.gZp / 100);
-    var num2 = Math.floor(Math.random() * jiff.gZp / 100);
-    var num3 = Math.floor(Math.random() * jiff.gZp / 100);
+    var num1 = Math.floor(Math.random() * Zp / 100);
+    var num2 = Math.floor(Math.random() * Zp / 100);
+    var num3 = Math.floor(Math.random() * Zp / 100);
     tests[i] = [num1, num2, num3];
   }
 
@@ -63,7 +64,7 @@ function run_test(computation_id, operation, callback) {
   computation_id = computation_id + "";
 
   var counter = 0;
-  options = { party_count: parties };
+  options = { party_count: parties, Zp: Zp };
   options.onConnect = function() { if(++counter == 3) test(callback, operation); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
@@ -77,7 +78,7 @@ function run_test(computation_id, operation, callback) {
 function test(callback, mpc_operator) {
   open_operator = dual[mpc_operator];
 
-  if(jiff_instances[0] == null || !jiff_instances[0].ready) { console.log("Please wait!"); return; }
+  if(jiff_instances[0] == null || !jiff_instances[0].isReady()) { console.log("Please wait!"); return; }
   has_failed = false;
 
   // Run every test and accumelate all the promises
@@ -91,6 +92,8 @@ function test(callback, mpc_operator) {
 
   // When all is done, check whether any failures were encountered
   Promise.all(promises).then(function() {
+    for(var i = 0; i < jiff_instances.length; i++) jiff_instances[i].disconnect();
+    jiff_instances = null;
     callback(!has_failed);
   });
 }
