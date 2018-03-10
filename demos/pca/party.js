@@ -33,6 +33,15 @@ function subtractArrays(arr1, arr2){
     return result;
   }
 
+function success(result) { 
+    console.log("success, result = " + result);
+    return result;
+  }
+
+function failure(error){
+console.error("failure, error = " + error);
+}
+
 function print2DArray(arr){
     result = "";
     arr.map(function(row){
@@ -50,18 +59,27 @@ options.onConnect = function() {
     var arr = [Math.floor(2.0), Math.floor(3.0), Math.floor(4.0)];
 
 
-    arr.map(function(item){
-      var shares = jiff_instance.share(item);
-      var sum = shares[1];
-      for(var i = 2; i <= jiff_instance.party_count; i++){
-        sum = sum.sadd(shares[i]);
-      }
-      console.log(sum);
-      arr_sum.push(sum.open_to_promise().then(success, failure)); 
-    });
-    console.log("1")
+    var results = [];
+    var shares_2d = jiff_instance.share_vec(arr);
 
-    Promise.all(arr_sum).then(function(results){
+    for(var i = 0; i < shares_2d.length; i++) {
+
+      var shares = shares_2d[i];
+
+      var sum = shares[1];
+
+      for(var j = 2; j <= jiff_instance.party_count; j++) {
+        sum = sum.sadd(shares[j]);
+
+      }
+      
+      //console.log(sum.open());
+      results.push(sum.open().then(success, failure));
+    }
+
+    console.log("shared")
+
+    Promise.all(results).then(function(results){
           var mean = results.map(function(item){
             return item/jiff_instance.party_count;
           });
@@ -96,9 +114,9 @@ options.onConnect = function() {
                 var shares = jiff_instance.share(item);
                 var sum = shares[1];
                 for(var i = 2; i <= jiff_instance.party_count; i++){
-                  sum = sum.add(shares[i]);
+                  sum = sum.sadd(shares[i]);
                 }
-                row_sum.push(sum.open_to_promise().then(success, failure)); 
+                row_sum.push(sum.open().then(success, failure)); 
               });
 
               Promise.all(row_sum).then(function(results){
@@ -115,6 +133,15 @@ options.onConnect = function() {
           });
           
           Promise.all(scatter_sum).then(function(results){
+          	console.log("i'm here")
+                
+                console.log(results)
+                for(var i = 0; i < results.length; i++){
+                	for (var j = 0; j < results[i].length; j++){
+                		results[i][j] = results[i][j].toNumber();
+                	}
+                }
+
                 console.log("scatter_sum computed = ");
                 console.log(results);
 
@@ -122,7 +149,13 @@ options.onConnect = function() {
 
 
                 console.log("scatter_sum eig = ");
-                var eig = numeric.eig(results);
+         		try {
+         			var eig = numeric.eig(results);
+         		}
+         		catch (err){
+         			console.log(err)
+         		}
+                
                 var eig_copy = Object.assign({}, eig);
                 console.log(eig);
                 console.log("find the two largest eigenvalues");
@@ -142,7 +175,7 @@ options.onConnect = function() {
 
               });
 
-        });
+        }, failure);
 
 
 }
