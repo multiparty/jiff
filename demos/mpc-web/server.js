@@ -3,9 +3,6 @@ var app = express();
 var http = require('http').Server(app);
 var jiff_instance = require('../../lib/jiff-server').make_jiff(http, {logs: false});
 
-// Define a computation with id '1' and a maximum of 100 participants.
-jiff_instance.totalparty_map['1'] = 100;
-
 var computation_instance = jiff_instance.compute('1');
 computation_instance.wait_for(["1"], function() {
   // Perform server-side computation.

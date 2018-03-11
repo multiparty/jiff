@@ -7,7 +7,7 @@ var rl = readline.createInterface({
   terminal: false
 });
 
-var options = { party_id: 1 };
+var options = { party_id: 1, party_count: 100000 };
 var keys = load_keys();
 options.public_key = keys.public_key;
 options.secret_key = keys.secret_key;
