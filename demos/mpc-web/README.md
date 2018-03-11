@@ -11,7 +11,7 @@ In addition, when the analyst chooses, the aggregation is executed in MPC betwee
 ## Execution
 1. Run the server:
 ``` node server.js ```
-2. Run the analyst and provide computation id:
+2. Run the analyst to setup the computation:
 ``` node analyst.js```
 3. Run as many input parties as desired:
 ``` node party.js ($INPUT\_VALUE) ```
