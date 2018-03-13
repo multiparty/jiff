@@ -1,6 +1,9 @@
 var BigNumber = require('bignumber.js');
 var numeric = require('numeric/numeric-1.2.6');
+var math = require('mathjs');
 var jiff_instance;
+
+math.import(numeric, {wrap: true, silent: true});
 
 /**
 * 
@@ -50,13 +53,14 @@ function print2DArray(arr){
     return result;
   }
 
-var options = {party_count: 2, Zp: new BigNumber(32416190071), offset: 100, bits: 8, digits: 2 };
+var options = {party_count: 2, Zp: new BigNumber(32416190071), offset: 100000, bits: 8, digits: 2 };
 options.onConnect = function() {
 	console.log("i'm in onConnect")
+
   	var pca_sum = [];
 
   	var arr_sum = [];
-    var arr = [Math.floor(2.0), Math.floor(3.0), Math.floor(4.0)];
+    var arr = [13, 22, 104];
 
 
     var results = [];
@@ -145,6 +149,9 @@ options.onConnect = function() {
                 console.log("scatter_sum computed = ");
                 console.log(results);
 
+                console.log("test");
+                var test_arr1 = [[ 1,2],[4,3]]
+                console.log(numeric.eig(test_arr1).lambda.x);
                 
 
 
@@ -158,6 +165,8 @@ options.onConnect = function() {
                 
                 var eig_copy = Object.assign({}, eig);
                 console.log(eig);
+                console.log("here")
+                console.log(eig_copy.lambda.x.sort());
                 console.log("find the two largest eigenvalues");
                 var sorted_eigen_values = eig_copy.lambda.x.sort().reverse().slice(0,2);
                 console.log("two largest eigen values = " + sorted_eigen_values);

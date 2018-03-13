@@ -50,13 +50,13 @@ function print2DArray(arr){
     return result;
   }
 
-var options = {party_count: 2, Zp: new BigNumber(32416190071), offset: 100, bits: 8, digits: 2 };
+var options = {party_count: 2, Zp: new BigNumber(32416190071), offset: 100000, bits: 8, digits: 2 };
 options.onConnect = function() {
 	console.log("i'm in onConnect")
   	var pca_sum = [];
 
   	var arr_sum = [];
-    var arr = [Math.floor(4.0), Math.floor(3.0), Math.floor(2.0)];
+    var arr = [27, 230, 9];
 
 
     var results = [];
