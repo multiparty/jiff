@@ -166,7 +166,7 @@ options.onConnect = function() {
                 var eig_copy = Object.assign({}, eig);
                 console.log(eig);
                 console.log("here")
-                console.log(eig_copy.lambda.x.sort());
+                console.log(eig.E);
                 console.log("find the two largest eigenvalues");
                 var sorted_eigen_values = eig_copy.lambda.x.sort().reverse().slice(0,2);
                 console.log("two largest eigen values = " + sorted_eigen_values);
