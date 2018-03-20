@@ -333,6 +333,8 @@ var data_0 = [
     0.1651954102749323,
     -0.3369483229012623]
 
+    // four minutes
+
 // var options = {party_count: 2};
 // options.onConnect = function() {
 //   var shares = jiff_instance.share(3);
@@ -343,6 +345,19 @@ var data_0 = [
 // var BigNumber = require('bignumber.js');
 var jiff_instance;
 
+function success(result) { 
+    console.log("success, result = " + result);
+    return result;
+  }
+
+  function test_result(result) { 
+    console.log(result);
+  }
+
+  function failure(error){
+    console.error("failure, error = " + error);
+  }
+
 console.log("i'm here")
 
 var options = {party_count: 2, Zp: new BigNumber(32416190071), offset: 100, bits: 8, digits: 5 };
@@ -350,17 +365,66 @@ options.onConnect = function() {
     console.log("in onConnect");
 
     for(index in data_0){
-        data_0[index] = data_0[index].toFixed(4)
+        data_0[index] = data_0[index].toFixed(5)
     }
 
-  var shares = jiff_instance.share_vec(data_0);
-  var sum = shares[1];
-  
-  for(var i = 2; i <= jiff_instance.party_count; i++)
-    // sum = sum.smult(shares[i]);
-    sum = sum.sadd(shares[i])
-    
-  sum.open(function(r) { console.log(r.toString(10)); } );
+    console.log(data_0.length);
+
+    var m = 256;
+    var n = 330;
+
+    oneD_matrix = [];
+    for (i = 0; i < n; i++){
+        oneD_matrix.push(jiff_instance.share(0.0));
+    }
+    console.log(oneD_matrix)
+
+    for (i = 0; i < n; i++){
+        var sum = oneD_matrix[i][1];
+        sum = sum.sadd(oneD_matrix[i][2]);
+        oneD_matrix[i] = sum.open().then(success, failure);
+    }
+
+    Promise.all(oneD_matrix).then(function (results){
+        console.log("i'm here")
+        console.log(results);
+    }, function(err){
+        console.log(err)
+    })
+
+    // var twoD_matrix = [];
+    // for (i = 0; i < m; i++){
+    //     oneD_matrix = [];
+    //     for (j = 0; j < n; j++){
+    //         oneD_matrix.push(1.0);
+    //     }
+    //     twoD_matrix.push(oneD_matrix);
+        
+    // }
+
+    // for (i = 0; i < m; i++){
+    //     for (j = 0; j < n; j++){
+    //         console.log("sharing", i, j, twoD_matrix[i][j])
+    //         twoD_matrix[i][j] = jiff_instance.share(twoD_matrix[i][j]);
+    //     }
+    // }
+
+    // for (i = 0; i < m; i++){
+    //     for (j = 0; j < n; j++){
+    //         var sum = twoD_matrix[i][j][1];
+    //         sum = sum.sadd(twoD_matrix[i][j][2]);
+    //         twoD_matrix[i][j] = sum.open().then(success, failure);
+    //     }
+    // }
+
+    // for (i = 0; i < m; i++){
+    //     Promise.all(twoD_matrix[i]).then(function(results){
+    //         console.log(results);
+    //     })
+    // }
+
+    console.log("done");
+
 }
 
 jiff_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", 'test-neural-net', options);
