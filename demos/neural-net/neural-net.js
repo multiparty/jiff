@@ -6,6 +6,7 @@ var BigNumber = require('bignumber.js');
 var weights_layer_1;
 var biases_layer_1;
 var data_0;
+var scatter_matrix;
 
 
 
@@ -22,34 +23,44 @@ fs.readFile('/users/mikegajda/Documents/keystone_bu_2017_2018/mgajda-khc-keyston
             if (err) throw err; // we'll not consider error handling for now
             data_0 = JSON.parse(data);
 
-            for(index in data_0){
-                data_0[index] = data_0[index].toFixed(4)
-            }
 
-            final_1_test = []
-            for (i = 0; i < 256; i++){
-                final_1_test.push(0.0);
-            }
-            for (j = 0; j < 330; j++){
-                for (i = 0; i < 256; i++){
-                    final_1_test[i] += (data_0[j] * weights_layer_1[j][i])
+            fs.readFile('/users/mikegajda/Documents/keystone_bu_2017_2018/mgajda-khc-keystone/nn_python/scatter_matrix.json', 'utf8', function (err, data) {
+                if (err) throw err; // we'll not consider error handling for now
+                scatter_matrix = JSON.parse(data);
+                console.log(numeric.eig(scatter_matrix));
+
+
+
+
+
+                for(index in data_0){
+                    data_0[index] = data_0[index].toFixed(4)
                 }
-            }
-            for (i = 0; i < 256; i++){
-                final_1_test[i] += biases_layer_1[i]
-            }
 
-            //console.log(final_1_test)
-            // console.log(final_1_test.length)
-            
-           
-            intermediate_1 = math.multiply(data_0, weights_layer_1)
-            final_1 = math.add(intermediate_1, biases_layer_1)
+                final_1_test = []
+                for (i = 0; i < 256; i++){
+                    final_1_test.push(0.0);
+                }
+                for (j = 0; j < 330; j++){
+                    for (i = 0; i < 256; i++){
+                        final_1_test[i] += (data_0[j] * weights_layer_1[j][i])
+                    }
+                }
+                for (i = 0; i < 256; i++){
+                    final_1_test[i] += biases_layer_1[i]
+                }
 
-            // console.log(final_1)
+                //console.log(final_1_test)
+                // console.log(final_1_test.length)
+                
+               
+                intermediate_1 = math.multiply(data_0, weights_layer_1)
+                final_1 = math.add(intermediate_1, biases_layer_1)
 
-            console.log("all loaded")
+                // console.log(final_1)
 
+                console.log("all loaded")
+            });
         });
     }); 
 });
