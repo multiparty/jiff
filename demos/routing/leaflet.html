@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css" />
+  </head>
+  <body style="width:100%; height:100%; margin:0; padding:0;">
+	<div id="leaflet" style="width:100vw; height:100vh;"></div>
+	<script>
+var obj = {
+  "features": [
+    {
+      "coordinates": [
+        -71.083538,
+        42.3524534
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.0796783,
+        42.3453521
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.0793849,
+        42.345775
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.0792614,
+        42.3456839
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.0797171,
+        42.3470515
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.0770103,
+        42.3461443
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.0764718,
+        42.3457832
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.0798244,
+        42.3472312
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.0757141,
+        42.3468187
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.076187,
+        42.3478637
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.076419,
+        42.3483098
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.0773117,
+        42.3491498
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.0769223,
+        42.3492752
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.0766031,
+        42.3486323
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.0766871,
+        42.3487979
+      ],
+      "type": "Point"
+    },
+    {
+      "coordinates": [
+        -71.0767344,
+        42.3488912
+      ],
+      "type": "Point"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -71.0796783,
+            42.3453521
+          ],
+          [
+            -71.0792614,
+            42.3456839
+          ],
+          [
+            -71.0792614,
+            42.3456839
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "highway": "residential",
+        "osm_id": 8647469.0,
+        "z_order": 33.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -71.0793849,
+            42.345775
+          ],
+          [
+            -71.0792614,
+            42.3456839
+          ],
+          [
+            -71.0792614,
+            42.3456839
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "highway": "residential",
+        "osm_id": 8647628.0,
+        "z_order": 33.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -71.0770103,
+            42.3461443
+          ],
+          [
+            -71.0764718,
+            42.3457832
+          ],
+          [
+            -71.0764718,
+            42.3457832
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "highway": "residential",
+        "name": "Yarmouth Street",
+        "oneway": "yes",
+        "osm_id": 8643951.0,
+        "width": "14.0",
+        "z_order": 33.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -71.0770103,
+            42.3461443
+          ],
+          [
+            -71.0767589,
+            42.346348
+          ],
+          [
+            -71.0766709,
+            42.346416
+          ],
+          [
+            -71.0765939,
+            42.346449
+          ],
+          [
+            -71.0764679,
+            42.346469
+          ],
+          [
+            -71.0763809,
+            42.346452
+          ],
+          [
+            -71.0762559,
+            42.346363
+          ],
+          [
+            -71.0761039,
+            42.346248
+          ],
+          [
+            -71.0760819,
+            42.346208
+          ],
+          [
+            -71.0760769,
+            42.346138
+          ],
+          [
+            -71.0761099,
+            42.346074
+          ],
+          [
+            -71.0764718,
+            42.3457832
+          ],
+          [
+            -71.0764718,
+            42.3457832
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "highway": "residential",
+        "osm_id": 8646891.0,
+        "z_order": 33.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -71.0797171,
+            42.3470515
+          ],
+          [
+            -71.079778,
+            42.3471458
+          ],
+          [
+            -71.0798244,
+            42.3472312
+          ],
+          [
+            -71.0798244,
+            42.3472312
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "highway": "residential",
+        "name": "Ring Road",
+        "osm_id": 8649604.0,
+        "z_order": 33.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -71.076187,
+            42.3478637
+          ],
+          [
+            -71.0763639,
+            42.3482122
+          ],
+          [
+            -71.076419,
+            42.3483098
+          ],
+          [
+            -71.076419,
+            42.3483098
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "highway": "secondary",
+        "name": "Dartmouth Street",
+        "oneway": "yes",
+        "osm_id": 426477489.0,
+        "width": "18.3",
+        "z_order": 36.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -71.0769223,
+            42.3492752
+          ],
+          [
+            -71.0770445,
+            42.3492225
+          ],
+          [
+            -71.0771375,
+            42.3491923
+          ],
+          [
+            -71.0772222,
+            42.3491706
+          ],
+          [
+            -71.0773117,
+            42.3491498
+          ],
+          [
+            -71.0773117,
+            42.3491498
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "highway": "residential",
+        "name": "Blagden Street",
+        "oneway": "yes",
+        "osm_id": 8645738.0,
+        "surface": "asphalt",
+        "width": "14.6",
+        "z_order": 33.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -71.076419,
+            42.3483098
+          ],
+          [
+            -71.0766031,
+            42.3486323
+          ],
+          [
+            -71.0766031,
+            42.3486323
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "highway": "secondary",
+        "name": "Dartmouth Street",
+        "oneway": "yes",
+        "osm_id": 426477473.0,
+        "surface": "asphalt",
+        "width": "18.3",
+        "z_order": 36.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -71.0766031,
+            42.3486323
+          ],
+          [
+            -71.0766871,
+            42.3487979
+          ],
+          [
+            -71.0766871,
+            42.3487979
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "highway": "secondary",
+        "name": "Dartmouth Street",
+        "oneway": "yes",
+        "osm_id": 426477476.0,
+        "surface": "asphalt",
+        "width": "18.3",
+        "z_order": 36.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -71.0766871,
+            42.3487979
+          ],
+          [
+            -71.0767344,
+            42.3488912
+          ],
+          [
+            -71.0767344,
+            42.3488912
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "highway": "secondary",
+        "name": "Dartmouth Street",
+        "oneway": "yes",
+        "osm_id": 426477480.0,
+        "surface": "asphalt",
+        "width": "18.3",
+        "z_order": 36.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -71.0767344,
+            42.3488912
+          ],
+          [
+            -71.0769223,
+            42.3492752
+          ],
+          [
+            -71.0769223,
+            42.3492752
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "highway": "secondary",
+        "name": "Dartmouth Street",
+        "oneway": "yes",
+        "osm_id": 426477485.0,
+        "surface": "asphalt",
+        "width": "18.3",
+        "z_order": 36.0
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            -71.0757141,
+            42.3468187
+          ],
+          [
+            -71.0757494,
+            42.3469216
+          ],
+          [
+            -71.0757772,
+            42.3470289
+          ],
+          [
+            -71.0758246,
+            42.3471538
+          ],
+          [
+            -71.0758651,
+            42.3472248
+          ],
+          [
+            -71.0759077,
+            42.3473135
+          ],
+          [
+            -71.076187,
+            42.3478637
+          ],
+          [
+            -71.076187,
+            42.3478637
+          ]
+        ],
+        "type": "LineString"
+      },
+      "properties": {
+        "highway": "secondary",
+        "name": "Dartmouth Street",
+        "oneway": "yes",
+        "osm_id": 40016861.0,
+        "width": "18.3",
+        "z_order": 36.0
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "geoql"
+};
+    </script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+	<script>
+      function randomColor() {
+        var color = '', letters = '0123456'; //789ABCDEF
+        for (var i=0; i<6; i++) {color += letters[Math.floor(Math.random() * letters.length)];}
+        return '#' + color;
+      }
+      var leaflet = L.map('leaflet').setView([42.34744709444445, -71.0772502041666], 13);
+      L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom:18, attribution:'', id:'mapbox.light'
+      }).addTo(leaflet);
+      function onEachFeature(feature, layer) {
+        if (feature.properties) {
+          var popupContent = "<p>" + feature.properties.name + '-' + feature.properties.osm_id + ".</p>";
+          if (feature.properties.popupContent)
+              popupContent += feature.properties.popupContent;
+          layer.bindPopup(popupContent);
+        }
+      }
+      L.geoJson(obj, {
+        filter: function (feature, layer) { return true; },
+        onEachFeature: onEachFeature,
+        style: function (feature) { return {"color": randomColor()}; },
+        pointToLayer:
+          function (feature, latlng) {
+            return L.circleMarker(latlng, {radius:4, weight:0.1, fillColor:"#6666AA", color:"#6666AA", opacity:1, fillOpacity:1});
+          }
+      }).addTo(leaflet);
+	</script>
+  </body>
+</html>
