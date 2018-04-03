@@ -1,6 +1,6 @@
 var jiff_instance;
 
-var options = {party_count: 2};
+var options = {party_count: 2, encryption_type: 'symmetric_key'};
 options.onConnect = function() {
   var shares = jiff_instance.share(3);
   var sum = shares[1];

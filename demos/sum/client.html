@@ -22,7 +22,7 @@
           $("#output").append("<p class='error'>Party count must be a valid number!</p>");
           $('#connectButton').prop('disabled', false);
         } else {
-          var options = { party_count: party_count};
+          var options = { party_count: party_count, encryption_type: 'symmetric_key'};
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
           options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
           
