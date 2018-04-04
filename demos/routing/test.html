@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <title>Test Shortest Path!</title>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+    <script type="text/javascript">
+      var jiff_instance = jiff.make_jiff("dummy", "dummy", { autoConnect: false});
+      jiff_instance.party_count = 4;
+      
+      
+      var query_count = 1;
+      function submitHandler() {
+        $("#submitButton").prop("disabled", true);
+        
+        var source = parseInt($('#from').val(), 10);
+        var dist = parseInt($('#to').val(), 10);
+        function get_one_step(source, dist) {
+          var query_number = query_count++;
+          var source_shares = jiff.sharing_schemes.shamir_share(jiff_instance, source, [2, 3, 4], 3, jiff_instance.Zp);
+          var dist_shares = jiff.sharing_schemes.shamir_share(jiff_instance, dist, [2, 3, 4], 3, jiff_instance.Zp);
+
+          var promises = [];
+          for(var i = 2; i <= 4; i++)
+            promises.push($.get("http://localhost:911"+i+"/query/"+query_number+"/"+source_shares[i]+"/"+dist_shares[i]));
+
+          Promise.all(promises).then(function(results) {
+            if(results[0].error != null) {
+              $("#result").text(results[0].error);
+            }
+            
+            var shares = [];
+            for(var i = 0; i < results.length; i++)
+              shares.push({ sender_id: results[i].id, value: results[i].result, Zp: jiff_instance.Zp });
+
+            var result = jiff.sharing_schemes.shamir_reconstruct(jiff_instance, shares);
+            $("#result").append("&nbsp -> &nbsp " + result);
+            
+            if(result != dist)
+              get_one_step(result, dist);
+            else
+              $("#submitButton").prop("disabled", false);
+          });
+        }
+        
+        get_one_step(source, dist);
+      }
+    </script>
+  </head>
+  
+  <body>
+    <h1> Shortest Path Demo </h1>
+    <input type="text" id="from" placeholder="Source" /> &nbsp; &nbsp;
+    <input type="text" id="to" placeholder="Destination" /> &nbsp; &nbsp;
+    <button type="button" onclick="submitHandler()" id="submitButton">Submit</button>
+    
+    <br>
+    <div id="result">
+
+    </div>
+  </body>
+</html>

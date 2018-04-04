@@ -6,120 +6,122 @@
         color: #FF0000;
       }
     </style>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/numeric.js"></script>
     <script src="/bignumber.js/bignumber.min.js"></script>
     <script src="/lib/sodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
     <script src="/lib/ext/jiff-client-bignumber.js"></script>
-    <script src="/lib/ext/jiff-client-fixedpoint.js"></script>
-    <script type="text/javascript">
-      // var jiff_instance;
-
-      // function connect() {
-      //   $('#connectButton').prop('disabled', true);
-      //   var computation_id = $('#computation_id').val();
-      //   var party_count = parseInt($('#count').val());
-
-      //   if(isNaN(party_count)) {
-      //     $("#output").append("<p class='error'>Party count must be a valid number!</p>");
-      //     $('#connectButton').prop('disabled', false);
-      //   } else {
-      //     var options = { party_count: party_count};
-      //     options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
-      //     options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
-          
-      //     var hostname = window.location.hostname.trim();
-      //     var port = window.location.port;
-      //     if(port == null || port == '') 
-      //       port = "80";
-      //     if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
-      //       hostname = "http://" + hostname;
-      //     if(hostname.endsWith("/"))
-      //       hostname = hostname.substring(0, hostname.length-1);
-      //     if(hostname.indexOf(":") > -1)
-      //       hostanme = hostname.substring(0, hostname.indexOf(":"));
-  
-      //     hostname = hostname + ":" + port;
-      //     jiff_instance = jiff.make_jiff(hostname, computation_id, options);
-      //   }
-      // }
-
-      // function sum() {
-      //   var input1 = parseInt($("#number1").val());
-      //   var input2 = parseInt($("#number2").val());
-      //   var input3 = parseInt($("#number3").val());
-
-      //   if(isNaN(input1) || isNaN(input2) || isNaN(input3))
-      //     $("#output").append("<p class='error'>Input a valid number1!</p>");
-      //   else if(100 < input1 || input1 != Math.floor(input1))
-      //     $("#output").append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
-      //   else if(100 < input2 || input2 != Math.floor(input2))
-      //     $("#output").append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
-      //   else if(100 < input3 || input3 != Math.floor(input3))
-      //     $("#output").append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
-      //   else if(jiff_instance == null || !jiff_instance.isReady())
-      //     alert("Please wait!");
-      //   else
-      //     MPC(input1, input2, input3);
-      // }
-
-      // function success(result) { 
-      //   console.log("success, result = " + result);
-      //   return result;
-      // }
-
-      // function test_result(result) { 
-      //   var formattedResult = "[" + result[0] + ", " + result[1] + ", " + result[2] + "]";
-      //   handleResult(formattedResult);
-      // }
-
-      // function failure(error){
-      //   console.error("failure, error = " + error);
-      // }
-
-      // function MPC(input1, input2, input3) {
-      //   $("#sumButton").attr("disabled", true);
-      //   $("#output").append("<p>Starting...</p>");
-
-      //   var party_count = parseInt($('#count').val());
-       
-
-      //   has_failed = false;
-
-      //   var results = [];
-      //   var shares_2d = jiff_instance.share_vec([input1, input2, input3]);
-
-      //   for(var i = 0; i < shares_2d.length; i++) {
-      //     var shares = shares_2d[i];
-
-      //     var sum = shares[1];
-
-      //     for(var j = 2; j <= party_count; j++) {
-      //       sum = sum.sadd(shares[j]);
-      //     }
-      //     //console.log(sum.open());
-      //     results.push(sum.open().then(success, failure));
-      //   }
-
-
-
-      //   Promise.all(results).then(test_result, failure);        
-      // }
-
-      // function handleResult(result) {
-      //   $("#output").append("<p>Result is: " + result + "</p>");
-      //   $("#sumButton").attr("disabled", false);
-      // }
+    <script src="/lib/ext/jiff-client-negativenumber.js"></script>
+    <script src="/demos/neural-net/jimp.min.js"></script>
+    <script src="/demos/neural-net/matrix_w.js"></script>
+    <script>
+      var pca_result = null;
     </script>
-    <script src="party.js"></script>
+    <script type="text/javascript">
+      var jiff_instance;
+
+      function success(result) { 
+        console.log("success, result = " + result);
+        return result;
+      }
+
+      function test_result(result) { 
+        console.log(result);
+      }
+
+      function failure(error){
+        console.error("failure, error = " + error);
+      }
+
+      function connect() {
+        $('#connectButton').prop('disabled', true);
+        var computation_id = "test-neural-net";
+        var party_count = 2;
+
+        if(isNaN(party_count)) {
+          $("#output").append("<p class='error'>Party count must be a valid number!</p>");
+          $('#connectButton').prop('disabled', false);
+        } else {
+          var options = {party_count: 2, Zp: new BigNumber(10003121), offset: 10000, bits: 8, digits: 5};
+          options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
+          options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
+
+          var hostname = window.location.hostname.trim();
+          var port = window.location.port;
+          if(port == null || port == '') 
+            port = "80";
+          if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
+            hostname = "http://" + hostname;
+          if(hostname.endsWith("/"))
+            hostname = hostname.substring(0, hostname.length-1);
+          if(hostname.indexOf(":") > -1)
+            hostname = hostname.substring(0, hostname.indexOf(":"));
+
+          hostname = hostname + ":" + port;
+          jiff_instance = jiff.make_jiff("http://localhost:8080", computation_id, options);
+          jiff_instance = jiff_bignumber.make_jiff(jiff_instance, options)
+          jiff_instance = jiff_negativenumber.make_jiff(jiff_instance, { offset: 10 }); // Max bits after decimal allowed
+        }
+      }
+
+        function compute() {
+          if(jiff_instance == null || !jiff_instance.isReady() || pca_result == null )
+            alert("Please wait!");
+          else
+            MPC(pca_result[0]);
+        }
+
+        function MPC(input) {
+          $("#computeBtn").attr("disabled", true);
+          $("#output").append("<p>Starting...</p>");
+          var shares = [];
+          for (var i = 0; i < input.length; i++){
+              shares.push(jiff_instance.share(input[i].toFixed(5)))
+          } 
+
+          for (i = 0; i < shares.length; i++){
+              var sum = shares[i][1];
+              sum = sum.sadd(shares[i][2]);
+              shares[i] = sum.open().then(success, failure);
+              console.log(i);
+          }  
+
+          Promise.all(shares).then(function (results){
+            console.log("i'm here")
+            console.log(results);
+
+        }, function(err){
+            console.log(err)
+        })     
+        }
+
+
+      function handleResult(result) {
+        $("#output").append("<p>Result is: " + result.toString(10) + "</p>");
+        $("#sumButton").attr("disabled", false);
+      }
+    </script>
   </head>
   <body>
 
     <h1>Connect JIFF</h1>
+
+    <div id="content">
+      <canvas id="image" width="625" height="500"></canvas>
+      <h2>Upload an image of a digit</h2>
+      <br/>
+      <div id="details"></div>
+      <div id="result"></div>
+      
+      <input type="file" class="btn" id="files" name="files[]" />
+
+    </div>
+
     <div id="btns" class="row">
         <button class="btn btn-secondary" id="connectBtn" onclick="connect();">connect</button>
-        <button class="btn btn-secondary" id="computeBtn" disabled="disabled" onclick="compute();">compute</button>
+        <button class="btn btn-secondary" id="computeBtn" onclick="compute();">compute</button>
       </div>
 
       <div class="row">
@@ -128,15 +130,8 @@
       <div class="row" id="output">
         <textarea id="outputText"></textarea>
       </div>
-    <!-- <label for="computation_id">Computation ID</label><input id="computation_id" value="test-neural-net"></input><br/><br/>
-    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
-    <br/><br/>
-    <hr/>
-    <h1>Sum Vectors under MPC</h1>
-    <label for="number1">Number1</label> <input id="number1" pattern="[0-9]+"><br/>
-    <label for="number2">Number2</label> <input id="number2" pattern="[0-9]+"><br/>
-    <label for="number3">Number3</label> <input id="number3" pattern="[0-9]+"><br/>
-    <button onclick="sum();" disabled="disabled" id="sumButton">Sum</button><br/>
-    <div id="output"></div> -->
+
   </body>
+  
+  <script src="/demos/neural-net/image_processing.js"></script>
 </html>
