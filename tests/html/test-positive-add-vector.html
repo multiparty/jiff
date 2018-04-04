@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test the addition</title>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
+    <script src="/lib/cryptico.min.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+  </head>
+  <body>
+    <script>
+      var tests = [
+          [674, 474]
+        ];
+    </script>
+
+
+    <div id="result"></div>
+    <ul id="details"></ul>
+
+    <script>
+    // setup
+    var jiff_instance = null;
+    var parties = 2;
+    var has_failed = false;
+
+    $(function() {
+      jiff_instance = jiff.make_jiff("http://localhost:3000", 'test-add', {party_count: parties});
+    });
+
+      function success(result) { 
+        console.log("success, result = " + result);
+        return result;
+      }
+
+      function test_result(result) { 
+        console.log("success, result = " + result);
+        has_failed = false;
+        for (i = 0; i < result.length; i++){
+          if (result[i] !== (tests[0][i] * 2)) {
+            has_failed = true;
+          }
+
+        }
+
+        if (has_failed){
+          $("#result").append("<font color='red'>Failed</font>");
+        } else {
+          $("#result").append("<font color='green'>Success</font>");
+        }
+        return result;
+      }
+
+      function failure(error){
+        console.error("failure, error = " + error);
+      }
+
+    // run all tests
+    function test() {
+      if(jiff_instance == null || !jiff_instance.ready) { alert("Please wait!"); return; }
+      has_failed = false;
+
+      var results = [];
+      var shares_2d = jiff_instance.share_vec(tests[0]);
+
+      for(var i = 0; i < shares_2d.length; i++) {
+        var shares = shares_2d[i];
+
+        var sum = shares[1];
+
+        for(var j = 2; j <= parties; j++) {
+          sum = sum.sadd(shares[j]);
+        }
+        results.push(sum.open_to_promise().then(success, failure));
+      }
+
+
+
+      Promise.all(results).then(test_result, failure);
+
+    }
+
+    // // run test case at index
+    // function single_test(index) {
+    //   var numbers = tests[index];
+    //   var party_index = jiff_instance.id - 1;
+    //   var shares = jiff_instance.share(numbers[party_index]);
+
+    //   var sum = shares[1];
+    //   for(var i = 2; i <= parties; i++) {
+    //     sum = sum.sadd(shares[i]);
+    //   }
+
+    //   sum.open_to([1], function(result) { test_output(index, result) }, error);
+    //   return sum;
+    // }
+
+    // // determine if the output is correct
+    // function test_output(index, result) {
+    //   var numbers = tests[index];
+    //   var sum = 0;
+    //   for(var i = 0; i < numbers.length; i++) {
+    //     sum += numbers[i];
+    //   }
+      
+    //   sum = jiff.mod(sum, Zp);
+    //   if(sum != result) { // sum is incorrect
+    //     has_failed = true;
+    //     $("#details").append("<li> sum("+numbers.join(", ")+") = " + sum + " != " +result + "</li>");
+    //   } else {
+    //     console.log(numbers.join(" + ") + " = " + result);
+    //   }
+    // }
+
+    // register communication error
+    function error() {
+      has_failed = true;
+      $("#details").append("<li> communication error </li>");
+    }
+    </script>
+
+    <button onClick="test();">Start</button>
+  </body>
+</html>
