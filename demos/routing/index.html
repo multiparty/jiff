@@ -33,9 +33,6 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
 	<script>
       var pointCount = 0
-      var path = Array();
-      var isPathRendered = false;
-
       function randomColor() {
         var color = '', letters = '0123456'; //789ABCDEF
         for (var i=0; i<6; i++) {color += letters[Math.floor(Math.random() * letters.length)];}
@@ -49,45 +46,21 @@
         latlngs.push(stop);
         // latlngs.push([parseFloat(start.split(",")[0]), parseFloat(start.split(",")[1])])
         // latlngs.push([parseFloat(stop.split(",")[0]), parseFloat(stop.split(",")[1])])
-        var polyline = L.polyline(latlngs, {color: 'midnightblue'});
-        path.push(polyline);
-        polyline.addTo(leaflet);
+        var polyline = L.polyline(latlngs, {color: 'midnightblue'}).addTo(leaflet);
         //Optional, enable for zooming in on the map area with line
         //leaflet.fitBounds(polyline.getBounds());
 
       }
 
       function drawPath(points){
-        pointCount = 0;
         for(jump in points){
-          console.log("rendering path...");
           jump = parseInt(jump);
           if(jump < points.length-1){
             source = obj["features"][points[jump]]["coordinates"].slice().reverse();
             dest = obj["features"][points[jump+1]]["coordinates"].slice().reverse();
             drawLineBetweenPoints(source,dest)
           }
-
-          isPathRendered = true;
-
-          //attach event
-          $( "#leaflet" ).mousedown(function() {
-        
-            if(isPathRendered){
-              //erase everything
-              for(item in path){
-                leaflet.removeLayer(path[item])
-              }
-              //clear path
-              path = Array()
-              //remove this event
-              $( "#leaflet" ).off("mousedown");
-              //Reset variable for tracking
-              // var isPathRendered = false;
-            }
-          });
-
-          // console.log(points[jump]);
+          console.log(points[jump]);
         }
       }
       var leaflet = L.map('leaflet').setView([42.34271,-71.085022], 17);
@@ -96,7 +69,7 @@
       }).addTo(leaflet);
       function onEachFeature(feature, layer) {
         // if (feature.properties) {
-          var popupContent = " You have selected:<p>" + feature.coordinates[0] + ' , ' + feature.coordinates[1] + ".</p>";
+          var popupContent = " Helllo!<p>" + feature.coordinates[0] + '-' + feature.coordinates[1] + ".</p>";
           layer.bindPopup(popupContent);
         }
       L.geoJson(obj, {
@@ -113,33 +86,31 @@
               lat = circle._latlng["lat"];
               lng = circle._latlng["lng"]
               console.log(circle);         
-              var marker = L.marker([lat, lng])
-              path.push(marker);
-              leaflet.addLayer(marker);
-
+              var marker = L.marker([lat, lng]).addTo(leaflet);
               if(pointCount == 0){
                 window.localStorage.setItem("StartLatLng",[lat,lng]);
                 window.localStorage.setItem("StartPointId", circle.feature.geometry.properties["point_id"]);
-              }else if (pointCount == 1){
+              }else{
                 window.localStorage.setItem("StopPointId", circle.feature.geometry.properties["point_id"]);
                 window.localStorage.setItem("StopLatLng",[lat,lng]);
 
-                //make ajax call to server
-                $.ajax({
-                  type: 'GET',
-                  url: 'https://hri.appliedmpc.org/calculate/'+ window.localStorage.getItem("StartPointId")+","+window.localStorage.getItem("StopPointId"),
-                  datatype: 'json',
-                  success: function (data) {
-                    //drawLines between points
-                    drawPath(data["result"]);                
-                  },
-                  error: function (request, status, error) {
-                    console.log(error);
-                  }
-                });
-                
+                // //make ajax call to server
+                      $.ajax({
+                        type: 'GET',
+                        url: 'http://128.31.25.45:3006/calculate/'+ window.localStorage.getItem("StartPointId")+","+window.localStorage.getItem("StopPointId"),
+                        datatype: 'json',
+                        success: function (data) {
+                          //drawLines between points
+                          drawPath(data["result"]);                
+                        },
+                        error: function (request, status, error) {
+                          console.log(error);
+                        }
+                      });
               }
+              // pointCount == 0 ? window.localStorage.setItem("Start",[lat,lng]):window.localStorage.setItem("Stop",[lat,lng]);
               pointCount++;
+              // circle.openPopup(latlng);
             });
             return circle;
           }

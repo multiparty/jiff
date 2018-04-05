@@ -24,7 +24,7 @@ var options = {
   party_id: 1,
   onConnect: startServer
 };
-var jiff_instance = jiff_client.make_jiff("http://localhost:8080", 'shortest-path-1', options);
+var jiff_instance = jiff_client.make_jiff("http://localhost:3000", 'shortest-path-1', options);
 
 function startServer() {
   var express = require('express');
