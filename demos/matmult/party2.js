@@ -70,13 +70,18 @@ options.onConnect = function() {
           		results.push(product.open().then(success, failure));
 
         	}
-        	Promise.all(results).then(function(results){
-        		console.log(results.reduce(getSum));
-				product_matrix.push(results.reduce(getSum));
-			}, failure);
+        	product_matrix.push(new Promise(function(resolve, reject) {
+			  Promise.all(results).then(function(success_result){
+					resolve(success_result.reduce(getSum));
+				}, function(failure){
+					reject(failure)
+				});
+        	}));
 		}
 	}
-	console.log(product_matrix);
+	Promise.all(product_matrix).then(function(results){
+		console.log(results)
+	}, failure);
 }
 
 jiff_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", 'matmult', options);
