@@ -1,6 +1,54 @@
 var jiff_instance;
+var fs = require('fs');
+var math = require('mathjs');
+var numeric = require('numeric/numeric-1.2.6');
 var BigNumber = require('bignumber.js');
+
 var jiff_instance;
+
+var weights_layer_1;
+var biases_layer_1;
+var data_0;
+var scatter_matrix;
+var test_img_1;
+var matrix_w;
+
+
+
+
+fs.readFile('/users/mikegajda/Documents/keystone_bu_2017_2018/mgajda-khc-keystone/nn_python/weights_layer_1.json', 'utf8', function (err, data) {
+    if (err) throw err; // we'll not consider error handling for now
+    console.log("weights");
+    weights_layer_1 = JSON.parse(data);
+    console.log(weights_layer_1.length, weights_layer_1[0].length);
+
+    fs.readFile('/users/mikegajda/Documents/keystone_bu_2017_2018/mgajda-khc-keystone/nn_python/biases_layer_1.json', 'utf8', function (err, data) {
+        if (err) throw err; // we'll not consider error handling for now
+        console.log("biases");
+        biases_layer_1 = JSON.parse(data);
+        console.log(biases_layer_1.length, biases_layer_1[0].length);
+
+        fs.readFile('/users/mikegajda/Documents/keystone_bu_2017_2018/mgajda-khc-keystone/nn_python/test_img_1.json', 'utf8', function (err, data) {
+            if (err) throw err; // we'll not consider error handling for now
+            test_img_1 = JSON.parse(data);
+            //console.log(test_img_1)
+
+
+            fs.readFile('/users/mikegajda/Documents/keystone_bu_2017_2018/mgajda-khc-keystone/nn_python/matrix_w.json', 'utf8', function (err, data) {
+                if (err) throw err; // we'll not consider error handling for now
+                matrix_w = JSON.parse(data);
+
+                console.log("matrix_w");
+                console.log(matrix_w.length, matrix_w[0].length)
+                console.log("data_0");
+                data_0 = numeric.transpose(numeric.dot(numeric.transpose(matrix_w), numeric.transpose([test_img_1])));
+                console.log(data_0.length, data_0[0].length);
+
+                console.log("all loaded")
+            });
+        });
+    }); 
+});
 
 function success(result) { 
     console.log("success, result = " + result);
@@ -14,84 +62,50 @@ function success(result) {
   function failure(error){
     console.error("failure, error = " + error);
   }
-  function compute() {
-
-    if(jiff_instance == null || !jiff_instance.isReady() || pca_result == null )
-      alert("Please wait!");
-    else
-      MPC(pca_result);
-  }
-
-  function MPC(input) {
-    $("#computeBtn").attr("disabled", true);
-    $("#output").append("<p>Starting...</p>");
-    var shares = []
-    for (var i = 0; i < input.length; i++){
-        shares.push(jiff_instance.share(input[i]))
-    }        
-  }
 var options = {party_count: 2, Zp: new BigNumber(32416190071), offset: 10000, bits: 8, digits: 5 };
 options.onConnect = function() {
     console.log("in onConnect");
 
-    for(index in data_0){
-        data_0[index] = data_0[index].toFixed(5)
+    var test_arr = data_0;
+    for (var i = 0; i < test_arr.length; i++){
+        for (var j = 0; j < test_arr[0].length; j++){
+            test_arr[i][j] = test_arr[i][j].toFixed(4);
+        }
     }
 
-    console.log(data_0.length);
+    // we know the array we're multiplying by is 3 x 2
+    var other_array_col_count = 35;
 
-    var m = 256;
-    var n = 330;
+    product_matrix = [];
 
-    oneD_matrix = [];
-    for (i = 0; i < n; i++){
-        oneD_matrix.push(jiff_instance.share(data_0[i]));
+    for (var i = 0; i < test_arr.length; i++){
+        for (var j = 0; j < other_array_col_count; j++){
+            var shares_2d = jiff_instance.share_vec(test_arr[i]);
+            
+            var results = [shares_2d[0][1].smult(shares_2d[0][2]).open().then(success, failure)];
+
+            for(var k = 1; k < shares_2d.length; k++) {
+                console.log(k);
+                var shares = shares_2d[k];
+                var product = shares[1].smult(shares[2]);
+                results.push(product.open().then(success, failure));
+
+            }
+
+            product_matrix.push(new Promise(function(resolve, reject) {
+              Promise.all(results).then(function(success_result){
+                    resolve(success_result.reduce(getSum));
+                }, function(failure){
+                    reject(failure)
+                });
+            }));
+            
+            
+        }
     }
-    // console.log(oneD_matrix)
-
-    for (i = 0; i < n; i++){
-        var sum = oneD_matrix[i][1];
-        sum = sum.sadd(oneD_matrix[i][2]);
-        oneD_matrix[i] = sum.open().then(success, failure);
-    }
-
-    Promise.all(oneD_matrix).then(function (results){
-        console.log("i'm here")
-        console.log(results);
-    }, function(err){
-        console.log(err)
-    })
-
-    // var twoD_matrix = [];
-    // for (i = 0; i < m; i++){
-    //     oneD_matrix = [];
-    //     for (j = 0; j < n; j++){
-    //         oneD_matrix.push(1.0);
-    //     }
-    //     twoD_matrix.push(oneD_matrix);
-        
-    // }
-
-    // for (i = 0; i < m; i++){
-    //     for (j = 0; j < n; j++){
-    //         console.log("sharing", i, j, twoD_matrix[i][j])
-    //         twoD_matrix[i][j] = jiff_instance.share(twoD_matrix[i][j]);
-    //     }
-    // }
-
-    // for (i = 0; i < m; i++){
-    //     for (j = 0; j < n; j++){
-    //         var sum = twoD_matrix[i][j][1];
-    //         sum = sum.sadd(twoD_matrix[i][j][2]);
-    //         twoD_matrix[i][j] = sum.open().then(success, failure);
-    //     }
-    // }
-
-    // for (i = 0; i < m; i++){
-    //     Promise.all(twoD_matrix[i]).then(function(results){
-    //         console.log(results);
-    //     })
-    // }
+    Promise.all(product_matrix).then(function(results){
+        console.log(results)
+    }, failure);
 
     console.log("done");
 

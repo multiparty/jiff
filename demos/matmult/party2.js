@@ -15,9 +15,6 @@ options.onConnect = function() {
   //share.open(function(r) { console.log(r); } );
 }
 
-jiff_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", 'receive-bignumber', options);
-jiff_instance = require('../../lib/ext/jiff-client-bignumber.js').make_jiff(jiff_instance, options)
-
 function getColumn(twoD_arr, col_index){
 	results = [];
 	twoD_arr.forEach(function(oneD_arr){
@@ -85,3 +82,5 @@ options.onConnect = function() {
 }
 
 jiff_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", 'matmult', options);
+//jiff_instance = require('../../lib/ext/jiff-client-bignumber.js').make_jiff(jiff_instance, options)
+
