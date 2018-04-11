@@ -16,13 +16,16 @@ if(party_id != null) party_id = parseInt(party_id, 10);
 // JIFF options
 var options = {party_count: party_count, party_id: party_id};
 options.onConnect = function(jiff_instance) {
-  var shares = jiff_instance.share(input);
-  var sum = shares[1];
-  for(var i = 2; i <= jiff_instance.party_count; i++)
+  var parties = [ "s1" ];
+  for(var i = 1; i <= jiff_instance.party_count; i++) parties.push(i);
+
+  var shares = jiff_instance.share(input, parties.length, parties, parties);
+  var sum = shares["s1"];
+  for(var i = 1; i <= jiff_instance.party_count; i++)
     sum = sum.sadd(shares[i]);
-  sum.open(function(v) { console.log(v); jiff_instance.disconnect(); });
+  jiff_instance.open(sum, parties).then(function(v) { console.log(v); jiff_instance.disconnect(); });
 }
 
 // Connect
-console.log(computation_id); console.log(party_count);
-var jiff_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", computation_id, options);
+
+var jiff_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", 'test-sum', options);
