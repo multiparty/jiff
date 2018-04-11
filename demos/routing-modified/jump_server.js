@@ -74,12 +74,10 @@ const getRequest = function(url) {
 
 function get_one_step(source, dist, jumps, callback) {
   var query_number = query_count++;
-  var source_shares = jiff.sharing_schemes.shamir_share(jiff_instance, source, [2, 3, 4], 3, jiff_instance.Zp);
-  var dist_shares = jiff.sharing_schemes.shamir_share(jiff_instance, dist, [2, 3, 4], 3, jiff_instance.Zp);
 
   var promises = [];
-  for(var i = 2; i <= 4; i++)
-    promises.push(getRequest("http://localhost:911"+i+"/query/"+query_number+"/"+source_shares[i]+"/"+dist_shares[i]));
+  for(var i = 2; i <= 3; i++)
+    promises.push(getRequest("http://localhost:911"+i+"/query/"+query_number+"/"+source+"/"+dist));
 
   Promise.all(promises).then(function(results) {
     for(var i = 0; i < results.length; i++)

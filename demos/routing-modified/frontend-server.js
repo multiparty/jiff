@@ -8,9 +8,10 @@
 
 // Jiff library
 var jiff_client = require('../../lib/jiff-client');
+$ = require('jquery-deferred');
 
 // How many keys in a batch
-var KEY_BATCH_SIZE = 15;
+var KEY_BATCH_SIZE = 25;
 
 /*
  * Global variables and counter,
@@ -25,6 +26,9 @@ var prf_keys_map = [];
 var response_map = {};
 // Maps query numbers to recomputation numbers
 var query_to_recomputation_numbers = {};
+// handles the case where queries arrive later than communication between servers
+var deferreds = {};
+var promises = {};
 // Inverse of 2 according to the used Zp
 var inv2;
 
@@ -132,6 +136,14 @@ function handle_query(req, res) {
   // Store response to reply to client when ready
   response_map[query_number] = res;
   query_to_recomputation_numbers[query_number] = recompute_number;
+  
+  
+  // Signal that you have received the client request
+  if(promises[query_number] == null) {
+    deferreds[query_number] = $.Deferred();
+    promises[query_number] = deferreds[query_number].promise();
+  }
+  deferreds[query_number].resolve();
 
   // First Frontend begin handling request and forwards it to other parties.
   if(jiff_instance.id == frontends[0]) chain_query(recompute_number, query_number, source, destination);
@@ -156,35 +168,46 @@ function finalize_query(_, message) {
   // Parse message
   message = JSON.parse(message);
   var query_number = message.query_number;
-  var recompute_number = query_to_recomputation_numbers[query_number];
   
-  // Errors
-  if(message.error != null) {
-    response_map[message.query_number].send(JSON.stringify( { "error": message.error } ));
-    return;
+  if(promises[query_number] == null) {
+    deferreds[query_number] = $.Deferred();
+    promises[query_number] = deferreds[query_number].promise();
   }
-
-  // All good! Decrypt the jump
-  var jump = message.jump;
-  var salt = message.salt;
   
-  salt = applyPRF(prf_keys_map[recompute_number], salt);
-  var shares = jiff_instance.share(salt, frontends.length, frontends, frontends, jiff_instance.Zp, "decrypt:"+recompute_number+":"+query_number);
-  
-  var result = shares[frontends[0]];
-  for(var i = 1; i < frontends.length; i++)
-    result = result.sadd(shares[frontends[i]]);
+  // Just in case this came back quicker than client query/request.
+  promises[query_number].then(function() {
+    var recompute_number = query_to_recomputation_numbers[query_number];
+    
+    // Errors
+    if(message.error != null) {
+      response_map[message.query_number].send(JSON.stringify( { "error": message.error } ));
+      return;
+    }
 
-  result = result.cmult(-1).cadd(jump); // result = jump - sum(salts) mod Zp
-  
-  // Send result when ready to client
-  var response = response_map[query_number];
-  if(result.ready) response.send(JSON.stringify( { "id": jiff_instance.id, "result": result.value} ));
-  else result.promise.then(function() { response.send(JSON.stringify( { "id": jiff_instance.id, "result": result.value } )); });
+    // All good! Decrypt the jump
+    var jump = message.jump;
+    var salt = message.salt;
+    
+    salt = applyPRF(prf_keys_map[recompute_number], salt);
+    var shares = jiff_instance.share(salt, frontends.length, frontends, frontends, jiff_instance.Zp, "decrypt:"+recompute_number+":"+query_number);
+    
+    var result = shares[frontends[0]];
+    for(var i = 1; i < frontends.length; i++)
+      result = result.sadd(shares[frontends[i]]);
 
-  // clean up
-  query_to_recomputation_numbers[query_number] = null;
-  response_map[query_number] = null;
+    result = result.cmult(-1).cadd(jump); // result = jump - sum(salts) mod Zp
+    
+    // Send result when ready to client
+    var response = response_map[query_number];
+    if(result.ready) response.send(JSON.stringify( { "id": jiff_instance.id, "result": result.value} ));
+    else result.promise.then(function() { response.send(JSON.stringify( { "id": jiff_instance.id, "result": result.value } )); });
+
+    // clean up
+    query_to_recomputation_numbers[query_number] = null;
+    response_map[query_number] = null;
+    promises[query_number] = null;
+    deferreds[query_number] = null;
+  });
 }
 
 // Makes a batch of keys of the given size
