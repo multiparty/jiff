@@ -530,7 +530,7 @@
                 //'https://hri.appliedmpc.org/calculate/'
                 $.ajax({
                   type: 'GET',
-                  url: "https://hri2.appliedmpc.org/calculate/"+ window.localStorage.getItem("StartPointId")+","+window.localStorage.getItem("StopPointId"),
+                  url: "https://hri.appliedmpc.org/calculate/"+ window.localStorage.getItem("StartPointId")+","+window.localStorage.getItem("StopPointId"),
                   datatype: 'json',
                   success: function (data) {
                     //drawLines between points
