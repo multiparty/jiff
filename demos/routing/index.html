@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.css" />
+  </head>
+  <body style="width:100%; height:100%; margin:0; padding:0;">
+	<div id="leaflet" style="width:100vw; height:100vh;"></div>
+  <script
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous">
+  </script>
+
+	<script>
+    $( document ).ready(function() {
+     console.log( "ready!" );
+     document.getElementById('leaflet').style.cursor = 'crosshair';
+    });
+    var obj = {
+
+      "features": [
+      {'type': 'Point', 'coordinates': [-71.0839, 42.3422], 'properties': {'point_id': 0}}
+      ,{'type': 'Point', 'coordinates': [-71.0829, 42.3442], 'properties': {'point_id': 1}}
+      ,{'type': 'Point', 'coordinates': [-71.0822, 42.3437], 'properties': {'point_id': 2}}
+      ,{'type': 'Point', 'coordinates': [-71.0816, 42.3453], 'properties': {'point_id': 3}}
+      ,{'type': 'Point', 'coordinates': [-71.085, 42.3427], 'properties': {'point_id': 4}}
+      ],
+      "type": "geoql"
+    }
+ 
+  </script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js"></script>
+	<script>
+      var pointCount = 0
+      function randomColor() {
+        var color = '', letters = '0123456'; //789ABCDEF
+        for (var i=0; i<6; i++) {color += letters[Math.floor(Math.random() * letters.length)];}
+        return '#' + color;
+      }
+
+      function drawLineBetweenPoints(start,stop){
+        //start and stop are strng arrays containng start and stop latlns respectively
+        var latlngs = Array();
+        latlngs.push(start);
+        latlngs.push(stop);
+        // latlngs.push([parseFloat(start.split(",")[0]), parseFloat(start.split(",")[1])])
+        // latlngs.push([parseFloat(stop.split(",")[0]), parseFloat(stop.split(",")[1])])
+        var polyline = L.polyline(latlngs, {color: 'midnightblue'}).addTo(leaflet);
+        //Optional, enable for zooming in on the map area with line
+        //leaflet.fitBounds(polyline.getBounds());
+
+      }
+
+      function drawPath(points){
+        for(jump in points){
+          jump = parseInt(jump);
+          if(jump < points.length-1){
+            source = obj["features"][points[jump]]["coordinates"].slice().reverse();
+            dest = obj["features"][points[jump+1]]["coordinates"].slice().reverse();
+            drawLineBetweenPoints(source,dest)
+          }
+          console.log(points[jump]);
+        }
+      }
+      var leaflet = L.map('leaflet').setView([42.34271,-71.085022], 17);
+      L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom:20, attribution:'', id:'mapbox.light'
+      }).addTo(leaflet);
+      function onEachFeature(feature, layer) {
+        // if (feature.properties) {
+          var popupContent = " Helllo!<p>" + feature.coordinates[0] + '-' + feature.coordinates[1] + ".</p>";
+          layer.bindPopup(popupContent);
+        }
+      L.geoJson(obj, {
+        filter: function (feature, layer) { return true; },
+        onEachFeature: onEachFeature,
+        style: function (feature) { return {"color": randomColor()}; },
+        pointToLayer:
+          function (feature, latlng) {
+            var circle = L.circleMarker(latlng, {radius:7, weight:0.1, fillColor:"red", color:"red", opacity:1, fillOpacity:1});
+            circle.on('mouseover', function(){
+              circle.setStyle({ color: 'red' });
+            });
+            circle.on('click', function(){
+              lat = circle._latlng["lat"];
+              lng = circle._latlng["lng"]
+              console.log(circle);         
+              var marker = L.marker([lat, lng]).addTo(leaflet);
+              if(pointCount == 0){
+                window.localStorage.setItem("StartLatLng",[lat,lng]);
+                window.localStorage.setItem("StartPointId", circle.feature.geometry.properties["point_id"]);
+              }else{
+                window.localStorage.setItem("StopPointId", circle.feature.geometry.properties["point_id"]);
+                window.localStorage.setItem("StopLatLng",[lat,lng]);
+
+                // //make ajax call to server
+                      $.ajax({
+                        type: 'GET',
+                        url: 'http://128.31.25.45:3006/calculate/'+ window.localStorage.getItem("StartPointId")+","+window.localStorage.getItem("StopPointId"),
+                        datatype: 'json',
+                        success: function (data) {
+                          //drawLines between points
+                          drawPath(data["result"]);                
+                        },
+                        error: function (request, status, error) {
+                          console.log(error);
+                        }
+                      });
+              }
+              // pointCount == 0 ? window.localStorage.setItem("Start",[lat,lng]):window.localStorage.setItem("Stop",[lat,lng]);
+              pointCount++;
+              // circle.openPopup(latlng);
+            });
+            return circle;
+          }
+      }).addTo(leaflet);
+	</script>
+  </body>
+</html>
