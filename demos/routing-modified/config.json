@@ -1,0 +1,4 @@
+{
+  "frontends": [ 2, 3 ],
+  "backends": [ 1 ]
+}
