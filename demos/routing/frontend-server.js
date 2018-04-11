@@ -134,7 +134,7 @@ function startServer() {
       }
 
       // Shuffle table
-      // table = shuffleMPC(table);
+      table = shuffleMPC(table);
       
       // Evaluate PRF and Local Symmetric Encryption
       var promises = [];
