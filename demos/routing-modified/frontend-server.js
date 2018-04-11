@@ -33,10 +33,10 @@ var config = require('./config.json');
 var backends = [ 1 ]; // Backend server is the only sender and always has ID 1.
 var frontends = config.frontends; // Frontend servers are the receivers.
 
-
 // Connect JIFF
 var options = {
   party_id: parseInt(process.argv[2], 10),
+  party_count: frontends.length + backends.length,
   onConnect: startServer
 };
 var jiff_instance = jiff_client.make_jiff("http://localhost:3000", 'shortest-path-1', options);
@@ -61,8 +61,14 @@ function startServer() {
   
   app.get('/query/:number/:source/:destination', handle_query);
   
+  // Listen to forwarded queries from other frontends
+  jiff_instance.listen("start_query", function(_, message) {
+    message = JSON.parse(message);
+    chain_query(message.recompute_number, message.query_number, message.source, message.destination);
+  });
+  
   // Listen to responses to queries from backend
-  jiff_instance.listen("query", finalize_query);
+  jiff_instance.listen("finish_query", finalize_query);
 
   // Start listening on port 9111
   app.listen(9110 + options.party_id, function() {
@@ -72,54 +78,42 @@ function startServer() {
 
 // Performs the Preprocessing on the given table
 function handle_preprocess(_, message) {
-  var compute_number = JSON.parse(message).recompute_number;
+  var message = JSON.parse(message);
+  console.log("BEGIN PREPROCESSING");
 
-  // Read configurations
-  var config = require('./config.json');
-  var backends = [ 1 ]; // Backend server is the only sender and always has ID 1.
-  var frontends = config.frontends; // Frontend servers are the receivers.
-
+  var recompute_number = message.recompute_number;
+  var table = message.table;
+  
   // Generate keys (in batches)
-  var keys = genPRFKeysBatch(jiff_instance, KEY_BATCH_SIZE, compute_number);
-  prf_keys_map[compute_number] = keys;
+  var keys = genPRFKeysBatch();
+  prf_keys_map[recompute_number] = keys;
 
-  // First share the size of the array: use threshold 1 so that it is public.
-  var array_size = jiff_instance.share(null, 1, frontends, backends)[1]; // [1] message received from party 1 (backend server).   
+  // in place very fast shuffle
+  (function(a,b,c,d,r) { // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    r=Math.random;c=a.length;while(c)b=r*(--c+1)|0,d=a[c],a[c]=a[b],a[b]=d
+  })(table);
 
-  // Execute this code when the array size is received.
-  // Free open: threshold = 1 so no messages are sent.
-  jiff_instance.open(array_size, frontends).then(function(array_size) {
-    // Receive table from backend
-    var table = [];
-    for(var i = 0; i < array_size; i++) { // receive a share for every element of the array
-      table[i] = [];
-      for(var j = 0; j < 3; j++)
-        table[i][j] = jiff_instance.share(null, frontends.length, frontends, backends)[1]; // the only share received is from backend server.
-    }
-
-    // Shuffle table
-    // table = shuffleMPC(table);
+  var random = Math.random;
+  var Zp = jiff_instance.Zp;
+  var mod = jiff_instance.helpers.mod;
+  for(var i = 0; i < table.length; i++) {
+    var entry = table[i];
+    entry[0] = applyPRF(keys, entry[0]);
+    entry[1] = applyPRF(keys, entry[1]);
     
-    // Evaluate PRF and Local Symmetric Encryption
-    var promises = [];
-    for(var i = 0; i < array_size; i++) {
-      promises.push(applyPRF(jiff_instance, table[i][0], keys, inv2));
-      promises.push(applyPRF(jiff_instance, table[i][1], keys, inv2));
-      promises.push(table[i][2].promise);
+    var salt = (random() * Zp)|0;
+    entry[2] = mod(entry[2] + applyPRF(keys, salt), Zp);
+    for(var j = 3; j < entry.length; j++) {
+      var r = (random() * Zp)|0;
+      entry[j] = entry[j];
     }
-    
-    Promise.all(promises).then(function(results) {
-      for(var i = 0; i < array_size; i++) {
-        // party 2 sends the result of prfs
-        if(jiff_instance.id == frontends[0]) {
-          jiff_instance.share(results[i*3], 1, backends, [ frontends[0] ], null, "src"+i);
-          jiff_instance.share(results[i*3+1], 1, backends, [ frontends[0] ], null, "dist"+i);
-        }
-        // Everybody sends their local share encrypted.
-        jiff_instance.share(table[i][2].value, 1, backends, frontends, null, "enc"+i);
-      }
-    });
-  });
+    entry[entry.length] = salt;
+  }
+
+  // Forward table to next party
+  var index = frontends.indexOf(jiff_instance.id);
+  var next_party = (index + 1 < frontends.length) ? [ frontends[index + 1] ] : backends;
+  jiff_instance.emit("preprocess", next_party, JSON.stringify(message));
 }
 
 // Handles user query
@@ -128,41 +122,33 @@ function handle_query(req, res) {
   var query_number = parseInt(req.params.number, 10);
   var source = parseInt(req.params.source, 10);
   var destination = parseInt(req.params.destination, 10);
-  console.log("New Query: " + query_number + " : " + source + " -> " + destination);
 
-  var compute_number = current_recomputation_count;
-  if(compute_number < 0) {
+  var recompute_number = current_recomputation_count;
+  if(recompute_number < 0) {
     res.send({ "error": "not ready yet!"});
     return;
   }
 
   // Store response to reply to client when ready
   response_map[query_number] = res;
-  query_to_recomputation_numbers[query_number] = compute_number;
+  query_to_recomputation_numbers[query_number] = recompute_number;
 
-  // Read configurations
-  var config = require('./config.json');
-  var backends = [ 1 ]; // Backend server is the only sender and always has ID 1.
-  var frontends = config.frontends; // Frontend servers are the receivers.
+  // First Frontend begin handling request and forwards it to other parties.
+  if(jiff_instance.id == frontends[0]) chain_query(recompute_number, query_number, source, destination);
+}
 
-  if(jiff_instance.id == frontends[0])
-    jiff_instance.emit('query', backends, JSON.stringify( { "recompute_number": compute_number, "query_number": query_number } ));
-
-  // Turn input into shares and apply PRF
-  source = jiff_instance.coerce_to_share(source, frontends, null, "source:"+query_number);
-  destination = jiff_instance.coerce_to_share(destination, frontends, null, "destination:"+query_number);
-  source.threshold = frontends.length;
-  destination.threshold = frontends.length;
+function chain_query(recompute_number, query_number, source, destination) {
+  console.log("New Query: " + query_number + " : " + source + " -> " + destination);
   
-  var keys = prf_keys_map[compute_number];
-  source = applyPRF(jiff_instance, source, keys, inv2);
-  destination = applyPRF(jiff_instance, destination, keys, inv2);
-  
-  if(jiff_instance.id == frontends[0])
-    Promise.all([source, destination]).then(function(results) {
-      jiff_instance.share(results[0], 1, backends, [ frontends[0] ], null, "source:"+query_number);
-      jiff_instance.share(results[1], 1, backends, [ frontends[0] ], null, "destination:"+query_number);
-    });
+  // Apply PRF to query
+  var keys = prf_keys_map[recompute_number];
+  source = applyPRF(keys, source);
+  destination = applyPRF(keys, destination);
+
+  // Forward query to next party
+  var index = frontends.indexOf(jiff_instance.id);
+  var next_party = (index + 1 < frontends.length) ? [ frontends[index + 1] ] : backends;
+  jiff_instance.emit("start_query", next_party, JSON.stringify( { "query_number": query_number, "recompute_number": recompute_number, "source": source, "destination": destination }));
 }
 
 // Receives the query result from the backend server, de-garble it, and send it back to client.
@@ -170,7 +156,7 @@ function finalize_query(_, message) {
   // Parse message
   message = JSON.parse(message);
   var query_number = message.query_number;
-  var compute_number = query_to_recomputation_numbers[query_number];
+  var recompute_number = query_to_recomputation_numbers[query_number];
   
   // Errors
   if(message.error != null) {
@@ -182,19 +168,19 @@ function finalize_query(_, message) {
   var jump = message.jump;
   var salt = message.salt;
   
-  salt = applyPRF(prf_keys_map[compute_number], salt);
-  var shares = jiff_instance.share(salt, frontends.length, frontends, frontends, jiff_instance.Zp, "decrypt:"+compute_number+":"+query_number);
+  salt = applyPRF(prf_keys_map[recompute_number], salt);
+  var shares = jiff_instance.share(salt, frontends.length, frontends, frontends, jiff_instance.Zp, "decrypt:"+recompute_number+":"+query_number);
   
   var result = shares[frontends[0]];
   for(var i = 1; i < frontends.length; i++)
     result = result.sadd(shares[frontends[i]]);
 
-  result = results.csub(-1 * jump); // result = jump - sum(salts) mod Zp
+  result = result.cmult(-1).cadd(jump); // result = jump - sum(salts) mod Zp
   
   // Send result when ready to client
   var response = response_map[query_number];
-  if(result.ready) response.send(JSON.stringify( { "id": jiff_instance.id, "result": decryptShare(result.value) } ));
-  else result.promise.then(function() { response.send(JSON.stringify( { "id": jiff_instance.id, "result": decryptShare(result.value) } )); });
+  if(result.ready) response.send(JSON.stringify( { "id": jiff_instance.id, "result": result.value} ));
+  else result.promise.then(function() { response.send(JSON.stringify( { "id": jiff_instance.id, "result": result.value } )); });
 
   // clean up
   query_to_recomputation_numbers[query_number] = null;
@@ -202,12 +188,13 @@ function finalize_query(_, message) {
 }
 
 // Makes a batch of keys of the given size
-function genPRFKeysBatch(jiff_instance, batchSize, compute_number) {
+function genPRFKeysBatch() {
   // Store Batch
   var batch = [];
-  for(var i = 0; i < batchSize; i++)
-    batch[i] = Math.random() * (jiff_instance.Zp - 1) + 1; // key in [1, Zp)
+  for(var i = 0; i < KEY_BATCH_SIZE; i++)
+    batch[i] = (Math.random() * (jiff_instance.Zp - 1) + 1)|0; // key in [1, Zp)
   
+  console.log(batch);
   return batch;
 }
 
@@ -222,9 +209,9 @@ function applyPRF(keys, value) {
     var single_value = value + keys[i];
     single_value = jiff_instance.helpers.pow_mod(single_value, power, Zp); // Fast Exponentiation modulo prime
     single_value = mod((single_value + 1) * inv2, Zp); // Normalize
-    single_value = mod(Math.pow(2, i) * results[i], Zp); // Expand
+    single_value = mod(Math.pow(2, i) * single_value, Zp); // Expand
 
-    result = mod(results + single_value, Zp); // Aggregate
+    result = mod(result + single_value, Zp); // Aggregate
   }
   
   return result;

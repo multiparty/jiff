@@ -27,6 +27,7 @@ var frontends = config.frontends; // Frontend servers are the receivers.
 // Connect JIFF
 var options = {
   party_id: 1,
+  party_count: frontends.length + backends.length,
   onConnect: startServer
 };
 var jiff_instance = jiff_client.make_jiff("http://localhost:3000", 'shortest-path-1', options);
@@ -48,7 +49,7 @@ function startServer() {
   });
 
   // Listen to queries from frontends
-  jiff_instance.listen("query", mpc_query);
+  jiff_instance.listen("start_query", mpc_query);
 
   // Start listening on port 9111
   app.listen(9111, function() {
@@ -70,10 +71,10 @@ function mpc_preprocess(table) {
   var recompute_number = recompute_count++;
 
   // Announce to frontends the start of the preprocessing.
-  jiff_instance.emit("preprocess", frontends, JSON.stringify( { "recompute_number": recompute_number, "table": table } ));
+  jiff_instance.emit("preprocess", [ frontends[0] ], JSON.stringify( { "recompute_number": recompute_number, "table": table } ));
 
-  jiff_instance.listen("preprocess", function(_, encrypted_result) {
-    encrypted_result = JSON.parse(encrypted_result);
+  jiff_instance.listen("preprocess", function(_, message) {
+    var encrypted_result = JSON.parse(message).table;
 
     // Make the result a table (instead of array) for fast access
     var encrypted_table  = {};
@@ -97,7 +98,6 @@ function mpc_preprocess(table) {
     if(recompute_number - 3 >= 0)
       encrypted_tables[recompute_number - 3] = null;
     
-    console.log(encrypted_table);
     console.log("PREPROCESSING FINISHED");
   });
 }
@@ -108,8 +108,8 @@ function mpc_query(_, query_info) {
   query_info = JSON.parse(query_info);
   var recompute_number = query_info.recompute_number;
   var query_number = query_info.query_number;
-  var garbled_source = query_info.garbled_source;
-  var garbled_destination = query_info.garbled_destination;
+  var garbled_source = query_info.source;
+  var garbled_destination = query_info.destination;
 
   console.log("QUERY START: compute: " + recompute_number + ". #: " + query_number + ". FROM: " + garbled_source + " TO: " + garbled_destination);
 
@@ -117,13 +117,13 @@ function mpc_query(_, query_info) {
   var encrypted_table = encrypted_tables[recompute_number];
   if(encrypted_table == null) {
     console.log("QUERY ERROR 1: compute: " + recompute_number + ". #: " + query_number);
-    jiff_instance.emit('query', frontends, JSON.stringify( { "query_number": query_number, "error": "recompute number not available" }));
+    jiff_instance.emit('finish_query', frontends, JSON.stringify( { "query_number": query_number, "error": "recompute number not available" }));
     return;
   }
 
-  if(encrypted_table[source.value] == null || encrypted_table[source.value][destination.value] == null) {
+  if(encrypted_table[garbled_source] == null || encrypted_table[garbled_source][garbled_destination] == null) {
     console.log("QUERY ERROR 2: compute: " + recompute_number + ". #: " + query_number);
-    jiff_instance.emit('query', frontends, JSON.stringify( { "query_number": query_number, "error": "invalid source or destination" }));
+    jiff_instance.emit('finish_query', frontends, JSON.stringify( { "query_number": query_number, "error": "invalid source or destination" }));
     return;
   }
   
@@ -132,7 +132,7 @@ function mpc_query(_, query_info) {
   
   // Send encrypted jump with the ``salt'' correponding to each frontend
   for(var i = 0; i < frontends.length; i++) // Maybe multiply the salt by random c^2?
-    jiff_instance.emit('query', [frontends[i]], JSON.stringify( { "query_number": query_number, "jump": encrypted_jump[0], "salt": encrypted_jump[i+1] }));
+    jiff_instance.emit('finish_query', [frontends[i]], JSON.stringify( { "query_number": query_number, "jump": encrypted_jump[0], "salt": encrypted_jump[i+1] }));
 
   console.log("QUERY SUCCESS: compute: " + recompute_number + ". #: " + query_number );
 }
