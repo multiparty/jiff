@@ -5,6 +5,5 @@ read -p $'Press enter party connects\n\n'
 
 node frontend-server 2 &
 node frontend-server 3 &
-node frontend-server 4 &
 
 
