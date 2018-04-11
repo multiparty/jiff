@@ -42,8 +42,8 @@ function startServer() {
   // jiff_instance.listen("query", mpc_query);
 
   // Start listening on port 9111
-  app.listen(9115, function() {
-    console.log('Jump server is up and listening on 9115');
+  app.listen(3006, function() {
+    console.log('Jump server is up and listening on 3006');
   });
 }
 
