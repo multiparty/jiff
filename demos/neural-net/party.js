@@ -7,7 +7,7 @@ var BigNumber = require('bignumber.js');
 var jiff_instance;
 
 var weights_layer_1;
-var biases_layer_1;
+var weights_out;
 var data_0;
 var scatter_matrix;
 var test_img_1;
@@ -18,35 +18,16 @@ var matrix_w;
 
 fs.readFile('/users/mikegajda/Documents/keystone_bu_2017_2018/mgajda-khc-keystone/nn_python/weights_layer_1.json', 'utf8', function (err, data) {
     if (err) throw err; // we'll not consider error handling for now
-    console.log("weights");
+    console.log("weights_layer_1");
     weights_layer_1 = JSON.parse(data);
     console.log(weights_layer_1.length, weights_layer_1[0].length);
 
-    fs.readFile('/users/mikegajda/Documents/keystone_bu_2017_2018/mgajda-khc-keystone/nn_python/biases_layer_1.json', 'utf8', function (err, data) {
+    fs.readFile('/users/mikegajda/Documents/keystone_bu_2017_2018/mgajda-khc-keystone/nn_python/weights_out.json', 'utf8', function (err, data) {
         if (err) throw err; // we'll not consider error handling for now
-        console.log("biases");
-        biases_layer_1 = JSON.parse(data);
-        console.log(biases_layer_1.length, biases_layer_1[0].length);
+        console.log("weights_out");
+        weights_out = JSON.parse(data);
+        console.log(weights_out.length, weights_out[0].length);
 
-        fs.readFile('/users/mikegajda/Documents/keystone_bu_2017_2018/mgajda-khc-keystone/nn_python/test_img_1.json', 'utf8', function (err, data) {
-            if (err) throw err; // we'll not consider error handling for now
-            test_img_1 = JSON.parse(data);
-            //console.log(test_img_1)
-
-
-            fs.readFile('/users/mikegajda/Documents/keystone_bu_2017_2018/mgajda-khc-keystone/nn_python/matrix_w.json', 'utf8', function (err, data) {
-                if (err) throw err; // we'll not consider error handling for now
-                matrix_w = JSON.parse(data);
-
-                console.log("matrix_w");
-                console.log(matrix_w.length, matrix_w[0].length)
-                console.log("data_0");
-                data_0 = numeric.transpose(numeric.dot(numeric.transpose(matrix_w), numeric.transpose([test_img_1])));
-                console.log(data_0.length, data_0[0].length);
-
-                console.log("all loaded")
-            });
-        });
     }); 
 });
 
@@ -62,38 +43,51 @@ function success(result) {
   function failure(error){
     console.error("failure, error = " + error);
   }
-var options = {party_count: 2, Zp: new BigNumber(32416190071), offset: 10000, bits: 8, digits: 5 };
+
+  function getSum(total, num) {
+    return total + num;
+}
+var options = {party_count: 2, Zp: new BigNumber(32416190071), offset: 100000, bits: 8, digits: 4 };
+//var options = {party_count: 2};
 options.onConnect = function() {
     console.log("in onConnect");
 
-    var test_arr = data_0;
+    var test_arr = [[0.0, 0.0, 1.0]];
     for (var i = 0; i < test_arr.length; i++){
         for (var j = 0; j < test_arr[0].length; j++){
             test_arr[i][j] = test_arr[i][j].toFixed(4);
+            //test_arr[i][j] = 4;
         }
     }
 
-    // we know the array we're multiplying by is 3 x 2
-    var other_array_col_count = 35;
+    console.log(test_arr.length, test_arr[0].length);
+
+    // we know the array we're multiplying by is 35 x 75
+    var other_array_col_count = 3;
 
     product_matrix = [];
 
     for (var i = 0; i < test_arr.length; i++){
         for (var j = 0; j < other_array_col_count; j++){
+            console.log(i, j, test_arr[i]);
             var shares_2d = jiff_instance.share_vec(test_arr[i]);
+            console.log(shares_2d.length, shares_2d[0].length)
             
-            var results = [shares_2d[0][1].smult(shares_2d[0][2]).open().then(success, failure)];
-
+            //var results = [shares_2d[0][1].smult(shares_2d[0][2]).open().then(success, failure)];
+            var results = [shares_2d[0][1].smult(shares_2d[0][2])];
+            console.log("results")
             for(var k = 1; k < shares_2d.length; k++) {
                 console.log(k);
                 var shares = shares_2d[k];
                 var product = shares[1].smult(shares[2]);
-                results.push(product.open().then(success, failure));
+                results[0] = results[0].sadd(product);
 
             }
+            results[0] = results[0].open().then(success, failure);
 
             product_matrix.push(new Promise(function(resolve, reject) {
               Promise.all(results).then(function(success_result){
+                    console.log("made it here", success_result);
                     resolve(success_result.reduce(getSum));
                 }, function(failure){
                     reject(failure)
@@ -104,7 +98,59 @@ options.onConnect = function() {
         }
     }
     Promise.all(product_matrix).then(function(results){
-        console.log(results)
+        for (var i = 0; i < result.length; i++){
+            results[i] = results[i].toNumber();
+        }
+        results = [results];
+        console.log(results);
+        console.log("first done")
+
+        test_arr = results;
+
+        console.log(test_arr.length, test_arr[0].length);
+
+        // we know the array we're multiplying by is 35 x 75
+        var other_array_col_count = 8;
+
+        product_matrix = [];
+
+        for (var i = 0; i < test_arr.length; i++){
+            for (var j = 0; j < other_array_col_count; j++){
+                console.log(i, j, test_arr[i]);
+                var shares_2d = jiff_instance.share_vec(test_arr[i]);
+                console.log(shares_2d.length, shares_2d[0].length)
+                
+                //var results = [shares_2d[0][1].smult(shares_2d[0][2]).open().then(success, failure)];
+                var results = [shares_2d[0][1].smult(shares_2d[0][2])];
+                console.log("results")
+                for(var k = 1; k < shares_2d.length; k++) {
+                    console.log(k);
+                    var shares = shares_2d[k];
+                    var product = shares[1].smult(shares[2]);
+                    results[0] = results[0].sadd(product);
+
+                }
+                results[0] = results[0].open().then(success, failure);
+
+                product_matrix.push(new Promise(function(resolve, reject) {
+                  Promise.all(results).then(function(success_result){
+                        console.log("made it here", success_result);
+                        resolve(success_result.reduce(getSum));
+                    }, function(failure){
+                        reject(failure)
+                    });
+                }));
+                
+                
+            }
+        }
+        Promise.all(product_matrix).then(function(results){
+            for (var i = 0; i < result.length; i++){
+                results[i] = results[i].toNumber();
+            }
+            results = [results];
+            console.log(results);
+        }, failure);
     }, failure);
 
     console.log("done");
@@ -112,6 +158,6 @@ options.onConnect = function() {
 }
 
 jiff_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", 'test-neural-net', options);
-jiff_instance = require('../../lib/ext/jiff-client-bignumber').make_jiff(jiff_instance);
+jiff_instance = require('../../lib/ext/jiff-client-bignumber').make_jiff(jiff_instance, options);
 jiff_instance = require('../../lib/ext/jiff-client-negativenumber').make_jiff(jiff_instance, options); // Max bits allowed after decimal.
 
