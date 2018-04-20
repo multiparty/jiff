@@ -18,7 +18,7 @@
         
         <hr>
 
-        <h4>Please add the appropriate number of values. An axis will be chosen automatically.</h4>
+        <h4>Please connect to server and follow the prompts to add points. An axis will be chosen automatically.</h4>
         <input type="radio" id="c1" name="choice" value="x">
         <label for="c1">X</label>
         <input type="radio" id="c2" name="choice" value="y">
@@ -42,11 +42,26 @@
                 options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
                 options.onConnect = function() {
                     console.log("ID:", jiff_instance.id);
-                    if(jiff_instance.id == 1)
-                        $('input:radio[name=choice]').val(['x']).attr("disabled", true);
-                    else
-                        $('input:radio[name=choice]').val(['y']).attr("disabled", true);
                     $("#output").append("<p>All parties Connected!</p>");
+                    if(jiff_instance.id == 1) {
+                        $('input:radio[name=choice]').val(['x']).attr("disabled", true);
+                        $("#output").append(
+                            `Please input x coordinates.<br/>
+                            >>Their count has to be equal to the count of the other party's coordinates.<br/>
+                            >> They have to be between -100 and -50.<br/>
+                            >> Each entered point has to be greater than the previous entered point.<br/>
+                            >> Each entered point can't be more than 5 points apart from the previous point.<br/>`);
+                    }
+                    else {
+                        $('input:radio[name=choice]').val(['y']).attr("disabled", true);
+                        $("#output").append(
+                            `Please input y coordinates.<br/>
+                            >> Their count has to be equal to the count of the other party's coordinates.<br/>
+                            >> They have to be between 50 and 100.<br/>
+                            >> Each entered point has to be greater than the previous entered point.<br/>
+                            >> Each entered point can't be 'less than 5 points' apart from the previous point.<br/>
+                            >> Each entered point can't be 'more than than 10 points' apart from the previous point.<br/>`);
+                    }
                 };
                 
                 var hostname = window.location.hostname.trim();
@@ -134,6 +149,8 @@
                 if(restrict(input, $('input[name=choice]:checked').val(), coordinates) == 1)
                     return;
 
+                $("#output").append("<p>"+input+"</p>");
+
                 // push coordinate to the 'coordinates' array
                 coordinates.push(input);
 
@@ -160,6 +177,7 @@
                     return;
                 }
                 $('#calculate').attr("disabled", true);
+                $("#output").append("<p>Working...</p>");
                 console.log("Array Of Values:", values);
 
                 let this_axis = $('input[name=choice]:checked').val();
