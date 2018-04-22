@@ -69,6 +69,10 @@ options.onConnect = function() {
     Promise.all(product_matrix).then(function(result){
         console.log(result);
 
+        result.map(sigmoid);
+        console.log(result);
+
+
         answer = [];
 
         for (var i = 0; i < other_array_col_count; i++){
@@ -111,8 +115,14 @@ options.onConnect = function() {
                 answer.push(single_result.toFixed(4));
             }
             console.log(answer.map(sigmoid));
-            console.log(answer.map(sigmoid).map(round));
-            console.log("now done");
+            console.log(answer.map(sigmoid).map(Math.round));
+            answer = answer.map(sigmoid).map(Math.round)
+
+            int_input = (4 * input_array[0]) + (2 * input_array[1]) + (1 * input_array[2]);
+            int_result = (4 * answer[0]) + (2 * answer[1]) + (1 * answer[2]);
+            
+            console.log("original = ", int_input);
+            console.log("prediction = ", int_result);
 
         }, function(failure){
             console.log("failure", failure);
