@@ -56,7 +56,7 @@ options.onConnect = function() {
   	var pca_sum = [];
 
   	var arr_sum = [];
-    var arr = [27, 230, 9];
+    var arr = [3,2,1];
 
 
     var results = [];

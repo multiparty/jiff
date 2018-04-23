@@ -60,7 +60,7 @@ options.onConnect = function() {
   	var pca_sum = [];
 
   	var arr_sum = [];
-    var arr = [13, 22, 104];
+    var arr = [9,8,4];
 
 
     var results = [];
@@ -148,20 +148,16 @@ options.onConnect = function() {
 
                 console.log("scatter_sum computed = ");
                 console.log(results);
-
-                console.log("test");
-                var test_arr1 = [[ 1,2],[4,3]]
-                console.log(numeric.eig(test_arr1).lambda.x);
                 
 
-
                 console.log("scatter_sum eig = ");
-         		try {
-         			var eig = numeric.eig(results);
-         		}
-         		catch (err){
-         			console.log(err)
-         		}
+                
+           		try {
+           			var eig = numeric.eig(results);
+           		}
+           		catch (err){
+           			console.log(err)
+           		}
                 
                 var eig_copy = Object.assign({}, eig);
                 console.log(eig);
