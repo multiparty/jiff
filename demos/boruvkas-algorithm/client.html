@@ -78,6 +78,49 @@
             $("#output").append("<p>All parties Connected!</p>");
             jiff_instance.listen("node-names-list", function(sender, tagList) {
               sharesAndTags[sender] = JSON.parse(tagList);
+
+              // add missing nodes if any
+              sharesAndTags[sender].forEach(tag => {
+                let node = cy.getElementById(tag.start);
+                if(node.length == 0) {
+                  cy.add({
+                    group: 'nodes', // 'nodes' for a node, 'edges' for an edge
+                    data: {
+                      id: tag.start, // mandatory (string or number) id for each element, assigned automatically on undefined
+                    },
+                    // scratchpad data (usually temp or nonserialisable data)
+                    scratch: {
+                      weight:weight
+                    },
+
+                    position: { // the model position of the node (optional on init, mandatory after)
+                      x: positions.newXPos,
+                      y: positions.newYPos
+                    }
+                  });
+                  positions.incrementPos();
+                }
+                node = cy.getElementById(tag.end);
+                if(node.length == 0) {
+                  cy.add({
+                    group: 'nodes', // 'nodes' for a node, 'edges' for an edge
+                    data: {
+                      id: tag.end, // mandatory (string or number) id for each element, assigned automatically on undefined
+                    },
+                    // scratchpad data (usually temp or nonserialisable data)
+                    scratch: {
+                      weight:weight
+                    },
+
+                    position: { // the model position of the node (optional on init, mandatory after)
+                      x: positions.newXPos,
+                      y: positions.newYPos
+                    }
+                  });
+                  positions.incrementPos();
+                }
+              });
+
               if(Object.keys(sharesAndTags).length == party_count)
                 startProcessing();
             });
@@ -211,7 +254,7 @@
           for(let party in sharesAndTags) {
             sharesAndTags[party].filter(edge => !edge.added).forEach(edge => { console.log('processing edge', edge, "with tree", tree);
               if(setOfNodes.has(edge.start) && !setOfNodes.has(edge.end)) {
-                l.push(edge);
+                l.push({start:edge.start, end:edge.end, share:edge.share, ref:edge});
               }
             });
           }
@@ -219,35 +262,72 @@
             nodesList.push(l);
         });
         console.log(nodesList);
+        for(let i = 0; i < nodesList.length; i++) {
+          if(nodesList[i].length == 1) {
+            addArcToForest(nodesList[i][0]);
+            nodesList[i][0].ref.added = true;
+            continue;
+          }
+
+          let minimumShare = nodesList[i][0].share;
+          let minimumIndex = 0;
+          for(let j = 1; j < nodesList[i].length; j++) {
+            let comparison = minimumShare.lt(nodesList[i][j].share);
+            minimumShare = nodesList[i][j].share.add(
+              (minimumShare.sub(nodesList[i][j].share)).mult(comparison)
+            );
+            if(j == 1)
+              minimumIndex = (comparison.mult(minimumIndex - j)).add(j);
+            else
+              minimumIndex = ((minimumIndex.sub(j)).mult(comparison)).add(j);
+          }
+
+          (function close(n) {
+            ++incompletePromisesCounter;
+            minimumIndex.open(function(minimumIndexOpened) { console.log(n);
+              // add share objects with arcs
+              addArcToForest(nodesList[i][minimumIndexOpened]);
+              if(--incompletePromisesCounter == 0)
+                if(forest.length > 1)
+                  iterate();
+            });
+          })(node);
+        }
       }
 
-      const addArcToForest = function(newArc) {
+      const addArcToForest = function(newArc) { //console.log('==============gonna add', newArc);
         let added = null;
+        let indexOfAdded;
         for(let i = 0; i < forest.length; i++) {
-          let tree = forest[i];
+          let tree = forest[i]; //console.log('forest now');forest.forEach(t => {console.log('tree'); t.forEach(a => console.log(a))});
           for(let j = 0; j < tree.length; j++) {
-            let arc = tree[j];
+            let arc = tree[j]; //console.log('with tree'); tree.forEach(m => {console.log('node', m)}); 
             if(arc.start === newArc.start ||
                 arc.start === newArc.end || 
                 arc.end === newArc.start || 
                 arc.end === newArc.end) {
-              addArcToTree(tree, newArc);
-              if(!added)
+              if(!added) {
+                addArcToTree(tree, newArc);
+                displayArc(newArc);
                 added = tree;
+                indexOfAdded = i;
+              }
               else {
                 // remove this tree from forest and merge it with "added"
-                added = [...added,...tree];
+                forest[indexOfAdded] = [...added,...tree];
                 forest.splice(i--, 1);
               }
+              // console.log("added"); added.forEach(a => {console.log('node', a)});        console.log("forest"); forest.forEach(t => {console.log('tree'); t.forEach(a => console.log(a))});
               break;
             }
           }
         }
         if(!added) {
           forest.push([newArc]);
+          displayArc(newArc);
           newArc.ref.added = true;
         }
-        console.log("forest"); forest.forEach(t => {console.log('tree'); t.forEach(a => console.log(a))});
+        console.log("final forest"); forest.forEach(t => {console.log('tree'); t.forEach(a => console.log(a))});
       }
       const addArcToTree = function(tree, newArc) {
         for(let i = 0; i < tree.length; i++)
@@ -257,6 +337,18 @@
         tree.push(newArc);
         newArc.ref.added = true;
         return 'added';
+      }
+
+      const displayArc = function(arc) {
+        cy.add({
+          group: 'edges',
+          data: {
+            // label: weight,
+            source: arc.start,
+            target: arc.end,
+            type: 'solution'
+          }
+        });
       }
     
       const cy = cytoscape({
@@ -277,13 +369,21 @@
               'label': 'data(id)'
             }
           },
-
           {
             selector: 'edge',
             style: {
               'width': 3,
               'line-color': '#ccc',
               'target-arrow-color': '#ccc',
+              'target-arrow-shape': 'triangle'
+            }
+          },
+          {
+            selector: 'edge[type="solution"]',
+            style: {
+              'width': 10,
+              'line-color': '#f00',
+              'target-arrow-color': '#f00',
               'target-arrow-shape': 'triangle'
             }
           },
