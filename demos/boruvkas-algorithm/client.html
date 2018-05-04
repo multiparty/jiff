@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <title></title>
+    <meta content="">
+    <style>
+      #cy {
+        width: 650px;
+        height: 650px;
+        display: block;
+        border:2px solid black;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.2.11/cytoscape.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+  </head>
+  <body>
+    <h1>Connect JIFF</h1>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
+    <label for="count">Party Count</label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
+    <br/><br/>
+    <hr/>
+    <h1>Minimal Spanning Tree Using Boruvka's Algorihtm Under MPC</h1>
+    <h3>Input Edges:</h3>
+    <label for="start_node">Start Node:</label>
+    <input id="start_node"><br/>
+    <label for="end_node">End Node:</label>
+    <input id="end_node"><br/>
+    <label for="weight">Value:</label>
+    <input id="weight"><br/>
+    <button onclick="addEdge();" disabled="disabled" id="addEdge">Add Edge.</button>
+    <button onclick="start();" disabled="disabled" id="start">Start!</button>
+    <br/>
+    <div id="cy"></div>
+    <div id="output"></div>
+    <script src="./boruvkas_algorithm.js"></script>
+  </body>
+</html>
