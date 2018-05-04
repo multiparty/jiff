@@ -1,0 +1,288 @@
+<html>
+    <head>
+        <title>Best Fit Line</title>
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/lib/sodium.js"></script>
+        <script src="/lib/jiff-client.js"></script>
+    </head>
+    <body>
+        <div style="width:300px; height:300px;">
+            <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+
+        <label for="computation_id">Computation ID</label><input id="computation_id" value="test-sum"></input><br/><br/>
+        <!--label for="count">Party Count<label> <input id="count" pattern="[0-9]*"><br/><br/-->
+        <button id="connectButton" onclick="connect();">Connect</button>
+        
+        <hr>
+
+        <h4>Please add the appropriate number of values. An axis will be chosen automatically.</h4>
+        <input type="radio" id="c1" name="choice" value="x">
+        <label for="c1">X</label>
+        <input type="radio" id="c2" name="choice" value="y">
+        <label for="c2">Y</label>
+        <div>Value:</div><input id="val" type="text" placeholder="value"/><br/>
+        <button onclick="pushCoordinate()">Add Coordinate!</button>
+        <br/><br/>
+        <button onclick="calculateLeastSquares(coordinates)" id="calculate">Calculate Least Squares!</button>
+        <div id="output"></div>
+
+        <script>
+            "use strict";
+
+            var jiff_instance;
+            function connect() {
+                $('#connectButton').prop('disabled', true);
+                var computation_id = $('#computation_id').val();
+                var party_count = parseInt($('#count').val());
+
+                var options = {party_count:2};
+                options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
+                options.onConnect = function() {
+                    console.log("ID:", jiff_instance.id);
+                    if(jiff_instance.id == 1)
+                        $('input:radio[name=choice]').val(['x']).attr("disabled", true);
+                    else
+                        $('input:radio[name=choice]').val(['y']).attr("disabled", true);
+                    $("#output").append("<p>All parties Connected!</p>");
+                };
+                
+                var hostname = window.location.hostname.trim();
+                var port = window.location.port;
+                if(port == null || port == '') 
+                    port = "80";
+                if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
+                    hostname = "http://" + hostname;
+                if(hostname.endsWith("/"))
+                    hostname = hostname.substring(0, hostname.length-1);
+                
+                hostname = hostname + ":" + port;
+                jiff_instance = jiff.make_jiff(hostname, computation_id, options);
+            }
+            
+            
+            // array holds the coordinates input by the user.
+            let coordinates = [];
+
+            // array holds data point objects (populated automatically).
+            let input_data_points = [];
+
+            // The chart.js graph, ready to receive the coordinates and the line of best fit.
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        id:"data-points",
+                        label:"",
+                        data: input_data_points,
+                        fill:false,
+                        showLine:false,
+                        pointBackgroundColor:"rgb(0,0,0)",
+                        pointRadius:5
+                    },{
+                        id:"line",
+                        label:"",
+                        data: [],
+                        fill:false,
+                        pointBackgroundColor:"rgb(0,0,0)",
+                        borderColor:"rgb(0,0,0)",
+                        pointRadius:0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: 100
+                            }
+                        }],
+                        xAxes: [{
+                            type: 'linear',
+                            position: 'bottom',
+                            ticks: {
+                                min: 0,
+                                max: 100,
+                                maxTicksLimit: 20
+                            }
+                        }]
+                    }
+                }
+            });
+
+            // button onclick event to add a data point to the set of points
+            function pushCoordinate() {
+                let input = parseInt(document.getElementById("val").value);
+                if(isNaN(input))
+                    return;
+
+
+
+
+                // push coordinate to the 'coordinates' array
+                coordinates.push(input);
+
+                // create a data point object depending on the axis, then push it to the array
+                let p;
+                if($('input[name=choice]:checked').val() == 'x')
+                    p = {x:input,y:0};
+                else
+                    p = {y:input,x:0};
+                input_data_points.push(p);
+
+                myChart.update();
+                document.getElementById("val").value = "";
+            }
+
+            // button onclick event to calculate least squares
+            function calculateLeastSquares(values) {
+                if(!jiff_instance) {
+                    alert("Please connect to jiff server first =)");
+                    return;
+                }
+                if(values.length < 2) {
+                    alert("2 points or more are needed to make a straight line.");
+                    return;
+                }
+                $('#calculate').attr("disabled", true);
+                console.log("Array Of Values:", values);
+
+                let this_axis = $('input[name=choice]:checked').val();
+                let shares_array = [];
+
+
+                if(this_axis == 'x') { // The ID of this party is 1
+                    let sum_x = values.reduce((a,c) => a + c);
+                    let sum_xx = values.reduce((a,c) => a+c*c, 0);
+                    let t1 = values.length*sum_xx-sum_x*sum_x;
+
+                    let sum_xy = shareAndCalculateSumXY(values);
+                    let c__sum_xy = sum_xy.mult(values.length);
+
+                    let sum_x__sum_y = jiff_instance.share(sum_x);
+                    sum_x__sum_y = sum_x__sum_y[1].mult(sum_x__sum_y[2]);
+
+                    let mNumerator = c__sum_xy.sub(sum_x__sum_y);
+
+                    let denom = values.length*sum_xx-sum_x*sum_x;
+                    denom = jiff_instance.share(denom);
+                    denom = denom[1].add(denom[2]);
+                    let m = mNumerator.div(denom);
+
+                    m.open(function(m_res) {
+                        let m_sum_x_d_count = Math.floor(-1*(m_res*sum_x)/values.length);
+                        console.log("-1*(m*sum_x/count)=", m_sum_x_d_count)
+                        m_sum_x_d_count = jiff_instance.share(m_sum_x_d_count);
+                        // let c = m_sum_x_d_count[1].sub(m_sum_x_d_count[2]);
+                        let c = m_sum_x_d_count[1].add(m_sum_x_d_count[2]);
+                        c.open(function(c_res) {
+                            display_after_open(m_res, c_res, this_axis, values);
+                        });
+                    });
+
+                } else { // The ID of this party is 2
+                    let sum_y = values.reduce((a,c) => a + c);
+
+                    let sum_xy = shareAndCalculateSumXY(values);
+                    let c__sum_xy = sum_xy.mult(values.length);
+
+                    let sum_x__sum_y = jiff_instance.share(sum_y);
+                    sum_x__sum_y = sum_x__sum_y[1].mult(sum_x__sum_y[2]);
+
+                    let mNumerator = c__sum_xy.sub(sum_x__sum_y);
+
+                    let denom = jiff_instance.share(0); //TODO? null, 2, [1 , 2], [1]);
+                    denom = denom[1].add(denom[2]);
+                    let m = mNumerator.div(denom);
+
+                    m.open(function(m_res) {
+                        let sum_y_d_count = Math.floor(sum_y/values.length);
+                        console.log("sum_y/count=", sum_y_d_count);
+                        sum_y_d_count = jiff_instance.share(sum_y_d_count);
+                        // let c = sum_y_d_count[1].sub(sum_y_d_count[2]);
+                        let c = sum_y_d_count[1].add(sum_y_d_count[2]);
+                        c.open(function(c_res) {
+                            display_after_open(m_res, c_res, this_axis, values);
+                        });
+                    });
+
+                }
+
+                /* The non-mpc calculation
+                for (var v = 0; v < values_length; v++) {
+                    y = values_y[v];
+                    sum_x += x;
+                    sum_y += y;
+                    sum_xx += x*x;
+                    sum_xy += x*y;
+                    count++;
+                }*/
+            }
+
+            // function calculates sum_xy
+            function shareAndCalculateSumXY(values) {
+                let sum_xy_res;
+                for(let i = 0; i < values.length; i++) {
+                    let t = jiff_instance.share(values[i]);
+                    t = t[1].mult(t[2]);
+                    if(sum_xy_res)
+                        sum_xy_res = sum_xy_res.add(t);
+                    else
+                        sum_xy_res = t;
+                }
+                return sum_xy_res;
+            }
+
+
+            // function displays the line of best fit on the graph after the mpc has been done.
+            // it calculates the data points of the line at the provided coordinates.
+            function display_after_open(m, b, this_axis, values) {
+                console.log("Slope:", m);
+                console.log("Y intercept:", b);
+
+                let result_values_x = [];
+                let result_values_y = [];
+
+                if(this_axis == 'x')
+                    for(let v = 0; v < values.length; v++) {
+                        let x = values[v];
+                        let y = x * m + b;
+                        result_values_x.push(x);
+                        result_values_y.push(y);
+                    }
+                else
+                    for(let v = 0; v < values.length; v++) {
+                        let y = values[v];
+                        let x = (y-b)/m;
+                        result_values_x.push(x);
+                        result_values_y.push(y);
+                    }
+
+                // map result back to data_points
+                let leastSquaresDataPoints = [];
+                for(let i = 0; i < result_values_x.length; i++) {
+                    leastSquaresDataPoints.push({
+                        x:result_values_x[i],
+                        y:result_values_y[i]
+                    });
+                }
+                console.log("Data Points to display as a line:", leastSquaresDataPoints);
+
+                // and finally display the line
+                printLineToGraph(leastSquaresDataPoints);
+            }
+
+
+            // print a line on the graph
+            function printLineToGraph(points) {
+                let lineDataset = myChart.data.datasets.filter(dataset => dataset.id == "line");
+                points.forEach(point => lineDataset[0].data.push(point))
+                myChart.update();
+            }
+
+        </script>
+    </body>
+</html>
