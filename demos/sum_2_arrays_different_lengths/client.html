@@ -68,10 +68,9 @@
                         x = x.add(r[i][1].add(r[i][2]));
                     }
 
-                    x.open(function(f) {
+                    x.open().then(function(f) {
                         $('#res').append(f);
                     });
-
                 }); //}, 0);
             }
         </script>

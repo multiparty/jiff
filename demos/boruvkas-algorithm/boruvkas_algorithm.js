@@ -154,7 +154,12 @@ function start() {
     $("#start").attr("disabled", true);
     const tagsArray = [];
     edges.forEach(e => {
-        tagsArray.push({start:e.start, end:e.end});
+        let start = cy.getElementById(e.start);
+        let end = cy.getElementById(e.end);
+        tagsArray.push({
+            start:e.start, startX:start.position('x'), startY:start.position('y'),
+            end:e.end, endX:end.position('x'), endY:end.position('y')
+        });
     });
 
     jiff_instance.emit("node-names-list", null, JSON.stringify(tagsArray));
@@ -177,11 +182,11 @@ const nodeNamesListHandler = function(sender, tagList) {
                     id: tag.start,
                 },
                 position: {
-                    x: positions.newXPos,
-                    y: positions.newYPos
+                    x: tag.startX, //positions.newXPos,
+                    y: tag.startY //positions.newYPos
                 }
             });
-            positions.incrementPos();
+            //positions.incrementPos();
         }
         node = cy.getElementById(tag.end);
         if(node.length == 0) {
@@ -191,11 +196,11 @@ const nodeNamesListHandler = function(sender, tagList) {
                     id: tag.end,
                 },
                 position: {
-                    x: positions.newXPos,
-                    y: positions.newYPos
+                    x: tag.endX, //positions.newXPos,
+                    y: tag.endY //positions.newYPos
                 }
             });
-            positions.incrementPos();
+            //positions.incrementPos();
         }
     });
 
@@ -274,7 +279,7 @@ const generateNodesList = function() {
             for(let party in sharesAndTags) {
                 sharesAndTags[party].filter(edge => !edge.added).forEach(edge => {
                     // if an edge has one node inside the set and one node outside the set add it to this 'cut-set'
-                    if(setOfNodes.has(edge.start) && !setOfNodes.has(edge.end)) {
+                    if( (setOfNodes.has(edge.start) && !setOfNodes.has(edge.end)) || (setOfNodes.has(edge.end) && !setOfNodes.has(edge.start)) ) {
                         l.push({start:edge.start, end:edge.end, share:edge.share, ref:edge});
                     }
                 });
