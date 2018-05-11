@@ -22,7 +22,7 @@ options.onConnect = function() {
   var sum = shares[1];
   
   for(var i = 2; i <= jiff_instance.party_count; i++)
-    sum = sum.sadd(shares[i]);
+    sum = sum.amortized_or(shares[i]);
     
   sum.open(function(r) { console.log(r.toString(10)); } );
 }

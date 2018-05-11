@@ -66,11 +66,13 @@
         $("#output").append("<p>Starting...</p>");
         var shares = jiff_instance.share(input);
 
-        var sum = shares[1];
+        // console.log('jiff_instance', jiff_)
+        console.log('shares', shares);
+        var or = shares[1];
         for(var i = 2; i <= jiff_instance.party_count; i++)
-          sum = sum.sadd(shares[i]);
+          or = or.amortized_or(shares[i]);
 
-        sum.open(handleResult);          
+        or.open(handleResult);          
       }
 
       function handleResult(result) {
