@@ -65,7 +65,7 @@ const ownedNodes = new Set();
 const foreignOwnedNodes = new Set();
 let receivedGuestEdgesCount = 0;
 let ownedEdges = [];
-let totalOwners = 0;
+let totalOwners = [];
 let ownersCounter = 0;
 
 const connect = function() {
@@ -288,7 +288,6 @@ function start() {
     $("#addEdge").attr("disabled", true);
     $("#start").attr("disabled", true);
     console.time('Iteration');
-    console.time('Owners');
 
     edges.forEach(edge => {
         thisPartyAllNodes.add(edge.start);
@@ -344,7 +343,6 @@ const processOwnedEdges = function() {
         if(ownedNodes.has(edges[i].start) && ownedNodes.has(edges[i].end))
             ownedEdges.push(edges.splice(i--, 1)[0]);
     }
-    console.timeEnd('Owners');
 
     const tagsArray = [];
     edges.forEach(e => {
@@ -365,8 +363,10 @@ const processOwnedEdges = function() {
 const edgesListHandler = function(sender, tagList) {
     let parsed = JSON.parse(tagList);
     sharesAndTags[sender] = parsed.array;
-    if(parsed.subscribe)
-        totalOwners++;
+    if(parsed.subscribe) {
+        if(totalOwners.indexOf(sender) == -1)
+            totalOwners.push(sender);
+    }
 
     // Loop over the tagList and add missing nodes if any
     sharesAndTags[sender].forEach(tag => {
@@ -484,8 +484,10 @@ const localComputationResultHandler = function(sender, result) {
     parsed.forEach(arc => {
         addArcToForest(arc, 'solution');
     });
-    if(++ownersCounter === totalOwners && incompletePromisesCounter == 0) {
-        ownersCounter = 0; 
+    console.log("oc", ownersCounter, "toc", totalOwners.length, "ipc", incompletePromisesCounter);
+    if(++ownersCounter === totalOwners.length && incompletePromisesCounter == 0) {
+        ownersCounter = 0;
+        console.timeEnd('Iteration');
         if(forest.length > 1) {
             console.time('Iteration');
             shareCutLists();
@@ -550,8 +552,8 @@ const tempSharesAndTags = {};
 const cutListsHandler = function(sender, cutlists) {
     let parsed = JSON.parse(cutlists);
     tempSharesAndTags[sender] = parsed.array;
-    if(!parsed.subscribe)
-        --totalOwners;
+    if(!parsed.subscribe && totalOwners.indexOf(sender) > -1)
+        totalOwners.splice(totalOwners.indexOf(sender), 1);
 
     // Loop over the tagList and add missing nodes if any
     sharesAndTags[sender].forEach(tag => {
@@ -593,27 +595,15 @@ const cutListsHandler = function(sender, cutlists) {
                         tempSharesAndTags[p][i]["share"] = share[p];
                 }
             });
-            // console.log("tsnt"); for(let w in tempSharesAndTags){console.log(tempSharesAndTags[w]);};//complete!
-            // console.log("snt"); for(let w in sharesAndTags){console.log(sharesAndTags[w]);};
-            // for(let i = 0; i < tempSharesAndTags.length; i++) {
-            //     sharesAndTags.push(tempSharesAndTags[i]);
-            // }
             for(let snt in sharesAndTags) {
                 tempSharesAndTags[snt].forEach(s => {
                     sharesAndTags[snt].push(s);
                 });
             }
-            // console.log("taboent"); tempArrayBetweenOwnedEdgesAndEdges.forEach(thing => console.log(thing));
             for(let i = 0; i < tempArrayBetweenOwnedEdgesAndEdges.length; i++) {
                 edges.push(tempArrayBetweenOwnedEdgesAndEdges[i]);
             }
             tempArrayBetweenOwnedEdgesAndEdges = [];
-            // console.log("tsnt"); console.log(tempSharesAndTags)
-            // console.log("snt"); console.log(sharesAndTags);
-            // console.log("==forest"); forest.forEach(t => {console.log('>tree'); t.forEach(a => console.log(a))});
-            // console.log("taboent"); console.log(tempArrayBetweenOwnedEdgesAndEdges);
-            // console.log(edges);
-            // return;
 
 
 
@@ -661,13 +651,11 @@ const generateNodesList = function() {
         for(let node in nodesList) {
             firstIterationNodesList.push(nodesList[node]);
         }
-        // console.log(firstIterationNodesList);
         return firstIterationNodesList;
     } else {
 
         // sort the trees of the forest according to the nodes of its set of arcs. wait what? O_o
         let dict = Array.from(allNodesSet);
-        console.log(dict);
         let valueMapping = forest.map(tree => tree.reduce((acc, curr) => acc.concat(curr.start).concat(curr.end), "")).map(st => {
             let r = 0;
             for(let i = 0; i < st.length; i++) {
@@ -730,7 +718,6 @@ const mpcIterate = function(nodesList) { //console.log("cutlist"); console.log(n
             nodesList[i][0].ref.added = true;
             continue;
         }
-        // console.log("O_o")
 
         /**
          * var array = [1,3,2];
@@ -755,24 +742,15 @@ const mpcIterate = function(nodesList) { //console.log("cutlist"); console.log(n
                 minimumIndex = ((minimumIndex.sub(j)).mult(comparison)).add(j);
         }
 
-        // no need to open the minimumShare
-        // minimumShare.open(function(minimumShareOpened) {
-        //   console.log("minShare:", minimumShareOpened);
-        // });
-
-        ++incompletePromisesCounter; //console.log(incompletePromisesCounter);
-        minimumIndex.open(function(minimumIndexOpened) { // console.log("open");
+        ++incompletePromisesCounter;
+        minimumIndex.open(function(minimumIndexOpened) {
             // add share objects with arcs
             addArcToForest(nodesList[i][minimumIndexOpened], 'solution');
-            // console.log("dpc");
-            // console.log("pc", incompletePromisesCounter-1, "oc", ownersCounter, "to", totalOwners);
-            if(--incompletePromisesCounter === 0 && ownersCounter === totalOwners) {
+            console.log("oc", ownersCounter, "toc", totalOwners.length, "ipc", incompletePromisesCounter);
+            if(--incompletePromisesCounter === 0 && ownersCounter === totalOwners.length) {
                 ownersCounter = 0;
                 console.timeEnd('Iteration');
                 if(forest.length > 1) {
-                    console.log("it");
-                    // console.log("==forest"); forest.forEach(t => {console.log('>tree'); t.forEach(a => console.log(a))});
-                    //mpcIterate(generateNodesList());
                     console.time('Iteration');
                     shareCutLists();
                 }
@@ -829,7 +807,6 @@ const addArcToForest = function(newArc, type) {
         if(newArc.ref)
             newArc.ref.added = true;
     }
-    // console.log("==forest"); forest.forEach(t => {console.log('>tree'); t.forEach(a => console.log(a))});
 }
 /**
  * Adds an arc to a tree without duplicating it
