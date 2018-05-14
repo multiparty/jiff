@@ -52,6 +52,8 @@ let positions = {
     }
 }
 
+const allNodesSet = new Set();
+
 const connect = function() {
     $('#connectButton').prop('disabled', true);
     var computation_id = $('#computation_id').val();
@@ -158,6 +160,7 @@ function start() {
         alert("Please add at least one edge");
         return;
     }
+    console.time('Total');
     console.time('Iteration');
     $("#addEdge").attr("disabled", true);
     $("#start").attr("disabled", true);
@@ -209,6 +212,9 @@ const nodeNamesListHandler = function(sender, tagList) {
                 }
             });
         }
+
+        allNodesSet.add(tag.start);
+        allNodesSet.add(tag.end);
     });
 
     // Check the tag lists
@@ -271,12 +277,33 @@ const generateNodesList = function() {
         }
         return firstIterationNodesList;
     } else {
+
+        // sort the trees of the forest according to the nodes of its set of arcs. wait what? O_o
+        let dict = Array.from(allNodesSet);
+        let valueMapping = forest.map(tree => tree.reduce((acc, curr) => acc.concat(curr.start).concat(curr.end), "")).map(st => {
+            let r = 0;
+            for(let i = 0; i < st.length; i++) {
+                r += dict.indexOf(st[i]);
+            }
+            return r;
+        });
+
+        let order = [];
+        for(let i = 0; i < forest.length; i++) {
+            let indexOfMin = valueMapping.indexOf(Math.min(...valueMapping));
+            order.push(indexOfMin);
+            valueMapping[indexOfMin] = Infinity;
+        }
+        let sortedForest = [];
+        order.forEach(o => sortedForest.push(forest[o]));
+
+
         /**
          * The list of 'cut-sets'.
          */
         const nodesList = [];
         // loop over the forest
-        forest.forEach(tree => {
+        sortedForest.forEach(tree => {
             // make a set of nodes for each tree
             let setOfNodes = new Set();
             let l = [];
@@ -298,6 +325,7 @@ const generateNodesList = function() {
             if(l.length > 0)
                 nodesList.push(l);
         });
+        console.log("nl"); nodesList.forEach(t => console.log(t));
         return nodesList;
     }
 }
@@ -345,7 +373,7 @@ const mpcIterate = function(nodesList) {
         // });
 
         ++incompletePromisesCounter;
-        minimumIndex.open(function(minimumIndexOpened) {
+        minimumIndex.open(function(minimumIndexOpened) { console.log(minimumIndexOpened);
             // add share objects with arcs
             addArcToForest(nodesList[i][minimumIndexOpened]);
             if(--incompletePromisesCounter == 0) {
@@ -354,6 +382,8 @@ const mpcIterate = function(nodesList) {
                     console.time('Iteration');
                     mpcIterate(generateNodesList());
                 }
+                else
+                    console.timeEnd('Total');
             }
         });
     }

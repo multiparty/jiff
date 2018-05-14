@@ -287,6 +287,7 @@ function start() {
     }
     $("#addEdge").attr("disabled", true);
     $("#start").attr("disabled", true);
+    console.time('Total');
     console.time('Iteration');
 
     edges.forEach(edge => {
@@ -492,6 +493,8 @@ const localComputationResultHandler = function(sender, result) {
             console.time('Iteration');
             shareCutLists();
         }
+        else
+            console.timeEnd('Total');
     }
 }
 
@@ -754,6 +757,8 @@ const mpcIterate = function(nodesList) { //console.log("cutlist"); console.log(n
                     console.time('Iteration');
                     shareCutLists();
                 }
+                else
+                    console.timeEnd('Total');
             }
         });
     }
