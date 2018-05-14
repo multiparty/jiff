@@ -158,6 +158,7 @@ function start() {
         alert("Please add at least one edge");
         return;
     }
+    console.time('Iteration');
     $("#addEdge").attr("disabled", true);
     $("#start").attr("disabled", true);
     const tagsArray = [];
@@ -347,9 +348,13 @@ const mpcIterate = function(nodesList) {
         minimumIndex.open(function(minimumIndexOpened) {
             // add share objects with arcs
             addArcToForest(nodesList[i][minimumIndexOpened]);
-            if(--incompletePromisesCounter == 0)
-                if(forest.length > 1)
+            if(--incompletePromisesCounter == 0) {
+                console.timeEnd('Iteration');
+                if(forest.length > 1) {
+                    console.time('Iteration');
                     mpcIterate(generateNodesList());
+                }
+            }
         });
     }
 }
@@ -401,7 +406,7 @@ const addArcToForest = function(newArc) {
         displayArc(newArc);
         newArc.ref.added = true;
     }
-    console.log("==forest"); forest.forEach(t => {console.log('>tree'); t.forEach(a => console.log(a))});
+    // console.log("==forest"); forest.forEach(t => {console.log('>tree'); t.forEach(a => console.log(a))});
 }
 /**
  * Adds an arc to a tree without duplicating it
