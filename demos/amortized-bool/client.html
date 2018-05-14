@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Sum fixed point rational numbers under MPC</title>
+    <title>Amortized Bool Demo!</title>
     <style>
       .error {
         color: #FF0000;
@@ -66,8 +66,6 @@
         $("#output").append("<p>Starting...</p>");
         var shares = jiff_instance.share(input);
 
-        // console.log('jiff_instance', jiff_)
-        console.log('shares', shares);
         var or = shares[1];
         for(var i = 2; i <= jiff_instance.party_count; i++)
           or = or.amortized_or(shares[i]);
@@ -83,7 +81,7 @@
   </head>
   <body>
     <h1>Connect JIFF</h1>
-    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-fixed"></input><br/><br/>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-amortizedbool"></input><br/><br/>
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
