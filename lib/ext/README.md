@@ -7,11 +7,12 @@ Hooks can be passed to an instance at creation time via an options object:
 var options = {};
 options.hooks = {
   /* Example hooks. */
-  'beforeShare':
+  'beforeShare': [
     function(instance, secret, threshold, receivers_list, senders_list, Zp) {
       /* Some code. */
       return modified_secret;
-    },
+    } 
+  ],
   'computeShares':
     function(secret, party_count, parties_list, threshold, Zp) {
       /* Some code. */
