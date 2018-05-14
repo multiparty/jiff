@@ -22,12 +22,12 @@ options.onConnect = function() {
   var sum = shares[1];
   
   for(var i = 2; i <= jiff_instance.party_count; i++)
-    sum = sum.sadd(shares[i]);
+    sum = sum.amortized_and(shares[i]);
     
   sum.open(function(r) { console.log(r.toString(10)); } );
 }
 
 var base_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", computation_id, options);
-jiff_instance = require('../../lib/ext/jiff-client-bignumber').make_jiff(base_instance, options)
-//jiff_instance = require('../../lib/ext/jiff-client-amortizedbool').make_jiff(jiff_instance, { digits: 4}); // Max bits allowed after decimal.
+base_instance = require('../../lib/ext/jiff-client-bignumber').make_jiff(base_instance, options);
+jiff_instance = require('../../lib/ext/jiff-client-amortizedbool').make_jiff(base_instance); // Max bits allowed after decimal.
 jiff_instance.connect();
