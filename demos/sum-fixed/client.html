@@ -25,7 +25,7 @@
           $("#output").append("<p class='error'>Party count must be a valid number!</p>");
           $('#connectButton').prop('disabled', false);
         } else {
-          var options = {party_count: 2, Zp: new BigNumber(32416190071) };
+          var options = {party_count: party_count, Zp: new BigNumber(32416190071), autoConnect: false };
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
           options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
 
@@ -44,6 +44,7 @@
           jiff_instance = jiff.make_jiff(hostname, computation_id, options);
           jiff_instance = jiff_bignumber.make_jiff(jiff_instance, options)
           jiff_instance = jiff_fixedpoint.make_jiff(jiff_instance, { digits: 4 }); // Max bits after decimal allowed
+          jiff_instance.connect();
         }
       }
 
@@ -80,7 +81,7 @@
   </head>
   <body>
     <h1>Connect JIFF</h1>
-    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-sum"></input><br/><br/>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-fixed"></input><br/><br/>
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
