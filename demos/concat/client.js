@@ -1,9 +1,6 @@
 let computation_id;
 let party_count;
-
-
-// Called when the connect button is clicked: connect to the server and intialize the MPC.
-function connect() {
+const connect = function() {
   // Disable connect button
   $('#connectBtn').prop('disabled', true);
 
@@ -13,22 +10,12 @@ function connect() {
   // Figure out the hostname of the server from the currently open URL.
   var hostname = window.location.hostname.trim();
   var port = window.location.port;
-  if(port == null || port == '') 
-    port = "8080";
   if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
     hostname = "http://" + hostname;
   if(hostname.endsWith("/"))
     hostname = hostname.substring(0, hostname.length-1);
-  if(hostname.indexOf(":") > -1)
-    hostanme = hostname.substring(0, hostname.indexOf(":"));
   hostname = hostname + ":" + port;
 
-  // Create an MPC instance and connect
-  MPCconnect(hostname, computation_id, party_count);
-}
-
-    // Create a JIFF instance and connect to the server.
-function MPCconnect(hostname, computation_id, party_count) {
   var options = { 'party_count': party_count };
   options.onError = function(error) { $("#result").append("<p class='error'>"+error+"</p>"); };
   options.onConnect = function() { $("#concatBtn").attr("disabled", false); $("#result").append("<p>All parties Connected!</p>"); };
@@ -37,24 +24,29 @@ function MPCconnect(hostname, computation_id, party_count) {
 }
 
 
+
+/**
+ * Array holds the ascii code of the input text.
+ */
 const code = [];
 const process = function() {
   $('#concatBtn').attr('disabled', true);
 
   let arr = document.getElementById('inputText').value;
-  console.log(arr);
 
   /**
   * Conver the input text into an array of ascii sequence.
   */
   for(let i = 0; i < arr.length; i++)
     code.push(arr.charCodeAt(i));
-  console.log(code);
 
   mpc(code);
 }
 
 const mpc = function(arr) {
+  /**
+   * Share the lengths of the arrays
+   */
   let lens = jiff_instance.share(arr.length);
   let opened_lengths = {};
 
@@ -71,8 +63,11 @@ const mpc = function(arr) {
   }
 }
 
-const concatinate = function(arr, lengths) { console.log(lengths);
-  jiff_instance.share_array(arr, function(shares) { console.log(shares);
+/**
+ * Function arranges the shares in the array.
+ */
+const concatinate = function(arr, lengths) {
+  jiff_instance.share_array(arr, function(shares) {
     let concatinatedSharesArray = [];
     for(let j in lengths) {
       for(let i = 0; i < shares.length; i++) {
@@ -83,9 +78,15 @@ const concatinate = function(arr, lengths) { console.log(lengths);
   });
 }
 
+
+/**
+ * Open all the shares and add the opened values to the array open_result.
+ * 
+ * When all the values are received convert the values back to a string and display it.
+ */
 let open_result = [];
 let open_counter = 0;
-const open_shares = function(shares_array) { console.log(shares_array)
+const open_shares = function(shares_array) {
   for(let i = 0; i < shares_array.length; i++) {
     (function(index) {
       shares_array[i].open(function(result) {
