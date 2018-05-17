@@ -28,6 +28,6 @@ options.onConnect = function() {
 }
 
 var base_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", computation_id, options);
-var bignum_instance = require('../../lib/ext/jiff-client-bignumber').make_jiff(base_instance, options)
-jiff_instance = require('../../lib/ext/jiff-client-fixedpoint').make_jiff(base_instance, { digits: 4}); // Max bits allowed after decimal.
+base_instance = require('../../lib/ext/jiff-client-bignumber').make_jiff(base_instance, options)
+jiff_instance = require('../../lib/ext/jiff-client-fixedpoint').make_jiff(base_instance, { decimal_digits: 5, integral_digits: 5});
 jiff_instance.connect();
