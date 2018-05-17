@@ -325,7 +325,6 @@ const generateNodesList = function() {
             if(l.length > 0)
                 nodesList.push(l);
         });
-        console.log("nl"); nodesList.forEach(t => console.log(t));
         return nodesList;
     }
 }
@@ -436,7 +435,6 @@ const addArcToForest = function(newArc) {
         displayArc(newArc);
         newArc.ref.added = true;
     }
-    // console.log("==forest"); forest.forEach(t => {console.log('>tree'); t.forEach(a => console.log(a))});
 }
 /**
  * Adds an arc to a tree without duplicating it

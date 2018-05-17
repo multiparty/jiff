@@ -68,6 +68,14 @@ let ownedEdges = [];
 let totalOwners = [];
 let ownersCounter = 0;
 
+
+
+let tempArrayBetweenOwnedEdgesAndEdges = [];
+let ownedTreesCounter;
+const tempSharesAndTags = {};
+
+
+
 const connect = function() {
     $('#connectButton').prop('disabled', true);
     var computation_id = $('#computation_id').val();
@@ -299,7 +307,7 @@ function start() {
 
 const nodesListHandler = function(sender, nodesList) {
     allPartiesNodesArrays[sender] = new Set(JSON.parse(nodesList));
-    if(sender == partyPointer) 
+    if(sender == partyPointer)
         while(allPartiesNodesArrays[partyPointer]) {
             for (let elem of allPartiesNodesArrays[sender]) {
                 allNodesSet.add(elem);
@@ -460,7 +468,7 @@ const localComputation = function() {
         if(s.owned)
             ownedEdges[s.index] = null;
         else
-            edges.splice[s.index] = null;
+            edges[s.index] = null;
     });
     ownedEdges = ownedEdges.filter(e => e);
     edges = edges.filter(e => e);
@@ -497,9 +505,6 @@ const localComputationResultHandler = function(sender, result) {
             console.timeEnd('Total');
     }
 }
-
-let tempArrayBetweenOwnedEdgesAndEdges = [];
-let ownedTreesCounter;
 
 const shareCutLists = function() {
     let arrayToShare = [];
@@ -550,7 +555,7 @@ const shareCutLists = function() {
     jiff_instance.emit('cut-lists', null, JSON.stringify({subscribe:ownedTreesCounter > 0, array:arrayToShare}));
 }
 
-const tempSharesAndTags = {};
+
 
 const cutListsHandler = function(sender, cutlists) {
     let parsed = JSON.parse(cutlists);
@@ -559,7 +564,7 @@ const cutListsHandler = function(sender, cutlists) {
         totalOwners.splice(totalOwners.indexOf(sender), 1);
 
     // Loop over the tagList and add missing nodes if any
-    sharesAndTags[sender].forEach(tag => {
+    tempSharesAndTags[sender].forEach(tag => {
         let node = cy.getElementById(tag.start);
         if(node.length == 0) {
             cy.add({
