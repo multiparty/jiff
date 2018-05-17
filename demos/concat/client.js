@@ -1,12 +1,14 @@
+let computation_id;
+let party_count;
+
 
 // Called when the connect button is clicked: connect to the server and intialize the MPC.
 function connect() {
   // Disable connect button
   $('#connectBtn').prop('disabled', true);
 
-  // Figure out parameters to intialize the instance.
-  var computation_id = 1;
-  var party_count = 2;
+  computation_id = $('#computation_id').val();
+  party_count = parseInt($('#count').val());
   
   // Figure out the hostname of the server from the currently open URL.
   var hostname = window.location.hostname.trim();
@@ -34,77 +36,68 @@ function MPCconnect(hostname, computation_id, party_count) {
   jiff_instance = jiff.make_jiff(hostname, computation_id, options);
 }
 
-function process() {
+
+const code = [];
+const process = function() {
   $('#concatBtn').attr('disabled', true);
 
-  var arr = JSON.parse(document.getElementById('inputText').value);
+  let arr = document.getElementById('inputText').value;
+  console.log(arr);
 
-  for (var i = 0; i < arr.length; i++) {
-    if (typeof arr[i] !== 'number') {
-      return;
-    }
-  }
-  mpc(arr);
+  /**
+  * Conver the input text into an array of ascii sequence.
+  */
+  for(let i = 0; i < arr.length; i++)
+    code.push(arr.charCodeAt(i));
+  console.log(code);
+
+  mpc(code);
 }
 
-function shareElems(arr, maxLen) {
-  var i = 0;
-  var shares = [];
+const mpc = function(arr) {
+  let lens = jiff_instance.share(arr.length);
+  let opened_lengths = {};
 
-  for (var i = 0; i < arr.length; i++) {
-    shares.push(jiff_instance.share(arr[i]));
+  let opened_lengths_counter = 0;
+
+  for(let p in lens) {
+    (function(party_id) {
+      lens[p].open(function(length_opened) {
+        opened_lengths[party_id] = length_opened;
+        if(++opened_lengths_counter === party_count)
+          concatinate(arr, opened_lengths);
+      });
+    })(p);
   }
-  var lenDiff = maxLen - arr.length;
-
-  for (var i = 0; i < lenDiff; i++) {
-    shares.push(jiff_instance.share(0));
-  }
-
-  return shares;
 }
 
-
-function concat(shares, l1, l2) {
-
-  var allPromises = [];
-
-  for (var i = 0; i < l1; i++) {
-    var p = shares[i][1].open(function(result) {
-      Promise.resolve(result);
-    });
-    allPromises.push(p);
-  }
-
-  for (var i = 0; i < l2; i++) {
-    var p = shares[i][2].open(function(result) {
-      Promise.resolve(result);
-    });
-    allPromises.push(p);
-  }
-
-  Promise.all(allPromises).then(function(values) {
-    document.getElementById('outputText').value = values;
-  });
-
-  return shares;
-}
-
-function mpc(arr){
-  var lens = jiff_instance.share(arr.length);
-
-  lens[1].open(function(result) {
-    var l1 = result;
-    lens[2].open(function(result) {
-      var l2 = result;
-    
-      if (l1 > l2) {
-        maxLen = l1;
-      } else {
-        maxLen = l2;
+const concatinate = function(arr, lengths) { console.log(lengths);
+  jiff_instance.share_array(arr, function(shares) { console.log(shares);
+    let concatinatedSharesArray = [];
+    for(let j in lengths) {
+      for(let i = 0; i < shares.length; i++) {
+        concatinatedSharesArray.push(shares[i][j]);
       }
-
-      var shares = shareElems(arr, maxLen);
-      concat(shares, l1, l2);
-    });
+    }
+    open_shares(concatinatedSharesArray);
   });
+}
+
+let open_result = [];
+let open_counter = 0;
+const open_shares = function(shares_array) { console.log(shares_array)
+  for(let i = 0; i < shares_array.length; i++) {
+    (function(index) {
+      shares_array[i].open(function(result) {
+        open_result[index] = result;
+        if(++open_counter == open_result.length) {
+          let to_string = "";
+          for(let i = 0; i < open_result.length; i++) {
+            to_string += String.fromCharCode(open_result[i]);
+          }
+          document.getElementById('outputText').value = to_string;
+        }
+      });
+    })(i);
+  }
 }
