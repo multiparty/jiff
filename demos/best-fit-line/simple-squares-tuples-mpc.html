@@ -31,7 +31,7 @@
             let jiff_instance;
             let party_count;
             
-            function connect() {
+            const connect = function() {
                 $('#connectButton').prop('disabled', true);
                 var computation_id = $('#computation_id').val();
                 party_count = parseInt($('#count').val());
@@ -111,7 +111,7 @@
             });
 
             // button onclick event to add a data point to the set of points
-            function pushCoordinate() {
+            const pushCoordinate = function() {
                 if(!jiff_instance) {
                     alert("Please connect to jiff server first =)");
                     return;
@@ -140,7 +140,7 @@
             }
 
             // button onclick event to calculate least squares
-            function calculateLeastSquares(values) {
+            const calculateLeastSquares = function(values) {
                 if(!jiff_instance) {
                     alert("Please connect to jiff server first =)");
                     return;
@@ -171,12 +171,6 @@
                     sum_xx = sum_xx.add(sum_xx_shares[i]);
                 }
 
-                let sum_x_squ_shares = jiff_instance.share(values.length);
-                let sum_x_squ = sum_x_squ_shares[1];
-                for(let i = 2; i <= party_count; i++) {
-                    sum_x_squ = sum_x_squ.add(sum_x_squ_shares[i]);
-                }
-
                 let sum_y_shares = jiff_instance.share(values.reduce((acc, curr) => curr.y + acc, 0));
                 let sum_y = sum_y_shares[1];
                 for(let i = 2; i <= party_count; i++) {
@@ -190,7 +184,7 @@
                 }
 
                 let m = (sum_xy.sub((sum_x.mult(sum_y)).div(n)))
-                        .div( sum_xx.sub( (sum_x.mult(sum_x)).div(n) ) );
+                    .div(sum_xx.sub((sum_x.mult(sum_x)).div(n)));
                 m.open(function(m_opened) {
                     let b = (sum_y.sub(sum_x.mult(m_opened))).div(n);
                     b.open(function(b_opened){
@@ -201,7 +195,7 @@
 
 
             // function displays the line of best fit on the graph after the mpc has been done.
-            function display_after_open(m, b, this_axis, values) {
+            const display_after_open = function(m, b, this_axis, values) {
                 console.log("Slope:", m);
                 console.log("Y intercept:", b);
 
@@ -223,13 +217,13 @@
 
 
             // print a line on the graph
-            function printLineToGraph(points) {
+            const printLineToGraph = function(points) {
                 let lineDataset = myChart.data.datasets.filter(dataset => dataset.id == "line");
                 points.forEach(point => lineDataset[0].data.push(point))
                 myChart.update();
             }
 
-            function restrict(x, y) {
+            const restrict = function(x, y) {
                 if(x < minX || x > maxX) {
                     alert("Please input a value between " + minX + " and " + maxX + ".");
                     return 1;
