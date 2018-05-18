@@ -64,7 +64,7 @@
     return x > y ? x : y;
   }
 
-  /** Doubly linked list with add and delete functions and pointers to head and tail**/
+  /** Doubly linked list with add and delete functions and pointers to head and tail **/
   var linked_list = function() {
     // attributes: list.head and list.tail
     // functions: list.add(object) (returns pointer), list.delete(pointer)
@@ -103,8 +103,7 @@
   };
 
   /**
-   * Encrypts and signs the given message, the function will execute message.toString(10)
-   * internally to ensure type of message is a string before encrypting.
+   * Encrypts and signs the given message.
    * @memberof jiff.utils
    * @instance
    * @param {number/string} message - the message to encrypt.
@@ -123,8 +122,7 @@
   }
 
   /**
-   * Decrypts and checks the signature of the given ciphertext, the function will execute
-   * parseInt internally to ensure returned value is a number.
+   * Decrypts and checks the signature of the given ciphertext.
    * @memberof jiff.utils
    * @instance
    * @param {object} cipher_text - the ciphertext to decrypt, includes two properties: 'cipher' and 'nonce'.
@@ -254,6 +252,8 @@
    * Default way of computing shares (can be overriden using hooks).
    * Compute the shares of the secret (as many shares as parties) using shamir secret sharing:
    * a polynomial of degree: ceil(parties/2) - 1 (honest majority).
+   * @memberof jiff.sharing_schemes
+   * @method shamir_share
    * @param {number} secret - the secret to share.
    * @param {array} parties_list - array of party ids to share with.
    * @param {number} threshold - the minimimum number of parties needed to reconstruct the secret, defaults to all the recievers. [optional]
@@ -296,7 +296,7 @@
     return shares;
   }
 
-  /*
+  /**
    * Store the received share and resolves the corresponding
    * deferred if needed.
    * @param {jiff-instance} jiff - the jiff instance.
@@ -324,7 +324,7 @@
     jiff.deferreds[op_id][sender_id].resolve(share);
   }
 
-  /*
+  /**
    * Open up the given share to the participating parties.
    * @param {jiff-instance} jiff - the jiff instance.
    * @param {share-object} share - the share of the secret to open that belongs to this party.
@@ -456,7 +456,7 @@
     return Promise.all(promises);
   }
 
-  /*
+  /**
    * Share the given share to all the parties in the jiff instance.
    * @param {jiff-instance} jiff - the jiff instance.
    * @param {number} share - the share.
@@ -478,7 +478,7 @@
     }
   }
 
-  /*
+  /**
    * Resolves the deferred corresponding to operation_id and sender_id.
    * @param {jiff_instance} jiff - the jiff instance.
    * @param {number} sender_id - the id of the sender.
@@ -503,9 +503,11 @@
     jiff.deferreds[op_id][sender_id].resolve( { "value": share, "sender_id": sender_id, "Zp": Zp } );
   }
 
-  /*
+  /**
    * Uses Lagrange polynomials to interpolate the polynomial
    * described by the given shares (points).
+   * @memberof jiff.sharing_schemes
+   * @method shamir_reconstruct
    * @param {jiff-instance} jiff - the jiff instance.
    * @param {array} shares - an array of objects representing shares to reconstruct, every object has 3 attributes: value, sender_id, Zp.
    * @returns {number} the value of the polynomial at x=0 (the secret value).
@@ -541,7 +543,7 @@
     return recons_secret;
   }
 
-  /*
+  /**
    * Creates 3 shares, a share for every one of three numbers from a beaver triplet.
    * The server generates and sends the triplets on demand.
    * @param {jiff-instance} jiff - the jiff instance.
@@ -583,7 +585,7 @@
     return [ a_share, b_share, c_share ];
   }
 
-  /*
+  /**
    * Store the received beaver triplet and resolves the corresponding deferred.
    * @param {jiff-instance} jiff - the jiff instance.
    * @param {number} triplet_id - the id of the triplet.
@@ -676,7 +678,7 @@
     return share;
   }
 
-  /*
+  /**
    * Store the received share of a previously requested number from the server.
    * @param {jiff-instance} jiff - the jiff instance.
    * @param {number} number_id - the id of the number.
@@ -720,8 +722,6 @@
    * A share is a value wrapper with a share object, it has a unique id
    * (per computation instance), and a pointer to the instance it belongs to.
    * A share also has methods for performing operations.
-   * @memberof jiff
-   * @method secret_share
    * @param {jiff-instance} jiff - the jiff instance.
    * @param {boolean} ready - whether the value of the share is ready or deferred.
    * @param {promise} promise - a promise to the value of the share.
@@ -738,46 +738,45 @@
      * Secret share objects: provides API to perform operations on shares securly, wrap promises
      * and communication primitives to ensure operations are executed when shares are available (asynchrounously)
      * without requiring the user to perform promise management/synchronization.
-     * @memberof jiff
      * @namespace secret-share
      */
     var self = {};
 
     /**
      * @member {jiff-instance} jiff
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.jiff = jiff;
 
     /**
      * @member {boolean} ready
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.ready = ready;
 
     /**
      * @member {promise} promise
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.promise = promise;
     /**
      * @member {number} value
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.value = value;
     /**
      * @member {array} holders
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.holders = holders;
     /**
      * @member {array} threshold
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.threshold = threshold;
     /**
      * @member {number} Zp
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.Zp = Zp;
 
@@ -785,7 +784,7 @@
 
     /**
      * @member {string} id
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.id = id;
 
@@ -793,7 +792,7 @@
      * Gets the value of this share.
      * @method valueOf
      * @returns {number} the value (undefined if not ready yet).
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.valueOf = function() {
       if(ready) return self.value;
@@ -804,7 +803,7 @@
      * Gets a string representation of this share.
      * @method toString
      * @returns {string} the id and value of the share as a string.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.toString = function() {
       if(ready) return self.id + ": " + self.value;
@@ -814,7 +813,7 @@
     /**
      * Logs an error.
      * @method error
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.error = function() { console.log("Error receiving " + self.toString()); };
 
@@ -822,7 +821,7 @@
      * Receives the value of this share when ready.
      * @method receive_share
      * @param {number} value - the value of the share.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.receive_share = function(value) { self.value = value; self.ready = true; self.promise = null; };
 
@@ -831,7 +830,7 @@
      * @method pick_promise
      * @param {share-object} o - the other share object.
      * @returns {promise} the joined promise for both shares (or whichever is pending).
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.pick_promise = function(o) {
       if(self.ready &amp;&amp; o.ready) return null;
@@ -858,7 +857,7 @@
      *                         an automatic operation id is generated by increasing a local counter, default operation ids
      *                         suffice when all parties execute the instructions in the same order. [optional]
      * @returns {secret-share} a new share of the same number.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.refresh = function(op_id) {
       return self.sadd(self.jiff.server_generate_and_share({"number": 0}, self.holders, self.threshold, self.Zp, op_id));
@@ -871,7 +870,7 @@
      * @param {function(string)} error - the function to handle errors and error messages. [optional]
      * @returns {promise} a (JQuery) promise to the open value of the secret.
      * @throws error if share does not belong to the passed jiff instance.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.open = function(success, failure) {
       if(failure == null) failure = self.error;
@@ -886,7 +885,7 @@
      * @param {array} parties - the ids of parties to reveal secret to.
      * @param {function(number)} success - the function to handle successful open.
      * @param {function(string)} error - the function to handle errors and error messages. [optional]
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.open_to = function(parties, success, failure) {
       if(failure == null) failure = self.error;
@@ -900,7 +899,7 @@
      * @method add
      * @param {number/share-object} o - the other operand (can be either number or share).
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.add = function(o) {
       if(self.isConstant(o)) return self.cadd(o);
@@ -913,7 +912,7 @@
      * @method sub
      * @param {number/share-object} o - the other operand (can be either number or share).
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.sub = function(o) {
       if(self.isConstant(o)) return self.csub(o);
@@ -926,7 +925,7 @@
      * @method mult
      * @param {number/share-object} o - the other operand (can be either number or share).
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.mult = function(o) {
       if(self.isConstant(o)) return self.cmult(o);
@@ -939,7 +938,7 @@
      * @method xor_bit
      * @param {number/share-object} o - the other operand (can be either number or share).
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.xor_bit = function(o) {
       if(self.isConstant(o)) return self.cxor_bit(o);
@@ -953,7 +952,7 @@
      * @param {number/share-object} o - the other operand (can be either number or share).
      * @param {number} l - the maximum bit length of the two shares. [optional]
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.gteq = function(o, l) {
       if(self.isConstant(o)) return self.cgteq(o, l);
@@ -967,7 +966,7 @@
      * @param {number/share-object} o - the other operand (can be either number or share).
      * @param {number} l - the maximum bit length of the two shares. [optional]
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.gt = function(o, l) {
       if(self.isConstant(o)) return self.cgt(o, l);
@@ -981,7 +980,7 @@
      * @param {number/share-object} o - the other operand (can be either number or share).
      * @param {number} l - the maximum bit length of the two shares. [optional]
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.lteq = function(o, l) {
       if(self.isConstant(o)) return self.clteq(o, l);
@@ -995,7 +994,7 @@
      * @param {number/share-object} o - the other operand (can be either number or share).
      * @param {number} l - the maximum bit length of the two shares. [optional]
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.lt = function(o, l) {
       if(self.isConstant(o)) return self.clt(o, l);
@@ -1009,7 +1008,7 @@
      * @param {number/share-object} o - the other operand (can be either number or share).
      * @param {number} l - the maximum bit length of the two shares. [optional]
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.eq = function(o, l) {
       if(self.isConstant(o)) return self.ceq(o, l);
@@ -1023,7 +1022,7 @@
      * @param {number/share-object} o - the other operand (can be either number or share).
      * @param {number} l - the maximum bit length of the two shares. [optional]
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.neq = function(o, l) {
       if(self.isConstant(o)) return self.cneq(o, l);
@@ -1037,7 +1036,7 @@
      * @param {number/share-object} o - the other operand (can be either number or share).
      * @param {number} l - the maximum bit length of the two shares. [optional]
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.div = function(o, l) {
       if(self.isConstant(o)) return self.cdiv(o, l);
@@ -1049,7 +1048,7 @@
      * @method cadd
      * @param {number} cst - the constant to add.
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.cadd = function(cst) {
       if (!(self.isConstant(cst))) throw "parameter should be a number (+)";
@@ -1066,7 +1065,7 @@
      * @method csub
      * @param {number} cst - the constant to subtract from this share.
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.csub = function(cst) {
       if (!(self.isConstant(cst))) throw "parameter should be a number (-)";
@@ -1083,7 +1082,7 @@
      * @method cmult
      * @param {number} cst - the constant to multiply to this share.
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.cmult = function(cst) {
       if (!(self.isConstant(cst))) throw "parameter should be a number (*)";
@@ -1100,7 +1099,7 @@
      * @method cdivfac
      * @param {number} cst - the constant by which to divide the share.
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.cdivfac = function(cst) {
       if (!(self.isConstant(cst))) throw "Parameter should be a number (cdivfac)";
@@ -1119,7 +1118,7 @@
      * @method sadd
      * @param {share-object} o - the share to add to this share.
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.sadd = function(o) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (+)";
@@ -1144,7 +1143,7 @@
      * @method ssub
      * @param {share-object} o - the share to subtract from this share.
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.ssub = function(o) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (-)";
@@ -1174,7 +1173,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.smult = function(o, op_id) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (*)";
@@ -1229,7 +1228,7 @@
      * @method cxor_bit
      * @param {number} cst - the constant bit to XOR with (0 or 1).
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.cxor_bit = function(cst) {
       if (!(self.isConstant(cst))) throw "parameter should be a number (^)";
@@ -1241,7 +1240,7 @@
      * @method sxor_bit
      * @param {share-object} o - the share to XOR with.
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.sxor_bit = function(o) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (^)";
@@ -1263,7 +1262,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this >= o, and 0 otherwise.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.sgteq = function(o, l, op_id) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (>=)";
@@ -1386,7 +1385,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this > o, and 0 otherwise.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.sgt = function(o, l, op_id) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (>)";
@@ -1408,7 +1407,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this &lt;= o, and 0 otherwise.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.slteq = function(o, l, op_id) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (&lt;=)";
@@ -1430,7 +1429,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this &lt; o, and 0 otherwise.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.slt = function(o, l, op_id) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (&lt;)";
@@ -1452,7 +1451,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this >= cst, and 0 otherwise.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.cgteq = function(cst, l, op_id) {
       if (!(self.isConstant(cst))) throw "parameter should be a number (>=)";
@@ -1474,7 +1473,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this > cst, and 0 otherwise.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.cgt = function(cst, l, op_id) {
       if (!(self.isConstant(cst))) throw "parameter should be a number (>)";
@@ -1496,7 +1495,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this &lt;= cst, and 0 otherwise.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.clteq = function(cst, l, op_id) {
       if (!(self.isConstant(cst))) throw "parameter should be a number (&lt;=)";
@@ -1519,7 +1518,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this &lt; cst, and 0 otherwise.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.clt = function(cst, l, op_id) {
       if (!(self.isConstant(cst))) throw "parameter should be a number (&lt;)";
@@ -1541,7 +1540,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result, the final result is 1 if this = o, and 0 otherwise.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.seq = function(o, l, op_id) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (==)";
@@ -1569,7 +1568,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.sneq = function(o, l, op_id) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (!=)";
@@ -1591,7 +1590,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.ceq = function(cst, l, op_id) {
       if (!(self.isConstant(cst))) throw "parameter should be a number (==)";
@@ -1613,7 +1612,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.cneq = function(cst, l, op_id) {
       if (!(self.isConstant(cst))) throw "parameter should be a number (!=)";
@@ -1626,7 +1625,7 @@
      * This has to be a share of a BIT in order for this to work properly.
      * @method not
      * @return {share-object} this party's share of the result (negated bit).
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.not = function() {
       return self.cmult(-1).cadd(1);
@@ -1644,7 +1643,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.sdiv = function(o, l, op_id) {
       if (!(o.jiff === self.jiff)) throw "shares do not belong to the same instance (!=)";
@@ -1682,7 +1681,7 @@
      *                         is generated by increasing a local counter, default ids suffice when all parties execute the
      *                         instructions in the same order. [optional]
      * @return {share-object} this party's share of the result.
-     * @memberof jiff.secret-share
+     * @memberof secret-share
      */
     self.cdiv = function(cst, l, op_id) {
       if (!(self.isConstant(cst))) throw "parameter should be a number (/)";
@@ -1705,7 +1704,6 @@
    * You can get an instance of jiff by calling function {@link jiff.make_jiff}.
    * You can access any of the specified members of function with &amp;lt;jiff-instance&amp;gt;.&amp;lt;member-name&amp;gt;.
    * @namespace jiff-instance
-   * @memberof jiff
    * @version 1.0
    */
 
@@ -1717,7 +1715,7 @@
    * @param {string} hostname - server hostname/ip and port.
    * @param {string} computation_id - the id of the computation of this instance.
    * @param {object} options - javascript object with additonal options. [optional],
-   *                           all parameters are optional, However, for private and public key for this party must be both provided (or neither).
+   *                           all parameters are optional, However, private and public key must either be both provided or neither of them provided.
   &lt;pre>
   {
     "triplets_server": "http://hostname:port",
@@ -1745,12 +1743,12 @@
     if(options == null) options = {};
 
     var jiff = {};
-    
+
     /**
      * An array containing the names (jiff-client-[name].js) of extensions
      * applied to this instance.
      * @member {array&lt;string>} modules
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      */
     jiff.modules = [];
@@ -1758,7 +1756,7 @@
     /**
      * The id of this party. [Do not modify]
      * @member {number} id
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      */
     jiff.id = options.party_id;
@@ -1766,7 +1764,7 @@
     /**
      * Stores the computation id. [Do not modify]
      * @member {string} computation_id
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      */
     jiff.computation_id = computation_id;
@@ -1776,7 +1774,7 @@
      * In other words, the public keys for all parties and servers are known,
      * and the server is connected. [Do not use; ufse isReady() instead]
      * @member {boolean} __ready
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      */
     jiff.__ready = false;
@@ -1784,7 +1782,7 @@
     /**
      * Checks whether this instance is connected and the server signaled the start of computation.
      * @method isReady
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      * @return {boolean} true if the instance is ready, false otherwise.
      */
@@ -1862,7 +1860,7 @@
        * A map from party id to public key. Where key is the party id (number), and
        * value is the public key (Uint8Array).
        * @member {object} keymap
-       * @memberof jiff.jiff-instance
+       * @memberof jiff-instance
        * @instance
        */
       jiff.keymap = options.public_keys;
@@ -1872,14 +1870,14 @@
       /**
        * The secret key of this party [(check Library Specs)]{@link https://download.libsodium.org/doc/public-key_cryptography/authenticated_encryption.html}. [Do not modify]
        * @member {Uint8Array} secret_key
-       * @memberof jiff.jiff-instance
+       * @memberof jiff-instance
        * @instance
        */
       jiff.secret_key = options.secret_key;
       /**
        * The public key of this party [(check Library Specs)]{@link https://download.libsodium.org/doc/public-key_cryptography/authenticated_encryption.html}. [Do not modify]
        * @member {Uint8Array} public_key
-       * @memberof jiff.jiff-instance
+       * @memberof jiff-instance
        * @instance
        */
       jiff.public_key = options.public_key;
@@ -1889,7 +1887,7 @@
       /**
        * Total party count in the computation, parties will take ids between 1 to party_count (inclusive).
        * @member {number} party_count
-       * @memberof jiff.jiff-instance
+       * @memberof jiff-instance
        * @instance
        */
       jiff.party_count = options.party_count;
@@ -1902,7 +1900,7 @@
      * Stores listeners that are attached to this JIFF instance, listeners listen to custom messages sent by other parties
      * with a corresponding tag to the tag provided with the listener.
      * @member {object} listeners
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      */
     jiff.listeners = options.listeners
@@ -1911,7 +1909,7 @@
      * The hooks for this instance.
      * Checkout the &lt;a href="hooks.html">hooks documentation&lt;/a>
      * @member {object} hooks
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      */
     jiff.hooks = options.hooks;
@@ -1922,7 +1920,7 @@
     if(jiff.hooks.reconstructShare == null) jiff.hooks.reconstructShare = jiff_lagrange;
     if(jiff.hooks.encryptSign == null) jiff.hooks.encryptSign = encrypt_and_sign;
     if(jiff.hooks.decryptSign == null) jiff.hooks.decryptSign = decrypt_and_sign;
-    
+
     // Array hooks should have empty array by default
     if(jiff.hooks.beforeShare == null) jiff.hooks.beforeShare = [];
     if(jiff.hooks.afterComputeShare == null) jiff.hooks.afterComputeShare = [];
@@ -1938,7 +1936,7 @@
      * Execute all hooks attached to the given name in order.
      * Hooks are executed sequentially such that the first hook's return value is passed into the second and so on.
      * @method execute_array_hooks
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      * @param {string} hook_name - the name of the hook
      * @param {array} params - parameters to pass to the hooks
@@ -1958,7 +1956,7 @@
     /**
      * Stores the parties and callbacks for every .wait_for() registered.
      * @member {array} wait_callbacks
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      */
     jiff.wait_callbacks = [];
@@ -1970,7 +1968,7 @@
      * Computation specified in the callback may assume that these parties are connected,
      * if they are not, the server will handle storing and relaying the needed messages
      * to them when they connect.
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      * @param {array} parties - an array of party ids to wait for.
      * @param {function(jiff-instance)} callback - the function to execute when these parties are known.
@@ -1986,7 +1984,7 @@
     /**
      * Executes all callbacks for which the wait condition has been satisified.
      * Remove all executed callbacks so that they would not be executed in the future.
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      */
     jiff.execute_wait_callbacks = function() {
@@ -2018,7 +2016,7 @@
     /**
      * Total server count in the computation, servers will take ids between "s1" to "s&lt;server_count>" (inclusive).
      * @member {number} server_count
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      */
     jiff.server_count = 1;
@@ -2026,7 +2024,7 @@
     /**
      * Connect to the server and starts listening.
      * @method connect
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      */
     jiff.connect = function() {
       // Send the computation id to the server to receive proper
@@ -2046,7 +2044,7 @@
      * Send a custom message to a subset of parties.
      * Please Note that the message is sent unencrypted and the server can read/forge it.
      * Use jiff.hooks.encryptSign / jiff.hooks.decryptSign
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @function emit
      * @instance
      * @param {string} tag - the tag to attach to the message.
@@ -2065,7 +2063,7 @@
     /**
      * Registers the given function as a listener for messages with the given tag.
      * Removes any previously set listener for this tag.
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @function listen
      * @instance
      * @param {string} tag - the tag to listen for.
@@ -2078,14 +2076,14 @@
     /**
      * Helper functions [DO NOT MODIFY UNLESS YOU KNOW WHAT YOU ARE DOING].
      * @type object
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @namespace helpers
      */
     jiff.helpers = {};
 
     /**
      * Correct Mod instead of javascript's remainder (%).
-     * @memberof jiff.jiff-instance.helpers
+     * @memberof jiff-instance.helpers
      * @function mod
      * @instance
      * @param {number} x - the number.
@@ -2099,7 +2097,7 @@
 
     /**
      * Fast Exponentiation Mod.
-     * @memberof jiff.jiff-instance.helpers
+     * @memberof jiff-instance.helpers
      * @function pow_mod
      * @instance
      * @param {number} base - the base number.
@@ -2127,7 +2125,7 @@
     /**
      * Extended Euclidean for finding inverses.
      * @method extended_gcd
-     * @memberof jiff.jiff-instance.helpers
+     * @memberof jiff-instance.helpers
      * @instance
      * @param {number} a - the number to find inverse for.
      * @param {number} b - the modulos.
@@ -2145,7 +2143,7 @@
     /**
      * Compute Log to a given base.
      * @method bLog
-     * @memberof jiff.jiff-instance.helpers
+     * @memberof jiff-instance.helpers
      * @instance
      * @param {number} value - the number to find log for.
      * @param {number} base - the base (2 by default). [optional]
@@ -2159,7 +2157,7 @@
     /**
      * Check that two sorted arrays are equal.
      * @method array_equals
-     * @memberof jiff.jiff-instance.helpers
+     * @memberof jiff-instance.helpers
      * @instance
      * @param {array} arr1 - the first array.
      * @param {array} arr2 - the second array.
@@ -2178,7 +2176,7 @@
      * Generate a random integer between 0 and max-1 [inclusive].
      * Modify this to change the source of randomness and how it is generated.
      * @method random
-     * @memberof jiff.jiff-instance.helpers
+     * @memberof jiff-instance.helpers
      * @instance
      * @param {number} max - the maximum number.
      * @return {number} the random number.
@@ -2221,7 +2219,7 @@
      * Get the party number from the given party_id, the number is used to compute/open shares.
      * If party id was a number (regular party), that number is returned,
      * If party id refers to the ith server, then party_count + i is returned (i > 0).
-     * @memberof jiff.jiff-instance.helpers
+     * @memberof jiff-instance.helpers
      * @instance
      * @param {number/string} party_id - the party id from which to compute the number.
      * @return {number} the party number (> 0).
@@ -2238,7 +2236,7 @@
      * A share is a value wrapper with a share object, it has a unique id
      * (per computation instance), and a pointer to the instance it belongs to.
      * A share also has methods for performing operations.
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @method secret_share
      * @param {jiff-instance} jiff - the jiff instance.
      * @param {boolean} ready - whether the value of the share is ready or deferred.
@@ -2255,7 +2253,7 @@
     /**
      * Share a secret input.
      * @method share
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      * @param {number} secret - the number to share (this party's input).
      * @param {number} threshold - the minimimum number of parties needed to reconstruct the secret, defaults to all the recievers. [optional]
@@ -2278,7 +2276,7 @@
     /**
      * Open a secret share to reconstruct secret.
      * @method open
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      * @param {share-object} share - this party's share of the secret to reconstruct.
      * @param {array} parties - an array with party ids (1 to n) of receiving parties. [optional]
@@ -2303,7 +2301,7 @@
     /**
      * Opens a bunch of secret shares.
      * @method open_all
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      * @param {array&lt;share-object>} shares - an array containing this party's shares of the secrets to reconstruct.
      * @param {array} parties - an array with party ids (1 to n) of receiving parties. [optional]
@@ -2324,7 +2322,7 @@
      * Receive shares from the specified parties and reconstruct their secret.
      * Use this function in a party that will receive some answer/value but does not have a share of it.
      * @method receive_open
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      * @param {array} parties - an array with party ids (1 to n) specifying the parties sending the shares.
      * @param {number} threshold - the minimimum number of parties needed to reconstruct the secret, defaults to all the senders. [optional]
@@ -2341,7 +2339,7 @@
      * Creates 3 shares, a share for every one of three numbers from a beaver triplet.
      * The server generates and sends the triplets on demand.
      * @method triplet
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      * @param {array} receivers_list - array of party ids that want to receive the triplet shares, by default, this includes all parties. [optional]
      * @param {number} threshold - the minimimum number of parties needed to reconstruct the triplet.
@@ -2358,7 +2356,7 @@
      * Creates shares of an unknown random number. Every party comes up with its own random number and shares it.
      * Then every party combines all the received shares to construct one share of the random unknown number.
      * @method generate_and_share_random
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      * @param {number} threshold - the minimimum number of parties needed to reconstruct the secret, defaults to all the recievers. [optional]
      * @param {array} receivers_list - array of party ids to share with, by default, this includes all parties. [optional]
@@ -2375,7 +2373,7 @@
      * Every party secret shares 0, then every party sums all the shares they received, resulting
      * in a new share of 0 for every party.
      * @method generate_and_share_zero
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      * @param {number} threshold - the minimimum number of parties needed to reconstruct the secret, defaults to all the recievers. [optional]
      * @param {array} receivers_list - array of party ids to share with, by default, this includes all parties. [optional]
@@ -2392,7 +2390,7 @@
      * Use the server to generate shares for a random bit, zero, random non-zero number, or a random number.
      * The parties will not know the value of the number (unless the request is for shares of zero) nor other parties' shares.
      * @method server_generate_and_share
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      * @param {object} options - an object with these properties:
      *                           { "number": number, "bit": boolean, "nonzero": boolean, "max": number}
@@ -2419,7 +2417,7 @@
      * yielded by reconstruction/opening of all these shares is arbitrary and depends
      * on all the input numbers of all parties.
      * @method coerce_to_share
-     * @memberof jiff.jiff-instance
+     * @memberof jiff-instance
      * @instance
      * @param {number} number - the number to coerce.
      * @param {array} holders - array of party ids that will hold the shares, by default, this includes all parties. [optional]
@@ -2665,8 +2663,28 @@
 
   // Exported API
   exports.make_jiff = make_jiff;
-  exports.utils = { 'encrypt_and_sign': encrypt_and_sign, 'decrypt_and_sign': decrypt_and_sign };
-  exports.sharing_schemes = { 'shamir_share': jiff_compute_shares, 'shamir_reconstruct': jiff_lagrange };
+
+  /**
+   * Contains utility functions that may be useful outside of the instance code.
+   * @memberof jiff
+   * @type {object}
+   * @namespace jiff.utils
+   */
+  exports.utils = {
+    'encrypt_and_sign': encrypt_and_sign,
+    'decrypt_and_sign': decrypt_and_sign
+  };
+
+  /**
+   * Contains builtin sharing schemes provided by jiff.
+   * @memberof jiff
+   * @type {object}
+   * @namespace jiff.sharing_schemes
+   */
+  exports.sharing_schemes = {
+    'shamir_share': jiff_compute_shares,
+    'shamir_reconstruct': jiff_lagrange
+  };
 }((typeof exports == 'undefined' ? this.jiff = {} : exports), typeof exports != 'undefined'));
 </code></pre>
         </article>
@@ -2678,13 +2696,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.jiff-instance.html">jiff-instance</a></li><li><a href="jiff.jiff-instance.helpers.html">helpers</a></li><li><a href="jiff.secret-share.html">secret-share</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.sharing_schemes.html">sharing_schemes</a></li><li><a href="jiff.utils.html">utils</a></li><li><a href="jiff-instance.html">jiff-instance</a></li><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="secret-share.html">secret-share</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 15 2018 14:42:51 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 18 2018 13:23:25 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
