@@ -73,12 +73,12 @@ add the name of this module to that array as well.</p>
 </li>
 <li><p><strong>Adding Functionality:</strong> You have two options:</p>
 <ul>
-<li>use <a href="Hooks.md"><strong>hooks</strong></a> to modify the functionality of the base instance &quot;in place&quot; and then return the base instance.</li>
+<li>use <a href="hooks.html"><strong>hooks</strong></a> to modify the functionality of the base instance &quot;in place&quot; and then return the base instance.</li>
 <li>Create a <strong>new object</strong> that contains the base_instance (perhaps as an attribute named &quot;base&quot;), you will need to recreate the JIFF API at the new object level. The implementation of this API can use functionality from base_instance. Return the new object.</li>
 </ul>
 </li>
 <li><p><strong>Overriding Functionality:</strong> If you need to override any feature in jiff (change how share work, or how open work, or how beaver_triplets 
-work etc), look at the <a href="Hooks.md">hooks documentation</a> documentation to see if it is available as a hook, or can be implemented by overriding
+work etc), look at the <a href="hooks.html">hooks documentation</a> documentation to see if it is available as a hook, or can be implemented by overriding
 jiff's built-in helper functions.  If it is, your best bet would be to use it on top of base_instance. Another approach could be to override
 functions inside the base_instance or to create a new object with brand new functions (that may or may not refer to base_instance). These approaches
 can be mixed.</p>
