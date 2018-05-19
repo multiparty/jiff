@@ -67,14 +67,13 @@ const process = function(text) {
  * @param {number} receivedData - The length of party 2's array (the substring array)
  */
 const arrayLengthHandler = function(sender, receivedData) {
-    let arrayLength = parseInt(receivedData);
-
+    let needleLength = parseInt(receivedData);
     jiff_instance.share_array(code, function(shares) { //if shares were shuffled this wouldn't work
         // loop over all the possible starting points of the substring.
-        for(let i = 0; i <= shares.length - arrayLength; i++) {
+        for(let i = 0; i <= shares.length - needleLength; i++) {
             // compare all the characters till the end of the substring
             let comparison = shares[i][1].eq(shares[0][2]);
-            for(let j = 1; j < arrayLength; j++) {
+            for(let j = 1; j < needleLength; j++) {
                 comparison = comparison.mult(shares[i+j][1].eq(shares[j][2]));
             }
             (function(index) {
