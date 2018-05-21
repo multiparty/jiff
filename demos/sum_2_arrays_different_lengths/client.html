@@ -63,10 +63,8 @@
 
                 jiff_instance.share_array(arr, function(r) {
                     let x = r[0][1].add(r[0][2]);
-                    for(let i = 1; i < r.length; i++) {
-                        //if(r[i][1])
+                    for(let i = 1; i < r.length; i++)
                         x = x.add(r[i][1].add(r[i][2]));
-                    }
 
                     x.open().then(function(f) {
                         $('#res').append(f);

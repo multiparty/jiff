@@ -40,12 +40,7 @@ function displayResult() {
 
 }
 // The code for the MPC comparison.
-function mpc(arr) {
-
-  var arr_shares = [];
-  for (var i = 0; i < arr.length; i++) {
-      arr_shares[i] = jiff_instance.share(arr[i]);
-  }
+function mpc(arr_shares) {
 
   for (var i = 0; i < arr_shares.length; i++) {
     arr_shares[i] = arr_shares[i][1].add(arr_shares[i][2]);
@@ -100,7 +95,7 @@ function process() {
     }
   }
 
-  mpc(arr);
+  jiff_instance.share_array(arr, mpc);
 }
   
   
