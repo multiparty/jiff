@@ -52,24 +52,23 @@
             }
 
             function process() {
-                $("#sortBtn").attr("disabled", true);
                 var arr = JSON.parse(document.getElementById('inputText').value);
-
-                for (var i = 0; i < arr.length; i++) {
-                    if (typeof arr[i] !== 'number') {
+                for (var i = 0; i < arr.length; i++)
+                    if (typeof arr[i] !== 'number')
                         return;
-                    }
-                }
 
-                jiff_instance.share_array(arr, {1:3, 2:5}, function(r) {
-                    let x = r[0][1].add(r[0][2]);
-                    for(let i = 1; i < r.length; i++)
-                        x = x.add(r[i][1].add(r[i][2]));
+                $("#sortBtn").attr("disabled", true);
 
-                    x.open().then(function(f) {
-                        $('#res').append(f);
+                jiff_instance.share_array(arr).then(function(r) {
+                    let result;
+                    for(let party in r)
+                        for(let i = 0; i < r[party].length; i++)
+                            result = !result ? r[party][i] : result.add(r[party][i]);
+                    
+                    result.open().then(function(result_opened) {
+                        $('#res').append(result_opened);
                     });
-                }); //}, 0);
+                });
             }
         </script>
     </head>
