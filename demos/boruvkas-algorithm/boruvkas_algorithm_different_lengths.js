@@ -97,6 +97,10 @@ function addEdge() {
         alert('Values must be positive integers only.');
         return;
     }
+    if(startNode === endNode) {
+        alert("Please add edges that join together two different nodes.");
+        return;
+    }
 
     // add first node if it doesn't exist
     let node = cy.getElementById(startNode);
@@ -150,6 +154,10 @@ function addEdge() {
  * The user has completed submitting his inputs. 
  */
 function start() {
+    if(edges.length == 0) {
+        alert("Please add at least one edge");
+        return;
+    }
     $("#addEdge").attr("disabled", true);
     $("#start").attr("disabled", true);
     const tagsArray = [];
@@ -182,11 +190,10 @@ const nodeNamesListHandler = function(sender, tagList) {
                     id: tag.start,
                 },
                 position: {
-                    x: tag.startX, //positions.newXPos,
-                    y: tag.startY //positions.newYPos
+                    x: tag.startX,
+                    y: tag.startY
                 }
             });
-            //positions.incrementPos();
         }
         node = cy.getElementById(tag.end);
         if(node.length == 0) {
@@ -196,11 +203,10 @@ const nodeNamesListHandler = function(sender, tagList) {
                     id: tag.end,
                 },
                 position: {
-                    x: tag.endX, //positions.newXPos,
-                    y: tag.endY //positions.newYPos
+                    x: tag.endX,
+                    y: tag.endY
                 }
             });
-            //positions.incrementPos();
         }
     });
 
@@ -217,16 +223,19 @@ const startProcessing = function() {
 
     // At this point preprocessing could be done to reduce mpc overhead
 
-    edges.forEach((edge, i) => {
-        let s = jiff_instance.share(edge.weight);
-        for(let p in s) {
-            sharesAndTags[p][i]["share"] = s[p];
-        }
-    });
-    console.log(sharesAndTags); //complete!
+    const edgeWeights = edges.map(edge => edge.weight);
+    jiff_instance.share_array(edgeWeights, function(shares_array) {
+        shares_array.forEach((share, i) => {
+            for(let p in share) { // if the extra shares were shuffled this might fail
+                if(sharesAndTags[p][i])
+                    sharesAndTags[p][i]["share"] = share[p];
+            }
+        });
+        console.log(sharesAndTags); //complete!
 
-    // Start looping!
-    mpcIterate(generateNodesList());
+        // Start looping!
+        mpcIterate(generateNodesList());
+    });
 }
 
 /**
@@ -316,7 +325,7 @@ const mpcIterate = function(nodesList) {
          *   min_index = min_index + (i-min_index) * !cmp;
          * }
          */
-        let minimumShare = nodesList[i][0].share;
+        let minimumShare = nodesList[i][0].share; //TODO: fix bug when first min. share is undefined. .lt throws an error
         let minimumIndex = 0;
         for(let j = 1; j < nodesList[i].length; j++) {
             let comparison = minimumShare.lt(nodesList[i][j].share);
