@@ -10,9 +10,9 @@
           $("#output").append("<p class='error'>Party count must be a valid number!</p>");
           $('#connectButton').prop('disabled', false);
         } else {
-          var options = { party_count: party_count};
+          var options = {party_count: party_count, Zp: new BigNumber(32416190071), autoConnect: false };
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
-          options.onConnect = function() { $("#output").append("<p>All parties Connected!</p>"); $("#voteButton").attr("disabled", false); };
+          options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
 
           var hostname = window.location.hostname.trim();
           var port = window.location.port;
@@ -24,9 +24,12 @@
             hostname = hostname.substring(0, hostname.length-1);
           if(hostname.indexOf(":") > -1)
             hostanme = hostname.substring(0, hostname.indexOf(":"));
-  
+
           hostname = hostname + ":" + port;
           jiff_instance = jiff.make_jiff(hostname, computation_id, options);
+          jiff_instance = jiff_bignumber.make_jiff(jiff_instance, options)
+          jiff_instance = jiff_fixedpoint.make_jiff(jiff_instance, { decimal_digits: 5, integral_digits: 5}); // Max bits after decimal allowed
+          jiff_instance.connect();
         }
       }
 
@@ -48,7 +51,7 @@
       }
 
       function generateNoise() {
-        // const variance = 1 / (Math.sqrt(jiff_instance.party_count));
+        
         const variance = calcVariance(0.5, 1, jiff_instance.party_count);
 
         const distribution = gaussian(jiff_instance.party_count, variance);
