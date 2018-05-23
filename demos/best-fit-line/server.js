@@ -15,6 +15,7 @@ jiff_instance.compute('1', function(computation_instance) {
 app.use("/demos", express.static("demos"));
 app.use("/lib", express.static("lib"));
 app.use("/lib/ext", express.static("lib/ext"));
+// app.use("/bignumber.js", express.static("node_modules/bignumber.js"));
 http.listen(8000, function() {
   console.log('listening on *:8000');
 });
