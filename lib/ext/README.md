@@ -1,175 +1,51 @@
-# Hooks
+# Extensions
 
-## Supported Hooks
+All available extensions can be found under lib/ext.
+Extensions extend client, server, or both. Some functionality requires both client and server side 
+extensions to be applied (jiff-<client/server>-bignumber.js).
+For a concrete example of how an extension is created, look at jiff-client-bignumber.js.
 
-Hooks can be passed to an instance at creation time via an options object:
-```javascript
-var options = {};
-options.hooks = {
-  /* Example hooks. */
-  'beforeShare':
-    function(instance, secret, threshold, receivers_list, senders_list, Zp) {
-      /* Some code. */
-      return modified_secret;
-    },
-  'computeShares':
-    function(secret, party_count, parties_list, threshold, Zp) {
-      /* Some code. */
-      return shares_map;
-    }
-};
-var instance = make_jiff('hostname', 'computation_id', options);
-```
+## Creating Extensions
+These are the required steps when you want to create a client extension:
 
-Below we enumerate the possible hooks:
+1. __File Creation:__ Create your extension file, and write a top-level function to scope the module (checkout
+   jiff-client-bignumber.js: something like (function(exports, node) { .... })(typeof(exports) ....) ). This 
+   function acts as the scope for the module, which forbids name conflicts as well as forbid others from modifying 
+   or messing around with the functions and constants inside. Additionally, it makes the code useable 
+   from the browsers and nodejs.
 
-* `beforeShare[Array]: function(instance, secret, threshold, receivers_list, senders_list, Zp)`
-  * Initially, parameters are as passed to `jiff_instance.share` in the client code:
-    * `instance`: the JIFF instance
-    * `secret`: the secret to share
-    * `threshold`: the threshold for sharing
-    * `receivers_list`: array of ids of receiving parties
-    * `senders_list`: array of ids of sending parties (parties that have secrets)
-    * `Zp`: the modulos
-  * Return: must return the (possibly modified) secret to share (to be used as the secret for subsequent hooks in the array).
-* `computeShares[Single]: function(instance, secret, parties_list, threshold, Zp)`
-    * `instance`: the JIFF instance
-    * `secret`: the secret to share
-    * `parties_list`: array of ids of parties for which to create shares of the secret
-    * `threshold`: the threshold for sharing
-    * `Zp`: the modulus
-  * Return: must return a map from `party_id` to its corresponding share value (for every `party_id` in `parties_list`).
-* `afterComputeShare[Array]: function(instance, shares, threshold, receivers_list, senders_list, Zp)`
-    * `instance`: the JIFF instance
-    * `shares`: a map from party_id to the corresponding share value
-    * `threshold`: the threshold for sharing
-    * `receivers_list`: array of ids of receiving parties
-    * `senders_list`: array of ids of sending parties (parties that have secrets)
-    * `Zp`: the modulus
-  * Return: must return a map from `party_id` to its corresponding share value (for every `party_id` in `receivers_list`).
-* `encryptSign[Single]: function(message, encryption_public_key, signing_private_key, operation_type)`
-    * ` message`: the message to encrypt (message type depends on operation type)
-    * ` encryption_public_key`: public key to encrypt with (corresponding to the receiving party)
-    * ` signing_private_key`: secret key to sign with (corresponding to this party)
-    * ` operation_type`: the operation for which this encryption is performed, one of the following: 'share', 'open', 'triplet', 'number'
-  * Return: the signed cipher with any additional properties desired to be sent with it (tags, meta-info, etc.) as a JavaScript object
-* `decryptSign[Single]: function(cipher_text, decryption_secret_key, signing_public_key, operation_type)`
-    * ` cipher_text`: the cipher_text to decrypt, the format and type matches that returned by encryptSign
-    * ` decryption_secret_key`: secret key to decrypt with (corresponding to this party)
-    * ` signing_public_key`: public key to verify signature with (corresponding to sending party)
-    * ` operation_type`: the operation for which this encryption is performed, one of the following: 'share', 'open', 'triplet', 'number'
-  * Throw: if signature did not check out correctly
-  * Return: the decrypted message (format and type must match that of the message passed to the corresponding `encryptSign`).
-* `receiveShare[Array]: function(instance, sender_id, share)`
-    * ` instance`: the JIFF instance
-    * ` sender_id`: party_id of the sender
-    * ` share`: the received share (after decryption)
-  * Return: the share, possibly modified (this is used as share for the subsequent hooks in the array).
-* `beforeOpen[Array]: function(instance, share, parties)`
-    * ` instance`: the JIFF instance
-    * ` share`: the share to open {type: secret_share}
-    * ` parties`: the parties that will receive the open
-  * Return: the share to open, possibly modified (this is used as share for the subsequent hooks in the array).
-* `receiveOpen[Array]: function(instance, sender_id, share, Zp)`
-    * ` instance`: the JIFF instance
-    * ` sender_id`: party_id of the sender
-    * ` share`: the received share (after decryption)
-    * ` Zp`: the modulus
-  * Return: the share, possibly modified (this is used as share for the subsequent hooks in the array).
-* `reconstructShare[Single]: function(instance, shares)`
-    * ` instance`: the JIFF instance
-    * ` shares`: a map from party_id to its corresponding object: `{"value":share, "sender_id":sender_id, "Zp":Zp }`
-  * Return: the reconstructed secret.
-* `afterReconstructShare[Array]: function(instance, value)`
-    * ` instance`: the JIFF instance
-    * ` value`: the reconstructed value as returned by reconstructShare
-  * Return: the reconstructed secret, possibly modified (this is used as value for the subsequent hooks in the array).
-* `receiveTriplet[Array]: function(instance, triplet)`
-    * ` instance`: the JIFF instance
-    * ` triplet`: the received triplet after decryption (a map from *a*, *b*, *c* to the corresponding shares such that *a* * *b* = *c*`)
-  * Return: the triplet, possibly modified (this is used as triplet for the subsequent hooks in the array).
-* `receiveNumber[Array]: function(instance, number)`
-    * `instance`: the JIFF instance
-    * `number`: the received share (after decryption)
-  * Return: the number share, possibly modified (this is used as number for the subsequent hooks in the array).
-* `createSecretShare[Array]: function(instance, secret_share)`
-    * `instance`: the JIFF instance
-    * `secret_share`: the secret_share object as created by JIFF
-  * Return: the `secret_share` object to be used by JIFF, possibly modified (this is used for the subsequent hooks in the array).
+2. __API Name:__ Your API should be reachable through an object name *jiff\_<module_name> = {}*. This is the defacto
+   name space for this module. Calling code on the user-side will use that name (jiff_<module_name>) to access the
+   functions you choose to expose. For nodejs the name space will be ignored and calling code can use the object
+   returned by the require() call corresponding to this module. You will need to modify the parameter passed to
+   the top-level function form step 1 to acheive this.
 
-## Flows Supported By Hooks
+3. __make\_jiff:__ Inside the top-level function, create a function called make_jiff. The function should take two parameters: 
+   * _base\_instance:_ the base instance to wrap the extension around, it can be a basic jiff-client.js instance or an instance of another extension, you can use this instance to perform the basic operation that build  your modules (sharing of integers, simple operations on ints, etc).
+   * _options:_ should be an object that provides your module with whatever options it requires. The options for the base\_instance will be passed to it prior to calling your modules and may not be inside the options object, but you can access them using base\_instance.
 
-Hooks allow to customize the following flows in JIFF without having to explicity modify JIFF's source code.
+4. __Dependencies:__ If your module requires other extensions be applied to the base instance, you can force this through a
+   runtime check (if condition), by seeing if the required extension name exists in base_instance.modules array. You will need to
+   add the name of this module to that array as well.
 
-### Share flow
+5. __Adding Functionality:__ You have two options:
+   * use [__hooks__](Hooks.md) to modify the functionality of the base instance "in place" and then return the base instance.
+   * Create a __new object__ that contains the base\_instance (perhaps as an attribute named "base"), you will need to recreate the JIFF API at the new object level. The implementation of this API can use functionality from base\_instance. Return the new object.
 
-Determines how shares are generated and sent to parties:
+6. __Overriding Functionality:__ If you need to override any feature in jiff (change how share work, or how open work, or how beaver_triplets 
+   work etc), look at the [hooks documentation](Hooks.md) documentation to see if it is available as a hook, or can be implemented by overriding
+   jiff's built-in helper functions.  If it is, your best bet would be to use it on top of base\_instance. Another approach could be to override
+   functions inside the base\_instance or to create a new object with brand new functions (that may or may not refer to base\_instance). These approaches
+   can be mixed.
 
-1. `jiff_instance.share`
-2. hook: `beforeShare`
-3. hook: `computeShare`
-4. hook: `afterComputeShare`
-5. hook: `encryptSign` (`operation_type` = `'share'`)
-6. send shares to parties
-7. party receives share
-8. hook: `decryptSign` (`operation_type` = `'share'`)
-9. hook: `receiveShare`
-10. resolve value into corresponding `secret_share` object
+7. __New Functionality:__ If you want to add additional feature that does not override any other feature in jiff, implement that in a
+   function under a new appropriate name, make sure to document the function properly.
 
-Note that:
-* the party may be receiving a share without sharing anything, in which case only steps 1 and 7-10 are executed;
-* the party may be sharing a value without receiving shares of anything, in which case only steps 1-6 are executed.
+8. __API Exposure:__ Make sure to expose the make\_jiff function, by adding it the exports object passed to the top-level function in step 1.
+   You can expose any additional helpers or functions the same way.
 
-### Open flow
+Keep in mind that others may base extensions on your extension, or that clients may want to combine functionality from two extensions
+together. If you have specific dependencies or if you know that the extension will be incompatible with other extensions, make sure
+to check inside the .modules array, and throw the appropriate errors.
 
-Determine show parties can open (reveal) a share and get the result:
-
-1. `jiff_instance.open/share.open`
-2. hook: `beforeOpen`
-3. share is refreshed and refreshed value is used going forward
-4. hook: `encryptSign` (`operation_type` = `'open'`)
-5. send share to parties
-6. party receives share to open
-7. hook: `decryptSign` (`operation_type` = `'open'`)
-8. hook: `receiveOpen`
-9. hook (once enough shares are received in step 8 above): `reconstructShare`
-10. hook: `afterReconstructShare`
-11. resolve reconstructed value into open promise/callback
-
-Alternatively, a party may receive the result for a share that it does not own, in which case the flow becomes:
-
-* `jiff_instance.receive_open`
-* party receives share to open (step 6 from above sequence)
-* steps 7-11 from above sequence
-
-A party may also hold a share of the result but not receive the result, in which case only steps 1-5 of the original flow are executed.
-
-### Triplet request
-
-1. `jiff_instance.triplet` (e.g. when a multiplication is performed)
-2. hook: `encryptSign` (`operation_type` = `'triplet'`)
-3. request is sent to server
-4. server replies
-5. hook: `decryptSign` (`operation_type` = `'triplet'`)
-6. hook: `receiveTriplet`
-7. resolve triplet into corresponding `secret_share` objects
-
-### Number request
-
-1. `jiff_instance.server_generate_and_share` (e.g. when a share refresh is performed)
-2. hook: `encryptSign` (`operation_type` = `'number'`)
-3. request is sent to server
-4. server replies
-5. hook: `decryptSign` (`operation_type` = `'number'`)
-6. hook: `receiveNumber`
-7. resolve triplet into corresponding `secret_share` objects
-
-### Creation of secret_share objects
-
-This flow is particularly useful when developing modules for JIFF. This allows the user to modify the implementation of a `secret_share` object, including changing how operations are implemented (e.g. addition, multiplication, etc.), registering callbacks for when the share is computed, or adding additional operations:
-
-1. a share is created (e.g. by `jiff_instance.share` or by operating on shares)
-2. `new secret_share` is invoked
-3. the default `secret_share` object is created
-4. hook: `createSecretShare`
-5. returned `secret_share` object is used by JIFF
+**If going with approach 5(b), then you must ensure that your new functions execute the appropriate hooks, either through use of base_instance, or manually.**
