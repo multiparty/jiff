@@ -4,8 +4,11 @@
         <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
         <script src="/socket.io/socket.io.js"></script>
+        <!-- <script src="/bignumber.js/bignumber.min.js"></script> -->
         <script src="/lib/sodium.js"></script>
         <script src="/lib/jiff-client.js"></script>
+        <!-- <script src="/lib/ext/jiff-client-bignumber.js"></script> -->
+        <!-- <script src="/lib/ext/jiff-client-fixedpoint.js"></script> -->
     </head>
     <body>
         <div style="width:300px; height:300px;">
@@ -38,7 +41,7 @@
                 var computation_id = $('#computation_id').val();
                 var party_count = parseInt($('#count').val());
 
-                var options = {party_count:2};
+                var options = {party_count:2}; //, Zp: new BigNumber(32416190071)};
                 options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
                 options.onConnect = function() {
                     console.log("ID:", jiff_instance.id);
@@ -75,6 +78,8 @@
                 
                 hostname = hostname + ":" + port;
                 jiff_instance = jiff.make_jiff(hostname, computation_id, options);
+                // jiff_instance = jiff_bignumber.make_jiff(jiff_instance, options)
+                // jiff_instance = jiff_fixedpoint.make_jiff(jiff_instance, { decimal_digits: 5, integral_digits: 5}); // Max bits after decimal allowed
             }
 
 
