@@ -174,14 +174,7 @@ function start() {
         });
     });
 
-    sharesAndTags[jiff_instance.id] = tagsArray;
-    tagsArray.forEach(tag => {
-        allNodesSet.add(tag.start);
-        allNodesSet.add(tag.end);
-    });
     jiff_instance.emit("node-names-list", null, JSON.stringify(tagsArray));
-    if(Object.keys(sharesAndTags).length === party_count)
-        startProcessing();
 }
 
 /**
@@ -225,7 +218,7 @@ const nodeNamesListHandler = function(sender, tagList) {
     });
 
     // Check the tag lists
-    if(Object.keys(sharesAndTags).length === party_count)
+    if(Object.keys(sharesAndTags).length == party_count)
         startProcessing();
 }
 
@@ -238,13 +231,13 @@ const startProcessing = function() {
     // At this point preprocessing could be done to reduce mpc overhead
 
     const edgeWeights = edges.map(edge => edge.weight);
-    jiff_instance.share_array(edgeWeights).then(function(shares_array) {
-        for(let party in shares_array) {
-            shares_array[party].forEach((share, i) => {
-                if(sharesAndTags[party][i])
-                    sharesAndTags[party][i]["share"] = share;
-            });
-        }
+    jiff_instance.share_array(edgeWeights, function(shares_array) {
+        shares_array.forEach((share, i) => {
+            for(let p in share) { // if the extra shares were shuffled this might fail
+                if(sharesAndTags[p][i])
+                    sharesAndTags[p][i]["share"] = share[p];
+            }
+        });
         console.log(sharesAndTags); //complete!
 
         // Start looping!
@@ -373,11 +366,16 @@ const mpcIterate = function(nodesList) {
                 minimumIndex = ((minimumIndex.sub(j)).mult(comparison)).add(j);
         }
 
+        // no need to open the minimumShare
+        // minimumShare.open(function(minimumShareOpened) {
+        //   console.log("minShare:", minimumShareOpened);
+        // });
+
         ++incompletePromisesCounter;
-        minimumIndex.open(function(minimumIndexOpened) {
+        minimumIndex.open(function(minimumIndexOpened) { console.log(minimumIndexOpened);
             // add share objects with arcs
             addArcToForest(nodesList[i][minimumIndexOpened]);
-            if(--incompletePromisesCounter === 0) {
+            if(--incompletePromisesCounter == 0) {
                 console.timeEnd('Iteration');
                 if(forest.length > 1) {
                     console.time('Iteration');

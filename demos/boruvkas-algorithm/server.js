@@ -9,5 +9,5 @@ app.use("/demos", express.static("demos"));
 app.use("/lib", express.static("lib"));
 app.use("/lib/ext", express.static("lib/ext"));
 http.listen(8000, function() {
-    console.log("Direct your browser to *:8000/demos/boruvkas-algorithm/index.html");
+    console.log("Listening on 8000");
 });

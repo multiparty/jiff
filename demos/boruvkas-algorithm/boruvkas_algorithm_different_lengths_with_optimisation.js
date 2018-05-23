@@ -302,7 +302,9 @@ function start() {
         thisPartyAllNodes.add(edge.start);
         thisPartyAllNodes.add(edge.end);
     });
-    jiff_instance.emit("nodes-list", null, JSON.stringify(Array.from(thisPartyAllNodes)));
+    let allNodesArray = JSON.stringify(Array.from(thisPartyAllNodes));
+    jiff_instance.emit("nodes-list", null, allNodesArray);
+    nodesListHandler(jiff_instance.id, allNodesArray);
 }
 
 const nodesListHandler = function(sender, nodesList) {
@@ -362,7 +364,9 @@ const processOwnedEdges = function() {
             end:e.end, endX:end.position('x'), endY:end.position('y')
         });
     });
-    jiff_instance.emit("edges-list", null, JSON.stringify({subscribe:ownedNodes.size > 0, array:tagsArray}));
+    let toSend = JSON.stringify({subscribe:ownedNodes.size > 0, array:tagsArray});
+    jiff_instance.emit("edges-list", null, toSend);
+    edgesListHandler(jiff_instance.id, toSend);
 }
 
 /**
@@ -408,7 +412,8 @@ const edgesListHandler = function(sender, tagList) {
     });
 
     // Check the tag lists
-    if(Object.keys(sharesAndTags).length == party_count)
+    console.log(Object.keys(sharesAndTags).length);
+    if(Object.keys(sharesAndTags).length === party_count)
         startProcessing();
 }
 
@@ -419,13 +424,13 @@ const startProcessing = function() {
     $("#output").append("<p>Computation Starting!</p>");
 
     const edgeWeights = edges.map(edge => edge.weight);
-    jiff_instance.share_array(edgeWeights, function(shares_array) {
-        shares_array.forEach((share, i) => {
-            for(let p in share) { // if the extra shares were shuffled this might fail
-                if(sharesAndTags[p][i])
-                    sharesAndTags[p][i]["share"] = share[p];
-            }
-        });
+    jiff_instance.share_array(edgeWeights).then(function(shares_array) { console.log("here");
+        for(let party in shares_array) {
+            shares_array[party].forEach((share, i) => {
+                if(sharesAndTags[party][i])
+                    sharesAndTags[party][i]["share"] = share;
+            });
+        }
 
         // Start looping!
         mpcIterate(generateNodesList());
@@ -485,7 +490,7 @@ const localComputation = function() {
 
 
     ++ownersCounter;
-    jiff_instance.emit("local-computation-result", otherParties, JSON.stringify(resSend));
+    jiff_instance.emit("local-computation-result", null, JSON.stringify(resSend));
 }
 
 const localComputationResultHandler = function(sender, result) {
@@ -548,14 +553,12 @@ const shareCutLists = function() {
             }
         } else
             ++ownedTreesCounter;
-
-
     }
     
-    jiff_instance.emit('cut-lists', null, JSON.stringify({subscribe:ownedTreesCounter > 0, array:arrayToShare}));
+    let cl = JSON.stringify({subscribe:ownedTreesCounter > 0, array:arrayToShare});
+    jiff_instance.emit('cut-lists', null, cl);
+    cutListsHandler(jiff_instance.id, cl);
 }
-
-
 
 const cutListsHandler = function(sender, cutlists) {
     let parsed = JSON.parse(cutlists);
@@ -596,13 +599,13 @@ const cutListsHandler = function(sender, cutlists) {
     // Check the tag lists
     if(Object.keys(tempSharesAndTags).length == party_count) {
         const edgeWeights = tempArrayBetweenOwnedEdgesAndEdges.map(edge => edge.weight);
-        jiff_instance.share_array(edgeWeights, function(shares_array) {
-            shares_array.forEach((share, i) => {
-                for(let p in share) { // if the extra shares were shuffled this might fail
-                    if(tempSharesAndTags[p][i])
-                        tempSharesAndTags[p][i]["share"] = share[p];
-                }
-            });
+        jiff_instance.share_array(edgeWeights).then(function(shares_array) {
+            for(let party in shares_array) {
+                shares_array[party].forEach((share, i) => {
+                    if(tempSharesAndTags[party][i])
+                        tempSharesAndTags[party][i]["share"] = share;
+                });
+            }
             for(let snt in sharesAndTags) {
                 tempSharesAndTags[snt].forEach(s => {
                     sharesAndTags[snt].push(s);
