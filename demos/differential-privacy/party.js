@@ -61,7 +61,6 @@
 
       function sumShares(shares) {
         var sum = shares["1"];
-        console.log(sum)
 
         for (var i = 2; i <= Object.keys(shares).length; i++) {
           sum = sum.add(shares[i])
@@ -75,23 +74,25 @@
         $("#output").append("<p>Starting...</p>");
 
         const votes = jiff_instance.share(inputs[0]);
+        const noises = jiff_instance.share(inputs[1]);
 
-        voteSum = sumShares(votes);
+        const voteSum = sumShares(votes);
+        const noiseSum = sumShares(noises);
 
-        jiff_instance.open(voteSum).then(function(values) {
-          console.log(values);
-        });
+        const finalSum = voteSum.sadd(noiseSum);
+
+        jiff_instance.open(finalSum).then(handleResult);
       }
 
       function handleResult(results) {
-
         console.log('results',results)
-        // for(var i = 0; i < results.length; i++) {
-        //   if(results[i] == null) continue;
-        //   $("#res"+i).html(results[i]);
-        // }
 
-        // $("#sumButton").attr("disabled", false);
+        for(var i = 0; i < results.length; i++) {
+          if(results[i] == null) continue;
+          $("#res"+i).html(results[i]);
+        }
+
+        $("#sumButton").attr("disabled", false);
       }
 
       function handleError() {
