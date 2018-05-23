@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Sum integers under MPC</title>
+    <title>Vote under MPC</title>
     <style>
       .error {
         color: #FF0000;
@@ -24,8 +24,8 @@
         } else {
           var options = { party_count: party_count};
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
-          options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
-          
+          options.onConnect = function() { $("#output").append("<p>All parties Connected!</p>"); $("#voteButton").attr("disabled", false); };
+
           var hostname = window.location.hostname.trim();
           var port = window.location.port;
           if(port == null || port == '') 
@@ -42,45 +42,83 @@
         }
       }
 
-      function sum() {
-        var input = parseInt($("#number").val());
 
-        if(isNaN(input))
-          $("#output").append("<p class='error'>Input a valid number!</p>");
-        else if(100 < input || input < 0 || input != Math.floor(input))
-          $("#output").append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
-        else if(jiff_instance == null || !jiff_instance.isReady())
-          alert("Please wait!");
-        else
-          MPC(input);
+
+      function vote() {
+
+        let vote = 0;
+        if (document.getElementById('hillary').checked) {
+          vote++;
+        }
+
+        const noise = generateNoise();
+
+        MPC([vote, noise]);
+        
+    
       }
 
-      function MPC(input) {
+      function generateNoise() {
+        return 0.5;
+      }
+
+      function applyNoise(shares) {
+
+      }
+
+      function sumShares(shares) {
+        var sum = shares["1"];
+        console.log(sum)
+
+        for (var i = 2; i <= Object.keys(shares).length; i++) {
+          sum = sum.add(shares[i])
+        }   
+        
+        return sum;
+      }
+
+      function MPC(inputs) {
         $("#sumButton").attr("disabled", true);
         $("#output").append("<p>Starting...</p>");
-        var shares = jiff_instance.share(input);
-        
-        var sum = shares[1];
-        for(var i = 2; i <= jiff_instance.party_count; i++)
-          sum = sum.sadd(shares[i]);
-          
-        sum.open(handleResult);          
+
+        const votes = jiff_instance.share(inputs[0]);
+
+        voteSum = sumShares(votes);
+
+        jiff_instance.open(voteSum).then(function(values) {
+          console.log(values);
+        });
       }
 
-      function handleResult(result) {
-        $("#output").append("<p>Result is: " + result + "</p>");
-        $("#sumButton").attr("disabled", false);
+      function handleResult(results) {
+
+        console.log('results',results)
+        // for(var i = 0; i < results.length; i++) {
+        //   if(results[i] == null) continue;
+        //   $("#res"+i).html(results[i]);
+        // }
+
+        // $("#sumButton").attr("disabled", false);
+      }
+
+      function handleError() {
+        console.log("Error in open_all");
       }
     </script>
   </head>
   <body>
     <h1>Connect JIFF</h1>
-    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-sum"></input><br/><br/>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-vote"></input><br/><br/>
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
-    <h1>Sum Numbers under MPC</h1>
-    <label for="number">Input Number (between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="sum();" disabled="disabled" id="sumButton">Sum</button><br/>
+    <h1>Who Did You Vote for in 2016?</h1>
+    <div>
+      <label><input id="hillary" type="radio" name="beer"/> Hillary Clinton</label> &nbsp; <span id="res0"></span><br/>
+      <label><input id="trump" type="radio" name="beer"/> Donald Trump</label> &nbsp; <span id="res1"></span><br/>
+      <br/>
+      <button onclick="vote()" id="voteButton" disabled="disabled">Vote</button>
+    </div>
     <div id="output"></div>
   </body>
 </html>
