@@ -48,16 +48,13 @@ class Node {
 }
 
 const submitArray = function() {
-    $("#submitButton").attr("disabled", true);
     let arr = JSON.parse(document.getElementById('inputText').value);
-
-    for(let i = 0; i < arr.length; i++) {
-        if(typeof arr[i] !== 'number') {
+    for(let i = 0; i < arr.length; i++)
+        if(typeof arr[i] !== 'number')
             return;
-        }
-    }
+    $("#submitButton").attr("disabled", true);
 
-    jiff_instance.share_array(arr, null, function(_, arr) {
+    jiff_instance.share_array(arr).then(function(arr) {
         let concat = [];
         for(let party in arr)
             concat = [...concat, ...arr[party]];
