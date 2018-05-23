@@ -18,7 +18,6 @@ const connect = function() {
             $("#output").append("<br/><p>You are party 1. Please enter a large string. The other party shoule enter a substring of your string.</p>");
         else
             $("#output").append("<br/><p>You are party 2. Please enter a substring you want to find the index of in party 1's string</p>");
-        jiff_instance.listen("array-length", arrayLengthHandler);
     };
     
     var hostname = window.location.hostname.trim();
@@ -50,32 +49,14 @@ const process = function(text) {
         code.push(text.charCodeAt(i));
     }
 
-    /**
-     * The party with ID 2 is expected to enter the substring (having a shorter length than the original string).
-     * 
-     * Party 2 shares the length of his array.
-     * Since party 1 has the array with bigger length, jiff_instance.share_array will compute the maximum length,
-     * which is the length of party 1's array anyway.
-     */
-    if(jiff_instance.id === 2)
-        jiff_instance.emit("array-length", null, text.length);
-}
+    jiff_instance.share_array(code).then(function(shares) {
+        // loop over all the possible starting points of the substring.        
+        for(let i = 0; i <= shares[1].length - shares[2].length; i++) {
+            // compare all the characters till the end of the substring.
+            let comparison = shares[1][i].eq(shares[2][0]);
+            for(let j = 1; j < shares[2].length; j++)
+                comparison = comparison.mult(shares[1][i+j].eq(shares[2][j]));
 
-/**
- * 
- * @param {number} sender - The party id of the sender
- * @param {number} receivedData - The length of party 2's array (the substring array)
- */
-const arrayLengthHandler = function(sender, receivedData) {
-    let needleLength = parseInt(receivedData);
-    jiff_instance.share_array(code, function(shares) { //if shares were shuffled this wouldn't work
-        // loop over all the possible starting points of the substring.
-        for(let i = 0; i <= shares.length - needleLength; i++) {
-            // compare all the characters till the end of the substring
-            let comparison = shares[i][1].eq(shares[0][2]);
-            for(let j = 1; j < needleLength; j++) {
-                comparison = comparison.mult(shares[i+j][1].eq(shares[j][2]));
-            }
             (function(index) {
                 comparison.open(function(result) {
                     // if all characters are equivalent

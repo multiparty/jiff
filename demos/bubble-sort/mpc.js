@@ -16,8 +16,6 @@ function connect() {
     hostname = "http://" + hostname;
   if(hostname.endsWith("/"))
     hostname = hostname.substring(0, hostname.length-1);
-  if(hostname.indexOf(":") > -1)
-    hostanme = hostname.substring(0, hostname.indexOf(":"));
   hostname = hostname + ":" + port;
 
   // Create an MPC instance and connect
@@ -40,13 +38,13 @@ function displayResult() {
 
 }
 // The code for the MPC comparison.
-function mpc(arr_shares) {
+function mpc(arr_shares) { console.log(arr_shares)
 
-  for (var i = 0; i < arr_shares.length; i++) {
-    arr_shares[i] = arr_shares[i][1].add(arr_shares[i][2]);
+  for (var i = 0; i < arr_shares[1].length; i++) {
+    arr_shares[1][i] = arr_shares[1][i].add(arr_shares[2][i]);
   }
-
-  var sorted = bubblesort(arr_shares);
+  
+  var sorted = bubblesort(arr_shares[1]);
 
   displayResults(sorted);
 }
@@ -69,7 +67,7 @@ function bubblesort(arr) {
 
   for (var i = 0; i < arr.length; i++) {
     for (var j = 0; j < (arr.length - i - 1); j++) {
-   
+    
       var a = arr[j];
       var b = arr[j+1];
       var c = a.lt(b);
@@ -94,8 +92,9 @@ function process() {
       return;
     }
   }
+  console.log(arr);
 
-  jiff_instance.share_array(arr, mpc);
+  jiff_instance.share_array(arr, arr.length).then(mpc);
 }
   
   

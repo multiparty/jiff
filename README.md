@@ -79,11 +79,13 @@ The JIFF libraries allow developers to customize or extend their functionality b
 
 The JIFF client and server libraries support hooks. Hooks can be provided in the options parameter during instantiation or afterwards. Hooks allow the introduction of custom functionality to be executed at critical times during the computation, or the introduction of different implementations of specified primitives and operations (e.g. using a different sharing scheme).
 
-The client-side [hooks documentation](lib/ext/README.md) provides more details. If hooks are used to provide important reusable functionality, then it is recommended to bundle these hooks within a JIFF extension.
+The client-side [hooks documentation](lib/ext/Hooks.md) provides more details. If hooks are used to provide important reusable functionality, then it is recommended to bundle these hooks within a JIFF extension.
 
 ### Extensions
 
-JIFF supports implementing extensions on top of the base implementations that can provide additional extended functionality. Some extensions can be found under `lib/ext`. Two important modules are implemented and provided in this repository: bignumbers and fixed point arithmetic. See the documentation inside `src/ext/jiff-client-fixedpoint.js` for instructions on how to create additional extensions.
+JIFF supports implementing extensions on top of the base implementations that can provide additional extended functionality. Some extensions can be found under `lib/ext`. Two important modules are implemented and provided in this repository: bignumbers and fixed point arithmetic.
+
+See the [extensions documentation](lib/ext/README.md) and the documentation inside `src/ext/jiff-client-bignumber.js` for instructions on how to create additional extensions.
 
 Both client and server libraries support extensions. Some extensions require customizing both the server and client libraries to behave properly (such as the bignumbers extension). Other extensions may require only server- or client-side modifications (e.g., the fixed point arithmetic module is only client-side). A server that wants to participate in the computation would require only the client-side extension to use the additional functionality (unless, of course, that extension depends on additional server-side modifications, as well, as in bignumbers).
 
