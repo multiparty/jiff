@@ -47,7 +47,12 @@
       }
 
       function generateNoise() {
-        return 0.5;
+        const variance = 1 / (Math.sqrt(jiff_instance.party_count));
+
+        const distribution = gaussian(jiff_instance.party_count, variance);
+
+        return distribution.ppf(Math.random());
+
       }
 
       function applyNoise(shares) {
