@@ -40,6 +40,7 @@
         }
 
         const noise = generateNoise();
+        console.log(noise)
 
         MPC([vote, noise]);
         
@@ -47,7 +48,8 @@
       }
 
       function generateNoise() {
-        const variance = 1 / (Math.sqrt(jiff_instance.party_count));
+        // const variance = 1 / (Math.sqrt(jiff_instance.party_count));
+        const variance = calcVariance(0.5, 1, jiff_instance.party_count);
 
         const distribution = gaussian(jiff_instance.party_count, variance);
 
@@ -55,8 +57,8 @@
 
       }
 
-      function applyNoise(shares) {
-
+      function calcVariance(epsilon, del, n) {
+        return ((2 * Math.log(1.25/del)) * (((2 * n) - 1) / (epsilon * epsilon))) / n;
       }
 
       function sumShares(shares) {
