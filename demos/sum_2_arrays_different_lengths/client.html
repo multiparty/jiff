@@ -13,6 +13,7 @@
 
 
         <script>
+            "use strict";
             // Called when the connect button is clicked: connect to the server and intialize the MPC.
             function connect() {
                 // Disable connect button
@@ -31,8 +32,6 @@
                     hostname = "http://" + hostname;
                 if(hostname.endsWith("/"))
                     hostname = hostname.substring(0, hostname.length-1);
-                if(hostname.indexOf(":") > -1)
-                    hostanme = hostname.substring(0, hostname.indexOf(":"));
                 hostname = hostname + ":" + port;
 
                 // Create an MPC instance and connect
