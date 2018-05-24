@@ -28,15 +28,14 @@ options.onConnect = function(jiff_instance) {
   var noise = nOVERc.cmult(c).sadd(nMODc);
   
   var noisyX = x.sadd(noise);
-  var wrapped = x.sgt(noisyX, null, "<1");
-
   noisyX.open(function(noisyX) {
+    var wrapped = x.cgt(noisyX);
     noisyX = Math.floor(noisyX/c);
 
     // if did not wrap
     var unCorrectedQuotient = nOVERc.cmult(-1).cadd(noisyX);
     var verifyX = unCorrectedQuotient.cmult(c);
-    var isNotCorrect = verifyX.sgt(x, null, "<2");
+    var isNotCorrect = verifyX.sgt(x);
     var noWrapAnswer = unCorrectedQuotient.ssub(isNotCorrect); // if incorrect => isNotCorrect = 1 => quotient = unCorrectedQuotient - 1   
 
     // if wrapped
