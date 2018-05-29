@@ -6,7 +6,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
 
-    <!-- JIFF related files -->  
+    <!-- JIFF related files -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="/lib/sodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
@@ -17,26 +17,32 @@
   <body>
     <div class="container">
       <div class="row">
-        <h1>Odd-Even Merge Sort</h1>        
+        <h1>Odd-Even Merge Sort</h1>
       </div>
-    
+
+      <div class="row">
+          Enter your array (JSON format) here: all parties' arrays must be of the same length.
+      </div>
+
       <div class="row">
         <textarea id="inputText"></textarea>
       </div>
+
       <br/><br/>
       <div id="btns" class="row">
         <button class="btn btn-secondary" id="connectBtn" onclick="connect();">connect</button>
         <button class="btn btn-secondary" id="sortBtn" disabled="disabled" onclick="process();">sort</button>
       </div>
+
       <br/>
       <div class="row">
         <h4>Result</h4>
-    </div>
-    <div class="row" id="result"></div>
-      <textarea rows="4" cols="50" id="resultText">
-      </textarea>
-    </div>
+      </div>
 
-    </body>
+      <div class="row" id="result"></div>
+        <textarea rows="4" cols="50" id="resultText"></textarea>
+      </div>
+    </div>
+  </body>
 
 </html>
