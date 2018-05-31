@@ -32,29 +32,27 @@
 
 
 
-      function vote() {
+      function submit() {
 
-        let vote = 0;
-        if (document.getElementById('hillary').checked) {
-          vote++;
-        }
-
+        const value = parseInt(document.getElementById('input').value);
         const noise = generateNoise();
-        console.log(noise)
 
-        MPC([vote, noise]);
+        const noisyData = value + noise;
+        console.log(noisyData, noise);
+
+        MPC(noisyData);
         
     
       }
 
       function generateNoise() {
-        // const variance = 1 / (Math.sqrt(jiff_instance.party_count));
         const variance = calcVariance(0.5, 1, jiff_instance.party_count);
 
         const distribution = gaussian(jiff_instance.party_count, variance);
 
-        return distribution.ppf(Math.random());
+        const rand = distribution.ppf(Math.random());
 
+        return Math.floor(rand);
       }
 
       function calcVariance(epsilon, del, n) {
@@ -71,19 +69,14 @@
         return sum;
       }
 
-      function MPC(inputs) {
+      function MPC(input) {
         $("#sumButton").attr("disabled", true);
         $("#output").append("<p>Starting...</p>");
 
-        const votes = jiff_instance.share(inputs[0]);
-        const noises = jiff_instance.share(inputs[1]);
+        const data = jiff_instance.share(input);
+        const totalSum = sumShares(data);
 
-        const voteSum = sumShares(votes);
-        const noiseSum = sumShares(noises);
-
-        const finalSum = voteSum.sadd(noiseSum);
-
-        jiff_instance.open(finalSum).then(handleResult);
+        jiff_instance.open(totalSum).then(handleResult);
       }
 
       function handleResult(results) {

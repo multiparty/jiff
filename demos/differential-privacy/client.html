@@ -17,16 +17,15 @@
   </head>
   <body>
     <h1>Connect JIFF</h1>
-    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-vote"></input><br/><br/>
+    <label for="computation_id">Computation ID</label><input id="computation_id"></input><br/><br/>
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
     <h1>Who Did You Vote for in 2016?</h1>
     <div>
-      <label><input id="hillary" type="radio" name="beer"/> Hillary Clinton</label> &nbsp; <span id="res0"></span><br/>
-      <label><input id="trump" type="radio" name="beer"/> Donald Trump</label> &nbsp; <span id="res1"></span><br/>
+      <label><input id="input" type="text" name="input"/> 
       <br/>
-      <button onclick="vote()" id="voteButton" disabled="disabled">Vote</button>
+      <button onclick="submit()" id="voteButton" disabled="disabled">submit</button>
     </div>
     <div id="output"></div>
   </body>
