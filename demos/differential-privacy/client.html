@@ -11,6 +11,10 @@
     <script src="/lib/jiff-client.js"></script>
     <script src="./gaussian.js"></script>
     <script src="./party.js"></script>
+
+    <!-- Do we really need to include this?? -->
+    <script src="./big-number.js"></script>
+
     <script src="/lib/ext/jiff-client-bignumber.js"></script>
     <script src="/lib/ext/jiff-client-fixedpoint.js"></script>
 
@@ -53,12 +57,15 @@
       <h1>Silent Voters</h1>
       <p>Nearly 4 in 10 voters voted for Trump in the 2016 election but did not confess to their friends or polls, according to a survey from Zogby Analytics</p>
       <div>
-        <label><input id="hillary" type="radio" name="beer"/> Hillary Clinton</label> &nbsp; <span id="res0"></span><br/>
-        <label><input id="trump" type="radio" name="beer"/> Donald Trump</label> &nbsp; <span id="res1"></span><br/>
+        <input id="input" type="text"/>
         <br/>
-        <button onclick="vote()" id="voteButton" disabled="disabled">Vote</button>
+        <!-- <button onclick="vote()" id="voteButton" disabled="disabled">Vote</button> -->
+        <button onclick="vote()" id="voteButton">Vote</button>
+
       </div>
       <div id="output"></div>
+
+      <!-- PUT GRAPHS HERE  -->
     </div>
   </body>
 </html>

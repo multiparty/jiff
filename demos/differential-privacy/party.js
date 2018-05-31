@@ -10,6 +10,7 @@
           $("#output").append("<p class='error'>Party count must be a valid number!</p>");
           $('#connectButton').prop('disabled', false);
         } else {
+          // var options = {party_count: party_count};
           var options = {party_count: party_count, Zp: new BigNumber(32416190071), autoConnect: false };
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
           options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
@@ -37,13 +38,15 @@
 
       function vote() {
 
-        let vote = 0;
-        if (document.getElementById('hillary').checked) {
-          vote++;
-        }
+        // let vote = 0;
+        // if (document.getElementById('hillary').checked) {
+        //   vote++;
+        // }
+        var value = $('#input').val();
 
+        // console.log(value)
         const noise = generateNoise();
-        console.log(noise)
+        // console.log(noise)
 
         MPC([vote, noise]);
         
