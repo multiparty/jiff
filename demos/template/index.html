@@ -24,7 +24,7 @@
         } else {
           var options = { party_count: party_count};
           options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
-          options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
+          options.onConnect = function() { $("inputButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
           
           var hostname = window.location.hostname.trim();
           var port = window.location.port;
@@ -42,7 +42,7 @@
         }
       }
 
-      function sum() {
+      function submit() {
         var input = parseInt($("#number").val());
 
         if(isNaN(input))
@@ -56,20 +56,23 @@
       }
 
       function MPC(input) {
-        $("#sumButton").attr("disabled", true);
+        $("inputButton").attr("disabled", true);
         $("#output").append("<p>Starting...</p>");
         var shares = jiff_instance.share(input);
+    
         
-        var sum = shares[1];
-        for(var i = 2; i <= jiff_instance.party_count; i++)
-          sum = sum.sadd(shares[i]);
-          
-        sum.open(handleResult);          
+        /* * * * * * * * * * * * * * *
+         *   YOUR CODE GOES HERE!!!  *
+         * * * * * * * * * * * * * * */
+
+
+
+
       }
 
       function handleResult(result) {
         $("#output").append("<p>Result is: " + result + "</p>");
-        $("#sumButton").attr("disabled", false);
+        $("inputButton").attr("disabled", false);
       }
     </script>
   </head>
@@ -79,8 +82,8 @@
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
-    <h1>Sum Numbers under MPC</h1>
-    <label for="number">Input Number (between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="sum();" disabled="disabled" id="sumButton">Sum</button><br/>
+    <h1>DEMO NAME</h1>
+    <label for="number">Input</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="submit();" disabled="disabled" id="inputButton">submit</button><br/>
     <div id="output"></div>
   </body>
 </html>
