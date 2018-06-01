@@ -21,5 +21,5 @@ http.listen(8080, function() {
   console.log('listening on *:8080');
 });
 
-console.log("Direct your browser to *:8080/demos/sum-fixed/client.html.");
+console.log("Please run the demo in node.js using the party.js file.");
 console.log()

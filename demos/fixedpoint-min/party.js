@@ -20,12 +20,8 @@ var options = {party_count: party_count, party_id: party_id, Zp: new BigNumber(3
 options.onConnect = function() {
   try {
     var shares = jiff_instance.share(input);
-    var sum = shares[1];
-
-    for(var i = 2; i <= jiff_instance.party_count; i++)
-      sum = sum.sadd(shares[i]);
-
-    sum.open(function(r) { console.log(r.toString(10)); jiff_instance.disconnect(); } );
+    var min = shares[1].sadd(shares[2].slt(shares[1], 30).smult(shares[2].ssub(shares[1])));    
+    min.open(function(r) { console.log("MULT:", r.toString(10)); jiff_instance.disconnect(); } );
   } catch (err) {
     console.log(err);
   }
