@@ -5,8 +5,18 @@
       .error {
         color: #FF0000;
       }
+      .borderr {
+        border:3px solid black;
+      }
+      .inlinee {
+        display:inline-block;
+      }
+      .spacingSeparator {
+        width:20px;
+      }
     </style>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/lib/sodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
@@ -31,5 +41,19 @@
       <button onclick="submit()" id="voteButton" disabled="disabled">submit</button>
     </div>
     <div id="output"></div>
+    <div class="borderr">
+      <div class="inlinee">
+        <div style="width:300px; height:300px;">
+          <canvas id="chart1" width="400" height="400"></canvas>
+        </div>
+      </div>
+      <div class="inlinee spacingSeparator"></div>
+      <div class="inlinee">
+        <div style="width:300px; height:300px;">
+          <canvas id="chart2" width="400" height="400"></canvas>
+        </div>
+      </div>
+      <script src="display.js"></script>
+    </div>
   </body>
 </html>
