@@ -7,7 +7,7 @@
  */
 
 // Jiff library
-var jiff_client = require('../../lib/jiff-client');
+var jiff_client = require('../../../lib/jiff-client');
 $ = require('jquery-deferred');
 
 // How many keys in a batch

@@ -3,7 +3,7 @@ then
   cd ..
 fi
 
-node parties/server.js &
+node server.js &
 node parties/backend-server.js &
 
 read -p $'Press enter party connects\n\n'

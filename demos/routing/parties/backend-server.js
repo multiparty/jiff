@@ -7,7 +7,7 @@
  */
 
 // Jiff library
-var jiff_client = require('../../lib/jiff-client');
+var jiff_client = require('../../../lib/jiff-client');
 
 /*
  * Global variables and counter,
@@ -42,7 +42,7 @@ function startServer() {
   app.get('/recompute/:input', function(req, res) {
     console.log("Recomputation requested!");
 
-    var shortest_path_table = require("./data/"+req.params.input+".json");
+    var shortest_path_table = require("../data/"+req.params.input+".json");
     mpc_preprocess(shortest_path_table);
 
     res.send("Recomputed! MPC Preprocessing now underway");
