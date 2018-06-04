@@ -1,0 +1,18 @@
+{
+  "name": "routing-jiff",
+  "version": "1.0.0",
+  "description": "Basic Route Recommendation Service",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kinan Dak Albab <babman@bu.edu>, Rawane Issa <ra1issa@bu.edu",
+  "license": "MIT",
+  "dependencies": {
+    "elliptic": "^6.4.0",
+    "express": "^4.16.3",
+    "bignumber.js": "^5.0.0",
+    "jquery-deferred": "^0.3.1",
+    "libsodium-wrappers": "^0.7.2",
+    "socket.io": "^2.0.2"
+  }
+}

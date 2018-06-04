@@ -1,0 +1,65 @@
+Metadata-Version: 2.0
+Name: Rtree
+Version: 0.8.3
+Summary: R-Tree spatial index for Python GIS
+Home-page: http://toblerity.github.com/rtree/
+Author: Howard Butler
+Author-email: hobu@hobu.net
+License: LGPL
+Keywords: gis spatial index r-tree
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: C
+Classifier: Programming Language :: C++
+Classifier: Programming Language :: Python
+Classifier: Topic :: Scientific/Engineering :: GIS
+Classifier: Topic :: Database
+Requires-Dist: setuptools
+
+Rtree: Spatial indexing for Python
+------------------------------------------------------------------------------
+
+`Rtree`_ is a `ctypes`_ Python wrapper of `libspatialindex`_ that provides a 
+number of advanced spatial indexing features for the spatially curious Python 
+user.  These features include:
+
+* Nearest neighbor search
+* Intersection search
+* Multi-dimensional indexes
+* Clustered indexes (store Python pickles directly with index entries)
+* Bulk loading
+* Deletion
+* Disk serialization
+* Custom storage implementation (to implement spatial indexing in ZODB, for example)
+
+Documentation and Website
+..............................................................................
+
+http://toblerity.github.com/rtree/
+
+Requirements
+..............................................................................
+
+* `libspatialindex`_ 1.7.0+.
+
+Download
+..............................................................................
+
+* PyPI http://pypi.python.org/pypi/Rtree/
+* Windows binaries http://www.lfd.uci.edu/~gohlke/pythonlibs/#rtree
+
+Development
+..............................................................................
+
+* https://github.com/Toblerity/Rtree
+
+.. _`R-trees`: http://en.wikipedia.org/wiki/R-tree
+.. _`ctypes`: http://docs.python.org/library/ctypes.html
+.. _`libspatialindex`: http://libspatialindex.github.com
+.. _`Rtree`: http://toblerity.github.com/rtree/
+
+
