@@ -50,7 +50,6 @@ function process() {
 function mpc(arr) {
   // share array
   jiff_instance.share_array(arr, arr.length).then(function(shares) {
-    console.log(shares);
     
     // for every index i: sum all elements at index i from all parties.
     var array = [];
