@@ -23,7 +23,7 @@ const getRequest = function(url) {
 };
 
 var jiff_instance = jiff.make_jiff("dummy", "dummy", { autoConnect: false});
-jiff_instance.party_count = 4;
+jiff_instance.party_count = 3;
 
 var query_count = 1;
 
@@ -32,12 +32,10 @@ var dist = parseInt(process.argv[3], 10);
 var jumps = new Array();
 function get_one_step(source, dist) {
   var query_number = query_count++;
-  var source_shares = jiff.sharing_schemes.shamir_share(jiff_instance, source, [2, 3, 4], 3, jiff_instance.Zp);
-  var dist_shares = jiff.sharing_schemes.shamir_share(jiff_instance, dist, [2, 3, 4], 3, jiff_instance.Zp);
 
   var promises = [];
-  for(var i = 2; i <= 4; i++)
-    promises.push(getRequest("http://localhost:911"+i+"/query/"+query_number+"/"+source_shares[i]+"/"+dist_shares[i]));
+  for(var i = 2; i <= 3; i++)
+    promises.push(getRequest("http://localhost:911"+i+"/query/"+query_number+"/"+source+"/"+dist));
 
   Promise.all(promises).then(function(results) {
     for(var i = 0; i < results.length; i++)

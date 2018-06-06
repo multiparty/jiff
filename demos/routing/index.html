@@ -12,6 +12,12 @@
     crossorigin="anonymous">
   </script>
 
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/lib/sodium.js"></script>
+  <script src="lib/jiff-client.js"></script>
+  <script src="https://raw.githubusercontent.com/indutny/elliptic/master/dist/elliptic.min.js"> </script>
+  <script src="client.js"></script>
+
 	<script>
     $( document ).ready(function() {
      console.log( "ready!" );
@@ -528,18 +534,7 @@
 
                 //make ajax call to server
                 //'https://hri.appliedmpc.org/calculate/'
-                $.ajax({
-                  type: 'GET',
-                  url: "https://hri.appliedmpc.org/calculate/"+ window.localStorage.getItem("StartPointId")+","+window.localStorage.getItem("StopPointId"),
-                  datatype: 'json',
-                  success: function (data) {
-                    //drawLines between points
-                    drawPath(data["result"]);                
-                  },
-                  error: function (request, status, error) {
-                    console.log(error);
-                  }
-                });
+                make_query();
                 
               }
               pointCount++;

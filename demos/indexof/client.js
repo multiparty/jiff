@@ -15,7 +15,7 @@ const connect = function() {
         $("#processButton").attr("disabled", false);
         $("#output").append("<p>All parties Connected!<br/>Please input ascii characters</p><br/>");
         if(jiff_instance.id == 1)
-            $("#output").append("<br/><p>You are party 1. Please enter a large string. The other party shoule enter a substring of your string.</p>");
+            $("#output").append("<br/><p>You are party 1. Please enter a large string. The other party should enter a substring of your string.</p>");
         else
             $("#output").append("<br/><p>You are party 2. Please enter a substring you want to find the index of in party 1's string</p>");
     };

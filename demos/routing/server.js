@@ -3,9 +3,6 @@ var app = express();
 var http = require('http').Server(app);
 var jiff_instance = require('../../lib/jiff-server').make_jiff(http, { logs: false });
 
-// Define a computation with id '1' with 4 participants (max).
-jiff_instance.totalparty_map['shortest-path-1'] = 4;
-
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Credentials", "true");
