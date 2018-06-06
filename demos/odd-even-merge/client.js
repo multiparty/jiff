@@ -47,6 +47,10 @@ function process() {
   mpc(arr);
 }
 
+/**
+ * 
+ * @param {[]<jiff-share>} arr - array of JIFF shares
+ */
 function mpc(arr) {
   // share array
   jiff_instance.share_array(arr, arr.length).then(function(shares) {

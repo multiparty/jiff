@@ -2,47 +2,48 @@
 
 let jiff_instance;
 const connect = function() {
-    $('#connectButton').prop('disabled', true);
+  $('#connectButton').prop('disabled', true);
     const computation_id = $('#computation_id').val();
     const party_count = parseInt($('#count').val());
 
     const options = {party_count:2}; //, Zp: new BigNumber(32416190071)};
     options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
     options.onConnect = function() {
-        $("#output").append("<p>All parties Connected!</p>");
-        if(jiff_instance.id == 1) {
-            $('input:radio[name=choice]').val(['x']).attr("disabled", true);
-            $("#output").append(
-                `Please input x coordinates.<br/>
-                >>Their count has to be equal to the count of the other party's coordinates.<br/>
-                >> They have to be between -100 and -50.<br/>
-                >> Each entered point has to be greater than the previous entered point.<br/>
-                >> Each entered point can't be more than 5 points apart from the previous point.<br/>`);
-        } else {
-            $('input:radio[name=choice]').val(['y']).attr("disabled", true);
-            $("#output").append(
-                `Please input y coordinates.<br/>
-                >> Their count has to be equal to the count of the other party's coordinates.<br/>
-                >> They have to be between 50 and 100.<br/>
-                >> Each entered point has to be greater than the previous entered point.<br/>
-                >> Each entered point can't be 'less than 5 points' apart from the previous point.<br/>
-                >> Each entered point can't be 'more than than 10 points' apart from the previous point.<br/>`);
-        }
+      $("#output").append("<p>All parties Connected!</p>");
+      if(jiff_instance.id == 1) {
+        $('input:radio[name=choice]').val(['x']).attr("disabled", true);
+        $("#output").append(
+            `Please input x coordinates.<br/>
+            >>Their count has to be equal to the count of the other party's coordinates.<br/>
+            >> They have to be between -100 and -50.<br/>
+            >> Each entered point has to be greater than the previous entered point.<br/>
+            >> Each entered point can't be more than 5 points apart from the previous point.<br/>`);
+      } else {
+        $('input:radio[name=choice]').val(['y']).attr("disabled", true);
+        $("#output").append(
+            `Please input y coordinates.<br/>
+            >> Their count has to be equal to the count of the other party's coordinates.<br/>
+            >> They have to be between 50 and 100.<br/>
+            >> Each entered point has to be greater than the previous entered point.<br/>
+            >> Each entered point can't be 'less than 5 points' apart from the previous point.<br/>
+            >> Each entered point can't be 'more than than 10 points' apart from the previous point.<br/>`);
+      }
     };
-    
-    let hostname = window.location.hostname.trim();
-    const port = window.location.port;
-    if(port == null || port == '') 
-        port = "80";
-    if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
-        hostname = "http://" + hostname;
-    if(hostname.endsWith("/"))
-        hostname = hostname.substring(0, hostname.length-1);
-    
-    hostname = hostname + ":" + port;
-    jiff_instance = jiff.make_jiff(hostname, computation_id, options);
-    // jiff_instance = jiff_bignumber.make_jiff(jiff_instance, options)
-    // jiff_instance = jiff_fixedpoint.make_jiff(jiff_instance, { decimal_digits: 5, integral_digits: 5}); // Max bits after decimal allowed
+  
+  let hostname = window.location.hostname.trim();
+  const port = window.location.port;
+  if(port == null || port == '') 
+      port = "80";
+  if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
+      hostname = "http://" + hostname;
+  if(hostname.endsWith("/"))
+      hostname = hostname.substring(0, hostname.length-1);
+  
+  hostname = hostname + ":" + port;
+  jiff_instance = jiff.make_jiff(hostname, computation_id, options);
+  // TODO: Commented out until fix point is complete
+  // jiff_instance = jiff_bignumber.make_jiff(jiff_instance, options)
+  // jiff_instance = jiff_fixedpoint.make_jiff(jiff_instance, { decimal_digits: 5, integral_digits: 5}); // Max bits after decimal allowed
 }
 
 
@@ -129,36 +130,36 @@ window.onload = () => {
  * @param {number/string} value - The numerical value input by the user.
  */
 const pushCoordinate = function(value) {
-    // check that jiff_instance is connected
-    if(!jiff_instance) {
-        alert("Please connect to jiff server first =)");
-        return;
-    }
+  // check that jiff_instance is connected
+  if(!jiff_instance) {
+      alert("Please connect to jiff server first =)");
+      return;
+  }
 
-    // check that the input is a numerical value
-    let input = parseInt(value);
-    if(isNaN(input))
-        return;
+  // check that the input is a numerical value
+  let input = parseInt(value);
+  if(isNaN(input))
+      return;
 
-    // check that the value conforms to the restrictions.
-    if(restrict(input, $('input[name=choice]:checked').val(), coordinates) == 1)
-        return;
+  // check that the value conforms to the restrictions.
+  if(restrict(input, $('input[name=choice]:checked').val(), coordinates) == 1)
+      return;
 
-    $("#output").append("<p>"+input+"</p>");
+  $("#output").append("<p>"+input+"</p>");
 
-    // push coordinate to the 'coordinates' array
-    coordinates.push(input);
+  // push coordinate to the 'coordinates' array
+  coordinates.push(input);
 
-    // create a data point object depending on the axis, then push it to the array.
-    let p;
-    if($('input[name=choice]:checked').val() == 'x')
-        p = {x:input,y:0};
-    else
-        p = {y:input,x:0};
-    input_data_points.push(p);
+  // create a data point object depending on the axis, then push it to the array.
+  let p;
+  if($('input[name=choice]:checked').val() == 'x')
+    p = {x:input,y:0};
+  else
+    p = {y:input,x:0};
+  input_data_points.push(p);
 
-    myChart.update();
-    document.getElementById("val").value = "";
+  myChart.update();
+  document.getElementById("val").value = "";
 }
 
 

@@ -98,8 +98,8 @@ window.onload = () => {
 /**
  * The button onclick event to add a data point to the set of points.
  * 
- * @param {number/string} xVal - The numerical x coordinate value input by the user.
- * @param {number/string} yVal - The numerical y coordinate value input by the user.
+ * @param {string} xVal - The numerical x coordinate value input by the user.
+ * @param {string} yVal - The numerical y coordinate value input by the user.
  */
 const pushCoordinate = function(xVal, yVal) {
     if(!jiff_instance) {
