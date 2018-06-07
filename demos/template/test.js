@@ -14,18 +14,11 @@ var mpc = require('./mpc.js');
  */
 function generateInputs(party_count) {
   var inputs = {};
-  var upperBound = 100;
-  var n = 100;
 
-  for (var i = 0; i < party_count; i++) {
-    inputs[i+1] = [];
-  }
-  
-  for (var i = 0; i < party_count; i++) {
-    for (var j = 0; j < n; j++) {
-      inputs[i+1].push(Math.floor((Math.random() * upperBound)));
-    }  
-  }
+  /*
+   * INPUT GENERATION CODE GOES HERE
+   */
+
   return inputs;
 }
 
@@ -39,10 +32,9 @@ function computeResults(inputs) {
   var results = [];
 
   for (var j = 0; j < inputs['1'].length; j++) {
-    var sum = 0;
-    for(var i = 1; i <= party_count; i++)
-      sum += inputs[i][j];
-    results.push(sum);
+    /*
+     * COMPUTING THE RESULT IN THE OPEN CODE GOES HERE
+     */
   }
   return results;
 }

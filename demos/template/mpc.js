@@ -1,0 +1,26 @@
+(function(exports, node) {
+  var saved_instance
+
+  /**
+   * Connect to the server and initialize the jiff instance
+   */
+  exports.connect = function (hostname, computation_id, options) {
+    if(node)
+      jiff = require('../../lib/jiff-client');
+
+    saved_instance = jiff.make_jiff(hostname, computation_id, options);
+    return saved_instance;
+  };
+
+  /**
+   * The MPC computation
+   */
+  exports.mpc = function (input, jiff_instance) {
+    if(jiff_instance == null) jiff_instance = saved_instance;
+
+    // The MPC implementation should go *HERE*
+    
+    // Return a promise to the final output(s)
+    /// return jiff_instance.open(result);
+  };
+}((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
