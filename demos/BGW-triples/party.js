@@ -32,9 +32,10 @@ options.onConnect = function (jiff_instance) {
 
     var x = input;
     var y = input*2
-    var s1 = jiff_instance.share(x, Math.floor(n/2))[1];
-    var s2 = jiff_instance.share(y, Math.floor(n/2))[1];
+    var s1 = jiff_instance.share(x, Math.floor(n/2));
+    var s2 = jiff_instance.share(y, Math.floor(n/2));
     //console.log(s1.value, s2.value);
+    s1.add(s2)
 
 
     var r_shares;
@@ -55,13 +56,10 @@ options.onConnect = function (jiff_instance) {
         //each has attributes: value, sender_id, Zp
         //share object should look like share = {value: x, sender_id: y, Zp: jiff_instance.Zp}
 
-        //console.log(r_shares);
-
         var reconstruct_parts = new Array(n);
-        //TODO make this for-loop a map so it's cleaner and cooler
-
         Promise.all(promises).then(
           function (result) {
+            //TODO make this for-loop a map so it's cleaner and cooler
             for (var i = 1; i <= n; i++) {
               console.log(i);
               //console.log(r_shares[i]);
