@@ -15,7 +15,7 @@
   /**
    * The MPC computation
    */
-  exports.mpc = function (input, jiff_instance) {
+  exports.compute = function (input, jiff_instance) {
     if(jiff_instance == null) jiff_instance = saved_instance;
 
     // The MPC implementation should go *HERE*
