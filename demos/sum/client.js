@@ -1,5 +1,5 @@
 /**
- * Do not modify this file unless you have too
+ * Do not modify this file unless you have to.
  * This file has UI handlers.
  */
 
@@ -18,7 +18,7 @@ function connect() {
     
     var hostname = window.location.hostname.trim();
     var port = window.location.port;
-    if(port == null || port == '') 
+    if(port == null || port == '')
       port = "80";
     if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
       hostname = "http://" + hostname;
@@ -42,7 +42,7 @@ function submit() {
   else {
     $("#button").attr("disabled", true);
     $("#output").append("<p>Starting...</p>");
-    var promise = mpc.mpc(input);
+    var promise = mpc.compute(input);
     promise.then(handleResult);
   }
 }
