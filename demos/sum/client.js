@@ -1,4 +1,4 @@
-var jiff_instance;
+
 
 function connect() {
   $('#connectButton').prop('disabled', true);
@@ -11,7 +11,7 @@ function connect() {
   } else {
     var options = { party_count: party_count};
     options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
-    options.onConnect = function() { $("#sumButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
+    options.onConnect = function() { $("#button").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
     
     var hostname = window.location.hostname.trim();
     var port = window.location.port;
@@ -21,32 +21,30 @@ function connect() {
       hostname = "http://" + hostname;
     if(hostname.endsWith("/"))
       hostname = hostname.substring(0, hostname.length-1);
-    if(hostname.indexOf(":") > -1)
-      hostanme = hostname.substring(0, hostname.indexOf(":"));
+    if(hostname.indexOf(":") > -1 && hostname.lastIndexOf(":") > hostname.indexOf(":"))
+      hostname = hostname.substring(0, hostname.lastIndexOf(":"));
 
     hostname = hostname + ":" + port;
-    jiff_instance = jiff.make_jiff(hostname, computation_id, options);
+    mpc.connect(hostname, computation_id, options);
   }
 }
 
-function sum() {
+function submit() {
   var input = parseInt($("#number").val());
 
   if (isNaN(input))
     $("#output").append("<p class='error'>Input a valid number!</p>");
   else if (100 < input || input < 0 || input != Math.floor(input))
     $("#output").append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
-  else if (jiff_instance == null || !jiff_instance.isReady())
-    alert("Please wait!");
   else {
-    $("#sumButton").attr("disabled", true);
+    $("#button").attr("disabled", true);
     $("#output").append("<p>Starting...</p>");
-    var promise = mpc.mpc(jiff_instance, input);
+    var promise = mpc.mpc(input);
     promise.then(handleResult);
   }
 }
 
 function handleResult(result) {
   $("#output").append("<p>Result is: " + result + "</p>");
-  $("#sumButton").attr("disabled", false);
+  $("#button").attr("disabled", false);
 }
