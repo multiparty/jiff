@@ -5,17 +5,21 @@
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
+    // Added options goes here
+
     if(node)
       jiff = require('../../lib/jiff-client');
 
     saved_instance = jiff.make_jiff(hostname, computation_id, options);
+    // if you need any extensions, put them here
+
     return saved_instance;
   };
 
   /**
    * The MPC computation
    */
-  exports.mpc = function (input, jiff_instance) {
+  exports.compute = function (input, jiff_instance) {
     if(jiff_instance == null) jiff_instance = saved_instance;
 
     // The MPC implementation should go *HERE*

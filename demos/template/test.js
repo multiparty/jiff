@@ -56,7 +56,7 @@ describe('Test', function() {
       var partyInputs = inputs[jiff_instance.id];
       var promises = [];
       for (var j = 0; j < partyInputs.length; j++) {
-        var promise = mpc.mpc(partyInputs[j], jiff_instance);
+        var promise = mpc.compute(partyInputs[j], jiff_instance);
         promises.push(promise);
       }
 

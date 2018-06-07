@@ -10,7 +10,7 @@ Demos should consist of the following parts:
 ..* client.js: Handlers for UI buttons, and input validations.
 3. Node.js Based Party: 
 ..* party.js: main entry point. Parses input from the command line and initializes the computation.
-4. The MPC protocol: implemented in *mpc.js*. You should code your protocol in the mpc function inside mpc.js, this file is used in both the browser
+4. The MPC protocol: implemented in *mpc.js*. You should code your protocol in the compute function inside mpc.js, this file is used in both the browser
 and node.js versions of the demo.
 5. test.js: mocha unit tests.
 

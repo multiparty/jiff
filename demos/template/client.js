@@ -42,7 +42,7 @@ function submit() {
   else {
     $("#button").attr("disabled", true);
     $("#output").append("<p>Starting...</p>");
-    var promise = mpc.mpc(input);
+    var promise = mpc.compute(input);
     promise.then(handleResult);
   }
 }
