@@ -6,9 +6,10 @@
       jiff = require('../../lib/jiff-client');
 
     jiff_instance = jiff.make_jiff(hostname, computation_id, options);
+    return jiff_instance;
   }
 
-  exports.mpc = function (input) {
+  exports.mpc = function (jiff_instance, input) {
     var shares = jiff_instance.share(input);
     var sum = shares[1];
     for(var i = 2; i <= jiff_instance.party_count; i++) {
