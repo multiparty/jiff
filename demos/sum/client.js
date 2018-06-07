@@ -1,4 +1,7 @@
-
+/**
+ * Do not modify this file unless you have too
+ * This file has UI handlers.
+ */
 
 function connect() {
   $('#connectButton').prop('disabled', true);

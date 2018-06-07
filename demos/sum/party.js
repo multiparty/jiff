@@ -1,3 +1,9 @@
+/**
+ * Do not change this unless you have to.
+ * This code parses input command line arguments, 
+ * and calls the appropriate initialization and MPC protocol from ./mpc.js
+ */
+
 console.log("Command line arguments: <input> [<party count> [<computation_id> [<party id>]]]]");
 
 var mpc = require('./mpc');
