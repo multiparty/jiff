@@ -1,14 +1,16 @@
 (function(exports, node) {
-  var saved_instance
+  var saved_instance;
 
   /**
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
+    var opt = Object.assign({}, options);
+
     if(node)
       jiff = require('../../lib/jiff-client');
 
-    saved_instance = jiff.make_jiff(hostname, computation_id, options);
+    saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     return saved_instance;
   };
 

@@ -1,38 +1,41 @@
-"use strict";
-console.log("Command line arguments: <input> [<party count> [<computation_id> [<party id>]]]]");
+/**
+ * Do not change this unless you have to.
+ * This code parses input command line arguments, 
+ * and calls the appropriate initialization and MPC protocol from ./mpc.js
+ */
 
-const mpc = require('./mpc');
+console.log("Command line arguments: <input> [<party count> [<computation_id> [<party id>]]]]");
+console.log("Use party id 1 when providing the haystack, and party id 2 when providing needle.")
+
+var mpc = require('./mpc');
 
 // Read Command line arguments
-const text = process.argv[2]
-const party_count = 2;
-if(parseInt(process.argv[3]) !== 2)
-  console.log("Demo can only be run with two parties.");
-const computation_id = process.argv[4] ? process.argv[4] : 'test';
-const party_id = process.argv[5] ? parseInt(process.argv[5], 10) : null;
+var input = process.argv[2];
 
-const displaySubstring = function(index) {
-  console.log("Substring at " + index + ".");
-}
+var party_count = process.argv[3];
+if(party_count == null) party_count = 2;
+else party_count = parseInt(party_count);
+
+var computation_id = process.argv[4];
+if(computation_id == null) computation_id = 'test';
+
+var party_id = process.argv[5];
+if(party_id != null) party_id = parseInt(party_id, 10);
 
 // JIFF options
-const options = {party_count: party_count, party_id: party_id};
+var options = {party_count: party_count, party_id: party_id};
 options.onConnect = function(jiff_instance) {
-  /**
-   * The array of ascii code for the text.
-   */
-  const asciiCode = [];
+  var promise = mpc.compute(input);
 
-  /**
-   * Convert the input text into an array of ascii sequence.
-   */
-  for(let i = 0; i < text.length; i++) {
-    asciiCode.push(text.charCodeAt(i));
-  }
+  promise.then(function(results) {
+    for(var i = 0; i < results.length; i++)
+      if(results[i] == 1)
+        console.log("Substring found at index: " + i + ".");
 
-  mpc.compute(asciiCode, displaySubstring, jiff_instance);
-  // console.log(asciiCode);
+    jiff_instance.disconnect();
+  });
 };
 
 // Connect
 mpc.connect("http://localhost:8080", computation_id, options);
+

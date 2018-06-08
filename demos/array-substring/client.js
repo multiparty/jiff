@@ -1,58 +1,56 @@
-"use strict";
+/**
+ * Do not modify this file unless you have to.
+ * This file has UI handlers.
+ */
 
-let jiff_instance;
-
-const connect = function() {
+function connect() {
   $('#connectButton').prop('disabled', true);
-  let computation_id = 33;
-  let party_count = 2;
+  var computation_id = $('#computation_id').val();
+  var party_count = parseInt($('#count').val());
+  var party_id = parseInt($('#role').val()); // NOT IN TEMPLATE: party id is important to specify the role
 
-  const options = { party_count: party_count };
-  options.onError = function(error) {
-    $("#output").append("<p class='error'>"+error+"</p>");
-  };
-  options.onConnect = function() {
-    $("#processButton").attr("disabled", false);
-    $("#output").append("<p>All parties Connected!<br/>Please input ascii characters</p><br/>");
-    if(jiff_instance.id == 1)
-      $("#output").append("<br/><p>You are party 1. Please enter a large string. The other party should enter a substring of your string.</p>");
-    else
-      $("#output").append("<br/><p>You are party 2. Please enter a substring you want to find the index of in party 1's string</p>");
-  };
-  
-  var hostname = window.location.hostname.trim();
-  var port = window.location.port;
-  if(port == null || port == '')
-    port = "80";
-  if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
-    hostname = "http://" + hostname;
-  if(hostname.endsWith("/"))
-    hostname = hostname.substring(0, hostname.length-1);
+  if(isNaN(party_count)) {
+    $("#output").append("<p class='error'>Party count must be a valid number!</p>");
+    $('#connectButton').prop('disabled', false);
+  } else {
+    var options = { party_count: party_count, party_id: party_id };
+    options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
+    options.onConnect = function() { $("#button").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
+    
+    var hostname = window.location.hostname.trim();
+    var port = window.location.port;
+    if(port == null || port == '')
+      port = "80";
+    if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
+      hostname = "http://" + hostname;
+    if(hostname.endsWith("/"))
+      hostname = hostname.substring(0, hostname.length-1);
+    if(hostname.indexOf(":") > -1 && hostname.lastIndexOf(":") > hostname.indexOf(":"))
+      hostname = hostname.substring(0, hostname.lastIndexOf(":"));
 
-  hostname = hostname + ":" + port;
-  jiff_instance = mpc.connect(hostname, computation_id, options);
-}
-
-const displaySubstring = function(index) {
-  $("#output").append("<p>Substring at " + index + ".</p><br/>");
-}
-
-const startComputation = function(text) {
-  $("#processButton").attr("disabled", true);
-  //convert string to array of ascii 
-
-
-  /**
-   * The array of ascii code for the text.
-   */
-  const asciiCode = [];
-
-  /**
-   * Convert the input text into an array of ascii sequence.
-   */
-  for(let i = 0; i < text.length; i++) {
-    asciiCode.push(text.charCodeAt(i));
+    hostname = hostname + ":" + port;
+    mpc.connect(hostname, computation_id, options);
   }
+}
 
-  mpc.compute(asciiCode, displaySubstring, jiff_instance);
+function submit() {
+  var input = $("#input").val();
+
+  if (input.length == null)
+    $("#output").append("<p class='error'>Input a valid string!</p>");
+  else {
+    $("#button").attr("disabled", true);
+    $("#output").append("<p>Starting...</p>");
+    var promise = mpc.compute(input);
+    promise.then(handleResult);
+  }
+}
+
+function handleResult(results) {
+  for(var i = 0; i < results.length; i++) {
+    if(results[i] == 1)
+      $("#output").append("<p>Substring found at index: " + i + ".</p>");
+  }
+  $("#output").append("<p>Done</p><br/>");
+  $("#button").attr("disabled", false);
 }
