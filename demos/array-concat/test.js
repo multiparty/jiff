@@ -2,7 +2,7 @@
 var expect = require('chai').expect;
 var assert = require('chai').assert;
 
-var party_count = 3;
+var party_count = 4;
 var mpc = require('./mpc.js');
 
 /**
@@ -13,12 +13,26 @@ var mpc = require('./mpc.js');
  * }
  */
 function generateInputs(party_count) {
+  var numberOfTestCases = 10;
+  var maximumStringLength = 4;
   var inputs = {};
+  for (var i = 0; i < party_count; i++) {
+    inputs[i+1] = [];
+  }
 
-  /*
-   * INPUT GENERATION CODE GOES HERE
-   */
+  var generateRandomString = function(length) {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    for (var i = 0; i < length; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length)+1);
+    return text;
+  };
 
+  for (var i = 0; i < party_count; i++) {
+    for (var j = 0; j < numberOfTestCases; j++) {
+      inputs[i+1].push(generateRandomString(Math.floor((Math.random() * maximumStringLength))+1));
+    }
+  }
   return inputs;
 }
 
@@ -32,9 +46,11 @@ function computeResults(inputs) {
   var results = [];
 
   for (var j = 0; j < inputs['1'].length; j++) {
-    /*
-     * COMPUTING THE RESULT IN THE OPEN CODE GOES HERE
-     */
+    var string = "";
+    for (var k = 1; k <= party_count; k++) {
+      string += inputs[k][j];
+    }
+    results.push(string);
   }
   return results;
 }
@@ -60,8 +76,16 @@ describe('Test', function() {
         promises.push(promise);
       }
 
-      Promise.all(promises).then(function(values) {
+      Promise.all(promises).then(function(asciiCode) {
         count++;
+        var values = "";
+    
+        // convert each opened number to a character
+        // and add it to the final stringls
+        for(let i = 0; i < values.length; i++) {
+          values += String.fromCharCode(values[i]);
+        }
+
         for (var i = 0; i < values.length; i++) {
           // construct debugging message
           var ithInputs = inputs[1][i] + "";
