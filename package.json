@@ -44,7 +44,7 @@
     "test": "./tests/mocha/test.sh",
     "test-bignumber": "./tests/mocha-bignumber/test.sh",
     "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html",
-    "test-demo" : "./node_modules/mocha/bin/mocha"
+    "test-demo": "./node_modules/mocha/bin/mocha"
   },
   "dependencies": {
     "bignumber.js": "^5.0.0",

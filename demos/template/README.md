@@ -18,6 +18,7 @@ and node.js versions of the demo.
 1. client.html: change the title and different labels, as well as the UI if needed.
 2. mpc.js: to encode your protocol and use any needed extensions.
 3. test.js: generic test code should work for most demos, you will need to add code to generate appropriate inputs/test cases, and to compute the expected results (not in MPC) for these inputs.
+4. server.js: Modify the last two lines in the template file (logs) to show the right command to run the parties.
 
 ## Running Demos
 1. Running a server:

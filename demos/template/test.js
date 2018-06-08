@@ -71,7 +71,7 @@ describe('Test', function() {
 
           // assert results are accurate
           try {
-            assert.equal(values[i], results[i], msg);
+            assert.deepEqual(values[i], results[i], msg);
           } catch(assertionError) {
             done(assertionError);
             done = function(){}

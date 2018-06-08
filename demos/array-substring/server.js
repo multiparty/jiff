@@ -11,6 +11,6 @@ http.listen(8080, function() {
   console.log('listening on *:8080');
 });
 
-console.log("Direct your browser to *:8080/demos/sum/client.html.");
-console.log("To run a node.js based party: node demos/sum/party <input>");
+console.log("Direct your browser to *:8080/demos/array-substring/client.html.");
+console.log("To run a node.js based party: node demos/array-substring/party <input>");
 console.log();
