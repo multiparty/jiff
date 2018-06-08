@@ -23,9 +23,8 @@
   exports.compute = function (input, jiff_instance) {
     if(jiff_instance == null) jiff_instance = saved_instance;
 
-    // The MPC implementation should go *HERE*
-    var final_deferred = $.Deferred(); // this will resolve to the final result
-    var final_promise = final_deferred.promise(); // which is an array of 0/1 values for every index in the haystack
+    var final_deferred = $.Deferred();
+    var final_promise = final_deferred.promise();
 
     var promise = jiff_instance.share_array(input);
     promise.then(function(shares) {

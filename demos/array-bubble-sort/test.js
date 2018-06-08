@@ -13,26 +13,28 @@ var mpc = require('./mpc.js');
  * }
  */
 function generateInputs(party_count) {
-  var numberOfTestCases = 10;
-  var maximumStringLength = 20;
   var inputs = {};
-  for (var i = 0; i < party_count; i++) {
-    inputs[i+1] = [];
+  var maximumRandomNumber = 4;//255;
+  var testCasesCount = 3;//10;
+  var randomArraysLengths = [];
+  var maximumArrayLength = 5;
+  for (var i = 1; i <= party_count; i++) {
+    inputs[i] = [];
   }
-
-  var generateRandomString = function(length) {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    for (var i = 0; i < length; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length)+1);
-    return text;
-  };
-
-  for (var i = 0; i < party_count; i++) {
-    for (var j = 0; j < numberOfTestCases; j++) {
-      inputs[i+1].push(generateRandomString(Math.floor((Math.random() * maximumStringLength))+1));
+  for (var i = 0; i < testCasesCount; i++) {
+    randomArraysLengths.push(Math.floor((Math.random() * maximumArrayLength))+1);
+  }
+  for (var i = 1; i <= party_count; i++) {
+    for (var j = 0; j < testCasesCount; j++) {
+      var arr = [];
+      for (var k = 0; k < randomArraysLengths[j]; k++) {
+        arr.push(Math.floor((Math.random() * maximumRandomNumber)));
+      }
+      inputs[i].push(arr);
     }
   }
+
+  console.log(inputs);
   return inputs;
 }
 
@@ -45,13 +47,42 @@ function generateInputs(party_count) {
 function computeResults(inputs) {
   var results = [];
 
-  for (var j = 0; j < inputs[Object.keys(inputs)[0]].length; j++) {
-    var string = "";
-    for (var k = 1; k <= party_count; k++) {
-      string += inputs[k][j];
+  var firstParty = Object.keys(inputs)[0];
+  for (var testCase = 0; testCase < inputs[firstParty].length; testCase++) {
+    var arr1 = inputs[firstParty][testCase];
+    for (var party in inputs) {
+      if (party === firstParty)
+        continue;
+      var arr2 = inputs[party][testCase];
+      for (var i = 0; i < arr1.length; i++) {
+        arr1[i] += arr2[i];
+      }
     }
-    results.push(string);
+    results.push(arr1.sort(function(a,b){return a - b;}));
   }
+  console.log(results);
+
+
+  // for (var i = 0; i < Object.keys(inputs)[0].length; i++) {
+  //   results.push([]);
+  // }
+
+  // for (var testCase = 0; testCase < Object.keys(inputs)[0].length; testCase++) {
+  //   for (var party in inputs) {
+  //     for (var j = 0; j < inputs[party][testCase].length; j++) {
+  //       results[testCase][j] 
+  //     }
+  //   }
+  // }
+
+  // for (var j = 0; j < inputs['1'].length; j++) {
+  //   var accumulator = 0;
+  //   for (var k = 1; k <= party_count; k++) {
+  //     accumulator += inputs[k][j];
+  //   }
+  //   results.push(accumulator);
+  // }
+  // results = results.sort(function(a,b){return a - b;});
   return results;
 }
 
@@ -76,20 +107,12 @@ describe('Test', function() {
         promises.push(promise);
       }
 
-      Promise.all(promises).then(function(asciiCode) {
+      Promise.all(promises).then(function(values) { console.log(jiff_instance.id, values);
         count++;
-        var values = "";
-    
-        // convert each opened number to a character
-        // and add it to the final stringls
-        for(let i = 0; i < values.length; i++) {
-          values += String.fromCharCode(values[i]);
-        }
-
         for (var i = 0; i < values.length; i++) {
           // construct debugging message
           var ithInputs = inputs[1][i] + "";
-          for(var j = 2; j <= party_count; j++)
+          for (var j = 2; j <= party_count; j++)
             ithInputs += "," + inputs[j][i];
           var msg = "Party: " + jiff_instance.id + ". inputs: [" + ithInputs + "]";
 
