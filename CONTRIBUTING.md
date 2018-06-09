@@ -10,4 +10,4 @@ Welcome! These are the guidelines for contributing to JIFF. Feel free to propose
 - Branch formatting:
   - issueNumber-initials-description 
   - ex. 22-LQ-bugFixes
-- Demos should be implemented in both the browser and node.js
+- Demos should be implemented in both the browser and node.js, and accompanied by test cases. Sophistacted demos should include a README as well as a package.json file for managing additional dependencies. *Please Follow the demo template under demos/template closely*.
