@@ -10,9 +10,6 @@ var mpc = require('./mpc');
 
 // Read Command line arguments
 var input = process.argv[2];
-var parsedInput = [];
-for(var i = 0; i < input.length; i++)
-  parsedInput.push(input.charCodeAt(i));
 
 var party_count = process.argv[3];
 if(party_count == null) party_count = 2;
@@ -27,16 +24,9 @@ if(party_id != null) party_id = parseInt(party_id, 10);
 // JIFF options
 var options = {party_count: party_count, party_id: party_id};
 options.onConnect = function(jiff_instance) {
-  var promise = mpc.compute(parsedInput);
+  var promise = mpc.compute(input);
   promise.then(function(results) {
-    var string = "";
-    
-    // convert each opened number to a character
-    // and add it to the final stringls
-    for(let i = 0; i < results.length; i++) {
-      string += String.fromCharCode(results[i]);
-    }
-    console.log(string);
+    console.log(results);
     jiff_instance.disconnect();
   });
 };

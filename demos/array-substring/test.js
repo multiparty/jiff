@@ -4,7 +4,6 @@ var assert = require('chai').assert;
 
 var party_count = 2;
 var mpc = require('./mpc.js');
-var instances = [];
 
 /**
  * CHANGE THIS: Generate inputs for your tests
@@ -121,6 +120,6 @@ describe('Test', function() {
     
     var options = { party_count: party_count, onError: console.log, onConnect: onConnect };
     for(var i = 0; i < party_count; i++)
-      instances.push(mpc.connect("http://localhost:8080", "mocha-test", options));
+      mpc.connect("http://localhost:8080", "mocha-test", options);
   });
 });

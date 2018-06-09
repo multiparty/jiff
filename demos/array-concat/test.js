@@ -13,24 +13,25 @@ var mpc = require('./mpc.js');
  * }
  */
 function generateInputs(party_count) {
-  var numberOfTestCases = 10;
+  var generateRandomString = function(length) {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    for (var i = 0; i < length; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    return text;
+  };
+
+  var numberOfTestCases = 30;
   var maximumStringLength = 20;
+
   var inputs = {};
   for (var i = 0; i < party_count; i++) {
     inputs[i+1] = [];
   }
 
-  var generateRandomString = function(length) {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    for (var i = 0; i < length; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length)+1);
-    return text;
-  };
-
   for (var i = 0; i < party_count; i++) {
     for (var j = 0; j < numberOfTestCases; j++) {
-      inputs[i+1].push(generateRandomString(Math.floor((Math.random() * maximumStringLength))+1));
+      inputs[i+1].push(generateRandomString(Math.floor(Math.random() * maximumStringLength)));
     }
   }
   return inputs;
@@ -45,7 +46,7 @@ function generateInputs(party_count) {
 function computeResults(inputs) {
   var results = [];
 
-  for (var j = 0; j < inputs[Object.keys(inputs)[0]].length; j++) {
+  for (var j = 0; j < inputs[1].length; j++) {
     var string = "";
     for (var k = 1; k <= party_count; k++) {
       string += inputs[k][j];
@@ -54,7 +55,6 @@ function computeResults(inputs) {
   }
   return results;
 }
-
 
 /**
  * Do not change unless you have to.
@@ -76,16 +76,8 @@ describe('Test', function() {
         promises.push(promise);
       }
 
-      Promise.all(promises).then(function(asciiCode) {
+      Promise.all(promises).then(function(values) {
         count++;
-        var values = "";
-    
-        // convert each opened number to a character
-        // and add it to the final stringls
-        for(let i = 0; i < values.length; i++) {
-          values += String.fromCharCode(values[i]);
-        }
-
         for (var i = 0; i < values.length; i++) {
           // construct debugging message
           var ithInputs = inputs[1][i] + "";
@@ -95,7 +87,7 @@ describe('Test', function() {
 
           // assert results are accurate
           try {
-            assert.deepEqual(values[i], results[i], msg);
+            assert.deepEqual(values[i], results[i], msg); // Changed this line: we are checking equality of arrays now.
           } catch(assertionError) {
             done(assertionError);
             done = function(){}

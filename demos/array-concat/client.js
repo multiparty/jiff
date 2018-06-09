@@ -36,26 +36,13 @@ function submit() {
   $('#concatBtn').attr('disabled', true);
   $("#output").append("<p>Starting...</p>");
 
-  var arr = [];
   var str = document.getElementById('inputText').value;
 
-  // Convert the input string into an array of numbers
-  // each number is the ascii encoding of the character at the same index
-  for(let i = 0; i < str.length; i++)
-    arr.push(str.charCodeAt(i));
-
-  var promise = mpc.compute(arr);
+  var promise = mpc.compute(str);
   promise.then(handleResult); 
 }
 
-function handleResult(results) {
-  var string = "";
-    
-  // convert each opened number to a character
-  // and add it to the final stringls
-  for(let i = 0; i < results.length; i++) {
-    string += String.fromCharCode(results[i]);
-  }
-  $("#output").append("<p>Result is: " + string + "</p>");
+function handleResult(result) {
+  $("#output").append("<p>Result is: " + result + "</p>");
   $("#button").attr("disabled", false);
 }
