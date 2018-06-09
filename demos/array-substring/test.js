@@ -2,8 +2,16 @@
 var expect = require('chai').expect;
 var assert = require('chai').assert;
 
-var party_count = 2;
 var mpc = require('./mpc.js');
+
+// Generic Testing Parameters
+var party_count = 2;
+var parallelismDegree = 5; // Max number of test cases running in parallel
+var n = 10;
+
+// Parameters specific to this demo
+var maxStackLength = 10;
+var maxNeedleLength = 3;
 
 /**
  * CHANGE THIS: Generate inputs for your tests
@@ -20,10 +28,6 @@ function generateInputs(party_count) {
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
   };
-
-  var maxStackLength = 10;
-  var maxNeedleLength = 3;
-  var n = 2;
 
   var inputs = { 1: [], 2: [] };
   for (var i = 0; i < n; i++) {
@@ -56,7 +60,7 @@ function generateInputs(party_count) {
 function computeResults(inputs) {
   var results = [];  
 
-  for (var j = 0; j < inputs['1'].length; j++) {
+  for (var j = 0; j < n; j++) {
     var singleCaseResults = [];
 
     var haystack = inputs[1][j];
@@ -73,7 +77,6 @@ function computeResults(inputs) {
   return results;
 }
 
-
 /**
  * Do not change unless you have to.
  */
@@ -84,28 +87,40 @@ describe('Test', function() {
     var count = 0;
 
     var inputs = generateInputs(party_count);
-    var results = computeResults(inputs);
+    var realResults = computeResults(inputs);
 
     var onConnect = function(jiff_instance) {
       var partyInputs = inputs[jiff_instance.id];
-      var promises = [];
-      for (var j = 0; j < partyInputs.length; j++) {
-        var promise = mpc.compute(partyInputs[j], jiff_instance);
-        promises.push(promise);
-      }
 
-      Promise.all(promises).then(function(values) {
+      var testResults = [];      
+      (function one_test_case(j) {
+        if(j < partyInputs.length) {
+          var promises = [];
+          for(var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++)
+            promises.push(mpc.compute(partyInputs[j+t], jiff_instance));
+
+          Promise.all(promises).then(function(parallelResults) {
+            for(var t = 0; t < parallelResults.length; t++)
+              testResults.push(parallelResults[t]);
+
+            one_test_case(j+parallelismDegree);
+          });
+
+          return;
+        }
+
+        // If we reached here, it means we are done
         count++;
-        for (var i = 0; i < values.length; i++) {
+        for (var i = 0; i < testResults.length; i++) {
           // construct debugging message
           var ithInputs = inputs[1][i] + "";
-          for(var j = 2; j <= party_count; j++)
+          for (var j = 2; j <= party_count; j++)
             ithInputs += "," + inputs[j][i];
           var msg = "Party: " + jiff_instance.id + ". inputs: [" + ithInputs + "]";
 
           // assert results are accurate
           try {
-            assert.deepEqual(values[i], results[i], msg); // Changed this line: we are checking equality of arrays now.
+            assert.deepEqual(testResults[i], realResults[i], msg);
           } catch(assertionError) {
             done(assertionError);
             done = function(){}
@@ -115,7 +130,7 @@ describe('Test', function() {
         jiff_instance.disconnect();
         if (count == party_count)
           done();
-      });
+      })(0);
     };
     
     var options = { party_count: party_count, onError: console.log, onConnect: onConnect };

@@ -2,9 +2,16 @@
 var expect = require('chai').expect;
 var assert = require('chai').assert;
 
-var party_count = 4;
 var mpc = require('./mpc.js');
+
+// Generic Testing Parameters
+var party_count = 4;
 var parallelismDegree = 5; // Max number of test cases running in parallel
+var n = 25;
+
+// Parameters specific to this demo
+var maxElement = 50000;
+var maxLength = 10;
 
 /**
  * CHANGE THIS: Generate inputs for your tests
@@ -18,11 +25,8 @@ function generateInputs(party_count) {
   for (var i = 1; i <= party_count; i++)
     inputs[i] = [];
 
-  var testCasesCount = 25;
-  var maxElement = 50000;
-  var maxLength = 10;
   
-  for (var t = 0; t < testCasesCount; t++) {
+  for (var t = 0; t < n; t++) {
     var length = Math.floor(Math.random() * maxLength) + 1;
     for (var p = 1; p <= party_count; p++) {  
       var arr = [];
@@ -45,7 +49,7 @@ function generateInputs(party_count) {
 function computeResults(inputs) {
   var results = [];
 
-  for (var t = 0; t < inputs[1].length; t++) {
+  for (var t = 0; t < n; t++) {
     var array = inputs[1][t].slice(); // Shallow copy, so that when modifying things are not changed!
 
     for (var p = 2; p <= party_count; p++) {
