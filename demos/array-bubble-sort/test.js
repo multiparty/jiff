@@ -4,6 +4,7 @@ var assert = require('chai').assert;
 
 var party_count = 4;
 var mpc = require('./mpc.js');
+var parallelismDegree = 5; // Max number of test cases running in parallel
 
 /**
  * CHANGE THIS: Generate inputs for your tests
@@ -17,7 +18,7 @@ function generateInputs(party_count) {
   for (var i = 1; i <= party_count; i++)
     inputs[i] = [];
 
-  var testCasesCount = 3;
+  var testCasesCount = 25;
   var maxElement = 50000;
   var maxLength = 10;
   
@@ -79,34 +80,41 @@ describe('Test', function() {
       var testResults = [];      
       (function one_test_case(j) {
         if(j < partyInputs.length) {
-          var promise = mpc.compute(partyInputs[j], jiff_instance);
-          promise.then(function(oneResult) {
-            testResults.push(oneResult);
-            one_test_case(j+1);
+          var promises = [];
+          for(var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++)
+            promises.push(mpc.compute(partyInputs[j+t], jiff_instance));
+
+          Promise.all(promises).then(function(parallelResults) {
+            for(var t = 0; t < parallelResults.length; t++)
+              testResults.push(parallelResults[t]);
+
+            one_test_case(j+parallelismDegree);
           });
-        }
-        else {
-          count++;
-          for (var i = 0; i < testResults.length; i++) {
-            // construct debugging message
-            var ithInputs = inputs[1][i] + "";
-            for (var j = 2; j <= party_count; j++)
-              ithInputs += "," + inputs[j][i];
-            var msg = "Party: " + jiff_instance.id + ". inputs: [" + ithInputs + "]";
 
-            // assert results are accurate
-            try {
-              assert.deepEqual(testResults[i], realResults[i], msg);
-            } catch(assertionError) {
-              done(assertionError);
-              done = function(){}
-            }
+          return;
+        }
+
+        // If we reached here, it means we are done
+        count++;
+        for (var i = 0; i < testResults.length; i++) {
+          // construct debugging message
+          var ithInputs = inputs[1][i] + "";
+          for (var j = 2; j <= party_count; j++)
+            ithInputs += "," + inputs[j][i];
+          var msg = "Party: " + jiff_instance.id + ". inputs: [" + ithInputs + "]";
+
+          // assert results are accurate
+          try {
+            assert.deepEqual(testResults[i], realResults[i], msg);
+          } catch(assertionError) {
+            done(assertionError);
+            done = function(){}
           }
-
-          jiff_instance.disconnect();
-          if (count == party_count)
-            done();
         }
+
+        jiff_instance.disconnect();
+        if (count == party_count)
+          done();
       })(0);
     };
     
