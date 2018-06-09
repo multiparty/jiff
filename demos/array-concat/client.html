@@ -25,11 +25,10 @@
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*" value="2"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
-    <h1>Concat</h1>
-    <div class="row">
-      <textarea id="inputText"></textarea>
-    </div><br/>
-    <button onclick="submit();" disabled="disabled" id="button">Concat</button><br/>
+    
+    <h1>Concat Strings under MPC</h1>
+    <label for="inputText">Enter a String</label> <br/><br/>
+    <textarea id="inputText" rows="5" cols="35"></textarea> &nbsp; <button onclick="submit();" disabled="disabled" id="processButton">Concat</button><br/>
     <div id="output"></div>
   </body>
 </html>

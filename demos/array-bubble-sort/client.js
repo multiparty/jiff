@@ -36,12 +36,14 @@ function submit() {
   var arr = JSON.parse(document.getElementById('inputText').value);
   
   for (var i = 0; i < arr.length; i++) {
-    if (typeof arr[i] !== 'number') {
+    if (typeof(arr[i]) !== 'number') {
       alert("Please input an array of integers.");
       return;
     }
   }
+
   $("#processButton").attr("disabled", true);
+  $("#output").append("<p>Starting...</p>");
 
   var promise = mpc.compute(arr);
   promise.then(handleResult);

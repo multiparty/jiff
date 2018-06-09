@@ -14,7 +14,7 @@ function connect() {
   } else {
     var options = { party_count: party_count};
     options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
-    options.onConnect = function() { $("#button").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
+    options.onConnect = function() { $("#processButton").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
     
     var hostname = window.location.hostname.trim();
     var port = window.location.port;
@@ -33,7 +33,7 @@ function connect() {
 }
 
 function submit() {
-  $('#concatBtn').attr('disabled', true);
+  $('#processButton').attr('disabled', true);
   $("#output").append("<p>Starting...</p>");
 
   var str = document.getElementById('inputText').value;
@@ -44,5 +44,5 @@ function submit() {
 
 function handleResult(result) {
   $("#output").append("<p>Result is: " + result + "</p>");
-  $("#button").attr("disabled", false);
+  $("#processButton").attr("disabled", false);
 }

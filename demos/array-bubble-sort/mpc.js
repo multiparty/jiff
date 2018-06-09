@@ -17,57 +17,51 @@
     return saved_instance;
   };
 
-  function bubblesort(arr) {
-
-    for (var i = 0; i < arr.length; i++) {
-      for (var j = 0; j < (arr.length - i - 1); j++) {
-      
-        var a = arr[j];
-        var b = arr[j+1];
-        var c = a.lt(b);
-        var d = c.not();
-  
-        arr[j] = (a.mult(c)).add((b.mult(d)));
-        arr[j+1] = (a.mult(d)).add((b.mult(c)));
-      }
-    }
-  
-    return arr;
-  }
-
   /**
    * The MPC computation
    */
-  exports.compute = function (arr, jiff_instance) {
+
+  function bubblesort(arr) {
+    for (var i = 0; i < arr.length; i++) {
+      for (var j = 0; j < (arr.length - i - 1); j++) {
+        var a = arr[j];
+        var b = arr[j+1];
+        var c = a.slt(b);
+        var d = c.not();
+  
+        arr[j] = a.sadd(d.smult(b.ssub(a)));
+        arr[j+1] = a.sadd(c.smult(b.ssub(a)));
+      }
+    }
+
+    return arr;
+  }
+
+  exports.compute = function (input, jiff_instance) {
     if(jiff_instance == null) jiff_instance = saved_instance;
 
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
 
-    jiff_instance.share_array(arr, arr.length).then(function(arr_shares) {
-      var addedArray = [];
-      for (var i = 0; i < arr_shares[1].length; i++) {
-        var accumulator = null;
-        for(var party in arr_shares) {
-          if(!accumulator)
-            accumulator = arr_shares[party][i];
-          else
-            accumulator = accumulator.add(arr_shares[party][i]);
+    // Share the arrays
+    jiff_instance.share_array(input, input.length).then(function(shares) {    
+      // sum all shared input arrays element wise
+      var array = shares[1];
+      for(var p = 2; p <= jiff_instance.party_count; p++) {
+        for(var i = 0; i < array.length; i++) {
+          array[i] = array[i].sadd(shares[p][i]);
         }
-        addedArray.push(accumulator);
       }
-      
-      var sorted = bubblesort(addedArray);
 
+      // sort new array
+      var sorted = bubblesort(array);
+
+      // Open the array
       var allPromises = [];
-      for (var i = 0; i < sorted.length; i++) {
-        var p = sorted[i].open(function(result) {
-          Promise.resolve(result);
-        });
-        allPromises.push(p)
-      }
+      for (var i = 0; i < sorted.length; i++)
+        allPromises.push(jiff_instance.open(sorted[i]));
     
-      return Promise.all(allPromises).then(function(results) {
+      Promise.all(allPromises).then(function(results) {
         final_deferred.resolve(results);
       });
     });
