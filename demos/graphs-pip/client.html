@@ -1,0 +1,60 @@
+<!-- Basic UI for running the demo in the browser -->
+
+<html>
+  <head>
+    <title>MPC Template</title>
+    <style>
+      .error {
+        color: #FF0000;
+      }
+
+      #role1, #role2 {
+        display: none;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- <script src="/bignumber.js/bignumber.min.js"></script> -->
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+    <!-- <script src="/lib/ext/jiff-client-bignumber.js"></script> -->
+    <!-- <script src="/lib/ext/jiff-client-fixedpoint.js"></script> -->
+
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="./client.js"></script>
+
+    <!-- Contains the MPC implementation -->
+    <script type="text/javascript" src="./mpc.js"></script>
+  </head>
+  <body>
+
+    <div style="width:300px; height:300px;">
+        <canvas id="myChart" width="400" height="400"></canvas>
+    </div>
+
+    <h1>Connect JIFF</h1>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
+    <label for="count">Party Count</label> <input id="count" pattern="[0-9]*" value="2"><br/><br/>
+    <label for="role">Party Role</label>
+    <select id="role">
+      <option value="1">Provide Line</option>
+      <option value="2">Provide Point Coordinates</option>
+    </select><br/><br/>
+    <button id="connectButton" onclick="connect();">Connect</button>    
+    <br/><br/>
+    <hr/>
+    <h1>PIP, Is point above line?</h1>
+    <div id="role1">
+      <label for="number">Input Slope</label> <input id="slopeInput" pattern="[0-9]+"><br/>
+      <label for="number">Input Y-intercept</label> <input id="yInterceptInput" pattern="[0-9]+"><br/>
+      <button onclick="submitLine(slopeInput.value, yInterceptInput.value);" id="submit1">Start</button><br/>
+    </div>
+    <div id="role2">
+        <label for="number">X Value:</label> <input id="xVal" pattern="[0-9]+"><br/>
+        <label for="number">Y Value:</label> <input id="yVal" pattern="[0-9]+"><br/>
+        <button onclick="submitPoint(xVal.value, yVal.value);" id="submit2">Start</button><br/>
+    </div>
+    <div id="output"></div>
+  </body>
+</html>
