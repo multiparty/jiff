@@ -4,7 +4,7 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = 1299827;
+var Zp = 2039;
 
 // Operation strings to "lambdas"
 var operations = {
@@ -52,10 +52,10 @@ var dual = { "less_cst": "<", "less_or_equal_cst": "<=", "greater_cst": ">", "gr
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 5; i++) {
-    var num1 = Math.floor(Math.random() * Zp / 100);
-    var num2 = Math.floor(Math.random() * Zp / 100);
-    var num3 = Math.floor(Math.random() * Zp / 100);
+  for (var i = 0; i < 10; i++) {
+    var num1 = Math.floor(Math.random() * Zp);
+    var num2 = Math.floor(Math.random() * Zp);
+    var num3 = Math.floor(Math.random() * Zp);
     tests[i] = [num1, num2, num3];
   }
 

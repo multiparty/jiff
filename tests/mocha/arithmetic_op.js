@@ -4,7 +4,7 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = 1299827;
+var Zp = 2039;
 function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
 
 // Operation strings to "lambdas"
@@ -49,11 +49,11 @@ function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
     var m = operation == "xor" ? 2 : Zp;
-    m = operation == "div" ? Math.pow(2, 8) - 1 : m;
+    m = operations == "div" ? m-1 : m;
     var o = operation == "div" ? 1 : 0; // ensure not to divide by zero
-    var num1 = Math.floor(Math.random() * Zp / 10) % m;
-    var num2 = (Math.floor(Math.random() * Zp / 10) % m) + o;
-    var num3 = (Math.floor(Math.random() * Zp / 10) % m) + o;
+    var num1 = Math.floor(Math.random() * Zp) % m;
+    var num2 = (Math.floor(Math.random() * Zp) % m) + o;
+    var num3 = (Math.floor(Math.random() * Zp) % m) + o;
     tests[i] = [num1, num2, num3];
   }
 
@@ -81,7 +81,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == "div" ? 5 : tests.length;
+  var length = mpc_operator == "div" ? 1 : tests.length;
   for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
