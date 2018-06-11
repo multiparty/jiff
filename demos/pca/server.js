@@ -4,6 +4,13 @@ var http = require('http').Server(app);
 var base_instance = require('../../lib/jiff-server').make_jiff(http, {logs:true});
 var jiff_instance = require('../../lib/ext/jiff-server-bignumber').make_jiff(base_instance);
 
+// Define a computation with id '1' and a maximum of 2 participants.
+jiff_instance.totalparty_map['1'] = 2;
+
+jiff_instance.compute('1', function(computation_instance) {
+    // Perform server-side computation.
+    console.log("Hello!");
+});
 
 // Server static files.
 app.use("/demos", express.static("demos"));
@@ -12,8 +19,9 @@ app.use("/lib/ext", express.static("lib/ext"));
 app.use("/bignumber.js", express.static("node_modules/bignumber.js"));
 app.use("/numeric.js", express.static("node_modules/numeric/numeric-1.2.6.js"));
 http.listen(8080, function() {
-  console.log('listening on *:8080');
+    console.log('listening on *:8080');
 });
 
 console.log("Direct your browser to *:8080/demos/pca/client.html.");
-console.log()
+console.log("To run a server-based party: node index.js demos/pca/party");
+console.log();
