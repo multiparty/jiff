@@ -72,10 +72,9 @@ describe("MPC Operations", function() {
       constant_arithmetic_op.run_test(i++, "xor_cst", callback(done));
     });
     // /
-    /*
     it("Constant Integer Divison", function(done) {
       constant_arithmetic_op.run_test(i++, "div_cst", callback(done));
-    }); */
+    });
   });
   
   describe("Comparison", function() {

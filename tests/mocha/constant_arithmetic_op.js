@@ -37,7 +37,12 @@ var operations = {
     return Math.floor(operand1 / operand2);
   },
   "div_cst" : function (operand1, operand2) {
+    try {
     return operand1.cdiv(operand2);
+    } catch(error) {
+        console.log(error);
+        throw error;
+    }
   },
 };
 
@@ -51,7 +56,7 @@ function run_test(computation_id, operation, callback) {
     var m = operation == "xor_cst" ? 2 : Zp;
     m = operations == "div_cst" ? m-1 : m;
     var o = operation == "div_cst" ? 1 : 0; // ensure not to divide by zero
-    var num1 = Math.floor(Math.random() * Zp) % m;
+    var num1 = Math.floor(Math.random() * Zp) % (m + o);
     var num2 = (Math.floor(Math.random() * Zp) % m) + o;
     var num3 = (Math.floor(Math.random() * Zp) % m) + o;
     tests[i] = [num1, num2, num3];
@@ -81,7 +86,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == "div_cst" ? 1 : tests.length;
+  var length = mpc_operator == "div_cst" ? 10 : tests.length;
   for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
