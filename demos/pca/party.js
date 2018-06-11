@@ -54,6 +54,9 @@ function print2DArray(arr){
     return result;
 }
 
+function sortNumber(a,b) {
+    return a - b;
+}
 
 // Read Command line arguments - collect input vector of 3 dimensions
 var party_count = process.argv[2];
@@ -77,7 +80,7 @@ options.onConnect = function(jiff_instance) { // added jiff instance arg 6/8
     var pca_sum = [];
 
     var arr_sum = [];
-    var arr = [in1, in2, in3]; // create array from input args
+    var arr = [in1, in2, in3]; // create array from input args. local array
     // var arr = [9, 8, 4]; // old test arr
 
     var results = [];
@@ -181,7 +184,8 @@ options.onConnect = function(jiff_instance) { // added jiff instance arg 6/8
             console.log("here");
             console.log(eig.E);
             console.log("find the two largest eigenvalues");
-            var sorted_eigen_values = eig_copy.lambda.x.sort().reverse().slice(0, 2);
+            // Fix sorting 6/11
+            var sorted_eigen_values = eig_copy.lambda.x.sort((a, b) => a - b).reverse().slice(0, 2);
             console.log("two largest eigen values = " + sorted_eigen_values);
             var corresponding_largest_eigenvectors = []
             sorted_eigen_values.map(function (item) {
@@ -192,6 +196,8 @@ options.onConnect = function(jiff_instance) { // added jiff instance arg 6/8
             console.log(corresponding_largest_eigenvectors);
 
             var result = numeric.dot(numeric.transpose(corresponding_largest_eigenvectors), arr);
+            console.log("transpose of corr eigenvec for 2 largest eigenvalues:");
+            console.log(numeric.transpose(corresponding_largest_eigenvectors))
             console.log("the result is:");
             console.log(result);
         });

@@ -56,7 +56,7 @@ options.onConnect = function() {
   	var pca_sum = [];
 
   	var arr_sum = [];
-    var arr = [3,2,1];
+    var arr = [9, 8, 4];
 
 
     var results = [];
@@ -159,7 +159,7 @@ options.onConnect = function() {
                 var eig_copy = Object.assign({}, eig);
                 console.log(eig);
                 console.log("find the two largest eigenvalues");
-                var sorted_eigen_values = eig_copy.lambda.x.sort().reverse().slice(0,2);
+                var sorted_eigen_values = eig_copy.lambda.x.sort((a, b) => a - b).reverse().slice(0,2);
                 console.log("two largest eigen values = " + sorted_eigen_values);
                 var corresponding_largest_eigenvectors = []
                 sorted_eigen_values.map(function(item){
