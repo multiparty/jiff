@@ -49,9 +49,9 @@ function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
     var m = operation == "xor" ? 2 : Zp;
-    m = operations == "div" ? m-1 : m;
+    m = operation == "div" ? m-1 : m;
     var o = operation == "div" ? 1 : 0; // ensure not to divide by zero
-    var num1 = Math.floor(Math.random() * Zp) % m;
+    var num1 = Math.floor(Math.random() * Zp) % (m + o);
     var num2 = (Math.floor(Math.random() * Zp) % m) + o;
     var num3 = (Math.floor(Math.random() * Zp) % m) + o;
     tests[i] = [num1, num2, num3];

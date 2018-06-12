@@ -37,12 +37,7 @@ var operations = {
     return Math.floor(operand1 / operand2);
   },
   "div_cst" : function (operand1, operand2) {
-    try {
     return operand1.cdiv(operand2);
-    } catch(error) {
-        console.log(error);
-        throw error;
-    }
   },
 };
 
@@ -54,7 +49,7 @@ function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
     var m = operation == "xor_cst" ? 2 : Zp;
-    m = operations == "div_cst" ? m-1 : m;
+    m = operation == "div_cst" ? m-1 : m;
     var o = operation == "div_cst" ? 1 : 0; // ensure not to divide by zero
     var num1 = Math.floor(Math.random() * Zp) % (m + o);
     var num2 = (Math.floor(Math.random() * Zp) % m) + o;

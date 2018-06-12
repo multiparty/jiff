@@ -50,10 +50,10 @@ var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*", "xor_cst": "^", "d
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
-    var m = operation == "xor_cst" ? 2 : Zp;
-    m = operation == "div_cst" ? new BigNumber(2).pow(15).minus(1).floor() : m;
+    var m = operation == "xor_cst" ? new BigNumber(2) : Zp;
+    m = operation == "div_cst" ? m.minus(1) : m;
     var o = operation == "div_cst" ? 1 : 0;
-    var num1 = BigNumber.random().times(Zp).floor().mod(m);
+    var num1 = BigNumber.random().times(Zp).floor().mod(m.plus(o));
     var num2 = BigNumber.random().times(Zp).floor().mod(m).plus(o);
     var num3 = BigNumber.random().times(Zp).floor().mod(m).plus(o);
     tests[i] = [num1, num2, num3];

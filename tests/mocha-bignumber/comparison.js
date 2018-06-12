@@ -55,9 +55,9 @@ var dual = { "less": "<", "less_or_equal": "<=", "greater": ">", "greater_or_equ
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 5; i++) {
-    var num1 = BigNumber.random().times(Zp / 100).floor();
-    var num2 = BigNumber.random().times(Zp / 100).floor();
-    var num3 = BigNumber.random().times(Zp / 100).floor();
+    var num1 = BigNumber.random().times(Zp).floor();
+    var num2 = BigNumber.random().times(Zp).floor();
+    var num3 = BigNumber.random().times(Zp).floor();
     tests[i] = [num1, num2, num3];
   }
 
