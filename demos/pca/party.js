@@ -54,15 +54,12 @@ function print2DArray(arr){
     return result;
 }
 
-function sortNumber(a,b) {
-    return a - b;
-}
-
 // Read Command line arguments - collect input vector of 3 dimensions
-var party_count = process.argv[2];
+var party_count = parseInt(process.argv[2], 10);;
 if(party_count == null) party_count = 2;
 else party_count = parseInt(party_count);
 
+// Parse integer inputs from string to decimal
 var in1 = parseInt(process.argv[3], 10);
 var in2 = parseInt(process.argv[4], 10);
 var in3 = parseInt(process.argv[5], 10);
@@ -72,9 +69,10 @@ if(computation_id == null) computation_id = 'test-pca';
 
 //var party_id = process.argv[7];
 //if(party_id != null) party_id = parseInt(party_id, 10);
+// 32416190071
 
 var options = {party_count: party_count, Zp: new BigNumber(32416190071), offset: 100000, bits: 8, digits: 2 };
-options.onConnect = function(jiff_instance) { // added jiff instance arg 6/8
+options.onConnect = function() { // removed jiff instance arg 6/12
     console.log("i'm in onConnect");
 
     var pca_sum = [];
@@ -142,8 +140,8 @@ options.onConnect = function(jiff_instance) { // added jiff instance arg 6/8
                     console.log("sharing item = " + item)
                     var shares = jiff_instance.share(item);
                     var sum = shares[1];
-                    for (var i = 2; i <= jiff_instance.party_count; i++) {
-                        sum = sum.sadd(shares[i]);
+                    for (var k = 2; k <= jiff_instance.party_count; k++) {
+                        sum = sum.sadd(shares[k]);
                     }
                     row_sum.push(sum.open().then(success, failure));
                 });
@@ -179,26 +177,36 @@ options.onConnect = function(jiff_instance) { // added jiff instance arg 6/8
                 console.log(err) // zero mat, etc
             }
 
-            var eig_copy = Object.assign({}, eig);
+            // var eig_copy = Object.assign({}, eig);
             console.log(eig);
             console.log("here");
             console.log(eig.E);
             console.log("find the two largest eigenvalues");
             // Fix sorting 6/11
-            var sorted_eigen_values = eig_copy.lambda.x.sort((a, b) => a - b).reverse().slice(0, 2);
+            // The fact that the wrong eigenvalues are returned doesn't affect PCA. Only need the vectors,
+            // which seem to be correct.
+            var sorted_eigen_values = eig.lambda.x.sort((a,b) => b - a).slice(0, 2);
             console.log("two largest eigen values = " + sorted_eigen_values);
             var corresponding_largest_eigenvectors = []
             sorted_eigen_values.map(function (item) {
-                corresponding_largest_eigenvectors.push(eig.E.x[eig.lambda.x.indexOf(item)])
+                var eigenvecs = numeric.transpose(eig.E.x); // to get one eigenvec per row
+                // Fix incorrect transpose of eigenvector 6/12
+                // (eig.E.x[0]); // NOT the eigenvector of lambda[0]. incorrect indexing
+                corresponding_largest_eigenvectors.push(eigenvecs[eig.lambda.x.indexOf(item)])
+                // corresponding_largest_eigenvectors.push(eig.E.x[eig.lambda.x.indexOf(item)])
             });
             corresponding_largest_eigenvectors = numeric.transpose(corresponding_largest_eigenvectors);
             console.log("corresponding eigenvectors:");
             console.log(corresponding_largest_eigenvectors);
-
-            var result = numeric.dot(numeric.transpose(corresponding_largest_eigenvectors), arr);
-            console.log("transpose of corr eigenvec for 2 largest eigenvalues:");
-            console.log(numeric.transpose(corresponding_largest_eigenvectors))
-            console.log("the result is:");
+            console.log("array to dot");
+            console.log(arr);
+            // confirmed correct algorithm 6/12. PCA_vec = arr (dot) EV_mat
+            // dim: 1x3 * 3x2 = 1x2
+            // var result = numeric.dot(numeric.transpose(corresponding_largest_eigenvectors), arr);
+            var result = numeric.dot(arr, corresponding_largest_eigenvectors);
+            console.log("transpose of corr eigenvec for 2 largest eigenvalues (W matrix):");
+            console.log(numeric.transpose(corresponding_largest_eigenvectors));
+            console.log("the result of PCA is:");
             console.log(result);
         });
 
