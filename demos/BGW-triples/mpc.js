@@ -32,14 +32,13 @@
     var t = Math.floor(n/2);
     var x = input;
     var y = input+4;
+    var s1 = jiff_instance.share(x, t);
+    var s2 = jiff_instance.share(y, t);
 
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
-    var result = jiff_instance.secret_share(jiff_instance, false, final_promise, undefined, x.holders, t, jiff_instance.Z);
+    var result = jiff_instance.secret_share(jiff_instance, false, final_promise, undefined, s1[1].holders, t, jiff_instance.Zp);
 
-
-    var s1 = jiff_instance.share(x, t);
-    var s2 = jiff_instance.share(y, t);
 
     var x_sum = s1[1];
     var y_sum = s2[1];
@@ -64,13 +63,13 @@
         var r_shares;
         var r_prime;
 
-        //var zi = s1.value*s2.value;
         //Promise.all([x_sum.promise, y_sum.promise]).then(
         //function (result) {
 
         //var zi = x_sum.value*y_sum.value;
-        var zi = x*y;
-        r_shares = jiff_instance.secret_share(zi, t);
+        var zi = x_sum.value*y_sum.value;
+        //var zi = x*y;
+        r_shares = jiff_instance.share(zi, t);
 
         var promises = [];
         for (var i = 1; i <= n; i++) {
@@ -90,34 +89,26 @@
             r_prime = jiff.sharing_schemes.shamir_reconstruct(jiff_instance, reconstruct_parts);
             //return r_prime;
             // this is a share of z
-            var final_result = jiff_instance.coerce_to_share(r_prime);
-            final_result = jiff_instance.open(r_prime);
+            //var final_result = jiff_instance.coerce_to_share(r_prime);
+            var final_result = r_prime;
 
 
+            final_deferred.resolve(final_result);
             // Return a promise to the final output(s)
-            //console.log("r_prime:", r_prime);
             //final_deferred.resolve(r_prime);
-
-
-            if (final_result.ready) {
-              final_deferred.resolve(final_result);
-            } else {  //Resolve the deferred when ready.
+            /*if (final_result.ready) {
+            /*} else {  //Resolve the deferred when ready.
               final_result.promise.then(function () {
                 final_deferred.resolve(final_result);
               });
-            }
+            }*/
           });
-        //},
-        //function (err) {
-        //console.log(err);
-        //});
       },
       function (err) {
         console.log(err);
       });
 
-
-    //return jiff_instance.open(result);
-    return result; //share of z
+    return jiff_instance.open(result);
+    //return result; //share of z
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
