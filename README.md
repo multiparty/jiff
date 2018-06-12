@@ -18,6 +18,12 @@ If the client code is to be served by the server, use:
 ```  
 If the client code is served independently, fetch the matching version of socket.io.js from a CDN, or use the file found in `<server_dir>/node_modules/socket.io-client/dist`.
 
+Additionally, The [libsodium-wrappers](https://www.npmjs.com/package/libsodium-wrappers) web-assembly library is used for fast crypto (encryption). You must include the appropriate sodium wrapper js file, if the client code is to be server by the server, use:
+```html
+<script src="/lib/sodium.js"></script>
+```
+The libsodium-wrappers requirement can be removed as long as alternate implementation for encryption/decryption and signing is provided to JIFF through the appropriate hooks. Check out the hooks section below for additional info.
+
 ## Installation
 
 ### Server
@@ -29,7 +35,7 @@ npm install
 
 ### Client
 
-Make sure to include the library **after** socket.io:
+Make sure to include the library **after** socket.io and libsodium:
 ```html
 <script src="/lib/jiff-client.js"></script>
 ```  
