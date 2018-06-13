@@ -29,7 +29,7 @@ describe("MPC Operations", function() {
       share.run_test(i++, callback(done));
     });
   });
-  
+
   describe("Arithmetic Operations", function() {
     //+
     it("Addition", function(done) {
@@ -45,10 +45,17 @@ describe("MPC Operations", function() {
     it("Mutliplication", function(done) {
       arithmetic_op.run_test(i++, "mult", callback(done));
     });
+
+    // *
+    it("Mutliplication_BGW", function(done) {
+      arithmetic_op.run_test(i++, "mult_bgw", callback(done));
+    });
+
     // ^
     it("Bitwise XOR", function(done) {
       arithmetic_op.run_test(i++, "xor", callback(done));
     });
+
     // /
     it("Integer Divison", function(done) {
       arithmetic_op.run_test(i++, "div", callback(done));
@@ -82,7 +89,7 @@ describe("MPC Operations", function() {
     });
   });
 
-  
+
   describe("Comparison", function() {
     // <
     it("Less than", function(done) {

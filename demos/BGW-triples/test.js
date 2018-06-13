@@ -5,9 +5,9 @@ var assert = require('chai').assert;
 var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
-var party_count = 4;
-var parallelismDegree = 20; // Max number of test cases running in parallel
-var n = 250;
+var party_count = 2;
+var parallelismDegree = 1; // Max number of test cases running in parallel
+var n = 1;
 
 // Parameters specific to this demo
 var maxValue = 50;
@@ -47,7 +47,7 @@ function computeResults(inputs) {
   for (var j = 0; j < n; j++) {
     var product = 1;
     for (var i = 1; i <= party_count; i++) {
-        product = product * inputs[i][j];
+      product = product * inputs[i][j];
     }
     results.push(product);
   }
@@ -69,7 +69,7 @@ describe('Test', function() {
     var onConnect = function(jiff_instance) {
       var partyInputs = inputs[jiff_instance.id];
 
-      var testResults = [];      
+      var testResults = [];
       (function one_test_case(j) {
         if(j < partyInputs.length) {
           var promises = [];
@@ -109,7 +109,7 @@ describe('Test', function() {
           done();
       })(0);
     };
-    
+
     var options = { party_count: party_count, onError: console.log, onConnect: onConnect };
     for(var i = 0; i < party_count; i++)
       mpc.connect("http://localhost:8080", "mocha-test", options);

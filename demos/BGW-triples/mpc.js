@@ -25,7 +25,7 @@
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
     var result = jiff_instance.secret_share(jiff_instance, false, final_promise, undefined, x.holders, x.threshold, jiff_instance.Zp);
-    
+
     Promise.all([x.promise, y.promise]).then(
       function () {
         var zi = x.value * y.value;
@@ -63,13 +63,14 @@
       jiff_instance = saved_instance;
     }
 
-    // The MPC implementation should go *HERE*    
+    // The MPC implementation should go *HERE*
     var threshold = Math.floor(jiff_instance.party_count/2);
     var shares = jiff_instance.share(input, threshold, null, null,  null);
 
     var product = shares[1];
     for(var i = 2; i <= jiff_instance.party_count; i++) {
-        product = BGW(product, shares[i], jiff_instance);
+      //product = BGW(product, shares[i], jiff_instance);
+      product = product.smult_bgw(shares[i]);
     }
     return jiff_instance.open(product, null);
   };

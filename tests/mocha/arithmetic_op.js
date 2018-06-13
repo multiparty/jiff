@@ -27,6 +27,9 @@ var operations = {
   "mult" : function (operand1, operand2) {
     return operand1.smult(operand2);
   },
+  "mult_bgw" : function (operand1, operand2) {
+    return operand1.smult_bgw(operand2);
+  },
   "^" : function (operand1, operand2) {
     return operand1 ^ operand2;
   },
@@ -42,7 +45,7 @@ var operations = {
 };
 
 // Maps MPC operation to its open dual
-var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "div": "/" };
+var dual = { "add": "+", "sub": "-", "mult": "*", "mult_bgw": "*", "xor": "^", "div": "/" };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
