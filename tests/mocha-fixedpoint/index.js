@@ -29,7 +29,7 @@ describe("MPC Operations", function() {
       share.run_test(i++, callback(done));
     });
   });
-
+/*
   describe("Arithmetic Operations", function() {
     //+
     it("Addition", function(done) {
@@ -53,15 +53,15 @@ describe("MPC Operations", function() {
       arithmetic_op.run_test(i++, "div", callback(done));
     });
     */
-  });
+//  });
 
-
+  
   describe("Constant Arithmetic Operations", function() {
     // constant +
     it("Constant Addition", function(done) {
       constant_arithmetic_op.run_test(i++, "add_cst", callback(done));
     });
-    // constant -
+  /*  // constant -
     it("Constant Subtraction", function(done) {
       constant_arithmetic_op.run_test(i++, "sub_cst", callback(done));
     });
@@ -76,9 +76,9 @@ describe("MPC Operations", function() {
     // /
     it("Constant Integer Divison", function(done) {
       constant_arithmetic_op.run_test(i++, "div_cst", callback(done));
-    });
+    }); */
   });
-
+/*
 
   describe("Comparison", function() {
     // <
@@ -143,4 +143,5 @@ describe("MPC Operations", function() {
       constant_comparison.run_test(i++, "neq_cst", callback(done));
     });
   });
+  */
 });

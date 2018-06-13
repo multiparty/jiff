@@ -50,10 +50,10 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "div": "/" };
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
-    var m = operation == "xor" ? 2 : Zp;
-    m = operation == "div" ? new BigNumber(2).pow(15).minus(1).floor() : m;
+    var m = operation == "xor" ? new BigNumber(2) : Zp;
+    m = operation == "div" ? m.minus(1) : m;
     var o = operation == "div" ? 1 : 0; // ensure not to divide by zero
-    var num1 = BigNumber.random().times(Zp).floor().mod(m);
+    var num1 = BigNumber.random().times(Zp).floor().mod(m.plus(o));
     var num2 = BigNumber.random().times(Zp).floor().mod(m).plus(o);
     var num3 = BigNumber.random().times(Zp).floor().mod(m).plus(o);
     tests[i] = [num1, num2, num3];
@@ -86,7 +86,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == "div" ? 5 : tests.length;
+  var length = mpc_operator == "div" ? 1 : tests.length;
   for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);

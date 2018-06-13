@@ -4,7 +4,7 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = 1299827;
+var Zp = 2039;
 function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
 
 // Operation strings to "lambdas"
@@ -52,11 +52,11 @@ function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
     var m = operation == "xor" ? 2 : Zp;
-    m = operation == "div" ? Math.pow(2, 8) - 1 : m;
+    m = operation == "div" ? m-1 : m;
     var o = operation == "div" ? 1 : 0; // ensure not to divide by zero
-    var num1 = Math.floor(Math.random() * Zp / 10) % m;
-    var num2 = (Math.floor(Math.random() * Zp / 10) % m) + o;
-    var num3 = (Math.floor(Math.random() * Zp / 10) % m) + o;
+    var num1 = Math.floor(Math.random() * Zp) % (m + o);
+    var num2 = (Math.floor(Math.random() * Zp) % m) + o;
+    var num3 = (Math.floor(Math.random() * Zp) % m) + o;
     tests[i] = [num1, num2, num3];
   }
 
@@ -102,14 +102,19 @@ function test(callback, mpc_operator) {
 
 // Run test case at index
 function single_test(index, jiff_instance, mpc_operator, open_operator) {
-  var numbers = tests[index];
+  var numbers = tests[index];  
   var party_index = jiff_instance.id - 1;
   var shares = jiff_instance.share(numbers[party_index]);
 
   // Apply operation on shares
+  var res;
   var shares_list = [];
   for(var i = 1; i <= parties; i++) shares_list.push(shares[i]);
-  var res = shares_list.reduce(operations[mpc_operator]);
+
+  if(mpc_operator == "div")
+    res = operations[mpc_operator](shares_list[0], shares_list[1]);
+  else
+    res = shares_list.reduce(operations[mpc_operator]);
 
   var deferred = $.Deferred();
   res.open(function(result) { test_output(index, result, open_operator); deferred.resolve(); }, error);
@@ -121,13 +126,15 @@ function test_output(index, result, open_operator) {
   var numbers = tests[index];
 
   // Apply operation in the open to test
-  var res = numbers.reduce(operations[open_operator]);
+  var res;
+  if(open_operator == "/") res = operations[open_operator](numbers[0], numbers[1]);
+  else res = numbers.reduce(operations[open_operator]);
   res = mod(res, Zp);
 
   // Incorrect result
   if(res != result) {
     has_failed = true;
-    console.log(numbers.join(open_operator) + " != " + result);
+    console.log(numbers.join(open_operator) + " = " + res + " != " + result);
   }
 }
 
