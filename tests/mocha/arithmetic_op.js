@@ -81,7 +81,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == "div" ? 1 : tests.length;
+  var length = mpc_operator == "div" ? 5 : tests.length;
   for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
@@ -99,14 +99,19 @@ function test(callback, mpc_operator) {
 
 // Run test case at index
 function single_test(index, jiff_instance, mpc_operator, open_operator) {
-  var numbers = tests[index];
+  var numbers = tests[index];  
   var party_index = jiff_instance.id - 1;
   var shares = jiff_instance.share(numbers[party_index]);
 
   // Apply operation on shares
+  var res;
   var shares_list = [];
   for(var i = 1; i <= parties; i++) shares_list.push(shares[i]);
-  var res = shares_list.reduce(operations[mpc_operator]);
+
+  if(mpc_operator == "div")
+    res = operations[mpc_operator](shares_list[0], shares_list[1]);
+  else
+    res = shares_list.reduce(operations[mpc_operator]);
 
   var deferred = $.Deferred();
   res.open(function(result) { test_output(index, result, open_operator); deferred.resolve(); }, error);
@@ -118,13 +123,15 @@ function test_output(index, result, open_operator) {
   var numbers = tests[index];
 
   // Apply operation in the open to test
-  var res = numbers.reduce(operations[open_operator]);
+  var res;
+  if(open_operator == "/") res = operations[open_operator](numbers[0], numbers[1]);
+  else res = numbers.reduce(operations[open_operator]);
   res = mod(res, Zp);
 
   // Incorrect result
   if(res != result) {
     has_failed = true;
-    console.log(numbers.join(open_operator) + " != " + result);
+    console.log(numbers.join(open_operator) + " = " + res + " != " + result);
   }
 }
 
