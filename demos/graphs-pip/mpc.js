@@ -39,4 +39,62 @@
 
     return result.open();
   };
+
+  exports.computePolygon = (polygon, jiff_instance) => {
+    if(jiff_instance == null) jiff_instance = saved_instance;
+    let final_deferred = $.Deferred();
+    let final_promise = final_deferred.promise();
+
+    let x = jiff_instance.share(null)[2];
+    let y = jiff_instance.share(null)[2];
+
+    let slopes = polygon.map(polygon => polygon.m);
+    let yIntercepts = polygon.map(polygon => polygon.b);
+    let above = polygon.map(polygon => polygon.above);
+
+    jiff_instance.share_array(slopes).then(slopesArray => {
+      jiff_instance.share_array(yIntercepts).then(yInterceptsArray => {
+        jiff_instance.share_array(above).then(aboveArray => {
+          compute(x, y, slopesArray, yInterceptsArray, aboveArray, final_deferred);
+        });
+      });
+    });
+
+    return final_promise;
+  }
+  
+  exports.computePoint = (point, jiff_instance) => {
+    if(jiff_instance == null) jiff_instance = saved_instance;
+    let final_deferred = $.Deferred();
+    let final_promise = final_deferred.promise();
+
+    let x = jiff_instance.share(point.x)[2];
+    let y = jiff_instance.share(point.y)[2];
+
+    jiff_instance.share_array([]).then(slopesArray => {
+      jiff_instance.share_array([]).then(yInterceptsArray => {
+        jiff_instance.share_array([]).then(aboveArray => {
+          compute(x, y, slopesArray, yInterceptsArray, aboveArray, final_deferred);
+        });
+      });
+    });
+
+    return final_promise;
+  }
+
+  const compute = (x, y, ms, bs, as, final_deferred) => {
+    // first iteration
+    let ympc = ((ms[1][0].mult(x)).add(bs[1][0]));
+    let greater = ympc.gt(y);
+    let less = ympc.lt(y);
+
+    let result = greater.add( as[1][0].mult( (less).sub(greater) ) );
+    for (let i = 1; i < ms[1].length; i++) {
+      let ympc = ((ms[1][i].mult(x)).add(bs[1][i]));
+      let greater = ympc.gt(y);
+      let less = ympc.lt(y);
+      result = result.mult(greater.add( as[1][i].mult( (less).sub(greater) ) ));
+    }
+    result.open(finalResult => final_deferred.resolve(finalResult));
+  }
 }((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));

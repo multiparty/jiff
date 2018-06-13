@@ -38,17 +38,25 @@
     <label for="count">Party Count</label> <input id="count" pattern="[0-9]*" value="2"><br/><br/>
     <label for="role">Party Role</label>
     <select id="role">
-      <option value="1">Provide Line</option>
+      <option value="1">Provide Polygon</option>
       <option value="2">Provide Point Coordinates</option>
     </select><br/><br/>
     <button id="connectButton" onclick="connect();">Connect</button>    
     <br/><br/>
     <hr/>
-    <h1>PIP, Is point above line?</h1>
+    <h1>PIP, Is point in polygon?</h1>
     <div id="role1">
-      <label for="number">Input Slope</label> <input id="slopeInput" pattern="[0-9]+"><br/>
-      <label for="number">Input Y-intercept</label> <input id="yInterceptInput" pattern="[0-9]+"><br/>
-      <button onclick="submitLine(slopeInput.value, yInterceptInput.value);" id="submit1">Start</button><br/>
+      <p>Please construct a closed polygon.</p>
+      <button onclick="fillHelper1()">Fill Diamond</button><br/>
+      <button onclick="fillHelper2()">Hexagon</button><br/><br/>
+      <label for="slopeInput">Input Slope</label> <input id="slopeInput" pattern="[0-9]+"><br/>
+      <label for="yInterceptInput">Input Y-intercept</label> <input id="yInterceptInput" pattern="[0-9]+"><br/>
+      <label for="aboveBelowInput">Which side is inside? </label><select id="aboveBelowInput">
+        <option value="above">Above Line</option>
+        <option value="below">Below Line</option>
+      </select><br/>
+      <button onclick="submitLine(slopeInput.value, yInterceptInput.value, aboveBelowInput.value);" id="submit1a">Add Line</button><br/><br/>
+      <button onclick="submitPolygon();" id="submit1b">Start</button><br/>
     </div>
     <div id="role2">
         <label for="number">X Value:</label> <input id="xVal" pattern="[0-9]+"><br/>

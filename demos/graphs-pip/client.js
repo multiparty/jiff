@@ -44,9 +44,9 @@ function connect() {
 
 
 // The limits of the graph. The minimum and maximum X and Y values.
-const minX = 0;
-const maxX = 10;
-const minY = 0;
+const minX = -5;
+const maxX = 25;
+const minY = -5;
 const maxY = 25;
 
 
@@ -55,8 +55,17 @@ const maxY = 25;
  * It has the following format: [{x:number,y:number}]
  */
 let coordinates = [];
-let myChart;
 
+
+/**
+ * Array holding the lines of the polygon.
+ * It has the following format: [{m:number,b:number,inside:boolean}]
+ * Where m is the slope, b is the y-intercept and inside is a boolean that indicates whether
+ * the inward of the polygon is above the line (true) or below the line (false).
+ */
+let polygon = [];
+
+let myChart;
 /**
  * Function instantiates the chart.js object when the document loads.
  */
@@ -75,20 +84,15 @@ window.onload = () => {
                     showLine:false,
                     pointBackgroundColor:"rgb(0,0,0)",
                     pointRadius:5
-                },
-                // The specifications for the best fit line.      
-                {
-                    id:"line",
-                    label:"",
-                    data: [],
-                    fill:false,
-                    pointBackgroundColor:"rgb(0,0,0)",
-                    borderColor:"rgb(0,0,0)",
-                    pointRadius:0.1
                 }
             ]
         },
         options: {
+          elements: {
+            line: {
+                tension: 0
+            }
+          },
             scales: {
                 yAxes: [{
                     ticks: {
@@ -110,18 +114,26 @@ window.onload = () => {
     });
 }
 
-const submitLine = (slopeInput, yInterceptInput) => {
+const submitLine = (slopeInput, yInterceptInput, aboveBelowInput) => {
   let slope = parseInt(slopeInput);
   let yIntercept = parseInt(yInterceptInput);
+  let aboveBelow = aboveBelowInput == "above" ? true : false;
 
   if (isNaN(slope) || isNaN(yIntercept)) {
     alert("Please input numbers.");
     return;
   }
 
-  $("#submit1").attr("disabled", true);
-  displayLineSlopeYIntercept(slope, yIntercept);
-  const promise = mpc.compute({one:slope, two:yIntercept});
+  // $("#submit1a").attr("disabled", true);
+  displayLineSlopeYIntercept(slope, yIntercept, aboveBelow);
+  polygon.push({m:slope,b:yIntercept,above:aboveBelow});
+}
+
+const submitPolygon = () => {
+  $("#submit1a").attr("disabled", true);
+  $("#submit1b").attr("disabled", true);
+
+  const promise = mpc.computePolygon(polygon);
   promise.then(handleResult);
 }
 
@@ -137,15 +149,15 @@ const submitPoint = (xValInput, yValInput) => {
   $("#submit2").attr("disabled", true);
   coordinates.push({x:xVal, y:yVal});
   myChart.update();
-  const promise = mpc.compute({one:xVal, two:yVal});
+  const promise = mpc.computePoint({x:xVal, y:yVal});
   promise.then(handleResult);
 }
 
 const handleResult = (result) => {
   if (result === 1)
-    $("#output").append("<p>Point is above line</p>");
+    $("#output").append("<p>Point is inside.</p>");
   else
-    $("#output").append("<p>Point is below line</p>");
+    $("#output").append("<p>Point is outside.</p>");
 
   $("#button").attr("disabled", false);
 }
@@ -157,8 +169,10 @@ const handleResult = (result) => {
  * 
  * @param {number} m - The slope.
  * @param {number} b - The y intercept.
+ * @param {boolean} aboveBelow - The filling direction of the excluded are, which is the area that's not inside
+ * the polygon. True fills below the line. False fills above the line.
  */
-const displayLineSlopeYIntercept = (m, b) => printLineToGraph( [{x:minX,y:m*minX+b}, {x:maxX,y:m*maxX+b}] );
+const displayLineSlopeYIntercept = (m, b, aboveBelow) => printLineToGraph([{x:minX,y:m*minX+b}, {x:maxX,y:m*maxX+b}], aboveBelow);
 
 
 /**
@@ -167,9 +181,34 @@ const displayLineSlopeYIntercept = (m, b) => printLineToGraph( [{x:minX,y:m*minX
  * 
  * @param {Array} points - The array of points to display. It has this format: [{x:number,y:number}]
  */
-const printLineToGraph = function(points) {
-    // Fetch the dataset of the best fit line.    
-    let lineDataset = myChart.data.datasets.filter(dataset => dataset.id == "line");
-    points.forEach(point => lineDataset[0].data.push(point))
+const printLineToGraph = (points, fillDirection) => {
+    let direction = fillDirection ? 'start' : 'end';
+    myChart.data.datasets.push({
+      id:"line",
+      label:"",
+      data: points,
+      fill:direction,
+      pointBackgroundColor:"rgb(0,0,0)",
+      borderColor:"rgb(0,0,0)",
+      pointRadius:0.1
+    });
     myChart.update();
+}
+
+const fillHelper1 = () => {
+  submitLine(1, -5, "above");
+  submitLine(1, 5, "below");
+  submitLine(-1, 5, "above");
+  submitLine(-1, 15, "below");
+}
+
+const fillHelper2 = () => {
+  submitLine(0, 20, "below");
+  submitLine(0, 10, "above");
+  // left angle bracket
+  submitLine(1, 10, "below");
+  submitLine(-1, 20, "above");
+  //right angle bracket
+  submitLine(1, -5, "above");
+  submitLine(-1, 35, "below");  
 }
