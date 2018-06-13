@@ -52,7 +52,7 @@ describe("MPC Operations", function() {
       arithmetic_op.run_test(i++, "div", callback(done));
     });
   });
-/*
+
   describe("Constant Arithmetic Operations", function() {
     // constant +
     it("Constant Addition", function(done) {
@@ -128,5 +128,5 @@ describe("MPC Operations", function() {
     it("Not Equal", function(done) {
       constant_comparison.run_test(i++, "neq_cst", callback(done));
     });
-  }); */
+  });
 });
