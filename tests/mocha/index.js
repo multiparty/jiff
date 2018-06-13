@@ -44,9 +44,9 @@ describe("MPC Operations", function() {
       arithmetic_op.run_test(i++, "mult", callback(done));
     });
     // *
-    //it("Mutliplication_BGW", function(done) {
-    //  arithmetic_op.run_test(i++, "mult_bgw", callback(done));
-    //});
+    it("Mutliplication_BGW", function(done) {
+      arithmetic_op.run_test(i++, "mult_bgw", callback(done));
+    });
     // ^
     it("Bitwise XOR", function(done) {
       arithmetic_op.run_test(i++, "xor", callback(done));

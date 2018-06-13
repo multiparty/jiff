@@ -64,8 +64,8 @@
     }
 
     // The MPC implementation should go *HERE*
-    var threshold = Math.floor(jiff_instance.party_count/2);
-    var shares = jiff_instance.share(input, threshold, null, null,  null);
+    var threshold = Math.floor((jiff_instance.party_count - 1)/2) + 1;
+    var shares = jiff_instance.share(input, threshold);
 
     var product = shares[1];
     for(var i = 2; i <= jiff_instance.party_count; i++) {

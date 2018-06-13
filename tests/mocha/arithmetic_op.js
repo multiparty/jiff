@@ -4,25 +4,25 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = 2039;
+var Zp = 15485867;
 function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
 
 // Operation strings to "lambdas"
 var operations = {
   "+" : function (operand1, operand2) {
-    return operand1 + operand2;
+    return mod(operand1 + operand2, Zp);
   },
   "add" : function (operand1, operand2) {
     return operand1.sadd(operand2);
   },
   "-" : function (operand1, operand2) {
-    return operand1 - operand2;
+    return mod(operand1 - operand2, Zp);
   },
   "sub" : function (operand1, operand2) {
     return operand1.ssub(operand2);
   },
   "*" : function (operand1, operand2) {
-    return operand1 * operand2;
+    return mod(operand1 * operand2, Zp);
   },
   "mult" : function (operand1, operand2) {
     return operand1.smult(operand2);
@@ -51,6 +51,7 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "mult_bgw": "*", "xor": "^", "
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
+    if(operation == "div") Zp = 2039;
     var m = operation == "xor" ? 2 : Zp;
     m = operation == "div" ? m-1 : m;
     var o = operation == "div" ? 1 : 0; // ensure not to divide by zero
@@ -104,7 +105,10 @@ function test(callback, mpc_operator) {
 function single_test(index, jiff_instance, mpc_operator, open_operator) {
   var numbers = tests[index];  
   var party_index = jiff_instance.id - 1;
-  var shares = jiff_instance.share(numbers[party_index]);
+
+  var threshold = 3;
+  if(mpc_operator == "mult_bgw") threshold = Math.floor((3 - 1)/ 2) + 1;
+  var shares = jiff_instance.share(numbers[party_index], threshold);
 
   // Apply operation on shares
   var res;

@@ -4,25 +4,25 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = 2039;
+var Zp = 15485867;
 function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
 
 // Operation strings to "lambdas"
 var operations = {
   "+" : function (operand1, operand2) {
-    return operand1 + operand2;
+    return mod(operand1 + operand2, Zp);
   },
   "add_cst" : function (operand1, operand2) {
     return operand1.cadd(operand2);
   },
   "-" : function (operand1, operand2) {
-    return operand1 - operand2;
+    return mod(operand1 - operand2, Zp);
   },
   "sub_cst" : function (operand1, operand2) {
     return operand1.csub(operand2);
   },
   "*" : function (operand1, operand2) {
-    return operand1 * operand2;
+    return mod(operand1 * operand2, Zp);
   },
   "mult_cst" : function (operand1, operand2) {
     return operand1.cmult(operand2);
@@ -48,6 +48,7 @@ var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*", "xor_cst": "^", "d
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 20; i++) {
+    if(operation == "div_cst") Zp = 2039;
     var m = operation == "xor_cst" ? 2 : Zp;
     m = operation == "div_cst" ? m-1 : m;
     var o = operation == "div_cst" ? 1 : 0; // ensure not to divide by zero
