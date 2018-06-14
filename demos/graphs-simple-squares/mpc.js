@@ -75,15 +75,15 @@
     let m = mNumerator.div(denom);
 
     m.open(function(m_opened) {
-        console.info("Slope:", m_opened);
-        let sum_y_d_count = Math.floor(sum_y/values.length);
-        console.info("sum_y/count=", sum_y_d_count);
-        sum_y_d_count = jiff_instance.share(sum_y_d_count);
-        let b = sum_y_d_count[1].add(sum_y_d_count[2]);
-        b.open(function(b_opened) {
-            console.info("Y intercept:", b_opened);
-            final_deferred.resolve(m_opened, b_opened);
-        });
+      console.info("Slope:", m_opened);
+      let sum_y_d_count = Math.floor(sum_y/values.length);
+      console.info("sum_y/count=", sum_y_d_count);
+      sum_y_d_count = jiff_instance.share(sum_y_d_count);
+      let b = sum_y_d_count[1].add(sum_y_d_count[2]);
+      b.open(function(b_opened) {
+        console.info("Y intercept:", b_opened);
+        final_deferred.resolve(m_opened, b_opened);
+      });
     });
 
     return final_promise;
@@ -97,12 +97,12 @@
   const shareAndCalculateSumXY = (values, jiff_instance) => {
     let sum_xy_res;
     for(let i = 0; i < values.length; i++) {
-        let t = jiff_instance.share(values[i]);
-        t = t[1].mult(t[2]);
-        if(sum_xy_res)
-            sum_xy_res = sum_xy_res.add(t);
-        else
-            sum_xy_res = t;
+      let t = jiff_instance.share(values[i]);
+      t = t[1].mult(t[2]);
+      if(sum_xy_res)
+        sum_xy_res = sum_xy_res.add(t);
+      else
+        sum_xy_res = t;
     }
     return sum_xy_res;
   }

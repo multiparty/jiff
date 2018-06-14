@@ -1,11 +1,11 @@
 // Chai 
-var expect = require('chai').expect;
+// var expect = require('chai').expect;
 var assert = require('chai').assert;
 
 var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
-var party_count = 3;
+var party_count = 2;
 var parallelismDegree = 5; // Max number of test cases running in parallel
 var n = 10; // Number of test cases in total
 
@@ -20,13 +20,11 @@ var n = 10; // Number of test cases in total
  * }
  */
 function generateInputs(party_count) {
-  var inputs = {};
+  var inputs = {1:[], 2:[]};
 
   // Generate test cases one at a time
   for(var t = 0; t < n; t++) {
-    /*
-     * INPUT GENERATION CODE GOES HERE
-     */
+    
   }
 
   return inputs;
