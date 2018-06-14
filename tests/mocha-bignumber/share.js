@@ -13,7 +13,7 @@ var Zp = new BigNumber(32416190071);
 // Entry Point
 function run_test(computation_id, callback) {
   // Generate Numbers
-  for (var i = 0; i < 30; i++) {
+  for (var i = 0; i < 300; i++) {
     // Generate numbers
     var num1 = BigNumber.random().times(Zp).floor();
     var num2 = BigNumber.random().times(Zp).floor();
@@ -52,7 +52,7 @@ function run_test(computation_id, callback) {
   options.onError = function(error) { console.log(error); has_failed = true; };
 
   for(var i = 0; i < parties; i++) {
-    var jiff_instance = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+    var jiff_instance = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3001", computation_id, options));
     jiff_instances.push(jiff_instance);
     jiff_instance.connect();
   }

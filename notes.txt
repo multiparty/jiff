@@ -1,0 +1,2 @@
+submit/fetch functions to server - server stores or serves arbitrary objects for for / from preprocessing
+  make general plz

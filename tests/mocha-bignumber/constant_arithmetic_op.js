@@ -49,7 +49,7 @@ var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*", "xor_cst": "^", "d
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 20; i++) {
+  for (var i = 0; i < 200; i++) {
     var m = operation == "xor_cst" ? new BigNumber(2) : Zp;
     m = operation == "div_cst" ? m.minus(1) : m;
     var o = operation == "div_cst" ? 1 : 0;
@@ -68,9 +68,9 @@ function run_test(computation_id, operation, callback) {
   options.onConnect = function() { if(++counter == 3) test(callback, operation); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
-  var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
-  var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
-  var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3001", computation_id, options));
+  var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3001", computation_id, options));
+  var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3001", computation_id, options));
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
   jiff_instance1.connect();
   jiff_instance2.connect();

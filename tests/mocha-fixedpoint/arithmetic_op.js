@@ -53,13 +53,13 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "div": "/" };
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 20; i++) {
-    var m = operation == "xor" ? new BigNumber(2) : Zp;
-    m = operation == "div" ? m.minus(1) : m;
-    var o = operation == "div" ? 1 : 0; // ensure not to divide by zero
-    var num1 = BigNumber.random().times(Zp).floor().mod(m.plus(o));
-    var num2 = BigNumber.random().times(Zp).floor().mod(m).plus(o);
-    var num3 = BigNumber.random().times(Zp).floor().mod(m).plus(o);
+  for (var i = 0; i < 100; i++) {
+    var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits - 1);
+    var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
+
+    var num1 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    var num2 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    var num3 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
     tests[i] = [num1, num2, num3];
   }
 
@@ -72,9 +72,16 @@ function run_test(computation_id, operation, callback) {
   options.onConnect = function() { if(++counter == 3) test(callback, operation); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
+  // Create Instances
   var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  jiff_instance1 = jiffFixedPoint.make_jiff(jiff_instance1, {decimal_digits: decimal_digits, integer_digits: integer_digits});
+
   var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  jiff_instance2 = jiffFixedPoint.make_jiff(jiff_instance2, {decimal_digits: decimal_digits, integer_digits: integer_digits});
+
   var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  jiff_instance3 = jiffFixedPoint.make_jiff(jiff_instance3, {decimal_digits: decimal_digits, integer_digits: integer_digits});
+
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
   jiff_instance1.connect();
   jiff_instance2.connect();
@@ -83,7 +90,7 @@ function run_test(computation_id, operation, callback) {
 
 // Run all tests after setup
 function test(callback, mpc_operator) {
-  open_operator = dual[mpc_operator];
+  var open_operator = dual[mpc_operator];
 
   if(jiff_instances[0] == null || !jiff_instances[0].isReady()) { console.log("Please wait!"); return; }
   has_failed = false;

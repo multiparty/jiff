@@ -49,7 +49,8 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "div": "/" };
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 20; i++) {
+  for (var i = 0; i < 200; i++) {
+    if(operation == "div") Zp = new BigNumber(2039);
     var m = operation == "xor" ? new BigNumber(2) : Zp;
     m = operation == "div" ? m.minus(1) : m;
     var o = operation == "div" ? 1 : 0; // ensure not to divide by zero
@@ -68,9 +69,9 @@ function run_test(computation_id, operation, callback) {
   options.onConnect = function() { if(++counter == 3) test(callback, operation); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
-  var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
-  var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
-  var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3001", computation_id, options));
+  var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3001", computation_id, options));
+  var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3001", computation_id, options));
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
   jiff_instance1.connect();
   jiff_instance2.connect();
@@ -86,7 +87,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == "div" ? 1 : tests.length;
+  var length = mpc_operator == "div" ? 10 : tests.length;
   for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
@@ -111,7 +112,10 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
   // Apply operation on shares
   var shares_list = [];
   for(var i = 1; i <= parties; i++) shares_list.push(shares[i]);
-  var res = shares_list.reduce(operations[mpc_operator]);
+
+  var res;
+  if(mpc_operator == "div") res = operations[mpc_operator](shares_list[0], shares_list[1]);
+  else res = shares_list.reduce(operations[mpc_operator]);
 
   var deferred = $.Deferred();
   res.open(function(result) { test_output(index, result, open_operator); deferred.resolve(); }, error);
@@ -123,13 +127,15 @@ function test_output(index, result, open_operator) {
   var numbers = tests[index];
 
   // Apply operation in the open to test
-  var res = numbers.reduce(operations[open_operator]);
+  var res;
+  if(open_operator == "/") res = operations[open_operator](numbers[0], numbers[1]);
+  else res = numbers.reduce(operations[open_operator]);
   res = mod(res, Zp);
 
   // Incorrect result
   if(!(res.eq(result))) {
     has_failed = true;
-    console.log(numbers.join(open_operator) + " != " + result);
+    console.log(numbers.join(open_operator) + " = " + res + " != " + result);
   }
 }
 

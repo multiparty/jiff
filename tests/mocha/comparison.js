@@ -4,7 +4,7 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = 2039;
+var Zp = 32749;
 
 // Operation strings to "lambdas"
 var operations = {

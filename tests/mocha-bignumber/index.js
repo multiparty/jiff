@@ -48,11 +48,9 @@ describe("MPC Operations", function() {
       arithmetic_op.run_test(i++, "xor", callback(done));
     });
     // /
-    /*
     it("Integer Divison", function(done) {
       arithmetic_op.run_test(i++, "div", callback(done));
     });
-    */
   });
 
 

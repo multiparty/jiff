@@ -1,0 +1,11 @@
+in the middle of:
+  making x, y, z secret to all parties
+  ####test for 2,3,4,5,+ parties
+  encapsulate BGW in a function:
+      var BGW = function(x, y) {
+          final deferred =
+          final_promise = deferred....
+          return z;
+          //z is a share
+      }
+
