@@ -47,8 +47,7 @@ var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*", "xor_cst": "^", "d
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 20; i++) {
-    if(operation == "div_cst") Zp = 2039;
+  for (var i = 0; i < 200; i++) {
     var m = operation == "xor_cst" ? 2 : Zp;
     m = operation == "div_cst" ? m-1 : m;
     var o = operation == "div_cst" ? 1 : 0; // ensure not to divide by zero
@@ -82,7 +81,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == "div_cst" ? 10 : tests.length;
+  var length = mpc_operator == "div_cst" ? 5 : tests.length;
   for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);

@@ -50,7 +50,7 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "mult_bgw": "*", "xor": "^", "
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 20; i++) {
+  for (var i = 0; i < 200; i++) {
     if(operation == "div") Zp = 2039;
     var m = operation == "xor" ? 2 : Zp;
     m = operation == "div" ? m-1 : m;
@@ -85,7 +85,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == "div" ? 5 : tests.length;
+  var length = mpc_operator == "div" ? 10 : tests.length;
   for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
