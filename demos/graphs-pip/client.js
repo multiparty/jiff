@@ -115,8 +115,8 @@ window.onload = () => {
 }
 
 const submitLine = (slopeInput, yInterceptInput, aboveBelowInput) => {
-  let slope = parseInt(slopeInput);
-  let yIntercept = parseInt(yInterceptInput);
+  let slope = typeof slopeInput === "string" ? parseInt(slopeInput) : slopeInput;
+  let yIntercept = typeof yInterceptInput === "string" ? parseInt(yInterceptInput) : yInterceptInput;
   let aboveBelow = aboveBelowInput == "above" ? true : false;
 
   if (isNaN(slope) || isNaN(yIntercept)) {
@@ -132,6 +132,9 @@ const submitLine = (slopeInput, yInterceptInput, aboveBelowInput) => {
 const submitPolygon = () => {
   $("#submit1a").attr("disabled", true);
   $("#submit1b").attr("disabled", true);
+  $("#fillHelper1Button").attr("disabled", true);
+  $("#fillHelper2Button").attr("disabled", true);
+  $("#fillHelper3Button").attr("disabled", true);
 
   const promise = mpc.computePolygon(polygon);
   promise.then(handleResult);
@@ -182,17 +185,17 @@ const displayLineSlopeYIntercept = (m, b, aboveBelow) => printLineToGraph([{x:mi
  * @param {Array} points - The array of points to display. It has this format: [{x:number,y:number}]
  */
 const printLineToGraph = (points, fillDirection) => {
-    let direction = fillDirection ? 'start' : 'end';
-    myChart.data.datasets.push({
-      id:"line",
-      label:"",
-      data: points,
-      fill:direction,
-      pointBackgroundColor:"rgb(0,0,0)",
-      borderColor:"rgb(0,0,0)",
-      pointRadius:0.1
-    });
-    myChart.update();
+  let direction = fillDirection ? 'start' : 'end';
+  myChart.data.datasets.push({
+    id:"line",
+    label:"",
+    data: points,
+    fill:direction,
+    pointBackgroundColor:"rgb(0,0,0)",
+    borderColor:"rgb(0,0,0)",
+    pointRadius:0.1
+  });
+  myChart.update();
 }
 
 const fillHelper1 = () => {
@@ -200,6 +203,7 @@ const fillHelper1 = () => {
   submitLine(1, 5, "below");
   submitLine(-1, 5, "above");
   submitLine(-1, 15, "below");
+  submitPolygon();
 }
 
 const fillHelper2 = () => {
@@ -210,5 +214,89 @@ const fillHelper2 = () => {
   submitLine(-1, 20, "above");
   //right angle bracket
   submitLine(1, -5, "above");
-  submitLine(-1, 35, "below");  
+  submitLine(-1, 35, "below");
+  submitPolygon();
+}
+
+
+function convexHull(points) {
+  points.sort(function (a, b) {
+      return a.x != b.x ? a.x - b.x : a.y - b.y;
+  });
+
+  var n = points.length;
+  var hull = [];
+
+  for (var i = 0; i < 2 * n; i++) {
+      var j = i < n ? i : 2 * n - 1 - i;
+      while (hull.length >= 2 && removeMiddle(hull[hull.length - 2], hull[hull.length - 1], points[j]))
+          hull.pop();
+      hull.push(points[j]);
+  }
+
+  hull.pop();
+  return hull;
+}
+function removeMiddle(a, b, c) {
+  var cross = (a.x - b.x) * (c.y - b.y) - (a.y - b.y) * (c.x - b.x);
+  var dot = (a.x - b.x) * (c.x - b.x) + (a.y - b.y) * (c.y - b.y);
+  return cross < 0 || cross == 0 && dot <= 0;
+}
+
+function getEquationOfLineFromTwoPoints(point1, point2) {
+  var lineObj = {
+    gradient: (point1.y - point2.y) / (point1.x - point2.x)
+  };
+
+  lineObj.yIntercept = point1.y - lineObj.gradient * point1.x;
+
+  return lineObj;
+}
+
+const insideCalculator = (m, b, x, y) => y > m*x+b ? "above" : "below";
+
+const mapToTuples = (array) => {
+  let r = [];
+  for (let i = 0; i < array.length; i++) {
+      let p1 = array[i];
+      let p2 = array[(i+1)%array.length];
+      let p3 = array[(i+2)%array.length];
+      console.log(p1,p2,p3);
+      let {gradient, yIntercept} = getEquationOfLineFromTwoPoints(p1, p2);
+      r.push({
+          m:gradient,
+          b:yIntercept,
+          above:insideCalculator(gradient, yIntercept, p3.x, p3.y)
+      });
+  }
+  return r;
+}
+
+const noVerticalLines = (array) => {
+  for (let i = 0; i < array.length; i++)
+    if (array[i].x === array[(i+1)%array.length].x)
+      return true;
+  return false;
+}
+
+const fillHelperRandom = () => {
+  let convexHullPoints;
+
+  do {
+    const randomPoints = [];
+
+    for (let i = 0; i < 10; i++) {
+      const x = Math.floor(Math.random()*(maxX - minX + 1) + minX);
+      const y = Math.floor(Math.random()*(maxY - minY + 1) + minY);
+      randomPoints.push({x:x,y:y});
+    }
+    convexHullPoints = convexHull(randomPoints);
+  } while(noVerticalLines(convexHullPoints))
+
+  console.log(convexHullPoints);
+  const generatedPolygon = mapToTuples(convexHullPoints);
+  console.log(generatedPolygon);
+
+  generatedPolygon.forEach(line => submitLine(line.m, line.b, line.above));
+  submitPolygon();
 }

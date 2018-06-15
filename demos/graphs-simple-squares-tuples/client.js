@@ -19,7 +19,7 @@ function connect() {
     
     var hostname = window.location.hostname.trim();
     var port = window.location.port;
-    if(port == null || port == '') 
+    if(port == null || port == '')
       port = "80";
     if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
       hostname = "http://" + hostname;

@@ -9,7 +9,7 @@ console.log("Command line arguments: <input> [<party count> [<computation_id> [<
 var mpc = require('./mpc');
 
 // Read Command line arguments
-var input = parseInt(process.argv[2], 10);
+var input = JSON.parse(process.argv[2]);
 
 var party_count = process.argv[3];
 if(party_count == null) party_count = 2;
@@ -24,7 +24,12 @@ if(party_id != null) party_id = parseInt(party_id, 10);
 // JIFF options
 var options = {party_count: party_count, party_id: party_id};
 options.onConnect = function(jiff_instance) {
-  var promise = mpc.compute(input);
+  var promise;
+  if (jiff_instance.id === 1)
+    promise = mpc.computePolygon(input);
+  else
+    promise = mpc.computePoint(input);
+
 
   promise.then(function(v) {
     console.log(v);

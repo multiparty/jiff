@@ -31,7 +31,7 @@ options.onConnect = function(jiff_instance) {
     promise = mpc.computeRoleY(input);
 
   promise.then(function(m, b) {
-    console.log("Slope:", m, "Y-Intercept:", b);
+    console.info("Slope:", m, "Y-Intercept:", b);
     jiff_instance.disconnect();
   });
 };
