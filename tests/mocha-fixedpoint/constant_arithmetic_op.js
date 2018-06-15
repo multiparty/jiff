@@ -11,7 +11,12 @@ var Zp = new BigNumber(32416190071);
 
 var decimal_digits = 5;
 var integer_digits = 5;
-function mod(x, y) { if (x.isNeg()) return x.mod(y).plus(y); return x.mod(y); }
+var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
+function mod(x, y) {
+  x = x.times(decimal_magnitude); 
+  if (x.isNeg()) return x.mod(y).plus(y).div(decimal_magnitude); 
+  return x.mod(y).div(decimal_magnitude);
+}
 
 // Operation strings to "lambdas"
 var operations = {
@@ -73,13 +78,13 @@ function run_test(computation_id, operation, callback) {
   options.onError = function(error) { console.log(error); has_failed = true; };
 
   // Create Instances
-  var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3002", computation_id, options));
   jiff_instance1 = jiffFixedPoint.make_jiff(jiff_instance1, {decimal_digits: decimal_digits, integer_digits: integer_digits});
   
-  var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3002", computation_id, options));
   jiff_instance2 = jiffFixedPoint.make_jiff(jiff_instance2, {decimal_digits: decimal_digits, integer_digits: integer_digits});
 
-  var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3002", computation_id, options));
   jiff_instance3 = jiffFixedPoint.make_jiff(jiff_instance3, {decimal_digits: decimal_digits, integer_digits: integer_digits});
 
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];

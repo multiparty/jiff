@@ -35,12 +35,12 @@ describe("MPC Operations", function() {
     it("Addition", function(done) {
       arithmetic_op.run_test(i++, "add", callback(done));
     });
-    /*
     // -
     it("Subtraction", function(done) {
       arithmetic_op.run_test(i++, "sub", callback(done));
     });
     // *
+    /*
     it("Mutliplication", function(done) {
       arithmetic_op.run_test(i++, "mult", callback(done));
     });
@@ -61,14 +61,14 @@ describe("MPC Operations", function() {
     it("Constant Addition", function(done) {
       constant_arithmetic_op.run_test(i++, "add_cst", callback(done));
     });
-  /*  // constant -
+    // constant -
     it("Constant Subtraction", function(done) {
       constant_arithmetic_op.run_test(i++, "sub_cst", callback(done));
-    }); */
+    });
     // constant *
-    //it("Constant Mutliplication", function(done) {
-    //  constant_arithmetic_op.run_test(i++, "mult_cst", callback(done));
-    //}); 
+    it("Constant Mutliplication", function(done) {
+      constant_arithmetic_op.run_test(i++, "mult_cst", callback(done));
+    }); 
     /*
     // constant ^
     it("Constant Bitwise XOR", function(done) {
