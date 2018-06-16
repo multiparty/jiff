@@ -16,7 +16,7 @@ function connect() {
     var options = { party_count: party_count};
     options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
     options.onConnect = function() { $("#button").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
-    
+
     var hostname = window.location.hostname.trim();
     var port = window.location.port;
     if(port == null || port == '')
