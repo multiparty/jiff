@@ -1,112 +1,147 @@
 // Chai 
-var expect = require('chai').expect;
-var assert = require('chai').assert;
+// var expect = require('chai').expect;
+const assert = require('chai').assert;
 
-var mpc = require('./mpc.js');
+const mpc = require('./mpc.js');
 
-// Generic Testing Parameters
-var party_count = 3;
-var parallelismDegree = 5; // Max number of test cases running in parallel
-var n = 10; // Number of test cases in total
+const testCasesCount = 10;
+const maximumPartiesCount = 4;
 
-// Parameters specific to this demo
-/* PUT PARAMETERS HERE */
+const maximumInputArrayLength = 5;
+const maximumInputNumber = 100;
+const maximumQueriesCount = 5;
 
-/**
- * CHANGE THIS: Generate inputs for your tests
- * Should return an object with this format:
- * {
- *   'party_id': [ 'test1_input', 'test2_input', ...]
- * }
- */
-function generateInputs(party_count) {
-  var inputs = {};
-
-  // Generate test cases one at a time
-  for(var t = 0; t < n; t++) {
-    /*
-     * INPUT GENERATION CODE GOES HERE
-     */
+class Node {
+  constructor(share, leftNode, rightNode) {
+    this.share = share;
+    this.left = leftNode;
+    this.right = rightNode;
+    this.openedValue = null;
   }
-
-  return inputs;
+}
+const makeTree = (arr, start, end) => {
+  if (start > end)
+    return null;
+  ++nodesCount;
+  const middle = Math.floor((start + end) / 2);
+  const node = new Node(arr[middle], makeTree(arr, start, middle-1), makeTree(arr, middle+1, end));
+  return node;
+}
+class ResultNode {
+  constructor(value, leftResultNode, rightResultNode) {
+    this.value = value;
+    this.left = leftResultNode;
+    this.right = rightResultNode;
+  }
+}
+const makeResultTree = (arr, start, end) => {
+  if (start > end)
+    return null;
+  const middle = Math.floor((start + end) / 2);
+  const node = new ResultNode(arr[middle], makeResultTree(arr, start, middle-1), makeResultTree(arr, middle+1, end));
+  return node;
 }
 
 /**
- * CHANGE THIS: Compute the expected results not in MPC
- * @param {object} inputs - same format as generateInputs output.
- * Should return a single array with the expected result for every test in order
- *   [ 'test1_output', 'test2_output', ... ]
+ * @returns An array of objects, each object holds the inputs to the test case
+ * as well as the data structures needed to be kept throughout the computation.
+ * [
+ *   {
+ *     'party_id1': {},
+ *     'party_id2': {},
+ *     ...      
+ *   },
+ *   {
+ *     'party_id1': {},
+ *     'party_id2': {},
+ *     ...      
+ *   },
+ *   ...
+ * ]
  */
-function computeResults(inputs) {
-  var results = [];
+const generateInputs = (testCasesCount) => {
+  const r = [];
+  for (let i = 0; i < testCasesCount; i++) {
+    const testCaseData = {};
 
-  for (var j = 0; j < n; j++) {
-    /*
-     * COMPUTING THE RESULT IN THE OPEN CODE GOES HERE
-     */
+    // generate a number between 2 and maximumPartiesCount
+    let partiesCount = Math.floor(Math.random()*(maximumPartiesCount - 1) + 2);
+    let queriesInTree = [];
+
+    for (let j = 1; j <= partiesCount; j++) {
+      const inputArray = [];
+      let arrayLength = Math.floor(Math.random()*(maximumInputArrayLength) + 1);
+      for (let k = 0; k < arrayLength; k++) {
+        let randomNumber = Math.floor(Math.random()*(maximumInputNumber + 1));
+        queriesInTree.push(randomNumber);
+        inputArray.push(randomNumber);
+      }
+      testCaseData[j] = {
+        inputArray:inputArray
+      };
+    }
+
+    const queries = [];
+    //generate 5 queries, half of which are in the tree and the other half is random.
+    for (let j = 0; j < maximumQueriesCount; j++) {
+      if (j < maximumQueriesCount / 2) {
+        // remove a random element from queriesInTree and adds it to queries
+        queries.push(queriesInTree.splice(Math.floor(Math.random()*queriesInTree.length), 1)[0]);
+      } else {
+        // add a random number not in the tree.
+        let randomNumber;
+        do {
+          randomNumber = Math.floor(Math.random()*(maximumInputNumber + 1));
+        } while (queriesInTree.includes(randomNumber))
+        queries.push(randomNumber);
+      }
+    }
+    for (let p in testCaseData) {
+      testCaseData[p].queries = queries.slice();
+    }
+    r.push(testCaseData);
   }
-  return results;
+  r.forEach(tc => console.log(tc));
+  return r;
 }
 
 /**
- * Do not change unless you have to.
+ * @returns The results of the computation.
+ * [
+ *   [{result1}, {result2}, ...]
+ * ]
  */
-describe('Test', function() {
-  this.timeout(0); // Remove timeout
+const computeResults = (testCases) => {
+  const r = [];
 
-  it('Exhaustive', function(done) {
-    var count = 0;
+  for (let i = 0; i < testCases.length; i++) {
+    const tc = testCases[i];
+    const results = [];
 
-    var inputs = generateInputs(party_count);
-    var realResults = computeResults(inputs);
+    let allValuesArray = [];
+    for (let p in tc) {
+      allValuesArray = allValuesArray.concat(tc[p].inputArray.slice());
+    }
+    allValuesArray = allValuesArray.sort(function(a, b) { return a - b; });
 
-    var onConnect = function(jiff_instance) {
-      var partyInputs = inputs[jiff_instance.id];
 
-      var testResults = [];      
-      (function one_test_case(j) {
-        if(j < partyInputs.length) {
-          var promises = [];
-          for(var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++)
-            promises.push(mpc.compute(partyInputs[j+t], jiff_instance));
+    // all parties' queries should be the same.
+    const queries = tc[Object.keys(tc)[0]].queries;
 
-          Promise.all(promises).then(function(parallelResults) {
-            for(var t = 0; t < parallelResults.length; t++)
-              testResults.push(parallelResults[t]);
+    for (let j = 0; j < queries.length; j++) {
+      if (allValuesArray.includes(queries[j]))
+        results.push(1);
+      else
+        results.push(0);
+    }
 
-            one_test_case(j+parallelismDegree);
-          });
+    results.push(makeResultTree(allValuesArray, 0, allValuesArray.length - 1));
 
-          return;
-        }
+    r.push(results);
+  }
 
-        // If we reached here, it means we are done
-        count++;
-        for (var i = 0; i < testResults.length; i++) {
-          // construct debugging message
-          var ithInputs = inputs[1][i] + "";
-          for (var j = 2; j <= party_count; j++)
-            ithInputs += "," + inputs[j][i];
-          var msg = "Party: " + jiff_instance.id + ". inputs: [" + ithInputs + "]";
+  console.log(r);
+  return r;
+}
 
-          // assert results are accurate
-          try {
-            assert.deepEqual(testResults[i], realResults[i], msg);
-          } catch(assertionError) {
-            done(assertionError);
-            done = function(){}
-          }
-        }
-
-        jiff_instance.disconnect();
-        if (count == party_count)
-          done();
-      })(0);
-    };
-    
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect };
-    for(var i = 0; i < party_count; i++)
-      mpc.connect("http://localhost:8080", "mocha-test", options);
-  });
-});
+computeResults(generateInputs(testCasesCount));
