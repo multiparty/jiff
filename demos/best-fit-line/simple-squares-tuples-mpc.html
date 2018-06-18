@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <title>Best Fit Line</title>
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/lib/sodium.js"></script>
+        <script src="/lib/jiff-client.js"></script>
+        <script src="./simpleSquaresTuples.js"></script>
+    </head>
+    <body>
+        <div style="width:300px; height:300px;">
+            <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+
+        <label for="computation_id">Computation ID</label><input id="computation_id" value="test-sum"></input><br/><br/>
+        <label for="count">Party Count</label> <input id="count" pattern="[0-9]*"><br/><br/>
+        <button id="connectButton" onclick="connect();">Connect</button>
+        
+        <hr>
+
+        <h4>Please connect to server and input data points.</h4>
+        <div>X Value:</div><input id="xVal" type="text" placeholder="x value"/><br/>
+        <div>Y Value:</div><input id="yVal" type="text" placeholder="y value"/><br/>
+        <button onclick="pushCoordinate(xVal.value, yVal.value)">Add Point!</button>
+        <br/><br/>
+        <button onclick="calculateLeastSquares(coordinates)" id="calculate">Calculate Least Squares!</button>
+        <div id="output"></div>
+    </body>
+</html>

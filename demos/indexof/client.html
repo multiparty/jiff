@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+
+		<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+
+		<!-- JIFF related files -->  
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/lib/sodium.js"></script>
+		<script src="/lib/jiff-client.js"></script>
+		<script src="client.js"></script>
+	</head>
+
+
+	<body>
+		<div class="container">
+		<div class="row">
+			<h1>IndexOf all possible occurrences of a substring</h1>        
+		</div>
+		
+		<div class="row">
+			<textarea id="inputText"></textarea>
+		</div>
+		<br/><br/>
+		<div id="btns" class="row">
+			<button class="btn btn-secondary" id="connectButton" onclick="connect();">connect</button>
+			<button class="btn btn-secondary" id="processButton" disabled="disabled" onclick="process(inputText.value);">process</button>
+		</div>
+		<br/>
+		<div class="row">
+			<h4>Result</h4><br/>
+		</div>
+		<!-- <textarea id="outputText"></textarea><br/> -->
+		<div class="row" id="output">
+		</div>
+	</body>
+
+</html>

@@ -19,16 +19,25 @@
       <div class="row">
         <h1>Concatenation</h1>        
       </div>
-    
-      <div class="row">
-        <textarea id="inputText"></textarea>
-      </div>
-      <br/><br/>
-      <div id="btns" class="row">
+      <div id="btns">
+        <div class="row">
+          <label for="computation_id">Computation ID</label>
+          <input id="computation_id" value="test-concat"></input>
+        </div>
+        <br/><br/>
+        <div class="row">
+          <label for="count">Party Count<label>
+          <input id="count">
+        </div><br/>
         <button class="btn btn-secondary" id="connectBtn" onclick="connect();">connect</button>
         <button class="btn btn-secondary" id="concatBtn" disabled="disabled" onclick="process();">concat</button>
       </div>
       <br/>
+      <h4>Input:</h4>
+      <div class="row">
+          <textarea id="inputText"></textarea>
+      </div>
+      <br/><br/>
       <div class="row">
         <h4>Result</h4><br/>
       </div>

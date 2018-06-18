@@ -94,6 +94,11 @@
         console.log("Error in open_all");
       }
     </script>
+
+  <link rel="stylesheet" type="text/css" href="./style.css">
+  <link href="https://fonts.googleapis.com/css?family=Timmana" rel="stylesheet">
+
+
   </head>
   <body>
     <h1>Connect JIFF</h1>
@@ -101,11 +106,11 @@
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
-    <h1>Vote for the best beer</h1>
-    <label><input type="radio" name="beer"/> Harpoon IPA</label> &nbsp; <span id="res0"></span><br/>
-    <label><input type="radio" name="beer"/> Samuel Adams Octoberfest</label> &nbsp; <span id="res1"></span><br/>
-    <label><input type="radio" name="beer"/> Chimay Grande Reserve Blue</label> &nbsp; <span id="res2"></span><br/>
-    <label><input type="radio" name="beer"/> Guinness Stout</label> &nbsp; <span id="res3"></span><br/>
+    <h1>Vote for the Best Beer</h1>
+    <label><input type="radio" name="beer"/><img src="https://drizly-products3.imgix.net/ci-harpoon-ipa-25ec827c10057591.jpeg?auto=format%2Ccompress&fm=jpeg&q=20" height="150" alt="harpoon IPA"></label> &nbsp; <span id="res0"></span><br/>
+    <label><input type="radio" name="beer"/><img src="https://drizly-products0.imgix.net/ci-guinness-draught-39d3541fc7e182f2.png?auto=format%2Ccompress&fm=jpeg&q=20" height="150" alt="guiness"></label> &nbsp; <span id="res1"></span><br/>
+    <label><input type="radio" name="beer"/><img src="https://drizly-products3.imgix.net/ci-goose-island-ipa-158e904177a3d9f0.jpeg?auto=format%2Ccompress&fm=jpeg&q=20" height="150" alt="guiness"></label> &nbsp; <span id="res2"></span><br/>
+    <label><input type="radio" name="beer"/><img src="https://drizly-products2.imgix.net/ci-cisco-grey-lady-9cd77580c467893a.png?auto=format%2Ccompress&fm=jpeg&q=20" height="150" alt="guiness"></label> &nbsp; <span id="res3"></span><br/>
     <br/>
     <button onclick="vote()" id="voteButton" disabled="disabled">Vote</button>
     <div id="output"></div>

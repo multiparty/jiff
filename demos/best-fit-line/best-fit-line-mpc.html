@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>Best Fit Line</title>
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <!-- <script src="/bignumber.js/bignumber.min.js"></script> -->
+        <script src="/lib/sodium.js"></script>
+        <script src="/lib/jiff-client.js"></script>
+        <!-- <script src="/lib/ext/jiff-client-bignumber.js"></script> -->
+        <!-- <script src="/lib/ext/jiff-client-fixedpoint.js"></script> -->
+        <script src="./simpleSquaresNonTuples.js"></script>
+    </head>
+    <body>
+        <div style="width:300px; height:300px;">
+            <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+
+        <label for="computation_id">Computation ID</label><input id="computation_id" value="test-sum"></input><br/><br/>
+        <!--label for="count">Party Count<label> <input id="count" pattern="[0-9]*"><br/><br/-->
+        <button id="connectButton" onclick="connect();">Connect</button>
+        
+        <hr>
+
+        <h4>Please connect to server and follow the prompts to add points. An axis will be chosen automatically.</h4>
+        <input type="radio" id="c1" name="choice" value="x">
+        <label for="c1">X</label>
+        <input type="radio" id="c2" name="choice" value="y">
+        <label for="c2">Y</label>
+        <div>Value:</div><input id="val" type="text" placeholder="value"/><br/>
+        <button onclick="pushCoordinate(val.value)">Add Coordinate!</button>
+        <br/><br/>
+        <button onclick="calculateLeastSquares(coordinates)" id="calculate">Calculate Least Squares!</button>
+        <div id="output"></div>
+    </body>
+</html>
