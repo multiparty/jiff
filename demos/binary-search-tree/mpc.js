@@ -8,8 +8,10 @@
     var opt = Object.assign({}, options);
     // Added options goes here
 
-    if(node)
+    if(node) {
       jiff = require('../../lib/jiff-client');
+      $ = require('jquery-deferred');
+    }
 
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     // if you need any extensions, put them here
@@ -31,10 +33,8 @@
         concat = [...concat, ...arr[party]];
     
       const sortedShares = bubbleSort(concat);
-
       final_deferred.resolve(sortedShares);
     });
-
     return final_promise;
   };
 
@@ -51,7 +51,8 @@
     return arr; 
   }
 
-  exports.openTree = (openedNodesCounter, root) => {
+  exports.openTree = (openedNodesCounter, root, jiff_instance) => {
+    if(jiff_instance == null) jiff_instance = saved_instance;
     let final_deferred = $.Deferred();
     let final_promise = final_deferred.promise();
     
@@ -75,7 +76,8 @@
     }
   }
 
-  exports.exists = (nodesCount, root, query) => {
+  exports.exists = (nodesCount, root, query, jiff_instance) => {
+    if(jiff_instance == null) jiff_instance = saved_instance;    
     let final_deferred = $.Deferred();
     let final_promise = final_deferred.promise();
 

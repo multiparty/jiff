@@ -1,5 +1,5 @@
 // Chai 
-var expect = require('chai').expect;
+// var expect = require('chai').expect;
 var assert = require('chai').assert;
 
 var mpc = require('./mpc.js');
