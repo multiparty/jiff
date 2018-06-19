@@ -1,2 +1,8 @@
 submit/fetch functions to server - server stores or serves arbitrary objects for for / from preprocessing
   make general plz
+
+
+* build jiff.protocol for generating random bit
+  * get 1 bit from each party and xor
+  * validate that input is either 0/1: malicious party could control bit by inputting large value
+
