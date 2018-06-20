@@ -60,6 +60,10 @@ function run_test(computation_id, operation, callback) {
     var num3 = (Math.floor(Math.random() * Zp) % m) + o;
     tests[i] = [num1, num2, num3];
   }
+  /*
+  tests[0] = [1552, 213, 475];
+  tests[1] = [92, 420, 121];
+  */
 
   // Assign values to global variables
   parties = tests[0].length;
@@ -85,7 +89,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == "div" ? 10 : tests.length;
+  var length = mpc_operator == "div" ? 5 : tests.length;
   for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
