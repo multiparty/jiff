@@ -40,9 +40,9 @@ describe("MPC Operations", function() {
       arithmetic_op.run_test(i++, "sub", callback(done));
     });
     // *
-    /*it("Mutliplication", function(done) {
+    it("Mutliplication", function(done) {
       arithmetic_op.run_test(i++, "mult", callback(done));
-    });*/
+    });
     // ^
     //it("Bitwise XOR", function(done) {
     //  arithmetic_op.run_test(i++, "xor", callback(done));

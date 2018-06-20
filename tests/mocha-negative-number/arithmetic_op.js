@@ -48,7 +48,7 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "div": "/" };
 // Entry Point
 function run_test(computation_id, operation, callback) {
     // Generating positive and negative numbers
-    for (var i = 0; i < 20; i++) {
+    for (var i = 0; i < 100; i++) {
         var num1 = Math.floor(Math.random() * 201) - 100;
         var num2 = Math.floor(Math.random() * 201) - 100;
         var num3 = Math.floor(Math.random() * 201) - 100;
@@ -61,7 +61,7 @@ function run_test(computation_id, operation, callback) {
 
   var counter = 0;
   options = { party_count: parties, Zp: Zp, autoConnect: false };
-  options.onConnect = function() { if(++counter == 3) test(callback, operation); };
+  options.onConnect = function() { if(++counter == 2) test(callback, operation); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
   var jiff_instance1 = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
