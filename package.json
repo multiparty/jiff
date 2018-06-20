@@ -43,18 +43,19 @@
   "scripts": {
     "test": "./tests/mocha/test.sh",
     "test-bignumber": "./tests/mocha-bignumber/test.sh",
+    "test-fixedpoint": "./tests/mocha-fixedpoint/test.sh",
     "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html",
     "test-demo": "./node_modules/mocha/bin/mocha --full-trace"
   },
   "dependencies": {
     "bignumber.js": "^5.0.0",
-    "eslint": "^4.19.1",
     "jquery-deferred": "^0.3.1",
     "libsodium-wrappers": "^0.7.2",
     "socket.io": "^2.0.2",
     "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
+    "eslint": "^4.19.1",
     "chai": "^4.1.2",
     "eslint-plugin-requirejs": "^2.0.1",
     "express": "^4.16.3",

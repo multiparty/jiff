@@ -1,45 +1,51 @@
 var jiff = require ("../../lib/jiff-client.js");
+var jiffBigNumber = require ("../../lib/ext/jiff-client-bignumber.js");
+var jiffFixedPoint = require ("../../lib/ext/jiff-client-fixedpoint.js");
+var BigNumber = require('bignumber.js');
 
 var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = 32749;
+var Zp = new BigNumber(32416190071);
+
+var decimal_digits = 5;
+var integer_digits = 5;
 
 // Operation strings to "lambdas"
 var operations = {
   "<" : function (operand1, operand2) {
-    return operand1 < operand2;
+    return operand1.lt(operand2);
   },
   "less_cst" : function (operand1, operand2) {
     return operand1.clt(operand2);
   },
   "<=" : function (operand1, operand2) {
-    return operand1 <= operand2;
+    return operand1.lte(operand2);
   },
   "less_or_equal_cst" : function (operand1, operand2) {
     return operand1.clteq(operand2);
   },
   ">" : function (operand1, operand2) {
-    return operand1 > operand2;
+    return operand1.gt(operand2);
   },
   "greater_cst" : function (operand1, operand2) {
     return operand1.cgt(operand2);
   },
   ">=" : function (operand1, operand2) {
-    return operand1 >= operand2;
+    return operand1.gte(operand2);
   },
   "greater_or_equal_cst" : function (operand1, operand2) {
     return operand1.cgteq(operand2);
   },
   "==" : function (operand1, operand2) {
-      return operand1 == operand2;
+    return operand1.eq(operand2);
   },
   "eq_cst" : function (operand1, operand2) {
     return operand1.ceq(operand2);
   },
   "!=" : function (operand1, operand2) {
-      return operand1 != operand2;
+    return !operand1.eq(operand2);
   },
   "neq_cst" : function (operand1, operand2) {
     return operand1.cneq(operand2);
@@ -53,9 +59,12 @@ var dual = { "less_cst": "<", "less_or_equal_cst": "<=", "greater_cst": ">", "gr
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 10; i++) {
-    var num1 = Math.floor(Math.random() * Zp);
-    var num2 = Math.floor(Math.random() * Zp);
-    var num3 = Math.floor(Math.random() * Zp);
+    var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits);
+    var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
+
+    var num1 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    var num2 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    var num3 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
     tests[i] = [num1, num2, num3];
   }
 
@@ -64,14 +73,23 @@ function run_test(computation_id, operation, callback) {
   computation_id = computation_id + "";
 
   var counter = 0;
-  options = { party_count: parties, Zp: Zp };
+  options = { party_count: parties, Zp: Zp, autoConnect: false };
   options.onConnect = function() { if(++counter == 3) test(callback, operation); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
-  var jiff_instance1 = jiff.make_jiff("http://localhost:3000", computation_id, options);
-  var jiff_instance2 = jiff.make_jiff("http://localhost:3000", computation_id, options);
-  var jiff_instance3 = jiff.make_jiff("http://localhost:3000", computation_id, options);
+  var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3002", computation_id, options));
+  jiff_instance1 = jiffFixedPoint.make_jiff(jiff_instance1, {decimal_digits: decimal_digits, integer_digits: integer_digits});
+
+  var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3002", computation_id, options));
+  jiff_instance2 = jiffFixedPoint.make_jiff(jiff_instance2, {decimal_digits: decimal_digits, integer_digits: integer_digits});
+
+  var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3002", computation_id, options));
+  jiff_instance3 = jiffFixedPoint.make_jiff(jiff_instance3, {decimal_digits: decimal_digits, integer_digits: integer_digits});
+
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
+  jiff_instance1.connect();
+  jiff_instance2.connect();
+  jiff_instance3.connect();
 }
 
 // Run all tests after setup
@@ -83,19 +101,27 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  for(var i = 0; i < tests.length; i++) {
+  (function do_test(i) {
+    if(i >= tests.length) {
+      // When all is done, check whether any failures were encountered
+      Promise.all(promises).then(function() {
+        for(var i = 0; i < jiff_instances.length; i++) jiff_instances[i].disconnect();
+        jiff_instances = null;
+        callback(!has_failed);
+      });
+
+      return;
+    }
+  
+    var iteration = [];
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
       promises.push(promise);
+      iteration.push(promise);
     }
-  }
 
-  // When all is done, check whether any failures were encountered
-  Promise.all(promises).then(function() {
-    for(var i = 0; i < jiff_instances.length; i++) jiff_instances[i].disconnect();
-    jiff_instances = null;
-    callback(!has_failed);
-  });
+    Promise.all(iteration).then(function() { do_test(i+1); });
+  })(0);
 }
 
 // Run test case at index
@@ -118,10 +144,10 @@ function test_output(index, result, open_operator) {
 
   // Apply operation in the open to test
   var res = operations[open_operator](numbers[0], numbers[1]);
-  res = res ? 1 : 0;
+  res = res ? new BigNumber(1) : new BigNumber(0);
 
   // Incorrect result
-  if(res != result) {
+  if(!(res.eq(result))) {
     has_failed = true;
     console.log(numbers[0] + open_operator + numbers[1] + " != " + result);
   }
