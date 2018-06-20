@@ -6,17 +6,17 @@ var tests = [];
 var senders = [];
 var receivers = [];
 var has_failed = false;
-var Zp = 1299827;
+var Zp = 15485867;
 
 // Entry Point
 function run_test(computation_id, callback) {
   // Generate Numbers
-  for (var i = 0; i < 30; i++) {
+  for (var i = 0; i < 300; i++) {
     // Generate numbers
-    var num1 = Math.floor(Math.random() * Zp / 10);
-    var num2 = Math.floor(Math.random() * Zp / 10);
-    var num3 = Math.floor(Math.random() * Zp / 10);
-    var num4 = Math.floor(Math.random() * Zp / 10);
+    var num1 = Math.floor(Math.random() * Zp);
+    var num2 = Math.floor(Math.random() * Zp);
+    var num3 = Math.floor(Math.random() * Zp);
+    var num4 = Math.floor(Math.random() * Zp);
     
     // Generate thresholds
     var threshold = Math.ceil(Math.random() * 4);

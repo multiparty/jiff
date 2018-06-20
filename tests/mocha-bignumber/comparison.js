@@ -6,7 +6,7 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = new BigNumber(32416190071);
+var Zp = new BigNumber(15485867);
 
 // Operation strings to "lambdas"
 var operations = {
@@ -55,9 +55,9 @@ var dual = { "less": "<", "less_or_equal": "<=", "greater": ">", "greater_or_equ
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 5; i++) {
-    var num1 = BigNumber.random().times(Zp / 100).floor();
-    var num2 = BigNumber.random().times(Zp / 100).floor();
-    var num3 = BigNumber.random().times(Zp / 100).floor();
+    var num1 = BigNumber.random().times(Zp).floor();
+    var num2 = BigNumber.random().times(Zp).floor();
+    var num3 = BigNumber.random().times(Zp).floor();
     tests[i] = [num1, num2, num3];
   }
 
@@ -70,9 +70,9 @@ function run_test(computation_id, operation, callback) {
   options.onConnect = function() { if(++counter == 3) test(callback, operation); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
-  var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
-  var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
-  var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3001", computation_id, options));
+  var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3001", computation_id, options));
+  var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3001", computation_id, options));
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
   jiff_instance1.connect();
   jiff_instance2.connect();
