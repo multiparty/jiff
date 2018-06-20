@@ -17,7 +17,7 @@ var integer_digits = 5;
 // Entry Point
 function run_test(computation_id, callback) {
   // Generate Numbers
-  for (var i = 0; i < 100; i++) {
+  for (var i = 0; i < 300; i++) {
     // Generate numbers
     var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits);
     var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
@@ -59,7 +59,7 @@ function run_test(computation_id, callback) {
   options.onError = function(error) { console.log(error); has_failed = true; };
 
   for(var i = 0; i < parties; i++) {
-    var jiff_instance = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+    var jiff_instance = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3002", computation_id, options));
     jiff_instance = jiffFixedPoint.make_jiff(jiff_instance, {decimal_digits: decimal_digits, integer_digits: integer_digits});
     jiff_instances.push(jiff_instance);
     jiff_instance.connect();

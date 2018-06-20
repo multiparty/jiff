@@ -7,11 +7,17 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = new BigNumber(32416190071);
+var Zp = new BigNumber(2).pow(51).minus(129);
 
 var decimal_digits = 5;
 var integer_digits = 5;
-function mod(x, y) { if (x.isNeg()) return x.mod(y).plus(y); return x.mod(y); }
+function mod(x, y) {
+  var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
+
+  x = x.times(decimal_magnitude); 
+  if (x.isNeg()) return x.mod(y).plus(y).div(decimal_magnitude); 
+  return x.mod(y).div(decimal_magnitude);
+}
 
 // Operation strings to "lambdas"
 var operations = {
@@ -39,8 +45,14 @@ var operations = {
   "xor_cst" : function (operand1, operand2) {
     return operand1.cxor_bit(operand2);
   },
+  "|" : function (operand1, operand2) {
+    return operand1.eq(1) || operand2.eq(1) ? new BigNumber(1) : new BigNumber(0);
+  },
+  "or_cst" : function (operand1, operand2) {
+    return operand1.cor_bit(operand2);
+  },
   "/" : function (operand1, operand2) {
-    return operand1.div(operand2).floor();
+    return new BigNumber(operand1.div(operand2).toFixed(decimal_digits, BigNumber.ROUND_DOWN));
   },
   "div_cst" : function (operand1, operand2) {
     return operand1.cdiv(operand2);
@@ -48,14 +60,24 @@ var operations = {
 };
 
 // Maps MPC operation to its open dual
-var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*", "xor_cst": "^", "div_cst": "/" };
+var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*", "xor_cst": "^", "or_cst": "|", "div_cst": "/" };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 100; i++) {
-    var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits - 1);
+  for (var i = 0; i < 200; i++) {
+    var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits);
     var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
+
+    if(operation == "mult_cst") {
+      var max_int = Math.floor(Math.sqrt(Math.pow(10, decimal_digits) - 1));
+      total_magnitude = new BigNumber(max_int).times(decimal_magnitude);
+    }
+
+    if(operation == "xor_cst" || operation == "or_cst") {
+      total_magnitude = 2;
+      decimal_magnitude = 1;
+    }
 
     var num1 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
     var num2 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
@@ -73,13 +95,13 @@ function run_test(computation_id, operation, callback) {
   options.onError = function(error) { console.log(error); has_failed = true; };
 
   // Create Instances
-  var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3002", computation_id, options));
   jiff_instance1 = jiffFixedPoint.make_jiff(jiff_instance1, {decimal_digits: decimal_digits, integer_digits: integer_digits});
   
-  var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3002", computation_id, options));
   jiff_instance2 = jiffFixedPoint.make_jiff(jiff_instance2, {decimal_digits: decimal_digits, integer_digits: integer_digits});
 
-  var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3002", computation_id, options));
   jiff_instance3 = jiffFixedPoint.make_jiff(jiff_instance3, {decimal_digits: decimal_digits, integer_digits: integer_digits});
 
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
@@ -97,20 +119,30 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == "div_cst" ? 5 : tests.length;
-  for(var i = 0; i < length; i++) {
+  var length = mpc_operator == "div_cst" ? 10 : tests.length;
+  length = mpc_operator == "mult_cst" ? 10 : length;
+  
+  (function do_test(i) {
+    if(i >= length) {
+      // When all is done, check whether any failures were encountered
+      Promise.all(promises).then(function() {
+        for(var i = 0; i < jiff_instances.length; i++) jiff_instances[i].disconnect();
+        jiff_instances = null;
+        callback(!has_failed);
+      });
+
+      return;
+    }
+  
+    var iteration = [];
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
       promises.push(promise);
+      iteration.push(promise);
     }
-  }
 
-  // When all is done, check whether any failures were encountered
-  Promise.all(promises).then(function() {
-    for(var i = 0; i < jiff_instances.length; i++) jiff_instances[i].disconnect();
-    jiff_instances = null;
-    callback(!has_failed);
-  });
+    Promise.all(iteration).then(function() { do_test(i+1); });
+  })(0);
 }
 
 // Run test case at index
