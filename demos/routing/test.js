@@ -23,19 +23,20 @@ const getRequest = function(url) {
 };
 
 var jiff_instance = jiff.make_jiff("dummy", "dummy", { autoConnect: false});
-jiff_instance.party_count = 3;
+jiff_instance.party_count = 4;
 
 var query_count = 1;
 
 var source = parseInt(process.argv[2], 10);
 var dist = parseInt(process.argv[3], 10);
-var jumps = new Array();
 function get_one_step(source, dist) {
   var query_number = query_count++;
+  var source_shares = jiff.sharing_schemes.shamir_share(jiff_instance, source, [2, 3, 4], 3, jiff_instance.Zp);
+  var dist_shares = jiff.sharing_schemes.shamir_share(jiff_instance, dist, [2, 3, 4], 3, jiff_instance.Zp);
 
   var promises = [];
-  for(var i = 2; i <= 3; i++)
-    promises.push(getRequest("http://localhost:911"+i+"/query/"+query_number+"/"+source+"/"+dist));
+  for(var i = 2; i <= 4; i++)
+    promises.push(getRequest("http://localhost:911"+i+"/query/"+query_number+"/"+source_shares[i]+"/"+dist_shares[i]));
 
   Promise.all(promises).then(function(results) {
     for(var i = 0; i < results.length; i++)
@@ -52,13 +53,9 @@ function get_one_step(source, dist) {
 
     var result = jiff.sharing_schemes.shamir_reconstruct(jiff_instance, shares);
     console.log(" -> " + result);
-    jumps.push(result);
-    if(result != dist){
+    
+    if(result != dist)
       get_one_step(result, dist);
-    }else{
-      //return ajax response with jumps array and let ui keep associations
-      
-    }
   }).catch(console.log);
 }
 

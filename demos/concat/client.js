@@ -1,21 +1,32 @@
-var jiff_instance; // global jiff instance, will be instantiated at connect time
 
+// Called when the connect button is clicked: connect to the server and intialize the MPC.
 function connect() {
   // Disable connect button
   $('#connectBtn').prop('disabled', true);
 
-  var computation_id = $('#computation_id').val();
-  var party_count = parseInt($('#count').val());
+  // Figure out parameters to intialize the instance.
+  var computation_id = 1;
+  var party_count = 2;
   
   // Figure out the hostname of the server from the currently open URL.
   var hostname = window.location.hostname.trim();
   var port = window.location.port;
+  if(port == null || port == '') 
+    port = "8080";
   if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
     hostname = "http://" + hostname;
   if(hostname.endsWith("/"))
     hostname = hostname.substring(0, hostname.length-1);
+  if(hostname.indexOf(":") > -1)
+    hostanme = hostname.substring(0, hostname.indexOf(":"));
   hostname = hostname + ":" + port;
 
+  // Create an MPC instance and connect
+  MPCconnect(hostname, computation_id, party_count);
+}
+
+    // Create a JIFF instance and connect to the server.
+function MPCconnect(hostname, computation_id, party_count) {
   var options = { 'party_count': party_count };
   options.onError = function(error) { $("#result").append("<p class='error'>"+error+"</p>"); };
   options.onConnect = function() { $("#concatBtn").attr("disabled", false); $("#result").append("<p>All parties Connected!</p>"); };
@@ -26,47 +37,74 @@ function connect() {
 function process() {
   $('#concatBtn').attr('disabled', true);
 
-  var arr = [];
-  var str = document.getElementById('inputText').value;
+  var arr = JSON.parse(document.getElementById('inputText').value);
 
-  // Convert the input string into an array of numbers
-  // each number is the ascii encoding of the character at the same index
-  for(let i = 0; i < str.length; i++)
-    arr.push(str.charCodeAt(i));
-
+  for (var i = 0; i < arr.length; i++) {
+    if (typeof arr[i] !== 'number') {
+      return;
+    }
+  }
   mpc(arr);
 }
 
-// MPC Computation: share all arrays then concatenate them.
-function mpc(arr) {
-  var promise = jiff_instance.share_array(arr);
+function shareElems(arr, maxLen) {
+  var i = 0;
+  var shares = [];
 
-  promise.then(function(shares) {
-    console.log(shares);
-    var result = [];
+  for (var i = 0; i < arr.length; i++) {
+    shares.push(jiff_instance.share(arr[i]));
+  }
+  var lenDiff = maxLen - arr.length;
 
-    for(var i = 1; i <= jiff_instance.party_count; i++)
-      result = result.concat(shares[i]);
+  for (var i = 0; i < lenDiff; i++) {
+    shares.push(jiff_instance.share(0));
+  }
 
-    open_shares(result);
-  });
+  return shares;
 }
 
-// Open the concatenated array and transform it back into a string
-function open_shares(shares_array) {
-  var promises = [];
-  for(var i = 0; i < shares_array.length; i++) {
-    promises.push(jiff_instance.open(shares_array[i]));
+
+function concat(shares, l1, l2) {
+
+  var allPromises = [];
+
+  for (var i = 0; i < l1; i++) {
+    var p = shares[i][1].open(function(result) {
+      Promise.resolve(result);
+    });
+    allPromises.push(p);
   }
-  
-  Promise.all(promises).then(function(results) {
-    var string = "";
+
+  for (var i = 0; i < l2; i++) {
+    var p = shares[i][2].open(function(result) {
+      Promise.resolve(result);
+    });
+    allPromises.push(p);
+  }
+
+  Promise.all(allPromises).then(function(values) {
+    document.getElementById('outputText').value = values;
+  });
+
+  return shares;
+}
+
+function mpc(arr){
+  var lens = jiff_instance.share(arr.length);
+
+  lens[1].open(function(result) {
+    var l1 = result;
+    lens[2].open(function(result) {
+      var l2 = result;
     
-    // convert each opened number to a character
-    // and add it to the final stringls
-    for(let i = 0; i < results.length; i++) {
-      string += String.fromCharCode(results[i]);
-    }
-    document.getElementById('outputText').value = string;
+      if (l1 > l2) {
+        maxLen = l1;
+      } else {
+        maxLen = l2;
+      }
+
+      var shares = shareElems(arr, maxLen);
+      concat(shares, l1, l2);
+    });
   });
 }

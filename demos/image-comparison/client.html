@@ -31,7 +31,7 @@
       $('#connectBtn').prop('disabled', true);
 
       // Figure out parameters to intialize the instance.
-      var computation_id = "image-comparison";
+      var computation_id = 1;
       var party_count = 2;
       
       // Figure out the hostname of the server from the currently open URL.
@@ -87,7 +87,6 @@
       h.appendChild(t);
       var resultDiv = document.getElementById('result');
       resultDiv.appendChild(h);
-      $('#canvas').show();
       $("#compareBtn").attr("disabled", false);
     }
   </script>

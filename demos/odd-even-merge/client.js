@@ -47,35 +47,42 @@ function process() {
   mpc(arr);
 }
 
-/**
- * 
- * @param {[]<jiff-share>} arr - array of JIFF shares
- */
-function mpc(arr) {
-  // share array
-  jiff_instance.share_array(arr, arr.length).then(function(shares) {
-    
-    // for every index i: sum all elements at index i from all parties.
-    var array = [];
-    for(var i = 0; i < arr.length; i++) {
-      array[i] = shares[1][i];
-      for(var j = 2; j <= jiff_instance.party_count; j++)
-        array[i] = array[i].sadd(shares[j][i]);
-    }
 
-    oddEvenSort(array, 0, array.length);
-    openShares(array);
-  });
+function shareElems(arr) {
+  var shares = [];
+  for (var i = 0; i < arr.length; i++) {
+    shares.push(jiff_instance.share(arr[i]));
+  }
+  return shares;
+}
+
+function addShares(shares) {
+  var addedShares = [];
+  for (var i = 0; i < shares.length; i++) {
+    addedShares.push(shares[i][1].add(shares[i][2]));
+  }
+  return addedShares;
+}
+
+
+function mpc(arr){
+  var shares = shareElems(arr);
+  shares = addShares(shares);
+  oddEvenSort(shares, 0, shares.length);
+  openShares(shares);
 }
 
 // opens all shares in array
 function openShares(arr) {
   var allPromises = [];
-  for (var i = 0; i < arr.length; i++)
-    allPromises.push(jiff_instance.open(arr[i]));
-
+  for (var i = 0; i < arr.length; i++) {
+    var p = arr[i].open(function(result) {
+      Promise.resolve(result);
+    });
+    allPromises.push(p);
+  }
   Promise.all(allPromises).then(function(values) {
-    document.getElementById("resultText").value = values.toString();  
+    document.getElementById("resultText").value = values;  
   });
 }
 

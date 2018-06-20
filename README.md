@@ -18,12 +18,6 @@ If the client code is to be served by the server, use:
 ```  
 If the client code is served independently, fetch the matching version of socket.io.js from a CDN, or use the file found in `<server_dir>/node_modules/socket.io-client/dist`.
 
-Additionally, The [libsodium-wrappers](https://www.npmjs.com/package/libsodium-wrappers) web-assembly library is used for fast crypto (encryption). You must include the appropriate sodium wrapper js file, if the client code is to be server by the server, use:
-```html
-<script src="/lib/sodium.js"></script>
-```
-The libsodium-wrappers requirement can be removed as long as alternate implementation for encryption/decryption and signing is provided to JIFF through the appropriate hooks. Check out the hooks section below for additional info.
-
 ## Installation
 
 ### Server
@@ -35,7 +29,7 @@ npm install
 
 ### Client
 
-Make sure to include the library **after** socket.io and libsodium:
+Make sure to include the library **after** socket.io:
 ```html
 <script src="/lib/jiff-client.js"></script>
 ```  
@@ -85,13 +79,11 @@ The JIFF libraries allow developers to customize or extend their functionality b
 
 The JIFF client and server libraries support hooks. Hooks can be provided in the options parameter during instantiation or afterwards. Hooks allow the introduction of custom functionality to be executed at critical times during the computation, or the introduction of different implementations of specified primitives and operations (e.g. using a different sharing scheme).
 
-The client-side [hooks documentation](lib/ext/Hooks.md) provides more details. If hooks are used to provide important reusable functionality, then it is recommended to bundle these hooks within a JIFF extension.
+The client-side [hooks documentation](lib/ext/README.md) provides more details. If hooks are used to provide important reusable functionality, then it is recommended to bundle these hooks within a JIFF extension.
 
 ### Extensions
 
-JIFF supports implementing extensions on top of the base implementations that can provide additional extended functionality. Some extensions can be found under `lib/ext`. Two important modules are implemented and provided in this repository: bignumbers and fixed point arithmetic.
-
-See the [extensions documentation](lib/ext/README.md) and the documentation inside `src/ext/jiff-client-bignumber.js` for instructions on how to create additional extensions.
+JIFF supports implementing extensions on top of the base implementations that can provide additional extended functionality. Some extensions can be found under `lib/ext`. Two important modules are implemented and provided in this repository: bignumbers and fixed point arithmetic. See the documentation inside `src/ext/jiff-client-fixedpoint.js` for instructions on how to create additional extensions.
 
 Both client and server libraries support extensions. Some extensions require customizing both the server and client libraries to behave properly (such as the bignumbers extension). Other extensions may require only server- or client-side modifications (e.g., the fixed point arithmetic module is only client-side). A server that wants to participate in the computation would require only the client-side extension to use the additional functionality (unless, of course, that extension depends on additional server-side modifications, as well, as in bignumbers).
 
