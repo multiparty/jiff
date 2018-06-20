@@ -17,13 +17,13 @@ var operations = {
     return operand1.sadd(operand2);
   },
   "-" : function (operand1, operand2) {
-    return operand1.minus(operand2);
+    return operand1 - operand2;
   },
   "sub" : function (operand1, operand2) {
     return operand1.ssub(operand2);
   },
   "*" : function (operand1, operand2) {
-    return operand1.times(operand2);
+    return operand1 * operand2;
   },
   "mult" : function (operand1, operand2) {
     return operand1.smult(operand2);
@@ -126,7 +126,7 @@ function test_output(index, result, open_operator) {
   // Incorrect result
   if(!(res == result)) {
     has_failed = true;
-    console.log(numbers.join(open_operator) + " != " + result);
+    console.log(numbers.join(open_operator) + " = " + res + " != " + result);
   }
 }
 
