@@ -94,9 +94,7 @@ function single_test(index, jiff_instance) {
   var ss = senders[index];
   
   // Share
-    console.log("About to share")
-  var shares = jiff_instance.share(numbers[party_index], threshold, rs, ss);  
-  console.log("Shared")
+  var shares = jiff_instance.share(numbers[party_index], threshold, rs, ss);
   // Nothing to do.
   if(ss.indexOf(jiff_instance.id) == -1 && rs.indexOf(jiff_instance.id) == -1) return null;
   
@@ -134,7 +132,6 @@ function single_test(index, jiff_instance) {
     return promise;    
   }
 
-  
   // sender, but not receiver, should get back the number, without sending any shares.
   if(ss.indexOf(jiff_instance.id) > -1 && rs.indexOf(jiff_instance.id) == -1) {
     var deferred = $.Deferred();

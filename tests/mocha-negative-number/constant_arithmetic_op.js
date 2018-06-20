@@ -1,36 +1,35 @@
 var jiff = require ("../../lib/jiff-client.js");
 var jiffNegNumber = require ("../../lib/ext/jiff-client-negativenumber.js");
-var BigNumber = require('bignumber.js');
 
 var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = new BigNumber(32416190071);
-function mod(x, y) { if (x.isNeg()) return x.mod(y).plus(y); return x.mod(y); }
+var Zp = 15485867;
+// function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
 
 // Operation strings to "lambdas"
 var operations = {
   "+" : function (operand1, operand2) {
-    return operand1.plus(operand2);
+    return operand1 + operand2; // plus is for bignumber
   },
   "add_cst" : function (operand1, operand2) {
     return operand1.cadd(operand2);
   },
   "-" : function (operand1, operand2) {
-    return operand1.minus(operand2);
+    return operand1 - operand2;
   },
   "sub_cst" : function (operand1, operand2) {
     return operand1.csub(operand2);
   },
   "*" : function (operand1, operand2) {
-    return operand1.times(operand2);
+    return operand1 * operand2;
   },
   "mult_cst" : function (operand1, operand2) {
     return operand1.cmult(operand2);
   },
   "^" : function (operand1, operand2) {
-    return operand1.eq(operand2) ? new BigNumber(0) : new BigNumber(1);
+    return (operand1 == operand2) ? new BigNumber(0) : new BigNumber(1);
   },
   "xor_cst" : function (operand1, operand2) {
     return operand1.cxor_bit(operand2);
@@ -120,12 +119,12 @@ function test_output(index, result, open_operator) {
   // Apply operation in the open to test
 
   var res = operations[open_operator](numbers[0], numbers[1]);
-  res = mod(res, Zp);
+//  res = mod(res, Zp);
 
   // Incorrect result
-  if(!(res.eq(result))) {
+  if(!(res == result)) {
     has_failed = true;
-    console.log(numbers.join(open_operator) + " != " + result);
+    console.log(numbers.join(open_operator) + " = " + res + " != " + result);
   }
 }
 

@@ -1,18 +1,17 @@
 var jiff = require ("../../lib/jiff-client.js");
 var jiffNegNumber = require ("../../lib/ext/jiff-client-negativenumber.js");
-var BigNumber = require('bignumber.js');
 
 var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = new BigNumber(32416190071);
-function mod(x, y) { if (x.isNeg()) return x.mod(y).plus(y); return x.mod(y); }
+var Zp = 15485867;
+//function mod(x, y) { if (x < 0) return x % y + y; return x.mod(y); }
 
 // Operation strings to "lambdas"
 var operations = {
   "+" : function (operand1, operand2) {
-    return operand1.plus(operand2);
+    return operand1 + operand2;
   },
   "add" : function (operand1, operand2) {
     return operand1.sadd(operand2);
@@ -30,7 +29,7 @@ var operations = {
     return operand1.smult(operand2);
   },
   "^" : function (operand1, operand2) {
-    return operand1.eq(operand2) ? new BigNumber(0) : new BigNumber(1);
+    return (operand1 == operand2) ? new BigNumber(0) : new BigNumber(1);
   },
   "xor" : function (operand1, operand2) {
     return operand1.sxor_bit(operand2);
@@ -48,18 +47,7 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "div": "/" };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
-  // Generate Numbers (big number)
-  // for (var i = 0; i < 20; i++) {
-  //   var m = operation == "xor" ? 2 : Zp;
-  //   m = operation == "div" ? new BigNumber(2).pow(15).minus(1).floor() : m;
-  //   var o = operation == "div" ? 1 : 0; // ensure not to divide by zero
-  //   var num1 = BigNumber.random().times(Zp).floor().mod(m);
-  //   var num2 = BigNumber.random().times(Zp).floor().mod(m).plus(o);
-  //   var num3 = BigNumber.random().times(Zp).floor().mod(m).plus(o);
-  //   tests[i] = [num1, num2, num3];
-  // }
-
-    // Generating numbers
+    // Generating positive and negative numbers
     for (var i = 0; i < 20; i++) {
         var num1 = Math.floor(Math.random() * 201) - 100;
         var num2 = Math.floor(Math.random() * 201) - 100;
@@ -120,6 +108,7 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
   var shares_list = [];
   for(var i = 1; i <= parties; i++) shares_list.push(shares[i]);
   var res = shares_list.reduce(operations[mpc_operator]);
+  var res = shares_list.reduce(operations[mpc_operator]);
 
   var deferred = $.Deferred();
   res.open(function(result) { test_output(index, result, open_operator); deferred.resolve(); }, error);
@@ -132,10 +121,10 @@ function test_output(index, result, open_operator) {
 
   // Apply operation in the open to test
   var res = numbers.reduce(operations[open_operator]);
-  res = mod(res, Zp);
+  //res = mod(res, Zp);
 
   // Incorrect result
-  if(!(res.eq(result))) {
+  if(!(res == result)) {
     has_failed = true;
     console.log(numbers.join(open_operator) + " != " + result);
   }
