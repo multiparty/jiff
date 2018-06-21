@@ -1,5 +1,6 @@
 var jiff = require ("../../lib/jiff-client.js");
 var jiffBigNumber = require ("../../lib/ext/jiff-client-bignumber.js");
+var jiffFixedPoint = require ("../../lib/ext/jiff-client-fixedpoint.js");
 var BigNumber = require('bignumber.js');
 
 var jiff_instances = [];
@@ -10,15 +11,21 @@ var receivers = [];
 var has_failed = false;
 var Zp = new BigNumber(32416190071);
 
+var decimal_digits = 5;
+var integer_digits = 5;
+
 // Entry Point
 function run_test(computation_id, callback) {
   // Generate Numbers
   for (var i = 0; i < 300; i++) {
     // Generate numbers
-    var num1 = BigNumber.random().times(Zp).floor();
-    var num2 = BigNumber.random().times(Zp).floor();
-    var num3 = BigNumber.random().times(Zp).floor();
-    var num4 = BigNumber.random().times(Zp).floor();
+    var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits);
+    var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
+
+    var num1 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    var num2 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    var num3 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    var num4 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
     
     // Generate thresholds
     var threshold = Math.ceil(Math.random() * 4);
@@ -52,7 +59,8 @@ function run_test(computation_id, callback) {
   options.onError = function(error) { console.log(error); has_failed = true; };
 
   for(var i = 0; i < parties; i++) {
-    var jiff_instance = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3001", computation_id, options));
+    var jiff_instance = jiffBigNumber.make_jiff(jiff.make_jiff("http://localhost:3002", computation_id, options));
+    jiff_instance = jiffFixedPoint.make_jiff(jiff_instance, {decimal_digits: decimal_digits, integer_digits: integer_digits});
     jiff_instances.push(jiff_instance);
     jiff_instance.connect();
   }
@@ -60,7 +68,6 @@ function run_test(computation_id, callback) {
 
 // Run all tests after setup
 function test(callback) {
-
   if(jiff_instances[0] == null || !jiff_instances[0].isReady()) { console.log("Please wait!"); return; }
   has_failed = false;
 
@@ -92,7 +99,7 @@ function single_test(index, jiff_instance) {
   
   // Share
   var shares = jiff_instance.share(numbers[party_index], threshold, rs, ss);  
-  
+
   // Nothing to do.
   if(ss.indexOf(jiff_instance.id) == -1 && rs.indexOf(jiff_instance.id) == -1) return null;
   

@@ -43,18 +43,19 @@ describe("MPC Operations", function() {
     it("Mutliplication", function(done) {
       arithmetic_op.run_test(i++, "mult", callback(done));
     });
-    // *
-    it("Mutliplication_BGW", function(done) {
-      arithmetic_op.run_test(i++, "mult_bgw", callback(done));
-    });
     // ^
     it("Bitwise XOR", function(done) {
       arithmetic_op.run_test(i++, "xor", callback(done));
     });
-    // / 
+    // |
+    it("Bitwise OR", function(done) {
+      arithmetic_op.run_test(i++, "or", callback(done));
+    });
+    // /
     it("Integer Divison", function(done) {
       arithmetic_op.run_test(i++, "div", callback(done));
     });
+    
   });
 
   describe("Constant Arithmetic Operations", function() {
@@ -74,6 +75,10 @@ describe("MPC Operations", function() {
     it("Constant Bitwise XOR", function(done) {
       constant_arithmetic_op.run_test(i++, "xor_cst", callback(done));
     });
+    // constant |
+    it("Constant Bitwise OR", function(done) {
+      constant_arithmetic_op.run_test(i++, "or_cst", callback(done));
+    });    
     // /
     it("Constant Integer Divison", function(done) {
       constant_arithmetic_op.run_test(i++, "div_cst", callback(done));

@@ -89,10 +89,10 @@ Below we enumerate the possible hooks:
     * ` instance`: the JIFF instance
     * ` triplet`: the received triplet after decryption (a map from *a*, *b*, *c* to the corresponding shares such that *a* * *b* = *c*`)
   * Return: the triplet, possibly modified (this is used as triplet for the subsequent hooks in the array).
-* `receiveNumber[Array]: function(instance, number)`
+* `receiveNumbers[Array]: function(instance, numbers)`
     * `instance`: the JIFF instance
-    * `number`: the received share (after decryption)
-  * Return: the number share, possibly modified (this is used as number for the subsequent hooks in the array).
+    * `numbers`: an array with format: [ {"number": {value}, "number_id": <string> } ] that contains number values (i.e. shares of numbers) and their ids (after decryption).
+  * Return: an array with th same format as the numbers parameter: the values and ids inside it may be possibly modified (this is used as the numbers parameter for the subsequent hooks in the hook array).
 * `createSecretShare[Array]: function(instance, secret_share)`
     * `instance`: the JIFF instance
     * `secret_share`: the secret_share object as created by JIFF
@@ -162,7 +162,7 @@ A party may also hold a share of the result but not receive the result, in which
 3. request is sent to server
 4. server replies
 5. hook: `decryptSign` (`operation_type` = `'number'`)
-6. hook: `receiveNumber`
+6. hook: `receiveNumbers`
 7. resolve triplet into corresponding `secret_share` objects
 
 ### Creation of secret_share objects
