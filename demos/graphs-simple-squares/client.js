@@ -7,7 +7,7 @@ function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
 
-  var options = { party_count:2};
+  var options = { party_count:2, Zp: new BigNumber(32416190071), autoConnect: false };
   options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
   options.onConnect = function(jiff_instance) {
     $("#button").attr("disabled", false);
@@ -15,21 +15,10 @@ function connect() {
 
     if(jiff_instance.id == 1) {
       $('input:radio[name=choice]').val(['x']).attr("disabled", true);
-      $("#output").append(
-          `Please input x coordinates.<br/>
-          >>Their count has to be equal to the count of the other party's coordinates.<br/>
-          >> They have to be between -100 and -50.<br/>
-          >> Each entered point has to be greater than the previous entered point.<br/>
-          >> Each entered point can't be more than 5 points apart from the previous point.<br/>`);
+      $("#output").append(`Please input x coordinates.<br/>`);
     } else {
       $('input:radio[name=choice]').val(['y']).attr("disabled", true);
-      $("#output").append(
-          `Please input y coordinates.<br/>
-          >> Their count has to be equal to the count of the other party's coordinates.<br/>
-          >> They have to be between 50 and 100.<br/>
-          >> Each entered point has to be greater than the previous entered point.<br/>
-          >> Each entered point can't be 'less than 5 points' apart from the previous point.<br/>
-          >> Each entered point can't be 'more than than 10 points' apart from the previous point.<br/>`);
+      $("#output").append(`Please input y coordinates.<br/>`);
     }
   };
   
@@ -49,8 +38,8 @@ function connect() {
 }
 
 // The limits of the graph. The minimum and maximum X and Y values.
-const minX = -100;
-const maxX = 0;
+const minX = 0;
+const maxX = 100;
 const minY = 0;
 const maxY = 100;
 
@@ -143,8 +132,7 @@ const pushCoordinate = function(value) {
       return;
 
   // check that the value conforms to the restrictions.
-  if(restrict(input, $('input[name=choice]:checked').val(), coordinates) == 1)
-      return;
+  // if(restrict(input, $('input[name=choice]:checked').val(), coordinates) == 1) return;
 
   $("#output").append("<p>"+input+"</p>");
 

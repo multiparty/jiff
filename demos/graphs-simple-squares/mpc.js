@@ -12,7 +12,9 @@
       jiff = require('../../lib/jiff-client');
 
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
-    // if you need any extensions, put them here
+    saved_instance = jiff_bignumber.make_jiff(saved_instance, options)
+    saved_instance = jiff_fixedpoint.make_jiff(saved_instance, { decimal_digits: 5, integral_digits: 5}); // Max bits after decimal allowed
+    saved_instance.connect();
 
     return saved_instance;
   };
@@ -39,13 +41,13 @@
     denom = denom[1].add(denom[2]);
     let m = mNumerator.div(denom);
 
-    m.open(function(m_opened) {
+    m.open(function(m_opened) { m_opened = m_opened.toNumber();
       console.info("Slope:", m_opened);
       let m_sum_x_d_count = Math.floor(-1*(m_opened*sum_x)/values.length);
       console.info("-1*(m*sum_x/count)=", m_sum_x_d_count);
       m_sum_x_d_count = jiff_instance.share(m_sum_x_d_count);
       let b = m_sum_x_d_count[1].add(m_sum_x_d_count[2]);
-      b.open(function(b_opened) {
+      b.open(function(b_opened) { b_opened = b_opened.toNumber();
         console.info("Y intercept:", b_opened);
         final_deferred.resolve(m_opened, b_opened);
       });
@@ -74,13 +76,13 @@
     denom = denom[1].add(denom[2]);
     let m = mNumerator.div(denom);
 
-    m.open(function(m_opened) {
+    m.open(function(m_opened) { m_opened = m_opened.toNumber();
       console.info("Slope:", m_opened);
       let sum_y_d_count = Math.floor(sum_y/values.length);
       console.info("sum_y/count=", sum_y_d_count);
       sum_y_d_count = jiff_instance.share(sum_y_d_count);
       let b = sum_y_d_count[1].add(sum_y_d_count[2]);
-      b.open(function(b_opened) {
+      b.open(function(b_opened) { b_opened = b_opened.toNumber();
         console.info("Y intercept:", b_opened);
         final_deferred.resolve(m_opened, b_opened);
       });
