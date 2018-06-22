@@ -31,7 +31,7 @@ describe("MPC Operations", function() {
   });
 
   describe("Arithmetic Operations", function() {
-    //+/*
+    //+
     it("Addition", function(done) {
       arithmetic_op.run_test(i++, "add", callback(done));
     });
