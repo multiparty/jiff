@@ -24,19 +24,18 @@
     let final_deferred = $.Deferred();
     let final_promise = final_deferred.promise();
 
+    let sum_x = values.reduce((a,c) => a + c); console.log("sum_x:", sum_x);
+    let sum_xx = values.reduce((a,c) => a+c*c, 0); console.log("sum_xx:", sum_xx);
 
-    let sum_x = values.reduce((a,c) => a + c);
-    let sum_xx = values.reduce((a,c) => a+c*c, 0);
-
-    let sum_xy = shareAndCalculateSumXY(values, jiff_instance);
-    let c__sum_xy = sum_xy.mult(values.length);
+    let sum_xy = shareAndCalculateSumXY(values, jiff_instance); sum_xy.open(t => console.log("sum_xy:", t.toString()));
+    let c__sum_xy = sum_xy.mult(values.length); c__sum_xy.open(t => console.log("c__sum_xy:", t.toString()));
 
     let sum_x__sum_y = jiff_instance.share(sum_x);
-    sum_x__sum_y = sum_x__sum_y[1].mult(sum_x__sum_y[2]);
+    sum_x__sum_y = sum_x__sum_y[1].mult(sum_x__sum_y[2]); sum_x__sum_y.open(t => console.log("sum_x__sum_y:", t.toString()));
 
-    let mNumerator = c__sum_xy.sub(sum_x__sum_y);
+    let mNumerator = c__sum_xy.sub(sum_x__sum_y); mNumerator.open(t => console.log("mNumerator:", t.toString()));
 
-    let denom = values.length*sum_xx-sum_x*sum_x;
+    let denom = values.length*sum_xx-sum_x*sum_x; console.log("denom:", denom);
     denom = jiff_instance.share(denom);
     denom = denom[1].add(denom[2]);
     let m = mNumerator.div(denom);
@@ -61,18 +60,17 @@
     let final_deferred = $.Deferred();
     let final_promise = final_deferred.promise();
 
-
     let sum_y = values.reduce((a,c) => a + c);
 
-    let sum_xy = shareAndCalculateSumXY(values, jiff_instance);
-    let c__sum_xy = sum_xy.mult(values.length);
+    let sum_xy = shareAndCalculateSumXY(values, jiff_instance); sum_xy.open(t => console.log("sum_xy:", t.toString()));
+    let c__sum_xy = sum_xy.mult(values.length); c__sum_xy.open(t => console.log("c__sum_xy:", t.toString()));
 
     let sum_x__sum_y = jiff_instance.share(sum_y);
-    sum_x__sum_y = sum_x__sum_y[1].mult(sum_x__sum_y[2]);
+    sum_x__sum_y = sum_x__sum_y[1].mult(sum_x__sum_y[2]); sum_x__sum_y.open(t => console.log("sum_x__sum_y", t.toString()));
 
-    let mNumerator = c__sum_xy.sub(sum_x__sum_y);
+    let mNumerator = c__sum_xy.sub(sum_x__sum_y); mNumerator.open(t => console.log("mNumerator:", t.toString()));
 
-    let denom = jiff_instance.share(0);
+    let denom = jiff_instance.share(0); 
     denom = denom[1].add(denom[2]);
     let m = mNumerator.div(denom);
 
@@ -96,11 +94,11 @@
    * 
    * @param {Array} values - The array of values input by this party. 
    */
-  const shareAndCalculateSumXY = (values, jiff_instance) => {
+  const shareAndCalculateSumXY = (values, jiff_instance) => { console.log(values);
     let sum_xy_res;
-    for(let i = 0; i < values.length; i++) {
+    for(let i = 0; i < values.length; i++) { console.log(values[i])
       let t = jiff_instance.share(values[i]);
-      t = t[1].mult(t[2]);
+      t = t[1].mult(t[2]); t.open(tt => console.log(tt.toString()));
       if(sum_xy_res)
         sum_xy_res = sum_xy_res.add(t);
       else

@@ -31,7 +31,7 @@ var myChart = new Chart(ctx, {
       yAxes: [{
         ticks: {
             min: 0,
-            max: 10
+            max: 100
         }
       }],
       xAxes: [{
@@ -39,7 +39,7 @@ var myChart = new Chart(ctx, {
         position: 'bottom',
         ticks: {
             min: 0,
-            max: 10,
+            max: 100,
             maxTicksLimit: 20
         }
       }]
@@ -122,13 +122,22 @@ function leastSquaresCalculator(values_x, values_y) {
         sum_xy += x*y;
         count++;
     }
+    console.log("sum_x:", sum_x);
+    console.log("sum_y:", sum_y);
+    console.log("sum_xx:", sum_xx);
+    console.log("sum_xy:", sum_xy);
 
     /*
     * Calculate m and b for the formular:
     * y = x * m + b
     */
-    var m = (count*sum_xy - sum_x*sum_y) / (count*sum_xx - sum_x*sum_x);
-    var b = (sum_y/count) - (m*sum_x)/count;
+    // var m = (count*sum_xy - sum_x*sum_y) / (count*sum_xx - sum_x*sum_x);
+    // var b = (sum_y/count) - (m*sum_x)/count;
+
+    var num = (count*sum_xy - sum_x*sum_y); console.log("num:", num);
+    var denom = (count*sum_xx - sum_x*sum_x); console.log("denom:", denom);
+    var m = num/denom; console.log("m:", m);
+    var b = (sum_y/count) - (m*sum_x)/count; console.log("b:", b);
 
     /*
     * We will make the x and y result line now (we only need 2 points though).

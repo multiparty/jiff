@@ -13,7 +13,7 @@ function connect() {
     $("#button").attr("disabled", false);
     $("#output").append("<p>All parties Connected!</p>");
 
-    if(jiff_instance.id == 1) {
+    if(jiff_instance.id === 1) {
       $('input:radio[name=choice]').val(['x']).attr("disabled", true);
       $("#output").append(`Please input x coordinates.<br/>`);
     } else {
