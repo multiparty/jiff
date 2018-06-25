@@ -255,9 +255,8 @@
         }
 
         // check if a deferred is set up (maybe the message was previously received)
-        if (jiff.deferreds[share_id][p_id] == null)
-        // not ready, setup a deferred
-        {
+        if (jiff.deferreds[share_id][p_id] == null) {
+          // not ready, setup a deferred
           jiff.deferreds[share_id][p_id] = $.Deferred();
         }
 
@@ -350,9 +349,8 @@
     if (jiff.deferreds[op_id] == null) {
       jiff.deferreds[op_id] = {};
     }
-    if (jiff.deferreds[op_id][sender_id] == null)
-    // Share is received before deferred was setup, store it.
-    {
+    if (jiff.deferreds[op_id][sender_id] == null) {
+      // Share is received before deferred was setup, store it.
       jiff.deferreds[op_id][sender_id] = $.Deferred();
     }
 
@@ -709,8 +707,8 @@
 
     var shares = jiff_share(jiff, n, threshold, receivers_list, senders_list, Zp);
     var share = shares[senders_list[0]];
-    if (share != null) // only do this if you are a receiving party.
-    {
+    if (share != null) {
+      // only do this if you are a receiving party.
       for (var i = 1; i &lt; senders_list.length; i++) {
         share = share.sadd(shares[senders_list[i]]);
       }
@@ -811,7 +809,7 @@
    * @param {array} receivers_list - array of party ids to share with, by default, this includes all parties. [optional]
    * @param {array} senders_list - array of party ids to receive from, by default, this includes all parties. [optional]
    * @param {number} Zp - the modulos (if null then the default Zp for the instance is used). [optional]
-   * @param {string|number} base_share_id - the base tag used to tag the messages sent by this share operation, every element of the array
+   * @param {string|number} share_id - the base tag used to tag the messages sent by this share operation, every element of the array
    *                                   will get a unique id based on the concatenation of base_share_id and the index of the element.
    *                                   This tag is used so that parties distinguish messages belonging to this share operation from
    *                                   other share operations between the same parties (when the order of execution is not
@@ -1394,8 +1392,8 @@
         throw 'parameter should be a number (+)';
       }
 
-      if (self.ready) // if share is ready
-      {
+      if (self.ready) {
+        // if share is ready
         return self.jiff.secret_share(self.jiff, true, null, self.jiff.helpers.mod(share_helpers['+'](self.value, cst), self.Zp), self.holders, self.threshold, self.Zp);
       }
 
@@ -1417,8 +1415,8 @@
         throw 'parameter should be a number (-)';
       }
 
-      if (self.ready) // if share is ready
-      {
+      if (self.ready) {
+        // if share is ready 
         return self.jiff.secret_share(self.jiff, true, null, self.jiff.helpers.mod(share_helpers['-'](self.value, cst), self.Zp), self.holders, self.threshold, self.Zp);
       }
 
@@ -1440,8 +1438,8 @@
         throw 'parameter should be a number (*)';
       }
 
-      if (self.ready) // if share is ready
-      {
+      if (self.ready){
+        // if share is ready 
         return self.jiff.secret_share(self.jiff, true, null, self.jiff.helpers.mod(share_helpers['*'](self.value, cst), self.Zp), self.holders, self.threshold, self.Zp);
       }
 
@@ -1465,8 +1463,8 @@
 
       var inv = jiff.helpers.extended_gcd(cst, self.Zp)[0];
 
-      if (self.ready) // If share is ready.
-      {
+      if (self.ready) {
+        // If share is ready.
         return self.jiff.secret_share(self.jiff, true, null, self.jiff.helpers.mod(share_helpers['*'](self.value, inv), self.Zp), self.holders, self.threshold, self.Zp);
       }
 
@@ -1499,8 +1497,8 @@
         return self.jiff.helpers.mod(share_helpers['+'](self.value, o.value), self.Zp);
       }
 
-      if (self.ready &amp;&amp; o.ready) // both shares are ready
-      {
+      if (self.ready &amp;&amp; o.ready) {
+        // both shares are ready
         return self.jiff.secret_share(self.jiff, true, null, ready_add(), self.holders, max(self.threshold, o.threshold), self.Zp);
       }
 
@@ -1532,8 +1530,8 @@
         return self.jiff.helpers.mod(share_helpers['-'](self.value, o.value), self.Zp);
       }
 
-      if (self.ready &amp;&amp; o.ready) // both shares are ready
-      {
+      if (self.ready &amp;&amp; o.ready) {
+        // both shares are ready
         return self.jiff.secret_share(self.jiff, true, null, ready_sub(), self.holders, max(self.threshold, o.threshold), self.Zp);
       }
 
@@ -1604,8 +1602,8 @@
 
         if (final_result.ready) {
           final_deferred.resolve(final_result.value);
-        } else // Resolve the deferred when ready.
-        {
+        } else {
+          // Resolve the deferred when ready.
           final_result.promise.then(function () {
             final_deferred.resolve(final_result.value);
           });
@@ -1799,7 +1797,7 @@
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) throw "shares must be held by the same parties (>=)";
 
       if (op_id == null) {
-        op_id = self.jiff.counters.gen_op_id('c>=', self.holders);
+        op_id = self.jiff.counters.gen_op_id('>=', self.holders);
       }
 
       return self.islt(o, op_id).inot();
@@ -1827,7 +1825,7 @@
       }
 
       if (op_id == null) {
-        op_id = self.jiff.counters.gen_op_id('c>', self.holders);
+        op_id = self.jiff.counters.gen_op_id('>', self.holders);
       }
 
       return o.islt(self, op_id);
@@ -1855,7 +1853,7 @@
       }
 
       if (op_id == null) {
-        op_id = self.jiff.counters.gen_op_id('c&lt;=', self.holders);
+        op_id = self.jiff.counters.gen_op_id('&lt;=', self.holders);
       }
 
       return o.islt(self, op_id).inot();
@@ -1938,7 +1936,7 @@
       if (!(self.isConstant(cst))) throw "parameter should be a number (>)";
 
       if(op_id == null)
-        op_id = self.jiff.counters.gen_op_id("c&lt;", self.holders);
+        op_id = self.jiff.counters.gen_op_id("c>", self.holders);
 
       var final_deferred = $.Deferred();
       var final_promise = final_deferred.promise();
@@ -2137,7 +2135,7 @@
       if(op_id == null)
         op_id = self.jiff.counters.gen_op_id("/", self.holders);
 
-      var lZp = share_helpers['floor'](self.jiff.helpers.bLog(self.Zp, 2));
+      var lZp = share_helpers['ceil'](self.jiff.helpers.bLog(self.Zp, 2));
       if(l == null) l = lZp;
       else l = l &lt; lZp ? l : lZp;
 
@@ -2150,14 +2148,13 @@
       var a = self; // dividend
 
       (function one_bit(i) {
-      try {
         if(i >= l) { 
           // we did this for all bits, q has the answer
           if(q.ready) final_deferred.resolve(q.value);
           else q.promise.then(function() { final_deferred.resolve(q.value); });
           return;
         }
-        
+
         var power = share_helpers['pow'](2, (l-1)-i);
         var ZpOVERpower = share_helpers['floor/'](o.Zp, power);
         // (2^i + 2^k + ...) * o &lt;= self
@@ -2171,7 +2168,6 @@
         a = a.issub(and.ismult(tmp, op_id+":smult2:"+i)); // a - tmp > 0 if tmp > 0
 
         Promise.all([q.promise, a.promise]).then(function() { one_bit(i+1); });
-        } catch(err) { console.log(err); for(var i = 0; true; i ++);}
       })(0);
       return result;
     };
@@ -2270,7 +2266,7 @@
       // bit composition: r = (rl ... r1 r0)_10
       var r = self.jiff.protocols.bit_composition(bits);
       // open share + noise, and utilize opened value with shared bit representation of noise to check the least significant digit of share.
-      share.jiff.internal_open(r.isadd(share), share.holders).then(function(result) {
+      share.jiff.internal_open(r.isadd(share), share.holders, op_id+":open").then(function(result) {
         var wrapped = self.jiff.protocols.clt_bits(result, bits, op_id);
         var isOdd = self.jiff.helpers.mod(result, 2);
         isOdd = bits[0].icxor_bit(isOdd);
@@ -2409,9 +2405,8 @@
       socket.safe_emit = function (label, msg) {
         // add message to mailbox
         var mailbox_pointer = socket.mailbox.add({ label: label, msg: msg });
-        if (socket.connected)
-        // emit the message, if an acknowledgment is received, remove it from mailbox
-        {
+        if (socket.connected) {
+          // emit the message, if an acknowledgment is received, remove it from mailbox
           socket.emit(label, msg, function (status) {
             if (status) {
               socket.mailbox.delete(mailbox_pointer);
@@ -2444,6 +2439,7 @@
 
     // setup main socket
     jiff.socket = (options.__internal_socket == null ? io(hostname, { autoConnect: false }) : options.__internal_socket);
+
     if (options.__internal_socket == null) {
       guard_socket(jiff.socket);
     } else {
@@ -2497,14 +2493,24 @@
       jiff.public_key = options.public_key;
     }
 
-    if (options.party_count != null)
+    if(jiff.keymap == null) jiff.keymap = {};
+
     /**
+     * For the case when messages from some party is received before its public key is known.
+     * { 'party_id': [ { 'label': 'share/open', &lt;other attributes of the message> } ] }
+     * @member {object} messagesWaitingKeys
+     * @memberof jiff-instance
+     * @instance
+     */
+    jiff.messagesWaitingKeys = {};
+
+    if (options.party_count != null) {
+      /**
        * Total party count in the computation, parties will take ids between 1 to party_count (inclusive).
        * @member {number} party_count
        * @memberof jiff-instance
        * @instance
        */
-    {
       jiff.party_count = options.party_count;
     }
 
@@ -2656,6 +2662,32 @@
       }
 
       jiff.wait_callbacks = new_waits;
+    }
+
+    /**
+     * Resolves all messages that were pending because their senders primary key was previously unknown.
+     * These messages are decrypted and verified and handled appropriatly before being removed from the wait queue.
+     * @memberof jiff-instance
+     * @instance
+     */
+    jiff.resolve_messages_waiting_for_keys = function() {
+      for(var party_id in jiff.keymmap) {
+        if(!jiff.keymmap.hasOwnProperty(party_id)) continue;
+
+        var messageQueue = jiff.messagesWaitingKeys[party_id];
+        if(messageQueue == null) continue;
+        for(var i = 0; i &lt; messageQueue.length; i++) {
+          var msg = messageQueue[i];
+          if(msg.label == 'share')
+            receive_share(jiff, party_id, msg.share, msg.op_id);
+          else if(msg.label == 'open')
+            receive_open(jiff, party_id, msg.share, msg.op_id, msg.Zp);
+          else
+            throw "Error resolving pending message: unknown label " + msg.label;
+        }
+
+        jiff.messagesWaitingKeys[party_id] = null;
+      }
     }
 
     /**
@@ -3004,7 +3036,7 @@
      * @param {array} receivers_list - array of party ids to share with, by default, this includes all parties. [optional]
      * @param {array} senders_list - array of party ids to receive from, by default, this includes all parties. [optional]
      * @param {number} Zp - the modulos (if null then the default Zp for the instance is used). [optional]
-     * @param {string|number} base_share_id - the base tag used to tag the messages sent by this share operation, every element of the array
+     * @param {string|number} share_id - the base tag used to tag the messages sent by this share operation, every element of the array
      *                                   will get a unique id based on the concatenation of base_share_id and the index of the element.
      *                                   This tag is used so that parties distinguish messages belonging to this share operation from
      *                                   other share operations between the same parties (when the order of execution is not
@@ -3327,8 +3359,8 @@
      * @returns {secret-share} a secret share of 1 if constant &lt; (bits)_2, otherwise a secret share of 0.
      */
     jiff.protocols.clt_bits = function (constant, bits, op_id) {
-      if (op_id == null) // Generate base operation id if needed.
-      {
+      if (op_id == null) {
+        // Generate base operation id if needed.
         op_id = jiff.counters.gen_op_id('c&lt;bits', bits[0].holders);
       }
 
@@ -3399,6 +3431,7 @@
           jiff.public_key = genkey.publicKey;
         }
 
+
         jiff.socket.emit('public_key', '['+jiff.public_key.toString()+']');
         // Now: (1) this party is connect (2) server (and other parties) know this public key
         // Resend all pending messages
@@ -3417,6 +3450,9 @@
             jiff.keymap[i] = new Uint8Array(JSON.parse(jiff.keymap[i]));
           }
         }
+
+        // Resolve any pending messages that were received before the sender's public key was known
+        jiff.resolve_messages_waiting_for_keys();
 
         // Resolve any pending waits that have satisfied conditions
         jiff.execute_wait_callbacks();
@@ -3562,7 +3598,13 @@
       var op_id = json_msg['op_id'];
       var share = json_msg['share'];
 
-      receive_share(jiff, sender_id, share, op_id);
+      if(jiff.keymap[sender_id] != null)
+        receive_share(jiff, sender_id, share, op_id);
+      else {
+        if(jiff.messagesWaitingKeys[sender_id] == null)
+          jiff.messagesWaitingKeys[sender_id] = [];
+        jiff.messagesWaitingKeys[sender_id].push({'label': 'share', 'op_id': op_id, 'share': share});
+      }
     });
 
     jiff.socket.on('open', function (msg, callback) {
@@ -3576,7 +3618,13 @@
       var share = json_msg['share'];
       var Zp = json_msg['Zp'];
 
-      receive_open(jiff, sender_id, share, op_id, Zp);
+      if(jiff.keymap[sender_id] != null)
+        receive_open(jiff, sender_id, share, op_id, Zp);
+      else {
+        if(jiff.messagesWaitingKeys[sender_id] == null)
+          jiff.messagesWaitingKeys[sender_id] = [];
+        jiff.messagesWaitingKeys[sender_id].push({'label': 'open', 'op_id': op_id, 'share': share, 'Zp': Zp});
+      }
     });
 
     // handle custom messages
@@ -3605,9 +3653,8 @@
     jiff.triplets_socket.on('triplet', function (msg, callback) {
       callback(true); // send ack to server
 
-      if (jiff.id != 's1' || (options.triplets_server != null &amp;&amp; options.triplets_server != hostname))
-      // decrypt and verify message signature
-      {
+      if (jiff.id != 's1' || (options.triplets_server != null &amp;&amp; options.triplets_server != hostname)) {
+        // decrypt and verify message signature
         msg = jiff.hooks.decryptSign(msg, jiff.secret_key, jiff.keymap['s1'], 'triplet');
       }
 
@@ -3622,9 +3669,8 @@
     jiff.numbers_socket.on('number', function (msg, callback) {
       callback(true); // send ack to server
 
-      if (jiff.id != 's1' || (options.numbers_server != null &amp;&amp; options.numbers_server != hostname))
-      // decrypt and verify message signature
-      {
+      if (jiff.id != 's1' || (options.numbers_server != null &amp;&amp; options.numbers_server != hostname)) {
+        // decrypt and verify message signature
         msg = jiff.hooks.decryptSign(msg, jiff.secret_key, jiff.keymap['s1'], 'number');
       }
 
@@ -3646,7 +3692,10 @@
     });
 
     jiff.socket.on('disconnect', function (reason) {
-      // console.log("Disconnected! " + reason);
+      if(reason != "io client disconnect") {
+        // check that the reason is an error and not a user initiated disconnect
+        console.log("Disconnected! " + reason);
+      }
     });
 
     return jiff;
@@ -3693,7 +3742,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Jun 20 2018 12:17:25 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jun 25 2018 12:19:40 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
