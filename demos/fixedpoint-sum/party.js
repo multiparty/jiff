@@ -24,7 +24,7 @@ if(party_id != null) party_id = parseInt(party_id, 10);
 var BigNumber = require('bignumber.js');
 
 // JIFF options
-var options = { party_count: party_count, party_id: party_id, Zp: new BigNumber(32416190071), autoConnect: false };
+var options = { party_count: party_count, party_id: party_id, decimal_digits: 5, integral_digits: 5, Zp: new BigNumber(32416190071) };
 options.onConnect = function(jiff_instance) {
   var promise = mpc.compute(input);
 

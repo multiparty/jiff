@@ -1,4 +1,4 @@
-"use strict";
+
 /**
  * Do not modify this file unless you have too
  * This file has UI handlers.
@@ -13,7 +13,7 @@ function connect() {
     $("#output").append("<p class='error'>Party count must be a valid number!</p>");
     $('#connectButton').prop('disabled', false);
   } else {
-    var options = { party_count: party_count, Zp: new BigNumber(32416190071), autoConnect: false };
+    var options = { party_count: party_count, decimal_digits: 5, integral_digits: 5, Zp: new BigNumber(32416190071) };
     options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
     options.onConnect = function() { $("#button").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
     

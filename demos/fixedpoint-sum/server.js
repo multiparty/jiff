@@ -13,6 +13,6 @@ http.listen(8080, function() {
   console.log('listening on *:8080');
 });
 
-console.log("Direct your browser to *:8080/demos/<demo-name>/client.html.");
-console.log("To run a server-based party: node demos/<demo-name>/party <input");
+console.log("Direct your browser to *:8080/demos/fixedpoint-sum/client.html.");
+console.log("To run a server-based party: node demos/fixedpoint-sum/party <input");
 console.log();

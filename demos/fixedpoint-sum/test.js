@@ -2,13 +2,17 @@
 // var expect = require('chai').expect;
 var assert = require('chai').assert;
 
+var BigNumber = require('bignumber.js');
 var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
 var party_count = 7;
-var parallelismDegree = 5; // Max number of test cases running in parallel
-var n = 10; // Number of test cases in total
-var maxValue = 1000;
+var parallelismDegree = 50; // Max number of test cases running in parallel
+var n = 500; // Number of test cases in total
+
+var magnitude = 5; // 5 digits of magnitude
+var accuracy = 5; // 5 digits of accuracy after decimal point
+var maxValue = Math.floor(Math.pow(10, magnitude) / party_count);
 
 /**
  * CHANGE THIS: Generate inputs for your tests
@@ -25,7 +29,8 @@ function generateInputs(party_count) {
   // Generate test cases one at a time
   for(var t = 0; t < n; t++) {
     for (var i = 1; i <= party_count; i++) {
-      inputs[i].push( Number(parseFloat((Math.random() * maxValue)).toFixed(5)) );      
+      var numString = (Math.random() * maxValue).toFixed(accuracy);
+      inputs[i].push(new BigNumber(numString)); 
     }
   }
 
@@ -44,8 +49,7 @@ function computeResults(inputs) {
   for (var j = 0; j < n; j++) {
     var accumulator = 0;
     for (var i = 1; i <= party_count; i++)
-      accumulator += inputs[i][j];
-    accumulator = Number(parseFloat(accumulator).toFixed(5));
+      accumulator = inputs[i][j].plus(accumulator);
     results.push(accumulator);
   }
 
@@ -88,14 +92,14 @@ describe('Test', function() {
         count++;
         for (var i = 0; i < testResults.length; i++) {
           // construct debugging message
-          var ithInputs = inputs[1][i] + "";
+          var ithInputs = inputs[1][i].toString();
           for (var j = 2; j <= party_count; j++)
-            ithInputs += "," + inputs[j][i];
+            ithInputs += "," + inputs[j][i].toString();
           var msg = "Party: " + jiff_instance.id + ". inputs: [" + ithInputs + "]";
 
           // assert results are accurate
           try {
-            assert.deepEqual( Number(parseFloat(testResults[i].toNumber()).toFixed(5)), realResults[i], msg);
+            assert.deepEqual(testResults[i].toString(), realResults[i].toString(), msg);
           } catch(assertionError) {
             done(assertionError);
             done = function(){}
@@ -108,8 +112,8 @@ describe('Test', function() {
       })(0);
     };
 
-    var BigNumber = require('bignumber.js');    
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: new BigNumber(32416190071), autoConnect: false };
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, decimal_digits: accuracy, integral_digits: magnitude, Zp: new BigNumber(32416190071) };
+    
     for(var i = 0; i < party_count; i++)
       mpc.connect("http://localhost:8080", "mocha-test", options);
   });

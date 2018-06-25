@@ -24,12 +24,12 @@
   </head>
   <body>
     <h1>Connect JIFF</h1>
-    <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test-fixed-sum"></input><br/><br/>
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*" value="2"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
     <h1>Sum fixed point rational numbers under MPC</h1>
-    <label for="number">Describe the input</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="submit();" disabled="disabled" id="button">Sum</button><br/>
+    <label for="number">Enter your fixedpoint number (between 0 and 100 with 5 digits of accuracy)</label> <input id="number" pattern="[0-9]+(.[0-9]+|)"> &nbsp; <button onclick="submit();" disabled="disabled" id="button">Sum</button><br/>
     <div id="output"></div>
   </body>
 </html>
