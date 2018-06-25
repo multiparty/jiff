@@ -52,7 +52,7 @@ var dual = { "less_cst": "<", "less_or_equal_cst": "<=", "greater_cst": ">", "gr
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < 20; i++) {
     var num1 = Math.floor(Math.random() * Zp);
     var num2 = Math.floor(Math.random() * Zp);
     var num3 = Math.floor(Math.random() * Zp);

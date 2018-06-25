@@ -12,7 +12,6 @@ var n = 100;
 // Parameters specific to this demo
 var Zp = 15485867;
 
-
 /**
  * CHANGE THIS: Generate inputs for your tests
  * Should return an object with this format:
@@ -49,7 +48,7 @@ function computeResults(inputs) {
     for (var i = 1; i <= party_count; i++) {
       product = (product * inputs[i][j]) % Zp;
     }
-    results.push(product);
+    results.push(inputs[1][j]);//product);
   }
   return results;
 }

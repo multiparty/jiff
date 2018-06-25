@@ -1,6 +1,8 @@
+<!-- Basic UI for running the demo in the browser -->
+
 <html>
   <head>
-    <title>Sum integers under MPC</title>
+    <title>The Valentine Question</title>
     <style>
       .error {
         color: #FF0000;
@@ -10,63 +12,25 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/lib/sodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
-    <script type="text/javascript">
-      var jiff_instance;
 
-      function connect() {
-        $('#connectButton').prop('disabled', true);
-        var computation_id = $('#computation_id').val();
-        var party_count = parseInt($('#count').val());
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="./client.js"></script>
 
-
-        var options = {party_count:2};
-        options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
-        options.onConnect = function() { $("#submit").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
-        
-        var hostname = window.location.hostname.trim();
-        var port = window.location.port;
-        if(port == null || port == '') 
-        port = "80";
-        if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
-        hostname = "http://" + hostname;
-        if(hostname.endsWith("/"))
-        hostname = hostname.substring(0, hostname.length-1);
-        if(hostname.indexOf(":") > -1)
-        hostanme = hostname.substring(0, hostname.indexOf(":"));
-
-        hostname = hostname + ":" + port;
-        jiff_instance = jiff.make_jiff(hostname, computation_id, options);
-        
-      }
-
-      function submit() {
-        var input = $('input[name=choice]:checked').val() == 'yes' ? true : false;
-        $("#sumButton").attr("disabled", true);
-        $("#output").append("<p>Starting...</p>");
-        var shares = jiff_instance.share(input);
-        let result = shares[1].smult(shares[2]);
-        result.open(handleResult);          
-      }
-
-      function handleResult(result) {
-        $("#output").append("<p>Result is: " + result + "</p>");
-        $("#sumButton").attr("disabled", false);
-      }
-    </script>
+    <!-- Contains the MPC implementation -->
+    <script type="text/javascript" src="./mpc.js"></script>
   </head>
   <body>
     <h1>Connect JIFF</h1>
-    <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input>
-    <br/><br/>
-    <button id="connectButton" onclick="connect();">Connect</button>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
+    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*" value="2" disabled="disabled"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
+    <h1>The Valentine Question</h1>
     <input type="radio" id="c1" name="choice" value="yes">
     <label for="c1">Yes</label>
     <input type="radio" id="c2" name="choice" value="no">
     <label for="c2">No</label>
     <button onclick="submit();" disabled="disabled" id="submit">Submit</button><br/>
-
     <div id="output"></div>
   </body>
 </html>
