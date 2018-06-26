@@ -8,9 +8,14 @@
     var opt = Object.assign({}, options);
     // Added options goes here
 
-    if(node)
+    if(node) {
       jiff = require('../../lib/jiff-client');
+      jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
+      jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
+      BigNumber = require('bignumber.js');    
+    }
 
+    opt.autoConnect = false;
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     saved_instance = jiff_bignumber.make_jiff(saved_instance, options)
     saved_instance = jiff_fixedpoint.make_jiff(saved_instance, { decimal_digits: 5, integral_digits: 5}); // Max bits after decimal allowed
@@ -98,7 +103,7 @@
     let sum_xy_res;
     for(let i = 0; i < values.length; i++) { console.log(values[i])
       let t = jiff_instance.share(values[i]);
-      t = t[1].mult(t[2]); t.open(tt => console.log(tt.toString()));
+      t = t[1].smult(t[2]); t.open(tt => console.log(tt.toString()));
       if(sum_xy_res)
         sum_xy_res = sum_xy_res.add(t);
       else

@@ -21,8 +21,10 @@ if(computation_id == null) computation_id = 'test';
 var party_id = process.argv[5];
 if(party_id != null) party_id = parseInt(party_id, 10);
 
+var BigNumber = require('bignumber.js');
+
 // JIFF options
-var options = {party_count: party_count, party_id: party_id};
+var options = {party_count: party_count, party_id: party_id, decimal_digits: 5, integral_digits: 5, Zp: new BigNumber("48112959837082048697") };
 options.onConnect = function(jiff_instance) {
   var promise;
   if (jiff_instance.id === 1)
