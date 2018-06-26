@@ -43,7 +43,7 @@ var operations = {
     return operand1.sdiv(operand2);
   },
   "mod" : function (operand1, operand2) {
-    return operand1.div_helper(operand2)[1];
+    return operand1.smod(operand2);
   },
   "%" : function (operand1, operand2) {
     return mod(operand1, operand2);
@@ -56,7 +56,7 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "mult_bgw": "*", "xor": "^", "
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 1; i++) {
+  for (var i = 0; i < 20; i++) {
     if(operation == "div" || operation == "mod") Zp = 2039;
     var m = operation == "xor" ? 2 : Zp;
     m = operation == "div"  || operation == "mod" ? m-1 : m;
