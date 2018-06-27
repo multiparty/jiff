@@ -16,17 +16,17 @@ const maxY = 25;
 // convex hull algorithm. https://github.com/indy256/convexhull-js/blob/master/convexhull.js
 function convexHull(points) {
   points.sort(function (a, b) {
-      return a.x != b.x ? a.x - b.x : a.y - b.y;
+    return a.x != b.x ? a.x - b.x : a.y - b.y;
   });
 
   var n = points.length;
   var hull = [];
 
   for (var i = 0; i < 2 * n; i++) {
-      var j = i < n ? i : 2 * n - 1 - i;
-      while (hull.length >= 2 && removeMiddle(hull[hull.length - 2], hull[hull.length - 1], points[j]))
-          hull.pop();
-      hull.push(points[j]);
+    var j = i < n ? i : 2 * n - 1 - i;
+    while (hull.length >= 2 && removeMiddle(hull[hull.length - 2], hull[hull.length - 1], points[j]))
+      hull.pop();
+    hull.push(points[j]);
   }
 
   hull.pop();
@@ -53,20 +53,20 @@ const insideCalculator = (m, b, x, y) => y > m*x+b ? "above" : "below";
 const mapToTuples = (array) => {
   let r = [];
   for (let i = 0; i < array.length; i++) {
-      let p1 = array[i];
-      let p2 = array[(i+1)%array.length];
-      let p3 = array[(i+2)%array.length];
-      let {gradient, yIntercept} = getEquationOfLineFromTwoPoints(p1, p2);
-      r.push({
-        m:gradient,
-        b:yIntercept,
-        above:insideCalculator(gradient, yIntercept, p3.x, p3.y)
-      });
+    let p1 = array[i];
+    let p2 = array[(i+1)%array.length];
+    let p3 = array[(i+2)%array.length];
+    let {gradient, yIntercept} = getEquationOfLineFromTwoPoints(p1, p2);
+    r.push({
+      m:gradient,
+      b:yIntercept,
+      above:insideCalculator(gradient, yIntercept, p3.x, p3.y)
+    });
   }
   return r;
 }
 
-const noVerticalLines = (array) => {
+const verticalLines = (array) => {
   for (let i = 0; i < array.length; i++)
     if (array[i].x === array[(i+1)%array.length].x)
       return true;
@@ -85,7 +85,7 @@ const generateRandomPolygon = () => {
       randomPoints.push({x:x,y:y});
     }
     convexHullPoints = convexHull(randomPoints);
-  } while(noVerticalLines(convexHullPoints))
+  } while (verticalLines(convexHullPoints))
 
   let tuples = mapToTuples(convexHullPoints);
   let polygon = [];
@@ -190,8 +190,10 @@ describe('Test', function() {
       });
     };
     
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect };
-    for(var i = 0; i < party_count; i++)
+    var BigNumber = require('bignumber.js');
+
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, decimal_digits: 5, integral_digits: 5, Zp: new BigNumber("1000000000100011") };
+    for (var i = 0; i < party_count; i++)
       mpc.connect("http://localhost:8080", "mocha-test", options);
   });
 });

@@ -8,13 +8,18 @@
     var opt = Object.assign({}, options);
     // Added options goes here
 
-    if(node)
+    if(node) {
       jiff = require('../../lib/jiff-client');
+      jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
+      jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
+      BigNumber = require('bignumber.js');    
+    }
 
+    opt.autoConnect = false;
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
-    // saved_instance = jiff_bignumber.make_jiff(saved_instance, options)
-    // saved_instance = jiff_fixedpoint.make_jiff(saved_instance, { decimal_digits: 5, integral_digits: 5}); // Max bits after decimal allowed?
-    // saved_instance.connect();
+    saved_instance = jiff_bignumber.make_jiff(saved_instance, options);
+    saved_instance = jiff_fixedpoint.make_jiff(saved_instance, { decimal_digits: 5, integral_digits: 5}); // Max bits after decimal allowed
+    saved_instance.connect();
 
     return saved_instance;
   };
@@ -45,8 +50,8 @@
     let final_deferred = $.Deferred();
     let final_promise = final_deferred.promise();
 
-    let x = jiff_instance.share(null)[2];
-    let y = jiff_instance.share(null)[2];
+    let x = jiff_instance.share(0)[2];
+    let y = jiff_instance.share(0)[2];
 
     let slopes = polygon.map(polygon => polygon.m);
     let yIntercepts = polygon.map(polygon => polygon.b);

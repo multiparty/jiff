@@ -6,14 +6,14 @@
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
-  var party_count = 2; //parseInt($('#count').val());
+  var party_count = 2;
   var party_id = parseInt($('#role').val());
 
   if(isNaN(party_count)) {
     $("#output").append("<p class='error'>Party count must be a valid number!</p>");
     $('#connectButton').prop('disabled', false);
   } else {
-    var options = { party_count: party_count, party_id: party_id }; //, Zp: new BigNumber("32416190071"), autoConnect: false};
+    var options = { party_count: party_count, party_id: party_id, Zp: new BigNumber("1000000000100011"), autoConnect: false };
     options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
     options.onConnect = function(jiff_instance) {
       $("#role").attr("disabled", true);    
