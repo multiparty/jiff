@@ -13,7 +13,7 @@ function connect() {
     $("#output").append("<p class='error'>Party count must be a valid number!</p>");
     $('#connectButton').prop('disabled', false);
   } else {
-    var options = { party_count: party_count};
+    var options = { party_count: party_count, Zp: new BigNumber("1000000000100011"), autoConnect: false };
     options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
     options.onConnect = function() { $("#button").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
 
@@ -108,31 +108,27 @@ window.onload = () => {
  * @param {string} yVal - The numerical y coordinate value input by the user.
  */
 const pushCoordinate = function(xVal, yVal) {
-    // if(!jiff_instance) {
-    //     alert("Please connect to jiff server first =)");
-    //     return;
-    // }
 
-    let p = {
-        x:parseInt(xVal),
-        y:parseInt(yVal)
-    };
-    if(isNaN(p.x) || isNaN(p.y)) {
-        alert("Please entre numeric values.");
-        return;
-    }
+  let p = {
+    x:parseInt(xVal),
+    y:parseInt(yVal)
+  };
+  if(isNaN(p.x) || isNaN(p.y)) {
+    alert("Please entre numeric values.");
+    return;
+  }
 
-    if(restrict(p.x, p.y) == 1)
-        return;
+  if(restrict(p.x, p.y) == 1)
+    return;
 
-    $("#output").append("<p>"+p.x+"<br/>"+p.y+"</p>");
+  $("#output").append("<p>"+p.x+"<br/>"+p.y+"</p>");
 
-    // push coordinate to the 'coordinates' array
-    coordinates.push(p);
+  // push coordinate to the 'coordinates' array
+  coordinates.push(p);
 
-    myChart.update();
-    $("#xVal").val("");
-    $("#yVal").val("");
+  myChart.update();
+  $("#xVal").val("");
+  $("#yVal").val("");
 }
 
 function submit(values) {
@@ -141,8 +137,8 @@ function submit(values) {
   //   return;
   // }
   if(values.length < 1) {
-      alert("Please input at least one point.");
-      return;
+    alert("Please input at least one point.");
+    return;
   }
   $('#calculate').attr("disabled", true);
   $("#output").append("<p>Working...</p>");
@@ -159,7 +155,7 @@ function submit(values) {
  * @param {number} m - The slope.
  * @param {number} b - The y intercept.
  */
-const handleResult = (m, b) => printLineToGraph( [{x:minX,y:m*minX+b}, {x:maxX,y:m*maxX+b}] );
+const handleResult = ({m, b}) => printLineToGraph( [{x:minX,y:m*minX+b}, {x:maxX,y:m*maxX+b}] );
 
 
 /**
@@ -169,10 +165,10 @@ const handleResult = (m, b) => printLineToGraph( [{x:minX,y:m*minX+b}, {x:maxX,y
  * @param {Array} points - The array of points to display. It has this format: [{x:number,y:number}]
  */
 const printLineToGraph = (points) => {
-    // Fetch the dataset of the best fit line.    
-    let lineDataset = myChart.data.datasets.filter(dataset => dataset.id == "line");
-    points.forEach(point => lineDataset[0].data.push(point))
-    myChart.update();
+  // Fetch the dataset of the best fit line.    
+  let lineDataset = myChart.data.datasets.filter(dataset => dataset.id == "line");
+  points.forEach(point => lineDataset[0].data.push(point))
+  myChart.update();
 }
 
 /**
@@ -186,16 +182,16 @@ const printLineToGraph = (points) => {
  */
 const restrict = function(x, y) {
   if(x < minX || x > maxX) {
-      alert("Please input a value between " + minX + " and " + maxX + ".");
-      return 1;
+    alert("Please input a value between " + minX + " and " + maxX + ".");
+    return 1;
   }
   if(y < minY || y > maxY) {
-      alert("Please input a value between " + minY + " and " + maxY + ".");
-      return 1;
+    alert("Please input a value between " + minY + " and " + maxY + ".");
+    return 1;
   }
   if(x != Math.floor(x) || y != Math.floor(y)) {
-      alert("Please input whole numbers.");
-      return 1;
+    alert("Please input whole numbers.");
+    return 1;
   }
   return 0;
 }

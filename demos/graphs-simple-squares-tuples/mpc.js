@@ -8,11 +8,18 @@
     var opt = Object.assign({}, options);
     // Added options goes here
 
-    if(node)
+    if(node) {
       jiff = require('../../lib/jiff-client');
+      jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
+      jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
+      BigNumber = require('bignumber.js');    
+    }
 
+    opt.autoConnect = false;
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
-    // if you need any extensions, put them here
+    saved_instance = jiff_bignumber.make_jiff(saved_instance, options);
+    saved_instance = jiff_fixedpoint.make_jiff(saved_instance, { decimal_digits: 5, integral_digits: 5}); // Max bits after decimal allowed
+    saved_instance.connect();
 
     return saved_instance;
   };
@@ -59,13 +66,15 @@
     let m = (sum_xy.sub((sum_x.mult(sum_y)).div(n)))
       .div(sum_xx.sub((sum_x.mult(sum_x)).div(n)));
 
-      m.open(function(m_opened) {
+    m.open(function(m_opened) {
+      m_opened = m_opened.toNumber();
       console.info("Slope:", m_opened);
       let b = (sum_y.sub(sum_x.mult(m_opened))).div(n);
       b.open(function(b_opened) {
+        b_opened = b_opened.toNumber();
         console.info("Y intercept:", b_opened);
-        final_deferred.resolve(m_opened, b_opened);
-      })
+        final_deferred.resolve({m:m_opened, b:b_opened});
+      });
     });
 
     return final_promise;

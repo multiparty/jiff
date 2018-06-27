@@ -22,12 +22,14 @@ if(computation_id == null) computation_id = 'test';
 var party_id = process.argv[5];
 if(party_id != null) party_id = parseInt(party_id, 10);
 
+var BigNumber = require('bignumber.js');
+
 // JIFF options
-var options = {party_count: party_count, party_id: party_id};
+var options = { party_count: party_count, party_id: party_id, decimal_digits: 5, integral_digits: 5, Zp: new BigNumber("1000000000100011") };
 options.onConnect = function(jiff_instance) {
   var promise = mpc.compute(input);
 
-  promise.then(function(m, b) {
+  promise.then(function({m, b}) {
     console.info("Slope:", m, "Y-Intercept:", b);
     jiff_instance.disconnect();
   });

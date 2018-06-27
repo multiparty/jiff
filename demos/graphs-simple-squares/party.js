@@ -24,7 +24,7 @@ if(party_id != null) party_id = parseInt(party_id, 10);
 var BigNumber = require('bignumber.js');
 
 // JIFF options
-var options = {party_count: party_count, party_id: party_id, decimal_digits: 5, integral_digits: 5, Zp: new BigNumber("48112959837082048697") };
+var options = {party_count: party_count, party_id: party_id, decimal_digits: 5, integral_digits: 5, Zp: new BigNumber("1000000000100011") };
 options.onConnect = function(jiff_instance) {
   var promise;
   if (jiff_instance.id === 1)
@@ -32,7 +32,7 @@ options.onConnect = function(jiff_instance) {
   else
     promise = mpc.computeRoleY(input);
 
-  promise.then(function(m, b) {
+  promise.then(function({m, b}) {
     console.info("Slope:", m, "Y-Intercept:", b);
     jiff_instance.disconnect();
   });

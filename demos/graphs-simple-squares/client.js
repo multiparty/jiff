@@ -7,7 +7,7 @@ function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
 
-  var options = { party_count:2, Zp: new BigNumber(32416190071), autoConnect: false };
+  var options = { party_count:2, Zp: new BigNumber("1000000000100011"), autoConnect: false };
   options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
   options.onConnect = function(jiff_instance) {
     $("#button").attr("disabled", false);
@@ -181,7 +181,7 @@ const submit = (values) => {
  * @param {number} m - The slope.
  * @param {number} b - The y intercept.
  */
-const handleResult = (m, b) => printLineToGraph( [{x:minX,y:m*minX+b}, {x:maxX,y:m*maxX+b}] );
+const handleResult = ({m, b}) => printLineToGraph( [{x:minX,y:m*minX+b}, {x:maxX,y:m*maxX+b}] );
 
 
 /**
@@ -201,7 +201,7 @@ const printLineToGraph = function(points) {
 /**
  * Function takes the input value from the user and checks if it
  * conforms to the restriction or not.
- * This function should be removed when the fixed point extension is complete.
+ * This function was used before the fixed-point extension was added to the demo.
  * 
  * @param {number} input - The number entered by the user.
  * @param {string} this_axis - 'x' or 'y'. The axis assigned to this user.
