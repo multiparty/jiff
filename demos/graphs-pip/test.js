@@ -190,9 +190,9 @@ describe('Test', function() {
       });
     };
     
-    var BigNumber = require('bignumber.js');
+    // var BigNumber = require('bignumber.js');
 
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, decimal_digits: 5, integral_digits: 5, Zp: new BigNumber("1000000000100011") };
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect }; //, decimal_digits: 5, integral_digits: 5, Zp: new BigNumber("1000000000100011") };
     for (var i = 0; i < party_count; i++)
       mpc.connect("http://localhost:8080", "mocha-test", options);
   });

@@ -43,11 +43,11 @@ function connect() {
 }
 
 
-// The limits of the graph. The minimum and maximum X and Y values.
-const minX = -5;
-const maxX = 25;
-const minY = -5;
-const maxY = 25;
+// The limits of the graph. The minimum and maximum X and Y values. Modifiable!
+const minX = 50;
+const maxX = 100;
+const minY = 50;
+const maxY = 100;
 
 
 /**
@@ -117,7 +117,7 @@ window.onload = () => {
 const submitLine = (slopeInput, yInterceptInput, aboveBelowInput) => {
   let slope = typeof slopeInput === "string" ? parseInt(slopeInput) : slopeInput;
   let yIntercept = typeof yInterceptInput === "string" ? parseInt(yInterceptInput) : yInterceptInput;
-  let aboveBelow = aboveBelowInput == "above" ? true : false;
+  let aboveBelow = aboveBelowInput === "above" ? true : false;
 
   if (isNaN(slope) || isNaN(yIntercept)) {
     alert("Please input numbers.");
@@ -199,25 +199,25 @@ const printLineToGraph = (points, fillDirection) => {
   myChart.update();
 }
 
-const fillHelper1 = () => {
-  submitLine(1, -5, "above");
-  submitLine(1, 5, "below");
-  submitLine(-1, 5, "above");
-  submitLine(-1, 15, "below");
-  submitPolygon();
-}
+// const fillHelper1 = () => {
+//   submitLine(1, -5, "above"); //-105
+//   submitLine(1, 5, "below"); //-105
+//   submitLine(-1, 215, "above"); //+105
+//   submitLine(-1, 225, "below"); //+105
+//   submitPolygon();
+// }
 
-const fillHelper2 = () => {
-  submitLine(0, 20, "below");
-  submitLine(0, 10, "above");
-  // left angle bracket
-  submitLine(1, 10, "below");
-  submitLine(-1, 20, "above");
-  //right angle bracket
-  submitLine(1, -5, "above");
-  submitLine(-1, 35, "below");
-  submitPolygon();
-}
+// const fillHelper2 = () => {
+//   submitLine(0, 125, "below");
+//   submitLine(0, 115, "above");
+//   // left angle bracket
+//   submitLine(1, 10, "below"); //-105
+//   submitLine(-1, 230, "above"); //+105
+//   //right angle bracket
+//   submitLine(1, -5, "above");
+//   submitLine(-1, 245, "below");
+//   submitPolygon();
+// }
 
 
 function convexHull(points) {
@@ -263,6 +263,8 @@ const mapToTuples = (array) => {
     let p2 = array[(i+1)%array.length];
     let p3 = array[(i+2)%array.length];
     let {gradient, yIntercept} = getEquationOfLineFromTwoPoints(p1, p2);
+    // gradient = Math.floor(gradient);
+    // yIntercept = Math.floor(yIntercept);
     r.push({
       m:gradient,
       b:yIntercept,
@@ -274,13 +276,21 @@ const mapToTuples = (array) => {
 
 const noVerticalLines = (array) => {
   for (let i = 0; i < array.length; i++)
-    if (array[i].x === array[(i+1)%array.length].x)
+    if (array[i].x === array[(i+1)%array.length].x )
+      return true;
+  return false;
+}
+
+const noSlopesTooBig = array => {
+  for (let i = 0; i < array.length; i++)
+    if (array[i].m > 3 || array[i].m < -3)
       return true;
   return false;
 }
 
 const fillHelperRandom = () => {
   let convexHullPoints;
+  let generatedPolygon;
 
   do {
     const randomPoints = [];
@@ -291,9 +301,8 @@ const fillHelperRandom = () => {
       randomPoints.push({x:x,y:y});
     }
     convexHullPoints = convexHull(randomPoints);
-  } while(noVerticalLines(convexHullPoints))
-
-  const generatedPolygon = mapToTuples(convexHullPoints);
+    generatedPolygon = mapToTuples(convexHullPoints);
+  } while(noVerticalLines(convexHullPoints) || noSlopesTooBig(generatedPolygon))
 
   generatedPolygon.forEach(line => submitLine(line.m, line.b, line.above));
   submitPolygon();

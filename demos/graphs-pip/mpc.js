@@ -53,9 +53,9 @@
     let x = jiff_instance.share(0)[2];
     let y = jiff_instance.share(0)[2];
 
-    let slopes = polygon.map(polygon => polygon.m);
-    let yIntercepts = polygon.map(polygon => polygon.b);
-    let above = polygon.map(polygon => polygon.above);
+    let slopes = polygon.map(polygon => polygon.m.toFixed(5));
+    let yIntercepts = polygon.map(polygon => polygon.b.toFixed(5));
+    let above = polygon.map(polygon => polygon.above); above = above.map(bool => bool ? 1 : 0);
 
     jiff_instance.share_array(slopes).then(slopesArray => {
       jiff_instance.share_array(yIntercepts).then(yInterceptsArray => {
@@ -88,18 +88,13 @@
   }
 
   const compute = (x, y, ms, bs, as, final_deferred) => {
-    // first iteration
-    let ympc = ((ms[1][0].mult(x)).add(bs[1][0]));
-    let greater = ympc.gt(y);
-    let less = ympc.lt(y);
-
-    let result = greater.add( as[1][0].mult( (less).sub(greater) ) );
-    for (let i = 1; i < ms[1].length; i++) {
-      let ympc = ((ms[1][i].mult(x)).add(bs[1][i]));
+    let result = 1;
+    for (let i = 0; i < ms[1].length; i++) {
+      let ympc = ((ms[1][i].mult(x)).add(bs[1][i])); ympc.open(t => console.log("ympc", t.toString()));
       let greater = ympc.gt(y);
       let less = ympc.lt(y);
-      result = result.mult(greater.add( as[1][i].mult( (less).sub(greater) ) ));
+      result = (greater.add( as[1][i].mult( (less).sub(greater) ) )).mult(result);
     }
-    result.open(finalResult => final_deferred.resolve(finalResult));
+    result.open(finalResult => {finalResult = finalResult.toNumber(); console.log(finalResult); return final_deferred.resolve(finalResult);});
   }
 }((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
