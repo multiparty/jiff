@@ -21,20 +21,41 @@
    * The MPC computation
    */
 
-  function bubblesort(arr) {
-    for (var i = 0; i < arr.length; i++) {
-      for (var j = 0; j < (arr.length - i - 1); j++) {
-        var a = arr[j];
-        var b = arr[j+1];
-        var c = a.slt(b);
-        var d = c.not();
-  
-        arr[j] = a.sadd(d.smult(b.ssub(a)));
-        arr[j+1] = a.sadd(c.smult(b.ssub(a)));
-      }
+  function oddEvenSort(a, lo, n) {
+    if (n > 1) {
+      var m = n/2;
+      oddEvenSort(a, lo, m);
+      oddEvenSort(a, lo+m, m);
+      oddEvenMerge(a, lo, n, 1);
     }
+  }
 
-    return arr;
+    // lo: lower bound of indices, n: number of elements, r: step
+  function oddEvenMerge(a, lo, n, r) {
+    var m = r * 2; 
+    if (m < n) {
+      oddEvenMerge(a, lo, n, m);
+      oddEvenMerge(a, lo+r, n, m);
+
+      for (var i = (lo+r); (i+r)<(lo+n); i+=m)  {
+        compareExchange(a, i, i+r);
+      }
+    } else {
+      compareExchange(a,lo,lo+r);
+    }
+  }
+
+  function compareExchange(a, i, j) {
+
+    var x = a[i];
+    var y = a[j];
+  
+    var c = x.lt(y);  
+    var d = c.not();
+  
+    a[i] = (x.mult(c)).add((y.mult(d)));
+    a[j] = (x.mult(d)).add((y.mult(c)));
+  
   }
 
   exports.compute = function (input, jiff_instance) {
@@ -54,14 +75,16 @@
       }
 
       // sort new array
-      var sorted = bubblesort(array);
-
+      console.log('input', array)
+      var sorted = oddEvenSort(array, 0, array.length);
+      console.log('array', sorted)
       // Open the array
       var allPromises = [];
       for (var i = 0; i < sorted.length; i++)
         allPromises.push(jiff_instance.open(sorted[i]));
     
       Promise.all(allPromises).then(function(results) {
+        console.log(results)
         final_deferred.resolve(results);
       });
     });
