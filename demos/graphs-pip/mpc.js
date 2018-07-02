@@ -50,16 +50,16 @@
     let final_deferred = $.Deferred();
     let final_promise = final_deferred.promise();
 
-    let x = jiff_instance.share(0)[2];
-    let y = jiff_instance.share(0)[2];
+    let x = jiff_instance.share(null, null, [1, 2], [2])[2];
+    let y = jiff_instance.share(null, null, [1, 2], [2])[2];
 
     let slopes = polygon.map(polygon => polygon.m.toFixed(5));
     let yIntercepts = polygon.map(polygon => polygon.b.toFixed(5));
     let above = polygon.map(polygon => polygon.above); above = above.map(bool => bool ? 1 : 0);
 
-    jiff_instance.share_array(slopes).then(slopesArray => {
-      jiff_instance.share_array(yIntercepts).then(yInterceptsArray => {
-        jiff_instance.share_array(above).then(aboveArray => {
+    jiff_instance.share_array(slopes, null, null, [1,2], [1]).then(slopesArray => {
+      jiff_instance.share_array(yIntercepts, null, null, [1,2], [1]).then(yInterceptsArray => {
+        jiff_instance.share_array(above, null, null, [1,2], [1]).then(aboveArray => {
           compute(x, y, slopesArray, yInterceptsArray, aboveArray, final_deferred);
         });
       });
@@ -73,12 +73,12 @@
     let final_deferred = $.Deferred();
     let final_promise = final_deferred.promise();
 
-    let x = jiff_instance.share(point.x)[2];
-    let y = jiff_instance.share(point.y)[2];
+    let x = jiff_instance.share(point.x, null, [1, 2], [2])[2];
+    let y = jiff_instance.share(point.y, null, [1, 2], [2])[2];
 
-    jiff_instance.share_array([]).then(slopesArray => {
-      jiff_instance.share_array([]).then(yInterceptsArray => {
-        jiff_instance.share_array([]).then(aboveArray => {
+    jiff_instance.share_array(null, null, null, [1,2], [1]).then(slopesArray => {
+      jiff_instance.share_array(null, null, null, [1,2], [1]).then(yInterceptsArray => {
+        jiff_instance.share_array(null, null, null, [1,2], [1]).then(aboveArray => {
           compute(x, y, slopesArray, yInterceptsArray, aboveArray, final_deferred);
         });
       });
