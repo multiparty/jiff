@@ -11,7 +11,7 @@ var Zp = 15485867;
 // Operation strings to "lambdas"
 var operations = {
   "+" : function (operand1, operand2) {
-    return operand1 + operand2; // plus is for bignumber
+    return operand1 + operand2;
   },
   "add_cst" : function (operand1, operand2) {
     return operand1.cadd(operand2);
@@ -49,9 +49,9 @@ var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*", "xor_cst": "^", "d
 function run_test(computation_id, operation, callback) {
   // Generate Numbers - make sure we generate both positive and negative numbers.
   for (var i = 0; i < 20; i++) {
-      var num1 = Math.floor(Math.random() * 201) - 100;
-      var num2 = Math.floor(Math.random() * 201) - 100;
-      var num3 = Math.floor(Math.random() * 201) - 100;
+    var num1 = Math.floor(Math.random() * Zp) - Math.floor(Zp/2);
+    var num2 = Math.floor(Math.random() * Zp) - Math.floor(Zp/2);
+    var num3 = Math.floor(Math.random() * Zp) - Math.floor(Zp/2);
     tests[i] = [num1, num2, num3];
   }
 
@@ -117,9 +117,8 @@ function test_output(index, result, open_operator) {
   var numbers = tests[index];
 
   // Apply operation in the open to test
-
   var res = operations[open_operator](numbers[0], numbers[1]);
-//  res = mod(res, Zp);
+  //  res = mod(res, Zp);
 
   // Incorrect result
   if(!(res == result)) {

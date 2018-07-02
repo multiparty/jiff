@@ -29,11 +29,12 @@ describe("MPC Operations", function() {
     });
   });
 
+/*
   describe("Arithmetic Operations", function() {
-      //+
-      it("Addition", function (done) {
-          arithmetic_op.run_test(i++, "add", callback(done));
-      });
+    //+
+    it("Addition", function (done) {
+        arithmetic_op.run_test(i++, "add", callback(done));
+    });
 
     // -
     it("Subtraction", function(done) {
@@ -52,13 +53,12 @@ describe("MPC Operations", function() {
   //    arithmetic_op.run_test(i++, "div", callback(done));
   //  });
   });
-
+*/
   describe("Constant Arithmetic Operations", function() {
-      // constant +
-      it("Constant Addition", function (done) {
-          constant_arithmetic_op.run_test(i++, "add_cst", callback(done));
-      });
-
+    // constant +
+    it("Constant Addition", function (done) {
+        constant_arithmetic_op.run_test(i++, "add_cst", callback(done));
+    });
     // constant -
     it("Constant Subtraction", function(done) {
       constant_arithmetic_op.run_test(i++, "sub_cst", callback(done));
@@ -77,8 +77,8 @@ describe("MPC Operations", function() {
     //});
   });
 
-
-  /*describe("Comparison", function() {
+  /*
+  describe("Comparison", function() {
     // <
     it("Less than", function(done) {
       comparison.run_test(i++, "less", callback(done));
