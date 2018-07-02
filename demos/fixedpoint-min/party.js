@@ -1,4 +1,12 @@
+/**
+ * Do not change this unless you have to.
+ * This code parses input command line arguments, 
+ * and calls the appropriate initialization and MPC protocol from ./mpc.js
+ */
+
 console.log("Command line arguments: <input> [<party count> [<computation_id> [<party id>]]]]");
+
+var mpc = require('./mpc');
 
 // Read Command line arguments
 var input = Number(process.argv[2]);
@@ -14,20 +22,17 @@ var party_id = process.argv[5];
 if(party_id != null) party_id = parseInt(party_id, 10);
 
 var BigNumber = require('bignumber.js');
-var jiff_instance;
 
-var options = {party_count: party_count, party_id: party_id, Zp: new BigNumber(32416190071), autoConnect: false };
-options.onConnect = function() {
-  try {
-    var shares = jiff_instance.share(input);
-    var min = shares[1].sadd(shares[2].slt(shares[1], 30).smult(shares[2].ssub(shares[1])));    
-    min.open(function(r) { console.log(r.toString(10)); jiff_instance.disconnect(); } );
-  } catch (err) {
-    console.log(err);
-  }
-}
+// JIFF options
+var options = { party_count: party_count, party_id: party_id, decimal_digits: 5, integral_digits: 2, Zp: new BigNumber(2).pow(40).minus(87) };
+options.onConnect = function(jiff_instance) {
+  var promise = mpc.compute(input);
 
-var base_instance = require('../../lib/jiff-client').make_jiff("http://localhost:8080", computation_id, options);
-base_instance = require('../../lib/ext/jiff-client-bignumber').make_jiff(base_instance, options)
-jiff_instance = require('../../lib/ext/jiff-client-fixedpoint').make_jiff(base_instance, { decimal_digits: 5, integral_digits: 5});
-jiff_instance.connect();
+  promise.then(function(v) {
+    console.log(v.toString(10));
+    jiff_instance.disconnect();
+  });
+};
+
+// Connect
+mpc.connect("http://localhost:8080", computation_id, options);

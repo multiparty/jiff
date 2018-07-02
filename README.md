@@ -38,28 +38,26 @@ npm install
 Make sure to include the library **after** socket.io and libsodium:
 ```html
 <script src="/lib/jiff-client.js"></script>
-```  
+```
 Then inside a script tag (and after the page loads), initialize a JIFF object and set up a computation:
 ```javascript
 var instance = jiff.make_jiff("http://localhost:8080", "<computation_id>", parties)
-```  
+```
 The instance object provides methods for sharing, opening, and performing operations on shares.
 
 ## Running Demos and Examples
 
 Run a sample server from one of the demos under `demos` in the following way:
 ```shell
-node index.js demos/sum/server
+node index.js demos/<demo-name>/server
 ```
-The output from the example server will direct you to open `localhost:8080/demos/sum/client.html` in a browser (you must open an instance in a separate window/tab for every distinct party participating in the protocol). You can then proceed with the protocol using the client interfaces. Note that the server script will also suggest the possibility of running a server-based party that can also participate in the protocol by executing (e.g., in a separate terminal):
+The output from the example server will direct you to open `localhost:8080/demos/<demo-name>/client.html` in a browser (you must open 
+an instance in a separate window/tab for every distinct party participating in the protocol).
+You can then proceed with the protocol using the client interfaces. 
+
+Note that you can run node.js parties that can also participate in the protocol by executing (e.g., a separate terminal for each party):
 ```shell
-node index.js demos/sum/party
-```
-Several other demos are also included:
-```shell
-node index.js demos/sum-fixed/server
-node index.js demos/div/server
-node index.js demos/vote/server
+node demos/<demo-name>/party.js <input-value>
 ```
 
 ## Documentation
@@ -75,6 +73,11 @@ npm run-script gen-docs # shortcut
 The test cases can be run in the following way:
 ```shell
 npm test
+```
+
+Demos are accompanied by test cases, to run a demo test case, use:
+```shell
+npm run-script test-demo -- demo/<demo-name>/test.js
 ```
 
 ## Development

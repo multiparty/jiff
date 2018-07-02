@@ -74,7 +74,7 @@ common protocols here, under a sub namespace corresponding to the extension name
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2562">line 2562</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3142">line 3142</a>
     </li></ul></dd>
     
 
@@ -106,6 +106,377 @@ common protocols here, under a sub namespace corresponding to the extension name
 
     
         <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".generate_random_bit"><span class="type-signature">(static) </span>generate_random_bit<span class="signature">(bit, threshold<span class="signature-attributes">opt</span>, receivers_list<span class="signature-attributes">opt</span>, compute_list<span class="signature-attributes">opt</span>, Zp<span class="signature-attributes">opt</span>, triplet_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {share-object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    generates a random bit under MPC by xoring all bits sent by participating parties
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">value to be securely xored</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>threshold</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    floor(compute_list.length/2)
+                
+                </td>
+            
+
+            <td class="description last">the minimimum number of parties needed to reconstruct the triplet.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>receivers_list</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    [1, ..., n]
+                
+                </td>
+            
+
+            <td class="description last">array of party ids that want to receive the triplet shares, by default, this includes all parties.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>compute_list</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    [1, ..., n]
+                
+                </td>
+            
+
+            <td class="description last">array of party ids that will perform this protocol, by default, this includes all parties.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Zp</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    jiff-instance.Zp
+                
+                </td>
+            
+
+            <td class="description last">the modulos (if null then the default Zp for the instance is used).</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>triplet_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    auto_gen
+                
+                </td>
+            
+
+            <td class="description last">the triplet id which is used to identify the triplet requested, so that every party
+                                        gets a share from the same triplet for every matching instruction. An automatic triplet id
+                                        is generated by increasing a local counter, default ids suffice when all parties execute the
+                                        instructions in the same order.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3229">line 3229</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    this party's share of the generated bit
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">share-object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
 
         
             
@@ -215,7 +586,7 @@ Requires no communication, only local operations.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2604">line 2604</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3301">line 3301</a>
     </li></ul></dd>
     
 
@@ -465,7 +836,7 @@ Requires l-1 rounds of communication (a total of l-1 multiplications in sequence
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2623">line 2623</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3320">line 3320</a>
     </li></ul></dd>
     
 
@@ -760,7 +1131,7 @@ Then every party combines all the received shares to construct one share of the 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2571">line 2571</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3151">line 3151</a>
     </li></ul></dd>
     
 
@@ -1056,7 +1427,7 @@ in a new share of 0 for every party.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2587">line 2587</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3284">line 3284</a>
     </li></ul></dd>
     
 
@@ -1128,7 +1499,7 @@ in a new share of 0 for every party.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jun 12 2018 01:18:37 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jun 25 2018 12:19:40 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

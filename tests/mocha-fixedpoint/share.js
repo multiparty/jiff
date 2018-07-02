@@ -17,7 +17,7 @@ var integer_digits = 5;
 // Entry Point
 function run_test(computation_id, callback) {
   // Generate Numbers
-  for (var i = 0; i < 100; i++) {
+  for (var i = 0; i < 300; i++) {
     // Generate numbers
     var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits);
     var decimal_magnitude = new BigNumber(10).pow(decimal_digits);

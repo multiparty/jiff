@@ -7,12 +7,13 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = new BigNumber(32416190071);
+var Zp = new BigNumber(2).pow(51).minus(129);
 
 var decimal_digits = 5;
 var integer_digits = 5;
-var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
 function mod(x, y) {
+  var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
+
   x = x.times(decimal_magnitude); 
   if (x.isNeg()) return x.mod(y).plus(y).div(decimal_magnitude); 
   return x.mod(y).div(decimal_magnitude);
@@ -21,19 +22,19 @@ function mod(x, y) {
 // Operation strings to "lambdas"
 var operations = {
   "+" : function (operand1, operand2) {
-    return operand1.plus(operand2);
+    return new BigNumber(operand1.plus(operand2).toFixed(decimal_digits, BigNumber.ROUND_DOWN));
   },
   "add" : function (operand1, operand2) {
     return operand1.sadd(operand2);
   },
   "-" : function (operand1, operand2) {
-    return operand1.minus(operand2);
+    return new BigNumber(operand1.minus(operand2).toFixed(decimal_digits, BigNumber.ROUND_DOWN));
   },
   "sub" : function (operand1, operand2) {
     return operand1.ssub(operand2);
   },
   "*" : function (operand1, operand2) {
-    return operand1.times(operand2);
+    return new BigNumber(operand1.times(operand2).toFixed(decimal_digits, BigNumber.ROUND_DOWN));
   },
   "mult" : function (operand1, operand2) {
     return operand1.smult(operand2);
@@ -44,8 +45,14 @@ var operations = {
   "xor" : function (operand1, operand2) {
     return operand1.sxor_bit(operand2);
   },
+  "|" : function (operand1, operand2) {
+    return operand1.eq(1) || operand2.eq(1) ? new BigNumber(1) : new BigNumber(0);
+  },
+  "or" : function (operand1, operand2) {
+    return operand1.sor_bit(operand2);
+  },
   "/" : function (operand1, operand2) {
-    return operand1.div(operand2).floor();
+    return new BigNumber(operand1.div(operand2).toFixed(decimal_digits, BigNumber.ROUND_DOWN));
   },
   "div" : function (operand1, operand2) {
     return operand1.sdiv(operand2);
@@ -53,14 +60,24 @@ var operations = {
 };
 
 // Maps MPC operation to its open dual
-var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "div": "/" };
+var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "or": "|", "div": "/" };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 100; i++) {
-    var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits - 1);
+  for (var i = 0; i < 200; i++) {
+    var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits);
     var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
+
+    if(operation == "mult") {
+      var max_int = Math.floor(Math.cbrt(Math.pow(10, decimal_digits) - 1));
+      total_magnitude = new BigNumber(max_int).times(decimal_magnitude);
+    }
+
+    if(operation == "xor" || operation == "or") {
+      total_magnitude = 2;
+      decimal_magnitude = 1;
+    }
 
     var num1 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
     var num2 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
@@ -102,20 +119,30 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == "div" ? 1 : tests.length;
-  for(var i = 0; i < length; i++) {
+  var length = mpc_operator == "div" ? 3 : tests.length;
+  length = mpc_operator == "mult" ? 10 : length;
+  
+  (function do_test(i) {
+    if(i >= length) {
+      // When all is done, check whether any failures were encountered
+      Promise.all(promises).then(function() {
+        for(var i = 0; i < jiff_instances.length; i++) jiff_instances[i].disconnect();
+        jiff_instances = null;
+        callback(!has_failed);
+      });
+
+      return;
+    }
+  
+    var iteration = [];
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
       promises.push(promise);
+      iteration.push(promise);
     }
-  }
 
-  // When all is done, check whether any failures were encountered
-  Promise.all(promises).then(function() {
-    for(var i = 0; i < jiff_instances.length; i++) jiff_instances[i].disconnect();
-    jiff_instances = null;
-    callback(!has_failed);
-  });
+    Promise.all(iteration).then(function() { do_test(i+1); });
+  })(0);
 }
 
 // Run test case at index
@@ -125,9 +152,14 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
   var shares = jiff_instance.share(numbers[party_index]);
 
   // Apply operation on shares
+  var res;
   var shares_list = [];
   for(var i = 1; i <= parties; i++) shares_list.push(shares[i]);
-  var res = shares_list.reduce(operations[mpc_operator]);
+
+  if(mpc_operator == "div")
+    res = operations[mpc_operator](shares_list[0], shares_list[1]);
+  else
+    res = shares_list.reduce(operations[mpc_operator]);
 
   var deferred = $.Deferred();
   res.open(function(result) { test_output(index, result, open_operator); deferred.resolve(); }, error);
@@ -139,7 +171,9 @@ function test_output(index, result, open_operator) {
   var numbers = tests[index];
 
   // Apply operation in the open to test
-  var res = numbers.reduce(operations[open_operator]);
+  var res;
+  if(open_operator == "/") res = operations[open_operator](numbers[0], numbers[1]);
+  else res = numbers.reduce(operations[open_operator]);
   res = mod(res, Zp);
 
   // Incorrect result

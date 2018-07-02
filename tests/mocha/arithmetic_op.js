@@ -60,6 +60,10 @@ function run_test(computation_id, operation, callback) {
     var num3 = (Math.floor(Math.random() * Zp) % m) + o;
     tests[i] = [num1, num2, num3];
   }
+  /*
+  tests[0] = [1552, 213, 475];
+  tests[1] = [92, 420, 121];
+  */
 
   // Assign values to global variables
   parties = tests[0].length;

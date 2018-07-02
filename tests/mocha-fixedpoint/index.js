@@ -31,7 +31,7 @@ describe("MPC Operations", function() {
   });
 
   describe("Arithmetic Operations", function() {
-    //+
+    //+/*
     it("Addition", function(done) {
       arithmetic_op.run_test(i++, "add", callback(done));
     });
@@ -40,7 +40,6 @@ describe("MPC Operations", function() {
       arithmetic_op.run_test(i++, "sub", callback(done));
     });
     // *
-    /*
     it("Mutliplication", function(done) {
       arithmetic_op.run_test(i++, "mult", callback(done));
     });
@@ -48,14 +47,17 @@ describe("MPC Operations", function() {
     it("Bitwise XOR", function(done) {
       arithmetic_op.run_test(i++, "xor", callback(done));
     });
+    // |
+    it("Bitwise OR", function(done) {
+      arithmetic_op.run_test(i++, "or", callback(done));
+    });
     // /
     it("Integer Divison", function(done) {
       arithmetic_op.run_test(i++, "div", callback(done));
     });
-    */
+    
   });
 
-  
   describe("Constant Arithmetic Operations", function() {
     // constant +
     it("Constant Addition", function(done) {
@@ -68,45 +70,42 @@ describe("MPC Operations", function() {
     // constant *
     it("Constant Mutliplication", function(done) {
       constant_arithmetic_op.run_test(i++, "mult_cst", callback(done));
-    }); 
-    /*
+    });
     // constant ^
     it("Constant Bitwise XOR", function(done) {
       constant_arithmetic_op.run_test(i++, "xor_cst", callback(done));
     });
+    // constant |
+    it("Constant Bitwise OR", function(done) {
+      constant_arithmetic_op.run_test(i++, "or_cst", callback(done));
+    });    
     // /
     it("Constant Integer Divison", function(done) {
       constant_arithmetic_op.run_test(i++, "div_cst", callback(done));
-    }); */
+    });
   });
-/*
 
   describe("Comparison", function() {
     // <
     it("Less than", function(done) {
       comparison.run_test(i++, "less", callback(done));
     });
-
     // <=
     it("Less than or Equal", function(done) {
       comparison.run_test(i++, "less_or_equal", callback(done));
     });
-
     // >
     it("Greater than", function(done) {
       comparison.run_test(i++, "greater", callback(done));
     });
-
     // >=
     it("Greater than or Equal", function(done) {
       comparison.run_test(i++, "greater_or_equal", callback(done));
     });
-
     // ==
     it("Equal", function(done) {
       comparison.run_test(i++, "eq", callback(done));
     });
-
     // !=
     it("Not Equal", function(done) {
       comparison.run_test(i++, "neq", callback(done));
@@ -118,31 +117,25 @@ describe("MPC Operations", function() {
     it("Less than", function(done) {
       constant_comparison.run_test(i++, "less_cst", callback(done));
     });
-
     // <=
     it("Less than or Equal", function(done) {
       constant_comparison.run_test(i++, "less_or_equal_cst", callback(done));
     });
-
     // >
     it("Greater than", function(done) {
       constant_comparison.run_test(i++, "greater_cst", callback(done));
     });
-
     // >=
     it("Greater than or Equal", function(done) {
       constant_comparison.run_test(i++, "greater_or_equal_cst", callback(done));
     });
-
     // ==
     it("Equal", function(done) {
       constant_comparison.run_test(i++, "eq_cst", callback(done));
     });
-
     // !=
     it("Not Equal", function(done) {
       constant_comparison.run_test(i++, "neq_cst", callback(done));
     });
   });
-  */
 });
