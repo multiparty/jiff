@@ -12,7 +12,7 @@ var Zp = 15485867;
 // Entry Point
 function run_test(computation_id, callback) {
   // Generate Numbers
-  for (var i = 0; i < 300; i++) {
+  for (var i = 0; i < 500; i++) {
     // Generate numbers. switched to Math 6/18, range -100 to 100
     var num1 = Math.floor(Math.random() * Zp) - Math.floor(Zp/2);
     var num2 = Math.floor(Math.random() * Zp) - Math.floor(Zp/2)

@@ -29,13 +29,13 @@ var operations = {
     return operand1.smult(operand2);
   },
   "^" : function (operand1, operand2) {
-    return (operand1 == operand2) ? new BigNumber(0) : new BigNumber(1);
+    return (operand1 == operand2) ? 0 : 1;
   },
   "xor" : function (operand1, operand2) {
     return operand1.sxor_bit(operand2);
   },
   "/" : function (operand1, operand2) {
-    return operand1.div(operand2).floor();
+    return Math.floor(operand1 / operand2);
   },
   "div" : function (operand1, operand2) {
     return operand1.sdiv(operand2);
@@ -47,13 +47,29 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "div": "/" };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
-    // Generating positive and negative numbers
-    for (var i = 0; i < 100; i++) {
-        var num1 = Math.floor(Math.random() * 201) - 100;
-        var num2 = Math.floor(Math.random() * 201) - 100;
-        var num3 = Math.floor(Math.random() * 201) - 100;
-       tests[i] = [num1, num2, num3];
+  // Generate Numbers - make sure we generate both positive and negative numbers.
+  for (var i = 0; i < 200; i++) {
+    tests[i] = [];
+
+    for(var p = 0; p < 3; p++) {
+      // ensure numbers wont wrap around
+      var max = Zp / 3;
+      if(operation == "mult") {
+        max = Math.cbrt(Zp);
+      } else if(operation == "div") {
+        max = Zp;
+      }
+
+      var offset = Math.floor(max / 2);
+      if(operation == "xor") {
+        max = 2;
+        offset = 0;
+      }
+      
+      var randnum = Math.floor(Math.random() * max) - offset;
+      tests[i].push(randnum);
     }
+  }
 
   // Assign values to global variables
   parties = tests[0].length;

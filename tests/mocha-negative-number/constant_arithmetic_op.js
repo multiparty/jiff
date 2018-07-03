@@ -29,13 +29,13 @@ var operations = {
     return operand1.cmult(operand2);
   },
   "^" : function (operand1, operand2) {
-    return (operand1 == operand2) ? new BigNumber(0) : new BigNumber(1);
+    return (operand1 == operand2) ? 0 : 1;
   },
   "xor_cst" : function (operand1, operand2) {
     return operand1.cxor_bit(operand2);
   },
   "/" : function (operand1, operand2) {
-    return operand1.div(operand2).floor();
+    return Math.floor(operand1 / operand2);
   },
   "div_cst" : function (operand1, operand2) {
     return operand1.cdiv(operand2);
@@ -48,11 +48,27 @@ var dual = { "add_cst": "+", "sub_cst": "-", "mult_cst": "*", "xor_cst": "^", "d
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers - make sure we generate both positive and negative numbers.
-  for (var i = 0; i < 20; i++) {
-    var num1 = Math.floor(Math.random() * Zp) - Math.floor(Zp/2);
-    var num2 = Math.floor(Math.random() * Zp) - Math.floor(Zp/2);
-    var num3 = Math.floor(Math.random() * Zp) - Math.floor(Zp/2);
-    tests[i] = [num1, num2, num3];
+  for (var i = 0; i < 200; i++) {
+    tests[i] = [];
+
+    for(var p = 0; p < 3; p++) {
+      // ensure numbers wont wrap around
+      var max = Zp / 2;
+      if(operation == "mult_cst") {
+        max = Math.sqrt(Zp);
+      } else if(operation == "div_cst") {
+        max = Zp;
+      }
+
+      var offset = Math.floor(max / 2);
+      if(operation == "xor_cst") {
+        max = 2;
+        offset = 0;
+      }
+      
+      var randnum = Math.floor(Math.random() * max) - offset;
+      tests[i].push(randnum);
+    }
   }
 
   // Assign values to global variables

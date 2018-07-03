@@ -1,47 +1,46 @@
 var jiff = require ("../../lib/jiff-client.js");
 var jiffNegNumber = require ("../../lib/ext/jiff-client-negativenumber.js");
-var BigNumber = require('bignumber.js');
 
 var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = new BigNumber(32416190071);
+var Zp = 32749;
 
 // Operation strings to "lambdas"
 var operations = {
   "<" : function (operand1, operand2) {
-    return operand1.lt(operand2);
+    return operand1 < operand2;
   },
   "less_cst" : function (operand1, operand2) {
     return operand1.clt(operand2);
   },
   "<=" : function (operand1, operand2) {
-    return operand1.lte(operand2);
+    return operand1 <= operand2;
   },
   "less_or_equal_cst" : function (operand1, operand2) {
     return operand1.clteq(operand2);
   },
   ">" : function (operand1, operand2) {
-    return operand1.gt(operand2);
+    return operand1 > operand2;
   },
   "greater_cst" : function (operand1, operand2) {
     return operand1.cgt(operand2);
   },
   ">=" : function (operand1, operand2) {
-    return operand1.gte(operand2);
+    return operand1 >= operand2;
   },
   "greater_or_equal_cst" : function (operand1, operand2) {
     return operand1.cgteq(operand2);
   },
   "==" : function (operand1, operand2) {
-    return operand1.eq(operand2);
+      return operand1 == operand2;
   },
   "eq_cst" : function (operand1, operand2) {
     return operand1.ceq(operand2);
   },
   "!=" : function (operand1, operand2) {
-    return !operand1.eq(operand2);
+      return operand1 != operand2;
   },
   "neq_cst" : function (operand1, operand2) {
     return operand1.cneq(operand2);
@@ -54,11 +53,18 @@ var dual = { "less_cst": "<", "less_or_equal_cst": "<=", "greater_cst": ">", "gr
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 5; i++) {
-    var num1 = BigNumber.random().times(Zp / 100).floor();
-    var num2 = BigNumber.random().times(Zp / 100).floor();
-    var num3 = BigNumber.random().times(Zp / 100).floor();
-    tests[i] = [num1, num2, num3];
+  // Generate Numbers
+  for (var i = 0; i < 20; i++) {
+    tests[i] = [];
+
+    for(var p = 0; p < 3; p++) {
+      // ensure numbers wont wrap around
+      var max = Zp;
+      var offset = max / 2;
+      
+      var randnum = Math.floor(Math.random() * max - offset);
+      tests[i].push(randnum);
+    }
   }
 
   // Assign values to global variables
@@ -123,10 +129,10 @@ function test_output(index, result, open_operator) {
 
   // Apply operation in the open to test
   var res = operations[open_operator](numbers[0], numbers[1]);
-  res = res ? new BigNumber(1) : new BigNumber(0);
+  res = res ? 1 : 0;
 
   // Incorrect result
-  if(!(res.eq(result))) {
+  if(res != result) {
     has_failed = true;
     console.log(numbers[0] + open_operator + numbers[1] + " != " + result);
   }
