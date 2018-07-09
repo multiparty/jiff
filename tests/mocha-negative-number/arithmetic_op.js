@@ -5,7 +5,7 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = 15485867;
+var Zp = 2039;
 //function mod(x, y) { if (x < 0) return x % y + y; return x.mod(y); }
 
 // Operation strings to "lambdas"
@@ -47,26 +47,27 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "div": "/" };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
+  // ensure numbers wont wrap around
+  var max = Zp / 3;
+  if(operation == "mult") {
+    max = Math.cbrt(Zp);
+  } else if(operation == "div") {
+    max = Zp;
+  }
+
+  var offset = Math.floor(max / 2);
+  if(operation == "xor") {
+    max = 2;
+    offset = 0;
+  }
+
   // Generate Numbers - make sure we generate both positive and negative numbers.
   for (var i = 0; i < 200; i++) {
     tests[i] = [];
 
-    for(var p = 0; p < 3; p++) {
-      // ensure numbers wont wrap around
-      var max = Zp / 3;
-      if(operation == "mult") {
-        max = Math.cbrt(Zp);
-      } else if(operation == "div") {
-        max = Zp;
-      }
-
-      var offset = Math.floor(max / 2);
-      if(operation == "xor") {
-        max = 2;
-        offset = 0;
-      }
-      
+    for(var p = 0; p < 3; p++) {      
       var randnum = Math.floor(Math.random() * max) - offset;
+      if(p == 1 && operation == "div" && randnum == 0) randnum = 1;
       tests[i].push(randnum);
     }
   }
@@ -80,9 +81,9 @@ function run_test(computation_id, operation, callback) {
   options.onConnect = function() { if(++counter == 2) test(callback, operation); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
-  var jiff_instance1 = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
-  var jiff_instance2 = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
-  var jiff_instance3 = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  var jiff_instance1 = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3003", computation_id, options));
+  var jiff_instance2 = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3003", computation_id, options));
+  var jiff_instance3 = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3003", computation_id, options));
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
   jiff_instance1.connect();
   jiff_instance2.connect();
@@ -98,7 +99,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == "div" ? 5 : tests.length;
+  var length = mpc_operator == "div" ? 10 : tests.length;
   for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
@@ -123,8 +124,11 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
   // Apply operation on shares
   var shares_list = [];
   for(var i = 1; i <= parties; i++) shares_list.push(shares[i]);
-  var res = shares_list.reduce(operations[mpc_operator]);
-  var res = shares_list.reduce(operations[mpc_operator]);
+
+  if(mpc_operator == "div")
+    res = operations[mpc_operator](shares_list[0], shares_list[1]);
+  else
+    res = shares_list.reduce(operations[mpc_operator]);
 
   var deferred = $.Deferred();
   res.open(function(result) { test_output(index, result, open_operator); deferred.resolve(); }, error);
@@ -136,8 +140,9 @@ function test_output(index, result, open_operator) {
   var numbers = tests[index];
 
   // Apply operation in the open to test
-  var res = numbers.reduce(operations[open_operator]);
-  //res = mod(res, Zp);
+  var res;
+  if(open_operator == "/") res = operations[open_operator](numbers[0], numbers[1]);
+  else res = numbers.reduce(operations[open_operator]);
 
   // Incorrect result
   if(!(res == result)) {
