@@ -51,7 +51,7 @@ function run_test(computation_id, callback) {
   options.onError = function(error) { console.log(error); has_failed = true; };
 
   for(var i = 0; i < parties; i++) {
-    var jiff_instance = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+    var jiff_instance = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3003", computation_id, options));
     jiff_instances.push(jiff_instance);
     jiff_instance.connect();
   }

@@ -15,6 +15,6 @@ jiff_instance.compute('1', function(computation_instance) {
 app.use("/demos", express.static("demos"));
 app.use("/lib", express.static("lib"));
 app.use("/lib/ext", express.static("lib/ext"));
-http.listen(3000, function() {
-  console.log('listening on *:3000');
+http.listen(3003, function() {
+  console.log('listening on *:3003');
 });

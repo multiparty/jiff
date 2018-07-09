@@ -35,10 +35,12 @@ var operations = {
     return operand1.cxor_bit(operand2);
   },
   "/" : function (operand1, operand2) {
-    return Math.floor(operand1 / operand2);
+    var res = operand1 / operand2;
+    if(res < 0) return Math.ceil(res);
+    else return Math.floor(res);
   },
   "div_cst" : function (operand1, operand2) {
-    return operand1.cdiv(operand2);
+    return operand1.cdiv(operand2, null, false); // Round to zero
   },
 };
 
@@ -80,9 +82,9 @@ function run_test(computation_id, operation, callback) {
   options.onConnect = function() { if(++counter == 3) test(callback, operation); };
   options.onError = function(error) { console.log(error); has_failed = true; };
 
-  var jiff_instance1 = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
-  var jiff_instance2 = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
-  var jiff_instance3 = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3000", computation_id, options));
+  var jiff_instance1 = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3003", computation_id, options));
+  var jiff_instance2 = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3003", computation_id, options));
+  var jiff_instance3 = jiffNegNumber.make_jiff(jiff.make_jiff("http://localhost:3003", computation_id, options));
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
   jiff_instance1.connect();
   jiff_instance2.connect();
@@ -98,7 +100,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == "div_cst" ? 5 : tests.length;
+  var length = mpc_operator == "div_cst" ? 10 : tests.length;
   for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
