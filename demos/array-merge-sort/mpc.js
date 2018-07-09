@@ -73,15 +73,13 @@
           array[i] = array[i].sadd(shares[p][i]);
         }
       }
-
       // sort new array
-      console.log('input', array)
-      var sorted = oddEvenSort(array, 0, array.length);
-      console.log('array', sorted)
+      oddEvenSort(array, 0, array.length);
+
       // Open the array
       var allPromises = [];
-      for (var i = 0; i < sorted.length; i++)
-        allPromises.push(jiff_instance.open(sorted[i]));
+      for (var i = 0; i < array.length; i++)
+        allPromises.push(jiff_instance.open(array[i]));
     
       Promise.all(allPromises).then(function(results) {
         console.log(results)

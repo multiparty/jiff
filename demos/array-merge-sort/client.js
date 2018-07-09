@@ -50,6 +50,7 @@ function submit() {
 }
 
 function handleResult(result) {
+  console.log('result: ',result);
   $("#output").append("<p>Result is: " + result + "</p>");
   $("#button").attr("disabled", false);
 }
