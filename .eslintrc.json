@@ -16,6 +16,7 @@
       "named": "never",
       "asyncArrow": "always"
     }],
+    "no-console": 0,
     "space-before-blocks": [2, "always"],
     "requirejs/no-invalid-define": 2,
     "requirejs/no-multiple-define": 2,
