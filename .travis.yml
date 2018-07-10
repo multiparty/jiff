@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+  - "6"
+  - "8"
+  - "10"
+script:
+  - npm test
+  - npm run test-bignumber
+  - npm run test-negativenumber
+  - npm run test-fixedpoint
+  - npm run test-demo
+cache:
+  directories:
+    - "node_modules"
