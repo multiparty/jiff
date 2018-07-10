@@ -2,12 +2,19 @@ language: node_js
 node_js:
   - "8"
   - "10"
+env:
+  - TEST_SUITE=test
+  - TEST_SUITE=test-bignumber
+  - TEST_SUITE=test-negativenumber
+  - TEST_SUITE=test-fixedpoint
 jobs:
   include:
-      script: npm test
-      script: npm run test-bignumber
-      script: npm run test-negativenumber
-      script: travis_wait 50 npm run test-fixedpoint
+      script:
+        # Output something every 10 minutes or Travis kills the job
+        - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
+        - npm run $TEST_SUITE
+        # Killing background sleep loop
+        - kill %1
 cache:
   directories:
     - "node_modules"
