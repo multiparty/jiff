@@ -25,7 +25,6 @@ if(party_id != null) party_id = parseInt(party_id, 10);
 var options = {party_count: party_count, party_id: party_id};
 options.onConnect = function(jiff_instance) {
   var promise = mpc.compute(input);
-
   promise.then(function(v) {
     console.log(v);
     jiff_instance.disconnect();

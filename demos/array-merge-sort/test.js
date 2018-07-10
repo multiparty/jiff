@@ -1,13 +1,11 @@
 // Chai 
-var expect = require('chai').expect;
 var assert = require('chai').assert;
 
 var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
-var party_count = 3;
-var parallelismDegree = 100; // Max number of test cases running in parallel
-var n = 1000;
+var party_count = 2;
+var n = 8;
 
 // Parameters specific to this demo
 var maxValue = 1000;
@@ -20,7 +18,8 @@ var maxValue = 1000;
  *   'party_id': [ 'test1_input', 'test2_input', ...]
  * }
  */
-function generateInputs(party_count) {
+function generateInputs(party_count, inputSize) {
+
   var inputs = {};
 
   for (var i = 0; i < party_count; i++) {
@@ -28,7 +27,7 @@ function generateInputs(party_count) {
   }
   
   for (var i = 0; i < party_count; i++) {
-    for (var j = 0; j < n; j++) {
+    for (var j = 0; j < inputSize; j++) {
       inputs[i+1].push(Math.floor((Math.random() * maxValue)));
     }  
   }
@@ -42,15 +41,26 @@ function generateInputs(party_count) {
  *   [ 'test1_output', 'test2_output', ... ]
  */
 function computeResults(inputs) {
-  var results = [];
+  const parties = Object.keys(inputs);
 
-  for (var j = 0; j < n; j++) {
-    var sum = 0;
-    for(var i = 1; i <= party_count; i++)
-      sum += inputs[i][j];
-    results.push(sum);
+  const len = inputs[parties[0]].length;
+
+  let results = [];
+
+  for (let i = 0; i < len; i++) {
+    results.push(0);
   }
-  return results;
+
+  for (let p in parties) {
+
+    var values = inputs[parties[p]];
+
+    for (let i = 0; i < len; i++) {
+      results[i] = results[i] + values[i];
+    }
+  }
+
+  return results.sort();
 }
 
 /**
@@ -59,54 +69,49 @@ function computeResults(inputs) {
 describe('Test', function() {
   this.timeout(0); // Remove timeout
 
-  it('Exhaustive', function(done) {
+  it('Single test', function(done) {
     var count = 0;
 
-    var inputs = generateInputs(party_count);
+    var inputs = generateInputs(party_count, 8);
     var realResults = computeResults(inputs);
 
     var onConnect = function(jiff_instance) {
       var partyInputs = inputs[jiff_instance.id];
+    
+      let promises = [];
 
-      var testResults = [];      
-      (function one_test_case(j) {
-        if(j < partyInputs.length) {
-          var promises = [];
-          for(var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++)
-            promises.push(mpc.compute(partyInputs[j+t], jiff_instance));
+      promises.push(mpc.compute(partyInputs, jiff_instance));
 
-          Promise.all(promises).then(function(parallelResults) {
-            for(var t = 0; t < parallelResults.length; t++)
-              testResults.push(parallelResults[t]);
+      let testResults = [];
+      
+      Promise.all(promises).then(function(results) {
+        testResults = results;
+      });
+    
+      // If we reached here, it means we are done
+      count++;
 
-            one_test_case(j+parallelismDegree);
-          });
+      for (var i = 0; i < testResults.length; i++) {
+        // construct debugging message
+        var ithInputs = inputs[1][i] + "";
+        for (var j = 2; j <= party_count; j++)
+          ithInputs += "," + inputs[j][i];
+        var msg = "Party: " + jiff_instance.id + ". inputs: [" + ithInputs + "]";
 
-          return;
+        // assert results are accurate
+        try {
+          assert.deepEqual(testResults, realResults, msg);
+        } catch(assertionError) {
+          done(assertionError);
+          done = function(){}
         }
+      }
 
-        // If we reached here, it means we are done
-        count++;
-        for (var i = 0; i < testResults.length; i++) {
-          // construct debugging message
-          var ithInputs = inputs[1][i] + "";
-          for (var j = 2; j <= party_count; j++)
-            ithInputs += "," + inputs[j][i];
-          var msg = "Party: " + jiff_instance.id + ". inputs: [" + ithInputs + "]";
+      jiff_instance.disconnect();
 
-          // assert results are accurate
-          try {
-            assert.deepEqual(testResults[i], realResults[i], msg);
-          } catch(assertionError) {
-            done(assertionError);
-            done = function(){}
-          }
-        }
-
-        jiff_instance.disconnect();
-        if (count == party_count)
-          done();
-      })(0);
+      if (count == party_count) {
+        done();
+      }
     };
     
     var options = { party_count: party_count, onError: console.log, onConnect: onConnect };
