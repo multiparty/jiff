@@ -7,15 +7,12 @@ env:
   - TEST_SUITE=test-bignumber
   - TEST_SUITE=test-negativenumber
   - TEST_SUITE=test-fixedpoint
-jobs:
-  include:
-    - stage: test
-      script:
-        # Output something every 10 minutes or Travis kills the job
-        - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
-        - npm run $TEST_SUITE
-        # Killing background sleep loop
-        - kill %1
+script:
+  # Output something every 10 minutes or Travis kills the job
+  - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
+  - npm run $TEST_SUITE
+  # Killing background sleep loop
+  - kill %1
 cache:
   directories:
     - "node_modules"
