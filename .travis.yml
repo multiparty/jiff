@@ -2,11 +2,13 @@ language: node_js
 node_js:
   - "8"
   - "10"
-script:
-  - travis_wait 60 npm test
-  - travis_wait 60 npm run test-bignumber
-  - travis_wait 60 npm run test-negativenumber
-  - travis_wait 60 npm run test-fixedpoint
+jobs:
+  include:
+    - stage: test
+      script: travis_wait 50 npm test
+      script: travis_wait 50 npm run test-bignumber
+      script: travis_wait 50 npm run test-negativenumber
+      script: travis_wait 50 npm run test-fixedpoint
 cache:
   directories:
     - "node_modules"
