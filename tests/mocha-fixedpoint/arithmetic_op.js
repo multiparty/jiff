@@ -7,10 +7,10 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = new BigNumber(2).pow(51).minus(129);
+var Zp = new BigNumber('1000000000039');
 
-var decimal_digits = 5;
-var integer_digits = 5;
+var decimal_digits = 4;
+var integer_digits = 4;
 
 function mod(x, y) {
   var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
