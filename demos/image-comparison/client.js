@@ -54,6 +54,8 @@ function submit() {
     var img = new Image();
     img.onload = function () {
       var canvas = document.getElementById('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
       var ctx = canvas.getContext('2d');
       ctx.drawImage(img,0,0);
       var base64 = canvas.toDataURL('image/png');
@@ -61,7 +63,7 @@ function submit() {
       base64 = hashImage(base64);
 
       // Begin MPC comparison
-   var promise = mpc.compute(base64);
+      var promise = mpc.compute(base64);
       promise.then(handleResult);
     };
     img.src = reader.result;
