@@ -29,7 +29,6 @@ describe("MPC Operations", function() {
     });
   });
 
-
   describe("Arithmetic Operations", function() {
     //+
     it("Addition", function (done) {
@@ -76,7 +75,6 @@ describe("MPC Operations", function() {
     });
   });
 
-  
   describe("Comparison", function() {
     // <
     it("Less than", function(done) {

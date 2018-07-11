@@ -29,7 +29,6 @@ describe("MPC Operations", function() {
     });
   });
 
-/*
   describe("Arithmetic Operations", function() {
     //+
     it("Addition", function (done) {
@@ -75,7 +74,6 @@ describe("MPC Operations", function() {
       constant_arithmetic_op.run_test(i++, "div_cst", callback(done));
     });
   });
-*/
   
   describe("Comparison", function() {
     // <
