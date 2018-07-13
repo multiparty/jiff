@@ -6,7 +6,7 @@
     "object-shorthand": [2, "consistent"],
     "no-unused-vars": [1, {"vars": "local", "args": "none"}],
     "quote-props": [1, "consistent-as-needed"],
-    "eqeqeq": 2,
+    "eqeqeq": [2, "smart"],
     "brace-style": 2,
     "curly": 2,
     "quotes": [2, "single", { "avoidEscape": true }],
