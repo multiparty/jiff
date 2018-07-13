@@ -26,27 +26,35 @@
     var unparsedData = fs.readFileSync(input, 'UTF-8');
     var rows = unparsedData.split('\n');
 
+    // start at one, skip header row
     for (var i = 1; i < rows.length; i++)
     {
       inputData.push(rows[i].map(Number));
     }
 
-    var shares = [];
+    var finalDeferred = $.Deferred();
+    var final_promise = finalDeferred.promise();
+    var allShares = [];
 
     for (var j = 0; j < inputData.length; j++)
     {
-      shares.push()
+      var thisPromise = jiff_instance.share_array(inputData[j]);
+      thisPromise.then(function(shares) {
+        for (var k = 0; k < jiff_instance.party_count; k++)
+        {
+          allShares.push(shares[k]);
+        }
+      });
     }
 
+    Promise.all(allShares).then(function(shares) {
+      var finalData = [];
+      for (var i = 0; i < allShares.length; i++) {
+        finalData.push(jiff_instance.open(shares[i]));
+      }
+      finalDeferred.resolve(finalData);
+    });
 
-    // The MPC implementation should go *HERE*
-    var shares = jiff_instance.share(input);
-    var sum = shares[1];
-    for(var i = 2; i <= jiff_instance.party_count; i++) {
-      sum = sum.sadd(shares[i]);
-    }
-
-    // Return a promise to the final output(s)
-    return jiff_instance.open(sum);
+    return final_promise;
   };
 }((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
