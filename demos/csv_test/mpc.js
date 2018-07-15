@@ -33,6 +33,60 @@
 
   };
 
+  const project = function(inputRel, projCols)
+  {
+
+    var result = [];
+
+    for (var i = 0; i < inputRel.length; i++)
+    {
+      result.push([]);
+    }
+
+    for (var j = 0; j < inputRel.length; j++)
+    {
+      for (var k = 0; k < projCols.length; k++)
+      {
+        result[j].push(inputRel[j][projCols[k]]);
+      }
+    }
+  };
+
+  const concat = function(inRels)
+  {
+    var result = [];
+
+    for (var i = 0; i < inRels.length; i++)
+    {
+      for (var j = 0; j < inRels[i].length; j++)
+      {
+        result.push(inRels[i][j]);
+      }
+    }
+
+    return result;
+  };
+
+  const open = function(inRel, jiff_instance)
+  {
+    var result = [];
+
+    for (var k = 0; k < inRel.length; k++)
+    {
+      result.push([]);
+    }
+
+    for (var i = 0; i < inRel.length; i++)
+    {
+      for (var j = 0; j < inRel[i].length; j++)
+      {
+        result[i].push(jiff_instance.open(inRel[i][j]));
+      }
+    }
+
+    return result
+  };
+
   /**
    * The MPC computation
    */
@@ -63,7 +117,13 @@
 
       var datasets = splitDatasets(shares, jiff_instance);
 
-      console.log(datasets);
+      var in1 = datasets[0];
+      var in2 = datasets[1];
+
+      var cc = concat([in1, in2]);
+      var opened = open(cc, jiff_instance);
+
+      console.log(opened);
 
     });
 
