@@ -14,6 +14,25 @@
     return saved_instance;
   };
 
+  const splitDatasets = function(shares, jiff_instance)
+  {
+    var datasets = [];
+
+    for (var k = 1; k <= jiff_instance.party_count; k++)
+    {
+      datasets.push([]);
+    }
+
+    for (var i = 0; i < shares.length; i++) {
+      for (var j = 0; j < jiff_instance.party_count; j++) {
+        datasets[j].push(shares[i][j+1]);
+      }
+    }
+
+    return datasets;
+
+  };
+
   /**
    * The MPC computation
    */
@@ -27,34 +46,28 @@
     var rows = unparsedData.split('\n');
 
     // start at one, skip header row
-    for (var i = 1; i < rows.length; i++)
+    for (let i = 1; i < rows.length; i++)
     {
-      inputData.push(rows[i].map(Number));
+      let arr = rows[i].split(',').map(Number);
+      inputData.push(arr);
     }
 
-    var finalDeferred = $.Deferred();
-    var final_promise = finalDeferred.promise();
     var allShares = [];
 
-    for (var j = 0; j < inputData.length; j++)
+    for (let j = 0; j < inputData.length; j++)
     {
-      var thisPromise = jiff_instance.share_array(inputData[j]);
-      thisPromise.then(function(shares) {
-        for (var k = 0; k < jiff_instance.party_count; k++)
-        {
-          allShares.push(shares[k]);
-        }
-      });
+      allShares.push(jiff_instance.share_array(inputData[j]));
     }
 
     Promise.all(allShares).then(function(shares) {
-      var finalData = [];
-      for (var i = 0; i < allShares.length; i++) {
-        finalData.push(jiff_instance.open(shares[i]));
-      }
-      finalDeferred.resolve(finalData);
+
+      var datasets = splitDatasets(shares, jiff_instance);
+
+      console.log(datasets);
+
     });
 
-    return final_promise;
+    console.log("Got here");
+    return Promise.all(allShares);
   };
 }((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
