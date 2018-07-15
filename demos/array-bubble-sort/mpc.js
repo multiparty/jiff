@@ -28,7 +28,7 @@
         var b = arr[j+1];
         var c = a.slt(b);
         var d = c.not();
-  
+
         arr[j] = a.sadd(d.smult(b.ssub(a)));
         arr[j+1] = a.sadd(c.smult(b.ssub(a)));
       }

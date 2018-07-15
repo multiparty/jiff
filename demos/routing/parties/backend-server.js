@@ -8,6 +8,11 @@
 
 // Jiff library
 var jiff_client = require('../../../lib/jiff-client');
+const _sodium = require('libsodium-wrappers-sumo');
+const _oprf = require('oprf');
+
+const SRC = 0;
+const DEST = 1;
 
 /*
  * Global variables and counter,
@@ -23,6 +28,8 @@ var encrypted_tables = [];
 var config = require('./config.json');
 var backends = [ 1 ]; // Backend server is the only sender and always has ID 1.
 var frontends = config.frontends; // Frontend servers are the receivers.
+
+let oprf = null;
 
 // Connect JIFF
 var options = {
@@ -55,6 +62,8 @@ function startServer() {
   app.listen(9111, function() {
     console.log('backend server up and listening on 9111');
   });
+
+  oprf = new _oprf.OPRF(_sodium);
 }
 
 /* Preprocess the table in MPC, then start listening and handling secure requests */
@@ -64,6 +73,11 @@ function mpc_preprocess(table) {
   // Figure out the recomputation number
   var recompute_number = recompute_count++;
 
+  for (let i = 0; i < table.length; i++) {
+    table[i][SRC] = oprf.hashToPoint(table[i][SRC].toString());
+    table[i][DEST] = oprf.hashToPoint(table[i][DEST].toString());
+  }
+  
   // Announce to frontends the start of the preprocessing.
   jiff_instance.emit("preprocess", [ frontends[0] ], JSON.stringify( { "recompute_number": recompute_number, "table": table } ));
 

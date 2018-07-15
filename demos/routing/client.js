@@ -9,6 +9,10 @@ function get_one_step(source, dest) {
   var query_number = query_count++;
 
   // Send query to every front-end server
+  // TODO: send masked points
+  // also send shares of inverses of masks
+  // every server needs to salt
+  
   var promises = [];
   for(var i = 0; i < urls.length; i++) {
     var url = urls[i]+"/query/"+query_number+"/"+source+"/"+dest;

@@ -9,9 +9,17 @@
 // Jiff library
 var jiff_client = require('../../../lib/jiff-client');
 $ = require('jquery-deferred');
+const _sodium = require('libsodium-wrappers-sumo');
+const _oprf = require('oprf');
+
+let oprf = null;
 
 // How many keys in a batch
 var KEY_BATCH_SIZE = 25;
+
+const SRC = 0;
+const DEST = 1;
+const NEXT_HOP = 2;
 
 /*
  * Global variables and counter,
@@ -86,6 +94,9 @@ function startServer() {
   app.listen(9110 + options.party_id, function() {
     console.log('frontend server up and listening on '+(9110 + options.party_id));
   });
+
+  oprf = new _oprf.OPRF(_sodium);
+
 }
 
 // Performs the Preprocessing on the given table
@@ -97,8 +108,8 @@ function handle_preprocess(_, message) {
   var table = message.table;
   
   // Generate keys (in batches)
-  var keys = genPRFKeysBatch();
-  prf_keys_map[recompute_number] = keys;
+  var scalarKey = oprf.generateRandomScalar();
+  prf_keys_map[recompute_number] = scalarKey;
 
   // in place very fast shuffle
   (function(a,b,c,d,r) { // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
@@ -110,16 +121,17 @@ function handle_preprocess(_, message) {
   var mod = jiff_instance.helpers.mod;
   for(var i = 0; i < table.length; i++) {
     var entry = table[i];
-    entry[0] = applyPRF(keys, entry[0]);
-    entry[1] = applyPRF(keys, entry[1]);
+
+    entry[0] = oprf.saltInput(scalarKey, entry[0]);
+    entry[1] = oprf.saltInput(scalarKey, entry[1]);
     
-    var salt = (random() * Zp)|0;
-    entry[2] = mod(entry[2] + applyPRF(keys, salt), Zp);
-    for(var j = 3; j < entry.length; j++) {
-      var r = (random() * Zp)|0;
-      entry[j] = entry[j];
-    }
-    entry[entry.length] = salt;
+    // var salt = (random() * Zp)|0;
+    // entry[2] = mod(entry[2] + applyPRF(keys, salt), Zp);
+    // for(var j = 3; j < entry.length; j++) {
+    //   var r = (random() * Zp)|0;
+    //   entry[j] = entry[j];
+    // }
+    // entry[entry.length] = salt;
   }
 
   // Forward table to next party
@@ -196,6 +208,8 @@ function finalize_query(_, message) {
     var jump = message.jump;
     var salt = message.salt;
     
+    // scalar, salt = point ** Just needs to salt
+    console.log('oprf',oprf);
     salt = applyPRF(prf_keys_map[recompute_number], salt);
     var shares = jiff_instance.share(salt, frontends.length, frontends, frontends, jiff_instance.Zp, "decrypt:"+recompute_number+":"+query_number);
     
@@ -218,16 +232,12 @@ function finalize_query(_, message) {
   });
 }
 
-// Makes a batch of keys of the given size
-function genPRFKeysBatch() {
-  // Store Batch
-  var batch = [];
-  for(var i = 0; i < KEY_BATCH_SIZE; i++)
-    batch[i] = (Math.random() * (jiff_instance.Zp - 1) + 1)|0; // key in [1, Zp)
+// // Makes a batch of keys of the given size
+// function genPRFKeysBatch() {
+//   // Store Batch
+//   return (Math.random() * (jiff_instance.Zp - 1) + 1)|0; // key in [1, Zp)
   
-  console.log(batch);
-  return batch;
-}
+// }
 
 // Evaluate the PRF
 function applyPRF(keys, value) {
