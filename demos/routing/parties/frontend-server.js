@@ -122,18 +122,11 @@ function handle_preprocess(_, message) {
   for(var i = 0; i < table.length; i++) {
     var entry = table[i];
 
-    entry[0] = oprf.saltInput(scalarKey, entry[0]);
-    entry[1] = oprf.saltInput(scalarKey, entry[1]);
-    
-    // var salt = (random() * Zp)|0;
-    // entry[2] = mod(entry[2] + applyPRF(keys, salt), Zp);
-    // for(var j = 3; j < entry.length; j++) {
-    //   var r = (random() * Zp)|0;
-    //   entry[j] = entry[j];
-    // }
-    // entry[entry.length] = salt;
+    entry[0] = oprf.saltInput(entry[0], scalarKey);
+    entry[1] = oprf.saltInput(entry[1], scalarKey);
   }
 
+  console.log('NEXT!')
   // Forward table to next party
   var index = frontends.indexOf(jiff_instance.id);
   var next_party = (index + 1 < frontends.length) ? [ frontends[index + 1] ] : backends;
