@@ -126,7 +126,6 @@ function handle_preprocess(_, message) {
     entry[1] = oprf.saltInput(entry[1], scalarKey);
   }
 
-  console.log('NEXT!')
   // Forward table to next party
   var index = frontends.indexOf(jiff_instance.id);
   var next_party = (index + 1 < frontends.length) ? [ frontends[index + 1] ] : backends;
@@ -166,9 +165,9 @@ function chain_query(recompute_number, query_number, source, destination) {
   console.log("New Query: " + query_number + " : " + source + " -> " + destination);
   
   // Apply PRF to query
-  var keys = prf_keys_map[recompute_number];
-  source = applyPRF(keys, source);
-  destination = applyPRF(keys, destination);
+  var key = prf_keys_map[recompute_number];
+  source = oprf.saltInput(source, key)
+  destination = oprf.saltInput(destination, key);
 
   // Forward query to next party
   var index = frontends.indexOf(jiff_instance.id);
@@ -199,12 +198,9 @@ function finalize_query(_, message) {
 
     // All good! Decrypt the jump
     var jump = message.jump;
-    var salt = message.salt;
     
-    // scalar, salt = point ** Just needs to salt
-    console.log('oprf',oprf);
-    salt = applyPRF(prf_keys_map[recompute_number], salt);
-    var shares = jiff_instance.share(salt, frontends.length, frontends, frontends, jiff_instance.Zp, "decrypt:"+recompute_number+":"+query_number);
+
+    var shares = jiff_instance.share(jump, frontends.length, frontends, frontends, jiff_instance.Zp, "decrypt:"+recompute_number+":"+query_number);
     
     var result = shares[frontends[0]];
     for(var i = 1; i < frontends.length; i++)
