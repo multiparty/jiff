@@ -12,6 +12,7 @@
       jiff = require('../../lib/jiff-client');
 
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
+    exports.saved_instance = saved_instance;
     // if you need any extensions, put them here
 
     return saved_instance;
@@ -44,7 +45,7 @@
     var final_promise = final_deferred.promise();
 
     // Share the arrays
-    jiff_instance.share_array(input, input.length).then(function(shares) {    
+    jiff_instance.share_array(input, input.length).then(function(shares) { 
       // sum all shared input arrays element wise
       var array = shares[1];
       for(var p = 2; p <= jiff_instance.party_count; p++) {
