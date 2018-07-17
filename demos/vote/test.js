@@ -16,7 +16,7 @@ var maximumVotingOptions = 10;
 /* PUT PARAMETERS HERE */
 
 /**
- * CHANGE THIS: Generate inputs for your tests
+ * Generates random votes for a random number of choices for each cadse and party
  * Should return an object with this format:
  * {
  *   'party_id': [ 'test1_input', 'test2_input', ...]
@@ -47,7 +47,7 @@ function generateInputs(party_count) {
 }
 
 /**
- * CHANGE THIS: Compute the expected results not in MPC
+ * vote tallies
  * @param {object} inputs - same format as generateInputs output.
  * Should return a single array with the expected result for every test in order
  *   [ 'test1_output', 'test2_output', ... ]
