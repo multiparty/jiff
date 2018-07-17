@@ -9,6 +9,10 @@ function get_one_step(source, dest) {
   var query_number = query_count++;
 
   // Send query to every front-end server
+  // TODO: send masked points
+  // also send shares of inverses of masks
+  // every server needs to salt
+  
   var promises = [];
   for(var i = 0; i < urls.length; i++) {
     var url = urls[i]+"/query/"+query_number+"/"+source+"/"+dest;
@@ -41,8 +45,10 @@ function get_one_step(source, dest) {
 
 
 function make_query() {
-  var source = window.localStorage.getItem("StartPointId");
-  var dest = window.localStorage.getItem("StopPointId");
+  var source = oprf.hashToPoint(window.localStorage.getItem("StartPointId"));
+  var dest = oprf.hashToPoint(window.localStorage.getItem("StopPointId"));
+
+
 
   get_one_step(source, dest);
 }
