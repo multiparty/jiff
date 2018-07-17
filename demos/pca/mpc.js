@@ -10,12 +10,14 @@
 
     if(node) {
       jiff = require('../../lib/jiff-client');
+      jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
+      jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber');
       $ = require('jquery-deferred');
     }
 
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
-    saved_instance = require('../../lib/ext/jiff-client-bignumber').make_jiff(saved_instance);
-    saved_instance = require('../../lib/ext/jiff-client-negativenumber').make_jiff(saved_instance, options); // Max bits allowed after decimal.
+    saved_instance = jiff_bignumber.make_jiff(saved_instance);
+    saved_instance = jiff_negativenumber.make_jiff(saved_instance, options); // Max bits allowed after decimal.
     // if you need any extensions, put them here
 
     return saved_instance;
@@ -60,15 +62,11 @@
         return item / jiff_instance.party_count;
       });
 
-      //arr = math.matrix(arr);
-      //mean = math.matrix(mean);
-
       console.log("local arr = " + arr);
       console.log("mean vector = " + mean);
 
       // SCATTER MATRIX
       diff = [subtractArrays(arr, mean)];
-
 
       diff_T = numeric.transpose(diff);
       console.log("arr = " + arr);
