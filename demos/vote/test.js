@@ -1,4 +1,4 @@
-// Chai 
+// Chai
 // var expect = require('chai').expect;
 var assert = require('chai').assert;
 
@@ -24,14 +24,15 @@ var maximumVotingOptions = 10;
  */
 function generateInputs(party_count) {
   var inputs = {};
-  for (var i = 1; i <= party_count; i++)
+  for (var i = 1; i <= party_count; i++) {
     inputs[i] = [];
+  }
 
   // Generate test cases one at a time
-  for(var t = 0; t < n; t++) {
+  for (var t = 0; t < n; t++) {
     // pick a random number of voting options
     var votingOptions = Math.floor(Math.random()*(maximumVotingOptions - minimumVotingOptions + 1) + minimumVotingOptions);
-    
+
     // pick a random vote
     for (var i = 1; i <= party_count; i++) {
       var vote = Math.floor(Math.random()*(votingOptions));
@@ -58,9 +59,9 @@ function computeResults(inputs) {
     var result = null;
     // for (var i = 0; i < )
     for (var i = 1; i <= party_count; i++) {
-      if (!result)
+      if (!result) {
         result = inputs[i][j].slice();
-      else {
+      } else {
         for (var k = 0; k < inputs[i][j].length; k++) {
           result[k] += inputs[i][j][k];
         }
@@ -74,28 +75,30 @@ function computeResults(inputs) {
 /**
  * Do not change unless you have to.
  */
-describe('Test', function() {
+describe('Test', function () {
   this.timeout(0); // Remove timeout
 
-  it('Exhaustive', function(done) {
+  it('Exhaustive', function (done) {
     var count = 0;
 
     var inputs = generateInputs(party_count);
     var realResults = computeResults(inputs);
 
-    var onConnect = function(jiff_instance) {
+    var onConnect = function (jiff_instance) {
       var partyInputs = inputs[jiff_instance.id];
 
-      var testResults = [];      
+      var testResults = [];
       (function one_test_case(j) {
-        if(j < partyInputs.length) {
+        if (j < partyInputs.length) {
           var promises = [];
-          for(var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++)
+          for (var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++) {
             promises.push(mpc.compute(partyInputs[j+t], jiff_instance));
+          }
 
-          Promise.all(promises).then(function(parallelResults) {
-            for(var t = 0; t < parallelResults.length; t++)
+          Promise.all(promises).then(function (parallelResults) {
+            for (var t = 0; t < parallelResults.length; t++) {
               testResults.push(parallelResults[t]);
+            }
 
             one_test_case(j+parallelismDegree);
           });
@@ -107,29 +110,33 @@ describe('Test', function() {
         count++;
         for (var i = 0; i < testResults.length; i++) {
           // construct debugging message
-          var ithInputs = inputs[1][i] + "";
-          for (var j = 2; j <= party_count; j++)
-            ithInputs += "," + inputs[j][i];
-          var msg = "Party: " + jiff_instance.id + ". inputs: [" + ithInputs + "]";
+          var ithInputs = inputs[1][i] + '';
+          for (var j = 2; j <= party_count; j++) {
+            ithInputs += ',' + inputs[j][i];
+          }
+          var msg = 'Party: ' + jiff_instance.id + '. inputs: [' + ithInputs + ']';
 
           // assert results are accurate
-          if(jiff_instance.id === 1)
+          if (jiff_instance.id === 1) {
             try {
               assert.deepEqual(testResults[i], realResults[i], msg);
-            } catch(assertionError) {
+            } catch (assertionError) {
               done(assertionError);
-              done = function(){}
+              done = function () {}
             }
+          }
         }
 
-        // jiff_instance.disconnect();
-        if (count == party_count)
+        jiff_instance.disconnect();
+        if (count == party_count) {
           done();
+        }
       })(0);
     };
-    
+
     var options = { party_count: party_count, onError: console.log, onConnect: onConnect };
-    for(var i = 0; i < party_count; i++)
-      mpc.connect("http://localhost:8080", "mocha-test", options);
+    for (var i = 0; i < party_count; i++) {
+      mpc.connect('http://localhost:8080', 'mocha-test', options);
+    }
   });
 });

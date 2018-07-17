@@ -26,7 +26,7 @@
     //This array holds the shares for each option in the voting
     var option_shares = [];
 
-    //save shares across parties for each option 
+    //save shares across parties for each option
     for(var i = 0; i < inputs.length; i++)
       option_shares.push(jiff_instance.share(inputs[i]));
 
@@ -39,6 +39,6 @@
     }
 
     //Now finally redistribute the partial tallys to compute a total tally across each client.
-    return jiff_instance.open_all(option_shares, [1]);
+    return jiff_instance.open_all(option_shares);
   };
 }((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
