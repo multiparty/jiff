@@ -4,7 +4,8 @@
  * and calls the appropriate initialization and MPC protocol from ./mpc.js
  */
 
-console.log("Command line arguments: <input> [<party count> [<computation_id> [<party id>]]]]");
+console.log("Command line arguments: <input> <party count> <computation_id> <party_id>");
+/**  input format: [e1,e2,e3] party_count comp_id party_id */
 
 var mpc = require('./mpc');
 var BigNumber = require('bignumber.js');

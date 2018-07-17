@@ -56,34 +56,12 @@ function pca() {
         MPC(input);
 }
 
-// pca_sum = []
-
 /**
  *
  * @param items An array of items.
  * @param fn A function that accepts an item from the array and returns a promise.
  * @returns {Promise}
  */
-function forEachPromise(items, fn) {
-    return items.reduce(function (promise, item) {
-        return promise.then(function () {
-            return fn(item);
-        });
-    }, Promise.resolve());
-}
-
-function logItem(item) {
-    return new Promise(function(resolve, reject) {
-        process.nextTick(function(item) {
-            console.log(item);
-            resolve();
-        })
-    });
-}
-
-//var arr_sum = [];
-//var arr = [Math.floor(Math.random() * 10),Math.floor(Math.random() * 10),Math.floor(Math.random() * 10)];
-
 function subtractArrays(arr1, arr2){
     result = [];
     for (var i = 0; i < arr1.length; i++){
@@ -104,7 +82,7 @@ function print2DArray(arr){
 function MPC(arr) {
     var arr_sum = [];
 
-    $("#PCAButton").attr("disabled", true);
+    $("#button").attr("disabled", true);
     $("#output").append("<p>Starting...</p>");
     // $("#arr").html("Random array is: " + arr);
 
