@@ -2,7 +2,7 @@
 
 <html>
   <head>
-    <title>MPC Template</title>
+    <title>Point In Polygon</title>
     <style>
       .error {
         color: #FF0000;
@@ -35,7 +35,7 @@
 
     <h1>Connect JIFF</h1>
     <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
-    <label for="count">Party Count</label> <input id="count" pattern="[0-9]*" value="2"><br/><br/>
+    <!-- <label for="count">Party Count</label> <input id="count" pattern="[0-9]*" value="2"><br/><br/> -->
     <label for="role">Party Role</label>
     <select id="role">
       <option value="1">Provide Polygon</option>
@@ -48,8 +48,8 @@
     <div id="role1">
       <p>Please construct a closed polygon.</p>
       <button id="fillHelper1Button" onclick="fillHelper1()">Fill Diamond</button><br/>
-      <button id="fillHelper2Button" onclick="fillHelper2()">Hexagon</button><br/>
-      <button id="fillHelper3Button" onclick="fillHelperRandom()">Random Polygon</button><br/><br/>
+      <button id="fillHelper2Button" onclick="fillHelper2()">Fill Hexagon</button><br/>
+      <button id="fillHelper3Button" onclick="fillHelperRandom()">Fill Random Polygon</button><br/><br/>
       <label for="slopeInput">Input Slope</label> <input id="slopeInput" pattern="[0-9]+"><br/>
       <label for="yInterceptInput">Input Y-intercept</label> <input id="yInterceptInput" pattern="[0-9]+"><br/>
       <label for="aboveBelowInput">Which side is inside? </label><select id="aboveBelowInput">

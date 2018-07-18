@@ -6,7 +6,7 @@
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
-  var party_count = parseInt($('#count').val());
+  var party_count = 2; //parseInt($('#count').val());
   var party_id = parseInt($('#role').val());
 
   if(isNaN(party_count)) {
@@ -127,6 +127,7 @@ const submitLine = (slopeInput, yInterceptInput, aboveBelowInput) => {
   // $("#submit1a").attr("disabled", true);
   displayLineSlopeYIntercept(slope, yIntercept, aboveBelow);
   polygon.push({m:slope,b:yIntercept,above:aboveBelow});
+  console.log(JSON.stringify(polygon)); // useful to generate a test case for the serverside party.
 }
 
 const submitPolygon = () => {
@@ -258,16 +259,15 @@ const insideCalculator = (m, b, x, y) => y > m*x+b ? "above" : "below";
 const mapToTuples = (array) => {
   let r = [];
   for (let i = 0; i < array.length; i++) {
-      let p1 = array[i];
-      let p2 = array[(i+1)%array.length];
-      let p3 = array[(i+2)%array.length];
-      console.log(p1,p2,p3);
-      let {gradient, yIntercept} = getEquationOfLineFromTwoPoints(p1, p2);
-      r.push({
-          m:gradient,
-          b:yIntercept,
-          above:insideCalculator(gradient, yIntercept, p3.x, p3.y)
-      });
+    let p1 = array[i];
+    let p2 = array[(i+1)%array.length];
+    let p3 = array[(i+2)%array.length];
+    let {gradient, yIntercept} = getEquationOfLineFromTwoPoints(p1, p2);
+    r.push({
+      m:gradient,
+      b:yIntercept,
+      above:insideCalculator(gradient, yIntercept, p3.x, p3.y)
+    });
   }
   return r;
 }
@@ -293,9 +293,7 @@ const fillHelperRandom = () => {
     convexHullPoints = convexHull(randomPoints);
   } while(noVerticalLines(convexHullPoints))
 
-  console.log(convexHullPoints);
   const generatedPolygon = mapToTuples(convexHullPoints);
-  console.log(generatedPolygon);
 
   generatedPolygon.forEach(line => submitLine(line.m, line.b, line.above));
   submitPolygon();
