@@ -41,6 +41,7 @@
     /**
      * The MPC computation
      */
+    // fix me
     function check_answers(p_guesses, p_ships){
         let answers = [];
         // 0 = miss

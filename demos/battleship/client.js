@@ -73,10 +73,7 @@ function submit_ship_locations() {
 // send guesses, returns answers by partyID
 function submit_guesses() {
     let answer_promise = mpc.share_guesses(guesses);
-    //answer_promise.then(handleAnswers);
-    answer_promise.then(function(results) {
-        console.log('resolved answer_promise: ' + results);
-    });
+    answer_promise.then(handleAnswers);
 }
 
 //!!!!!!!!!!!!!!!!!! SUM STUFF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -104,10 +101,16 @@ function handlePartyID(result) {
 }
 
 function handleAnswers(result) {
-    // Gati's two functions to update gameboards
     console.log('reached handle answers');
-    // updateOppoBoard(result.myAnswers);
-    // updateMyBoard(result.oppoAnswers);
+    // Gati's two functions to update gameboards
+    let p1_answers = result.splice(0, 2);
+    let p2_answers = result;
+
+    let myAnswers = (jiffPartyID == 1) ? p1_answers : p2_answers;
+    let oppoAnswers = (jiffPartyID == 1) ? p2_answers : p1_answers;
+    
+    updateOppoBoard(myAnswers);
+    updateMyBoard(oppoAnswers);
 }
 
 //!!!!!!!!!!!!!!!!!! SUM STUFF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -199,7 +202,7 @@ function clickOppoBoardButton(event) {
 // add all guesses to guesses[] and when get 5 guesses, sort and send to server
 function addGuesses(guess) {
     guesses.push(guess);
-    if (guesses.length == 5) {
+    if (guesses.length == 2) {
 
         canPlay = false;
         $('#status').text('Waiting for other player...');
@@ -277,7 +280,7 @@ function placeShips() {
         myShips.push(index);
         $('#hitsOnMe').text('Ships placed: ' + myShips.length);
     }
-    if (myShips.length === 15) {
+    if (myShips.length === 4) {
         isSettingUp = false;
         canPlay = true;
         $('.myboard-buttons').attr("disabled", "disabled");
