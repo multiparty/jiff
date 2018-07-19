@@ -70,15 +70,13 @@ function submit_ship_locations() {
     partyID_promise.then(handlePartyID);
 }
 
-// send guesses and partyID, returns answers
+// send guesses, returns answers by partyID
 function submit_guesses() {
-    console.log('before make sendObj');
-    sendObj = {
-        partyID: jiffPartyID,
-        partyGuesses: guesses
-    }
-    let answer_promise = mpc.share_guesses(sendObj);
-    answer_promise.then(handleAnswers);
+    let answer_promise = mpc.share_guesses(guesses);
+    //answer_promise.then(handleAnswers);
+    answer_promise.then(function(results) {
+        console.log('resolved answer_promise: ' + results);
+    });
 }
 
 //!!!!!!!!!!!!!!!!!! SUM STUFF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -107,7 +105,7 @@ function handlePartyID(result) {
 
 function handleAnswers(result) {
     // Gati's two functions to update gameboards
-    console.log("RESULT IS: " + result);
+    console.log('reached handle answers');
     // updateOppoBoard(result.myAnswers);
     // updateMyBoard(result.oppoAnswers);
 }

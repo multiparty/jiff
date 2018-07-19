@@ -4,10 +4,8 @@
     var ships;
     var guesses;
 
-    var myGuesses = null;
-    var oppoGuesses = null;
-    var myShips = null;;
-    var oppoShips = null;
+    var p1_answers = null;
+    var p2_answers = null;
   
     /**
      * Connect to the server and initialize the jiff instance
@@ -48,13 +46,14 @@
         // 0 = miss
         // 1 = hit
         for (let g = 0; g < p_guesses.length; g++) {
-            answers[g] = secret_share(0); // is this a secret share?
-            for (let s = 0; s < s_ships.length; s++) {
+            answers[g] = p_guesses[g].cmult(0); // is this a secret share?
+            for (let s = 0; s < p_ships.length; s++) {
                 let a = p_guesses[g];
                 let b = p_ships[s];
                 answers[g] = answers[g].sadd(a.seq(b));
             }
         }
+        console.log('checked p answers');
         return answers; // an array of secret shares
     };
 
@@ -62,80 +61,41 @@
     exports.share_guesses = function (input, jiff_instance) {
         if(jiff_instance == null) jiff_instance = saved_instance;
 
+        var final_deferred = $.Deferred();
+        var final_promise = final_deferred.promise();
 
-        // return new Promise(function(resolve, reject) {
-        //     let promise_ships = jiff_instance.share_array(input);
-        //     promise_ships.then(function(res_ships) {
-        //         ships = res_ships;
-        //         resolve(jiff_instance.id);
-        //     });
-        // });
+        // first share array
+        let promise_guesses = jiff_instance.share_array(input);
+        promise_guesses.then(function(res_guesses) {
+            // assign guesses the secret shares
+            guesses = res_guesses;
 
+            // do MPC computation and get answers
+            console.log('about to check p1 answers');
+            p1_answers = check_answers(guesses[1], ships[2]);
+            console.log('about to check p2 answers');
+            p2_answers = check_answers(guesses[2], ships[1]);
 
-        // if(jiff_instance == null) jiff_instance = saved_instance;
+            // open returns a promise, put all those promises into arrays, with player1's answers put in first
+            var allPromises = [];
+            for(let i = 0; i < p1_answers.length; i++) {
+                allPromises.push(jiff_instance.open(p1_answers[i]));
+            }
+            console.log('finished putting p1 answers in allPromises');
+            for(let i = 0; i < p2_answers.length; i++) {
+                allPromises.push(jiff_instance.open(p2_answers[i]));
+            }
+            console.log('finished putting p2 answers in allPromises');
 
-        // console.log('reached HERE: share_guesses');
-
-        // // share the array
-        // guess_promise = jiff_instance.share_array(input.partyGuesses);
-        // guess_promise.then(function(guesses) {
-
-        //     console.log('reached HERE: array has been shared');
-        
-        //     var returnObj = {
-        //         myAnswers: [0, 8],
-        //         oppoAnswers: [0, 5],
-        //     }
-
-            // //var final_deferred = $.Deferred();
-            // // var final_promise = final_deferred.promise();
-
-            // if(input.partyID == 1) {
-            //     myGuesses = guesses[1];
-            //     oppoGuesses = guesses[2];
-            //     myShips = ships[1];
-            //     oppoShips = ships[2];
-            // }
-            // else {
-            //     myGuesses = guesses[2];
-            //     oppoGuesses = guesses[1];
-            //     myShips = ships[2];
-            //     oppoShips = ships[1];
-            // }
-
-            // // get new arrays
-            // let t_myAnswers = check_answers(myGuesses, oppoShips);
-            // let t_oppoAnswers = check_answers(oppoGuesses, myShips);
-
-            // // Open the array
-            // allMyAnswers_Promises = [];
-            // allMyOppoAnswers_Promises = [];
-            // for (var i = 0; i < t_myAnswers.length; i++) {
-            //     allMyAnswers_Promises.push(jiff_instance.open(t_myAnswers[i]));
-            //     allMyOppoAnswers_Promises.push(jiff_instance.open(t_oppoAnswers[i]));
-            // }
-
-            // Promise.all(allMyAnswers_Promises).then(function(results) {
-            //     returnObj.myAnswers = results;
-            //     console.log('reached HERE 2');
-            // });
-
-            // Promise.all(allMyOppoAnswers_Promises).then(function(results) {
-            //     returnObj.oppoAnswers = results;
-            //     console.log('reached HERE 3');
-            // });
-
-            // // reset stuff
-            // var guesses = null;
-
-            // var myGuesses = null;
-            // var oppoGuesses = null;
-            // var myShips = null;;
-            // var oppoShips = null;
-
-        //     console.log('reached HERE: about to return returnObj ' + returnObj.myAnswers + returnObj.oppoAnswers);
-        //     return returnObj;
-        // });
+            // resolve all promises and put them into final_deferred
+            Promise.all(allPromises).then(function(results) {
+                console.log('at: final_defered.resolve(results)');
+                final_deferred.resolve(results);
+            });
+        });
+        // wrap final_deferred into a promise and return it
+        console.log('returned final_promise');
+        return final_promise;
     };
 
 
