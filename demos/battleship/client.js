@@ -10,6 +10,9 @@ var guesses = [];
 var canPlay = false;
 var isSettingUp = false;
 
+var guesses_len = 4;
+var ships_len = 10;
+
 // these update every time get answers from server
 var numHitsOnMe = 0; // number of times opponent hits you
 var numHitsOnOppo = 0; // number of times opponent hits you
@@ -103,7 +106,7 @@ function handlePartyID(result) {
 function handleAnswers(result) {
     console.log('reached handle answers');
     // Gati's two functions to update gameboards
-    let p1_answers = result.splice(0, 2);
+    let p1_answers = result.splice(0, guesses_len);
     let p2_answers = result;
 
     let myAnswers = (jiffPartyID == 1) ? p1_answers : p2_answers;
@@ -137,7 +140,7 @@ function startSetUpBoard() {
     // add buttons here
     createOppoBoard();
     createMyBoard();
-    $('#status').text('Pick 15 locations on your board to place your ships');
+    $('#status').text('Pick ' + ships_len + ' locations on your board to place your ships');
     isSettingUp = true;
 }
 
@@ -165,12 +168,12 @@ function createOppoBoard() {
     }));
 
     $('#oppoBoard').append($('<h4/>', {
-        text: 'Hits On Opponent: 0/15',
+        text: 'Hits On Opponent: 0/' + ships_len,
         id: 'hitsOnOppo',
         left: '50%',
     }));
 
-    $('#status').text('Pick 5 locations');
+    $('#status').text('Pick ' + guesses_len + ' locations to attack');
 
     for (let i = 1; i <= 8; i++) {
         for(let j = 1; j <= 8; j++) {
@@ -202,7 +205,7 @@ function clickOppoBoardButton(event) {
 // add all guesses to guesses[] and when get 5 guesses, sort and send to server
 function addGuesses(guess) {
     guesses.push(guess);
-    if (guesses.length == 2) {
+    if (guesses.length == guesses_len) {
 
         canPlay = false;
         $('#status').text('Waiting for other player...');
@@ -278,13 +281,13 @@ function placeShips() {
         // placement is white
         event.target.style.background = '#ffffff';
         myShips.push(index);
-        $('#hitsOnMe').text('Ships placed: ' + myShips.length);
+        $('#hitsOnMe').text('Ships placed: ' + myShips.length  + '/' + ships_len);
     }
-    if (myShips.length === 4) {
+    if (myShips.length === ships_len) {
         isSettingUp = false;
         canPlay = true;
         $('.myboard-buttons').attr("disabled", "disabled");
-        $('#status').text('Pick 5 locations on your Opponent\'s board to attack!');
+        $('#status').text('Pick ' + guesses_len + ' locations on your Opponent\'s board to attack!');
         // send MPC server ship locations to share
         submit_ship_locations();
     }
@@ -329,15 +332,15 @@ function updateMyBoard(data) {
 
 function resetGameVars() {
     canPlay = true;
-    $('#status').text('Pick 5 locations on the enemy board to attack');
-    $('#hitsOnMe').text('Hits On Me: ' + numHitsOnMe + '/15');
-    $('#hitsOnOppo').text('Hits On Opponent: ' + numHitsOnOppo + '/15');
+    $('#status').text('Pick ' + guesses_len + ' locations on your Opponent\'s board to attack!');
+    $('#hitsOnMe').text('Hits On Me: ' + numHitsOnMe + '/' + ships_len);
+    $('#hitsOnOppo').text('Hits On Opponent: ' + numHitsOnOppo + '/' + ships_len);
 
     guesses = [];
 
-    if (numHitsOnOppo === 15) {iWon();}
+    if (numHitsOnOppo === ships_len) {iWon();}
 
-    else if(numHitsOnMe === 15) {iLost();}
+    else if(numHitsOnMe === ships_len) {iLost();}
 }
 
 //==============================
