@@ -1,8 +1,7 @@
 //==============================
 // Game Variables
 //==============================
-
-var sessionID;
+var jiffPartyID;
 
 var myShips = [];
 
@@ -59,16 +58,31 @@ function connect() {
     mpc.connect(hostname, computation_id, options);
 
     //}
-  }
+}
 
 //==============================
-// Send Game Data to JIFF and get Answers back
+// Send Game Data to JIFF and get data back
 //==============================
-  
-  function submit() {
 
+// returns jiff_instance's id and store it to partyID
+function submit_ship_locations() {
+    let partyID_promise = mpc.share_ships(myShips);
+    partyID_promise.then(handlePartyID);
+}
+
+// send guesses and partyID, returns answers
+function submit_guesses() {
+    console.log('before make sendObj');
+    sendObj = {
+        partyID: jiffPartyID,
+        partyGuesses: guesses
+    }
+    let answer_promise = mpc.share_guesses(sendObj);
+    answer_promise.then(handleAnswers);
+}
+
+//!!!!!!!!!!!!!!!!!! SUM STUFF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // var input = parseInt($("#number").val());
-  
     // if (isNaN(input))
     //   $("#output").append("<p class='error'>Input a valid number!</p>");
     // else if (100 < input || input < 0 || input != Math.floor(input))
@@ -80,30 +94,28 @@ function connect() {
     //   promise.then(handleResult);
     // }
 
-    //==============================================================================================================
-
-    // Gati's function to send guesses + ships + playerID to server
-
-        // send_guesses_ships_player();
-            // socket.emit('guesses-ships', {
-            //     guesses: guesses,
-            //     ships: myShips,
-            //     player: sessionID
-            // });
-  }
+//==============================================================================================================
 
 //==============================
 // Update UI
 //==============================
   
-  function handleResult(result) {
+function handlePartyID(result) {
+    jiffPartyID = result;
+    console.log('My partyID is: ' + jiffPartyID);
+}
+
+function handleAnswers(result) {
+    // Gati's two functions to update gameboards
+    console.log("RESULT IS: " + result);
+    // updateOppoBoard(result.myAnswers);
+    // updateMyBoard(result.oppoAnswers);
+}
+
+//!!!!!!!!!!!!!!!!!! SUM STUFF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // $("#output").append("<p>Result is: " + result + "</p>");
     // $("#button").attr("disabled", false);
-
-    // Gati's two functions to update gameboards
-    // updateOppoBoard(data);
-    // updateMyBoard(data);
-  }
+// }
   
 //==============================================================================================================
 //==============================================================================================================
@@ -198,12 +210,7 @@ function addGuesses(guess) {
 
         $('#guess_log').text('Guesses: ' + guesses);
 
-        send_guesses_ships_player();
-        // socket.emit('guesses-ships', {
-        //     guesses: guesses,
-        //     ships: myShips,
-        //     player: sessionID
-        // });
+        submit_guesses();
     }
 }
 
@@ -276,6 +283,9 @@ function placeShips() {
         isSettingUp = false;
         canPlay = true;
         $('.myboard-buttons').attr("disabled", "disabled");
+        $('#status').text('Pick 5 locations on your Opponent\'s board to attack!');
+        // send MPC server ship locations to share
+        submit_ship_locations();
     }
 }
 
