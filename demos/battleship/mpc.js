@@ -4,6 +4,8 @@
     var ships;
     var guesses;
 
+    var ss_0;
+
     var p1_answers = null;
     var p2_answers = null;
   
@@ -24,6 +26,9 @@
     // share ship locations, return your party_id
     exports.share_ships = function (input, jiff_instance) {
         if(jiff_instance == null) jiff_instance = saved_instance;
+
+        var shares = jiff_instance.share(0);
+        ss_0 = shares[1];
 
         return new Promise(function(resolve, reject) {
             let promise_ships = jiff_instance.share_array(input);
@@ -58,6 +63,24 @@
         return answers; // an array of secret shares
     };
 
+    function optimized_check_answers(p_guesses, p_ships){
+        let answers = [];
+        // 0 = miss
+        // 1 = hit
+        for (let g = 0; g < p_guesses.length; g++) {
+            //answers[g] = ss_0.cadd(1); // is this a secret share?
+            answers[g] = ss_0.cadd(1);
+            let a = p_guesses[g];
+            for (let s = 0; s < p_ships.length; s++) {
+                let b = p_ships[s];
+                answers[g] = answers[g].smult(a.ssub(b)); // if this is 0, then there should be a hit
+            }
+           answers[g] = answers[g].seq(ss_0);
+        }
+        console.log('checked p answers');
+        return answers; // an array of secret shares
+    };
+
     // gets guesses and partyID, shares guesses, check guesses, return answers and party_id
     exports.share_guesses = function (input, jiff_instance) {
         if(jiff_instance == null) jiff_instance = saved_instance;
@@ -73,9 +96,9 @@
 
             // do MPC computation and get answers
             console.log('about to check p1 answers');
-            p1_answers = check_answers(guesses[1], ships[2]);
+            p1_answers = optimized_check_answers(guesses[1], ships[2]);
             console.log('about to check p2 answers');
-            p2_answers = check_answers(guesses[2], ships[1]);
+            p2_answers = optimized_check_answers(guesses[2], ships[1]);
 
             // open returns a promise, put all those promises into arrays, with player1's answers put in first
             var allPromises = [];

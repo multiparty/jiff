@@ -10,8 +10,8 @@ var guesses = [];
 var canPlay = false;
 var isSettingUp = false;
 
-var guesses_len = 4;
-var ships_len = 10;
+var guesses_len = 5;
+var ships_len = 15;
 
 // these update every time get answers from server
 var numHitsOnMe = 0; // number of times opponent hits you
