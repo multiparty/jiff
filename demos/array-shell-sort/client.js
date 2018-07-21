@@ -45,11 +45,8 @@ function submit() {
   $("#processButton").attr("disabled", true);
   $("#output").append("<p>Starting...</p>");
 
-  console.log('pre-COMPUTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
   var promise = mpc.compute(arr);
-  console.log('COMPUTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
   promise.then(handleResult);
-  console.log('PROMISE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
 }
 
 function handleResult(result) {

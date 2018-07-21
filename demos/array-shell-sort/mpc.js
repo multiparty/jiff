@@ -41,8 +41,9 @@
     var c = c1.sor_bit(c2);
     var d = c.not();
 
+    let temp = a[i];
     a[i] = (a[i].smult(d)).sadd(a[j].smult(c));
-    a[j] = (a[j].smult(d)).sadd(a[i].smult(c));
+    a[j] = (a[j].smult(d)).sadd(temp.smult(c));
   }
 
   // took out MyRandom rand -- random number generator, and replaced it with Math.random
