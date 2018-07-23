@@ -7,7 +7,6 @@ var parties = 0;
 var tests = [];
 var has_failed = false;
 var Zp = 2039;
-//function mod(x, y) { if (x < 0) return x % y + y; return x.mod(y); }
 
 // Operation strings to "lambdas"
 var operations = {
@@ -30,7 +29,7 @@ var operations = {
     return operand1.smult(operand2);
   },
   '^': function (operand1, operand2) {
-    return (operand1 == operand2) ? 0 : 1;
+    return (operand1 === operand2) ? 0 : 1;
   },
   'xor': function (operand1, operand2) {
     return operand1.sxor_bit(operand2);
@@ -40,24 +39,24 @@ var operations = {
   },
   'div': function (operand1, operand2) {
     return operand1.sdiv(operand2);
-  },
+  }
 };
 
 // Maps MPC operation to its open dual
-var dual = {'add': '+', 'sub': '-', 'mult': '*', 'xor': '^', 'div': '/'};
+var dual = {add: '+', sub: '-', mult: '*', xor: '^', div: '/'};
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // ensure numbers wont wrap around
   var max = Zp / 3;
-  if (operation == 'mult') {
+  if (operation === 'mult') {
     max = Math.cbrt(Zp);
-  } else if (operation == 'div') {
+  } else if (operation === 'div') {
     max = Zp;
   }
 
   var offset = Math.floor(max / 2);
-  if (operation == 'xor') {
+  if (operation === 'xor') {
     max = 2;
     offset = 0;
   }
@@ -68,7 +67,7 @@ function run_test(computation_id, operation, callback) {
 
     for (var p = 0; p < 3; p++) {
       var randnum = Math.floor(Math.random() * max) - offset;
-      if (p == 1 && operation == 'div' && randnum == 0) {
+      if (p === 1 && operation === 'div' && randnum === 0) {
         randnum = 1;
       }
       tests[i].push(randnum);
@@ -80,9 +79,9 @@ function run_test(computation_id, operation, callback) {
   computation_id = computation_id + '';
 
   var counter = 0;
-  options = {party_count: parties, Zp: Zp, autoConnect: false};
+  var options = {party_count: parties, Zp: Zp, autoConnect: false};
   options.onConnect = function () {
-    if (++counter == 2) {
+    if (++counter === 2) {
       test(callback, operation);
     }
   };
@@ -105,7 +104,7 @@ function run_test(computation_id, operation, callback) {
 
 // Run all tests after setup
 function test(callback, mpc_operator) {
-  open_operator = dual[mpc_operator];
+  var open_operator = dual[mpc_operator];
 
   if (jiff_instances[0] == null || !jiff_instances[0].isReady()) {
     console.log('Please wait!');
@@ -113,9 +112,9 @@ function test(callback, mpc_operator) {
   }
   has_failed = false;
 
-  // Run every test and accumelate all the promises
+  // Run every test and accumulate all the promises
   var promises = [];
-  var length = mpc_operator == 'div' ? 10 : tests.length;
+  var length = mpc_operator === 'div' ? 10 : tests.length;
   for (var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
@@ -145,7 +144,8 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
     shares_list.push(shares[i]);
   }
 
-  if (mpc_operator == 'div') {
+  var res;
+  if (mpc_operator === 'div') {
     res = operations[mpc_operator](shares_list[0], shares_list[1]);
   } else {
     res = shares_list.reduce(operations[mpc_operator]);
@@ -165,14 +165,14 @@ function test_output(index, result, open_operator) {
 
   // Apply operation in the open to test
   var res;
-  if (open_operator == '/') {
+  if (open_operator === '/') {
     res = operations[open_operator](numbers[0], numbers[1]);
   } else {
     res = numbers.reduce(operations[open_operator]);
   }
 
   // Incorrect result
-  if (!(res.toString() == result.toString())) {
+  if (!(res.toString() === result.toString())) {
     has_failed = true;
     console.log(numbers.join(open_operator) + ' = ' + res + ' != ' + result);
   }
@@ -181,7 +181,7 @@ function test_output(index, result, open_operator) {
 // Register Communication Error
 function error() {
   has_failed = true;
-  console.log("Communication error");
+  console.log('Communication error');
 }
 
 // Export API

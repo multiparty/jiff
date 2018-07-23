@@ -30,7 +30,7 @@ var operations = {
     return operand1.cmult(operand2);
   },
   '^': function (operand1, operand2) {
-    return (operand1 == operand2) ? 0 : 1;
+    return (operand1 === operand2) ? 0 : 1;
   },
   'xor_cst': function (operand1, operand2) {
     return operand1.cxor_bit(operand2);
@@ -45,11 +45,11 @@ var operations = {
   },
   'div_cst': function (operand1, operand2) {
     return operand1.cdiv(operand2, null, false); // Round to zero
-  },
+  }
 };
 
 // Maps MPC operation to its open dual
-var dual = {'add_cst': '+', 'sub_cst': '-', 'mult_cst': '*', 'xor_cst': '^', 'div_cst': '/'};
+var dual = {add_cst: '+', sub_cst: '-', mult_cst: '*', xor_cst: '^', div_cst: '/'};
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
@@ -60,14 +60,14 @@ function run_test(computation_id, operation, callback) {
     for (var p = 0; p < 3; p++) {
       // ensure numbers wont wrap around
       var max = Zp / 2;
-      if (operation == 'mult_cst') {
+      if (operation === 'mult_cst') {
         max = Math.sqrt(Zp);
-      } else if (operation == 'div_cst') {
+      } else if (operation === 'div_cst') {
         max = Zp;
       }
 
       var offset = Math.floor(max / 2);
-      if (operation == 'xor_cst') {
+      if (operation === 'xor_cst') {
         max = 2;
         offset = 0;
       }
@@ -82,9 +82,9 @@ function run_test(computation_id, operation, callback) {
   computation_id = computation_id + '';
 
   var counter = 0;
-  options = {party_count: parties, Zp: Zp, autoConnect: false};
+  var options = {party_count: parties, Zp: Zp, autoConnect: false};
   options.onConnect = function () {
-    if (++counter == 3) {
+    if (++counter === 3) {
       test(callback, operation);
     }
   };
@@ -115,9 +115,9 @@ function test(callback, mpc_operator) {
   }
   has_failed = false;
 
-  // Run every test and accumelate all the promises
+  // Run every test and accumulate all the promises
   var promises = [];
-  var length = mpc_operator == 'div_cst' ? 10 : tests.length;
+  var length = mpc_operator === 'div_cst' ? 10 : tests.length;
   for (var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
@@ -161,7 +161,7 @@ function test_output(index, result, open_operator) {
   //  res = mod(res, Zp);
 
   // Incorrect result
-  if (!(res.toString() == result.toString())) {
+  if (!(res.toString() === result.toString())) {
     has_failed = true;
     console.log(numbers.join(open_operator) + ' = ' + res + ' != ' + result);
   }

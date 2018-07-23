@@ -35,13 +35,13 @@ var operations = {
     return operand1.sgteq(operand2);
   },
   '==': function (operand1, operand2) {
-    return operand1 == operand2;
+    return operand1 === operand2;
   },
   'eq': function (operand1, operand2) {
     return operand1.seq(operand2);
   },
   '!=': function (operand1, operand2) {
-    return operand1 != operand2;
+    return operand1 !== operand2;
   },
   'neq': function (operand1, operand2) {
     return operand1.sneq(operand2);
@@ -49,7 +49,7 @@ var operations = {
 };
 
 // Maps MPC operation to its open dual
-var dual = {'less': '<', 'less_or_equal': '<=', 'greater': '>', 'greater_or_equal': '>=', 'eq': '==', 'neq': '!='};
+var dual = {less: '<', less_or_equal: '<=', greater: '>', greater_or_equal: '>=', eq: '==', neq: '!='};
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
@@ -72,9 +72,9 @@ function run_test(computation_id, operation, callback) {
   computation_id = computation_id + '';
 
   var counter = 0;
-  options = {party_count: parties, Zp: Zp, autoConnect: false};
+  var options = {party_count: parties, Zp: Zp, autoConnect: false};
   options.onConnect = function () {
-    if (++counter == 3) {
+    if (++counter === 3) {
       test(callback, operation);
     }
   };
@@ -97,7 +97,7 @@ function run_test(computation_id, operation, callback) {
 
 // Run all tests after setup
 function test(callback, mpc_operator) {
-  open_operator = dual[mpc_operator];
+  var open_operator = dual[mpc_operator];
 
   if (jiff_instances[0] == null || !jiff_instances[0].isReady()) {
     console.log('Please wait!');
@@ -150,7 +150,7 @@ function test_output(index, result, open_operator) {
   res = res ? 1 : 0;
 
   // Incorrect result
-  if (!(res.toString() == result.toString())) {
+  if (!(res.toString() === result.toString())) {
     has_failed = true;
     console.log(numbers[0] + open_operator + numbers[1] + ' = ' + res + ' != ' + result);
   }
