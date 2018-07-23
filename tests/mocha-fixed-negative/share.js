@@ -81,7 +81,7 @@ function test(callback) {
   }
   has_failed = false;
 
-  // Run every test and accumelate all the promises
+  // Run every test and accumulate all the promises
   var promises = [];
   for (var i = 0; i < tests.length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
