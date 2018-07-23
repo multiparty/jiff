@@ -5,7 +5,7 @@ var assert = require('chai').assert;
 var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
-var party_count = 3;
+var party_count = 2;
 var parallelismDegree = 5; // Max number of test cases running in parallel
 var n = 10; // Number of test cases in total
 
@@ -19,16 +19,37 @@ var n = 10; // Number of test cases in total
  *   'party_id': [ 'test1_input', 'test2_input', ...]
  * }
  */
+
+function createRandomMatrix(row, col){
+  var result = [];
+  for (var i = 0 ; i < row; i++) {
+    result[i] = [];
+    for (var j = 0; j < col; j++) {
+      result[i][j] = Math.random() * 10;
+    }
+  }
+  return result;
+}
+
+function getRow(matrix, row){
+  var r = [];
+  for(var i=0; i < matrix.length; i++){
+    r.push(matrix[row][i]);
+  }
+  return r;
+}
+
 function generateInputs(party_count) {
   var inputs = {};
 
   // Generate test cases one at a time
+  // Code should generate sets of random vectors of size 3. Result: party_count x 3 x n matrix
   for(var t = 0; t < n; t++) {
-    /*
-     * INPUT GENERATION CODE GOES HERE
-     */
+    var mat = [];
+    mat = createRandomMatrix(party_count, 3); // party_count hard-set to 2 for PCA demo
+    inputs[t] = mat;
+    console.log(mat);
   }
-
   return inputs;
 }
 
@@ -42,9 +63,13 @@ function computeResults(inputs) {
   var results = [];
 
   for (var j = 0; j < n; j++) {
-    /*
-     * COMPUTING THE RESULT IN THE OPEN CODE GOES HERE
-     */
+    var party1 = getRow(inputs[j], 0);
+    var party2 = getRow(inputs[j], 1);
+    console.log("Party 1:" + party1);
+    console.log("Party 2:" + party2);
+
+    // OPEN PCA CODE HERE WITH PARTIES
+    
   }
   return results;
 }

@@ -43,7 +43,8 @@
   "scripts": {
     "test": "./tests/mocha/test.sh",
     "test-bignumber": "./tests/mocha-bignumber/test.sh",
-    "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json"
+    "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json",
+    "test-demo": "./node_modules/mocha/bin/mocha --full-trace"
   },
   "dependencies": {
     "bignumber.js": "^5.0.0",
@@ -58,8 +59,8 @@
     "chai": "^4.1.2",
     "express": "^4.15.2",
     "jsdoc": "^3.5.5",
-    "mocha": "^4.0.1",
+    "marked": "^0.3.9",
     "minimist": "^1.2.0",
-    "marked": "^0.3.9"
+    "mocha": "^4.1.0"
   }
 }
