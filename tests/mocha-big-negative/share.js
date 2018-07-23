@@ -51,9 +51,9 @@ function run_test(computation_id, callback) {
   computation_id = computation_id + '';
 
   var counter = 0;
-  options = {party_count: parties, Zp: Zp, autoConnect: false};
+  var options = {party_count: parties, Zp: Zp, autoConnect: false};
   options.onConnect = function () {
-    if (++counter == parties) {
+    if (++counter === parties) {
       test(callback);
     }
   };
@@ -62,7 +62,7 @@ function run_test(computation_id, callback) {
     has_failed = true;
   };
 
-  for (var i = 0; i < parties; i++) {
+  for (var p = 0; p < parties; p++) {
     var jiff_instance = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
     jiff_instance = jiffNegNumber.make_jiff(jiff_instance);
     jiff_instances.push(jiff_instance);
@@ -72,14 +72,13 @@ function run_test(computation_id, callback) {
 
 // Run all tests after setup
 function test(callback) {
-
   if (jiff_instances[0] == null || !jiff_instances[0].isReady()) {
     console.log('Please wait!');
     return;
   }
   has_failed = false;
 
-  // Run every test and accumelate all the promises
+  // Run every test and accumulate all the promises
   var promises = [];
   for (var i = 0; i < tests.length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
@@ -112,15 +111,12 @@ function single_test(index, jiff_instance) {
   // Share
   var shares = jiff_instance.share(numbers[party_index], threshold, rs, ss);
   // Nothing to do.
-  if (ss.indexOf(jiff_instance.id) == -1 && rs.indexOf(jiff_instance.id) == -1) {
+  if (ss.indexOf(jiff_instance.id) === -1 && rs.indexOf(jiff_instance.id) === -1) {
     return null;
   }
 
   // receiver but not sender, must send open shares of each number to its owner.
-  if (rs.indexOf(jiff_instance.id) > -1 && ss.indexOf(jiff_instance.id) == -1) {
-    var deferred = $.Deferred();
-    var promise = deferred.promise();
-
+  if (rs.indexOf(jiff_instance.id) > -1 && ss.indexOf(jiff_instance.id) === -1) {
     // Send opens
     for (var i = 0; i < ss.length; i++) {
       jiff_instance.open(shares[ss[i]], [ss[i]]);
@@ -129,16 +125,17 @@ function single_test(index, jiff_instance) {
     return null;
   }
 
+  // define a deferred and a promise to encapsulate the final result
+  var deferred = $.Deferred();
+  var promise = deferred.promise();
+
   // receiver and sender, must send open shares of each number to its owner, and receive one open.
   if (rs.indexOf(jiff_instance.id) > -1 && ss.indexOf(jiff_instance.id) > -1) {
-    var deferred = $.Deferred();
-    var promise = deferred.promise();
-
     var promises = [];
 
     // Send opens
-    for (var i = 0; i < ss.length; i++) {
-      var p = jiff_instance.open(shares[ss[i]], [ss[i]]);
+    for (var k = 0; k < ss.length; k++) {
+      var p = jiff_instance.open(shares[ss[k]], [ss[k]]);
       if (p != null) {
         promises.push(p);
       }
@@ -155,10 +152,7 @@ function single_test(index, jiff_instance) {
   }
 
   // sender, but not receiver, should get back the number, without sending any shares.
-  if (ss.indexOf(jiff_instance.id) > -1 && rs.indexOf(jiff_instance.id) == -1) {
-    var deferred = $.Deferred();
-    var promise = deferred.promise();
-
+  if (ss.indexOf(jiff_instance.id) > -1 && rs.indexOf(jiff_instance.id) === -1) {
     jiff_instance.receive_open(rs, threshold).then(function (result) {
       test_output(jiff_instance, index, jiff_instance.id, result);
       deferred.resolve();
@@ -174,16 +168,10 @@ function test_output(jiff_instance, test_index, party_index, result) {
   var real = numbers[party_index - 1];
 
   // Apply operation in the open to test
-  if (!(real.toString() == result.toString())) {
+  if (!(real.toString() === result.toString())) {
     has_failed = true;
     console.log('Party: ' + party_index + '. Threshold: ' + numbers[parties] + ': ' + real + ' != ' + result);
   }
-}
-
-// Register Communication Error
-function error() {
-  has_failed = true;
-  console.log("Communication error");
 }
 
 // Export API

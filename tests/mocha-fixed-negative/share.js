@@ -2,6 +2,7 @@ var jiff = require('../../lib/jiff-client.js');
 var jiffBigNumber = require('../../lib/ext/jiff-client-bignumber.js');
 var jiffNegNumber = require('../../lib/ext/jiff-client-negativenumber.js');
 var jiffFixedNumber = require('../../lib/ext/jiff-client-fixedpoint.js');
+var BigNumber = require('bignumber.js');
 
 var jiff_instances = [];
 var parties = 0;
@@ -9,17 +10,27 @@ var tests = [];
 var senders = [];
 var receivers = [];
 var has_failed = false;
-var Zp = 15485867;
+var Zp = new BigNumber(32416190071);
+
+var decimal_digits = 5;
+var integer_digits = 5;
 
 // Entry Point
 function run_test(computation_id, callback) {
+  var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits);
+  var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
+
   // Generate Numbers
   for (var i = 0; i < 500; i++) {
     // Generate numbers. switched to Math 6/18, range -100 to 100
-    var num1 = Math.floor(Math.random() * Zp) - Math.floor(Zp / 2);
-    var num2 = Math.floor(Math.random() * Zp) - Math.floor(Zp / 2)
-    var num3 = Math.floor(Math.random() * Zp) - Math.floor(Zp / 2)
-    var num4 = Math.floor(Math.random() * Zp) - Math.floor(Zp / 2)
+    var num1 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    num1 = Math.random() < 0.5 ? num1.times(-1) : num1;
+    var num2 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    num2 = Math.random() < 0.5 ? num2.times(-1) : num2;
+    var num3 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    num3 = Math.random() < 0.5 ? num3.times(-1) : num3;
+    var num4 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    num4 = Math.random() < 0.5 ? num4.times(-1) : num4;
 
     // Generate thresholds
     var threshold = Math.ceil(Math.random() * 4);
@@ -65,7 +76,7 @@ function run_test(computation_id, callback) {
 
   for (var i = 0; i < parties; i++) {
     var jiff_instance = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
-    jiff_instance = jiffFixedNumber.make_jiff(jiff_instance);
+    jiff_instance = jiffFixedNumber.make_jiff(jiff_instance, {integer_digits: 5, decimal_digits: 5});
     jiff_instance = jiffNegNumber.make_jiff(jiff_instance);
     jiff_instances.push(jiff_instance);
     jiff_instance.connect();
@@ -111,13 +122,14 @@ function single_test(index, jiff_instance) {
   var rs = receivers[index];
   var ss = senders[index];
 
-  // Share
-  var shares = jiff_instance.share(numbers[party_index], threshold, rs, ss);
-  // Nothing to do.
-  if (ss.indexOf(jiff_instance.id) == -1 && rs.indexOf(jiff_instance.id) == -1) {
-    return null;
-  }
-
+  try {
+    // Share
+    var shares = jiff_instance.share(numbers[party_index], threshold, rs, ss);
+    // Nothing to do.
+    if (ss.indexOf(jiff_instance.id) == -1 && rs.indexOf(jiff_instance.id) == -1) {
+      return null;
+    }
+  } catch(err) { console.log(err); }
   // receiver but not sender, must send open shares of each number to its owner.
   if (rs.indexOf(jiff_instance.id) > -1 && ss.indexOf(jiff_instance.id) == -1) {
     var deferred = $.Deferred();

@@ -1,5 +1,5 @@
+/* global describe it */
 // Chai
-var expect = require('chai').expect;
 var assert = require('chai').assert;
 
 // Require test cases for every operation
