@@ -170,12 +170,12 @@ function createOppoBoard() {
             text: i,
             id: 'o_' + i,
             disabled: false,
-            width: window.innerWidth/8.5,
+            width: window.innerWidth/(numCols + 1),
             height: 25,
         }).click(clickOppoBoardButton);
     
         $('#oppoBoard').append(button);
-        if(i%numCols === 0) $('#oppoBoard').append($('<br/>'));
+        if(i%numCols === numCols-1) $('#oppoBoard').append($('<br/>'));
     }
 }
 
@@ -229,13 +229,13 @@ function createMyBoard() {
             text: i,
             id: 'm_' + i,
             disabled: false,
-            width: window.innerWidth/8.5,
+            width: window.innerWidth/(numCols + 1),
             height: 25,
             class: 'myboard-buttons',
         }).click(placeShips);
 
         $('#myBoard').append(button);
-        if(i%numCols === 0) $('#myBoard').append($('<br/>'));
+        if(i%numCols === numCols-1) $('#myBoard').append($('<br/>'));
     }
 
     // logs what guesses sent
