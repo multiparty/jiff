@@ -46,23 +46,24 @@
     /**
      * The MPC computation
      */
-    // fix me
-    function check_answers(p_guesses, p_ships){
-        let answers = [];
-        // 0 = miss
-        // 1 = hit
-        for (let g = 0; g < p_guesses.length; g++) {
-            answers[g] = p_guesses[g].cmult(0); // is this a secret share?
-            for (let s = 0; s < p_ships.length; s++) {
-                let a = p_guesses[g];
-                let b = p_ships[s];
-                answers[g] = answers[g].sadd(a.seq(b));
-            }
-        }
-        console.log('checked p answers');
-        return answers; // an array of secret shares
-    };
+    // fix me - does numGuesses*numShips seq
+    // function check_answers(p_guesses, p_ships){
+    //     let answers = [];
+    //     // 0 = miss
+    //     // 1 = hit
+    //     for (let g = 0; g < p_guesses.length; g++) {
+    //         answers[g] = p_guesses[g].cmult(0); // is this a secret share?
+    //         for (let s = 0; s < p_ships.length; s++) {
+    //             let a = p_guesses[g];
+    //             let b = p_ships[s];
+    //             answers[g] = answers[g].sadd(a.seq(b));
+    //         }
+    //     }
+    //     console.log('checked p answers');
+    //     return answers; // an array of secret shares
+    // };
 
+    // does numGuesses seq
     function optimized_check_answers(p_guesses, p_ships){
         let answers = [];
         // 0 = miss
@@ -121,82 +122,5 @@
         console.log('returned final_promise');
         return final_promise;
     };
-
-
-
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! from array-substring/mpc !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-    // exports.compute = function (input, jiff_instance) {
-    //     if(jiff_instance == null) jiff_instance = saved_instance;
-    
-    //     // The MPC implementation should go *HERE*
-    //     var final_deferred = $.Deferred(); // this will resolve to the final result
-    //     var final_promise = final_deferred.promise(); // which is an array of 0/1 values for every index in the haystack
-        
-    //     // First, turn the string into an array of numbers
-    //     var asciiCodes = [];
-    //     for(var i = 0; i < input.length; i++)
-    //       asciiCodes.push(input.charCodeAt(i));
-    
-    //     // Now secret share the array of numbers
-    //     var inputPromise = jiff_instance.share_array(asciiCodes);
-    
-    //     // Perform the computation
-    //     inputPromise.then(function(shares) {
-    //       // Party 1 provides the haystack in which to look
-    //       var haystack = shares[1];
-    
-    //       // Party 2 provides the needle to find
-    //       var needle = shares[2];
-          
-    //       // Store a promise to the result of looking for the needle in every index
-    //       var results = [];
-    
-    //       // Look for needle at every index in the haystack
-    //       for(var i = 0; i <= haystack.length - needle.length; i++) {
-    //         // Compare all the characters till the end of the substring
-    //         var comparison = haystack[i].seq(needle[0]);
-    //         for(var j = 1; j < needle.length; j++) {
-    //           comparison = comparison.smult(haystack[i+j].seq(needle[j]));
-    //         }
-    
-    //         results[i] = comparison.open();
-    //       }
-    
-    //       // Combine the promises for every index, when the result is ready, pass it to the final_promise
-    //       Promise.all(results).then(function(results) {
-    //         final_deferred.resolve(results);
-    //       });
-    // });
-
-
-
-
-
-
-
-
-
-    //!!!!!!!!!!!!!!!!!! SUM STUFF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // exports.compute = function (input, jiff_instance) {
-    //   if(jiff_instance == null) jiff_instance = saved_instance;
-  
-    //   // The MPC implementation should go *HERE*
-    //   var shares = jiff_instance.share(input);
-    //   var sum = shares[1];
-    //   for(var i = 2; i <= jiff_instance.party_count; i++) {
-    //     sum = sum.sadd(shares[i]);
-    //   }
-      
-    //   // Return a promise to the final output(s)
-    //   return jiff_instance.open(sum);
-    // };
-
-
-
-
-
 
   }((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));  

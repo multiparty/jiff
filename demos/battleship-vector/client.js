@@ -3,15 +3,18 @@
 //==============================
 var jiffPartyID;
 
+var numRows = 8;
+var numCols = 8;
+
+var guesses_len = 5;
+var ships_len = 15;
+
 var myShips = [];
 
 // these reset every turn
 var guesses = [];
 var canPlay = false;
 var isSettingUp = false;
-
-var guesses_len = 5;
-var ships_len = 15;
 
 // these update every time get answers from server
 var numHitsOnMe = 0; // number of times opponent hits you
@@ -116,19 +119,6 @@ function handleAnswers(result) {
     updateMyBoard(oppoAnswers);
 }
 
-//!!!!!!!!!!!!!!!!!! SUM STUFF !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // $("#output").append("<p>Result is: " + result + "</p>");
-    // $("#button").attr("disabled", false);
-// }
-  
-//==============================================================================================================
-//==============================================================================================================
-//==============================================================================================================
-//==============================================================================================================
-//==============================================================================================================
-//==============================================================================================================
-
-
 //==============================
 // Game Functions -- Set Up Board
 //==============================
@@ -175,19 +165,17 @@ function createOppoBoard() {
 
     $('#status').text('Pick ' + guesses_len + ' locations to attack');
 
-    for (let i = 1; i <= 8; i++) {
-        for(let j = 1; j <= 8; j++) {
-            var button = $('<button/>', {
-                text: i + '' + j,
-                id: 'o_' + i + '' + j,
-                disabled: false,
-                width: window.innerWidth/8.5,
-                height: 25,
-            }).click(clickOppoBoardButton);
+    for (let i = 0; i < numRows*numCols; i++) {
+        var button = $('<button/>', {
+            text: i,
+            id: 'o_' + i,
+            disabled: false,
+            width: window.innerWidth/8.5,
+            height: 25,
+        }).click(clickOppoBoardButton);
     
-            $('#oppoBoard').append(button);
-        }
-        $('#oppoBoard').append($('<br/>'));
+        $('#oppoBoard').append(button);
+        if(i%numCols === 0) $('#oppoBoard').append($('<br/>'));
     }
 }
 
@@ -236,21 +224,18 @@ function createMyBoard() {
         left: '50%',
     }));
     
-    for (let i = 1; i <= 8; i++) {
-        //let chr = String.fromCharCode(65 + i);
-        for(let j = 1; j <= 8; j++) {
-            var button = $('<button/>', {
-                text: i + '' + j,
-                id: 'm_' + i + '' + j,
-                disabled: false,
-                width: window.innerWidth/8.5,
-                height: 25,
-                class: 'myboard-buttons',
-            }).click(placeShips);
+    for (let i = 0; i < numRows*numCols; i++) {
+        var button = $('<button/>', {
+            text: i,
+            id: 'm_' + i,
+            disabled: false,
+            width: window.innerWidth/8.5,
+            height: 25,
+            class: 'myboard-buttons',
+        }).click(placeShips);
 
-            $('#myBoard').append(button);
-        }
-        $('#myBoard').append($('<br/>'));
+        $('#myBoard').append(button);
+        if(i%numCols === 0) $('#myBoard').append($('<br/>'));
     }
 
     // logs what guesses sent
