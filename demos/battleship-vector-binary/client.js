@@ -282,10 +282,13 @@ function updateOppoBoard(data) {
     for(let i = 0; i < data.length; i++) {
         let id = '#o_' + i;
         
-        if(data[i] == 1) {
+        if(data[i] === 1) {
             // hits are brownish
             $(id).css("background-color", "Crimson");
             numHitsOnOppo++;
+        }
+        if(data[i] === 0 && guesses[i] === 1) {
+            $(id).css("background-color", "DarkBlue");
         }
     }
 }
@@ -296,7 +299,7 @@ function updateMyBoard(data) {
 
     for(let i = 0; i < data.length; i++) {
 
-        if(data[i] == 1) {
+        if(data[i] === 1) {
             numHitsOnMe++;
         }
     }
