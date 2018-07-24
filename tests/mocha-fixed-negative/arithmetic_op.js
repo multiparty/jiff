@@ -4,7 +4,6 @@ var jiffNegNumber = require('../../lib/ext/jiff-client-negativenumber.js');
 var jiffFixedNumber = require('../../lib/ext/jiff-client-fixedpoint.js');
 var BigNumber = require('bignumber.js');
 
-
 var jiff_instances = null;
 var parties = 0;
 var tests = [];
@@ -12,7 +11,9 @@ var has_failed = false;
 var Zp = new BigNumber(2).pow(45).minus(55);
 
 var decimal_digits = 5;
-var integer_digits = 5;//function mod(x, y) { if (x < 0) return x % y + y; return x.mod(y); }
+var integer_digits = 5;
+
+//function mod(x, y) { if (x < 0) return x % y + y; return x.mod(y); }
 
 // Operation strings to "lambdas"
 var operations = {
@@ -76,11 +77,11 @@ function run_test(computation_id, operation, callback) {
       decimal_magnitude = 1;
     }
 
-    var num1 = BigNumber.random().times(total_magnitude).div(2).floor().div(decimal_magnitude);
+    var num1 = BigNumber.random().times(total_magnitude).div(3).floor().div(decimal_magnitude);
     num1 = Math.random() < 0.5 ? num1.times(-1) : num1;
-    var num2 = BigNumber.random().times(total_magnitude).div(2).floor().div(decimal_magnitude);
+    var num2 = BigNumber.random().times(total_magnitude).div(3).floor().div(decimal_magnitude);
     num2 = Math.random() < 0.5 ? num2.times(-1) : num2;
-    var num3 = BigNumber.random().times(total_magnitude).div(2).floor().div(decimal_magnitude);
+    var num3 = BigNumber.random().times(total_magnitude).div(3).floor().div(decimal_magnitude);
     num3 = Math.random() < 0.5 ? num3.times(-1) : num3;
     tests[i] = [num1, num2, num3];
 
