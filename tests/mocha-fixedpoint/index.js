@@ -40,7 +40,7 @@ describe("MPC Operations", function() {
       arithmetic_op.run_test(i++, "sub", callback(done));
     });
     // *
-    it("Mutliplication", function(done) {
+    /*it("Mutliplication", function(done) {
       arithmetic_op.run_test(i++, "mult", callback(done));
     });
     // ^
@@ -50,12 +50,15 @@ describe("MPC Operations", function() {
     // |
     it("Bitwise OR", function(done) {
       arithmetic_op.run_test(i++, "or", callback(done));
-    });
+    });*/
     // /
-    it("Integer Divison", function(done) {
+    /*it("Integer Divison", function(done) {
       arithmetic_op.run_test(i++, "div", callback(done));
+    });*/
+    it("Modulo", function(done) {
+      arithmetic_op.run_test(i++, "mod", callback(done));
     });
-    
+
   });
 
   describe("Constant Arithmetic Operations", function() {
@@ -78,7 +81,7 @@ describe("MPC Operations", function() {
     // constant |
     it("Constant Bitwise OR", function(done) {
       constant_arithmetic_op.run_test(i++, "or_cst", callback(done));
-    });    
+    });
     // /
     it("Constant Integer Divison", function(done) {
       constant_arithmetic_op.run_test(i++, "div_cst", callback(done));
