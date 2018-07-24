@@ -5,11 +5,11 @@ var assert = require('chai').assert;
 var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
-var party_count = 2;
-var parallelismDegree = 1; // Max number of test cases running in parallel
+var party_count = 4;
+var parallelismDegree = 4; // Max number of test cases running in parallel
 var n = 10; // Number of test cases in total
 
-var minimumVotingOptions = 5;
+var minimumVotingOptions = 2;
 var maximumVotingOptions = 5;
 
 // Parameters specific to this demo
