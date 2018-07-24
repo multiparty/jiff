@@ -1,46 +1,57 @@
 var jiff = require('../../lib/jiff-client.js');
 var jiffBigNumber = require('../../lib/ext/jiff-client-bignumber.js');
 var jiffNegNumber = require('../../lib/ext/jiff-client-negativenumber.js');
+var jiffFixedNumber = require('../../lib/ext/jiff-client-fixedpoint.js');
+var BigNumber = require('bignumber.js');
+
 
 var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = 2039;
-//function mod(x, y) { if (x < 0) return x % y + y; return x.mod(y); }
+var Zp = new BigNumber(2).pow(45).minus(55);
+
+var decimal_digits = 5;
+var integer_digits = 5;//function mod(x, y) { if (x < 0) return x % y + y; return x.mod(y); }
 
 // Operation strings to "lambdas"
 var operations = {
   '+': function (operand1, operand2) {
-    return operand1 + operand2;
+    return new BigNumber(operand1.plus(operand2).toFixed(decimal_digits, BigNumber.ROUND_DOWN));
   },
   'add': function (operand1, operand2) {
     return operand1.sadd(operand2);
   },
   '-': function (operand1, operand2) {
-    return operand1 - operand2;
+    return new BigNumber(operand1.minus(operand2).toFixed(decimal_digits, BigNumber.ROUND_DOWN));
   },
   'sub': function (operand1, operand2) {
     return operand1.ssub(operand2);
   },
   '*': function (operand1, operand2) {
-    return operand1 * operand2;
+    return new BigNumber(operand1.times(operand2).toFixed(decimal_digits, BigNumber.ROUND_DOWN));
   },
   'mult': function (operand1, operand2) {
     return operand1.smult(operand2);
   },
   '^': function (operand1, operand2) {
-    return (operand1 == operand2) ? 0 : 1;
+    return operand1.eq(operand2) ? new BigNumber(0) : new BigNumber(1);
   },
   'xor': function (operand1, operand2) {
     return operand1.sxor_bit(operand2);
   },
+  '|': function (operand1, operand2) {
+    return operand1.eq(1) || operand2.eq(1) ? new BigNumber(1) : new BigNumber(0);
+  },
+  'or': function (operand1, operand2) {
+    return operand1.sor_bit(operand2);
+  },
   '/': function (operand1, operand2) {
-    return Math.floor(operand1 / operand2);
+    return new BigNumber(operand1.div(operand2).toFixed(decimal_digits, BigNumber.ROUND_DOWN));
   },
   'div': function (operand1, operand2) {
     return operand1.sdiv(operand2);
-  },
+  }
 };
 
 // Maps MPC operation to its open dual
@@ -48,31 +59,31 @@ var dual = {'add': '+', 'sub': '-', 'mult': '*', 'xor': '^', 'div': '/'};
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
-  // ensure numbers wont wrap around
-  var max = Zp / 3;
-  if (operation == 'mult') {
-    max = Math.cbrt(Zp);
-  } else if (operation == 'div') {
-    max = Zp;
-  }
-
-  var offset = Math.floor(max / 2);
-  if (operation == 'xor') {
-    max = 2;
-    offset = 0;
-  }
 
   // Generate Numbers - make sure we generate both positive and negative numbers.
   for (var i = 0; i < 200; i++) {
-    tests[i] = [];
 
-    for (var p = 0; p < 3; p++) {
-      var randnum = Math.floor(Math.random() * max) - offset;
-      if (p == 1 && operation == 'div' && randnum == 0) {
-        randnum = 1;
-      }
-      tests[i].push(randnum);
+    var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits);
+    var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
+
+    if (operation === 'mult') {
+      var max_int = Math.floor(Math.cbrt(Math.pow(10, decimal_digits) - 1));
+      total_magnitude = new BigNumber(max_int).times(decimal_magnitude);
     }
+
+    if (operation === 'xor' || operation === 'or') {
+      total_magnitude = 2;
+      decimal_magnitude = 1;
+    }
+
+    var num1 = BigNumber.random().times(total_magnitude).div(2).floor().div(decimal_magnitude);
+    num1 = Math.random() < 0.5 ? num1.times(-1) : num1;
+    var num2 = BigNumber.random().times(total_magnitude).div(2).floor().div(decimal_magnitude);
+    num2 = Math.random() < 0.5 ? num2.times(-1) : num2;
+    var num3 = BigNumber.random().times(total_magnitude).div(2).floor().div(decimal_magnitude);
+    num3 = Math.random() < 0.5 ? num3.times(-1) : num3;
+    tests[i] = [num1, num2, num3];
+
   }
 
   // Assign values to global variables
@@ -92,10 +103,13 @@ function run_test(computation_id, operation, callback) {
   };
 
   var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
+  jiff_instance1 = jiffFixedNumber.make_jiff(jiff_instance1, {integer_digits: 5, decimal_digits: 5});
   jiff_instance1 = jiffNegNumber.make_jiff(jiff_instance1);
   var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
+  jiff_instance2 = jiffFixedNumber.make_jiff(jiff_instance2, {integer_digits: 5, decimal_digits: 5});
   jiff_instance2 = jiffNegNumber.make_jiff(jiff_instance2);
   var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
+  jiff_instance3 = jiffFixedNumber.make_jiff(jiff_instance3, {integer_digits: 5, decimal_digits: 5});
   jiff_instance3 = jiffNegNumber.make_jiff(jiff_instance3);
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
   jiff_instance1.connect();
@@ -107,7 +121,7 @@ function run_test(computation_id, operation, callback) {
 function test(callback, mpc_operator) {
   open_operator = dual[mpc_operator];
 
-  if (jiff_instances[0] == null || !jiff_instances[0].isReady()) {
+  if (!jiff_instances[0] || !jiff_instances[0].isReady()) {
     console.log('Please wait!');
     return;
   }
