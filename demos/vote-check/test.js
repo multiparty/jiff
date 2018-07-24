@@ -5,15 +5,14 @@ var assert = require('chai').assert;
 var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
-var party_count = 5;
-var parallelismDegree = 5; // Max number of test cases running in parallel
+var party_count = 2;
+var parallelismDegree = 1; // Max number of test cases running in parallel
 var n = 10; // Number of test cases in total
 
-var minimumVotingOptions = 2;
-var maximumVotingOptions = 10;
+var minimumVotingOptions = 5;
+var maximumVotingOptions = 5;
 
 // Parameters specific to this demo
-/* PUT PARAMETERS HERE */
 
 /**
  * CHANGE THIS: Generate inputs for your tests
@@ -122,7 +121,7 @@ describe('Test', function() {
             }
         }
 
-        // jiff_instance.disconnect();
+        jiff_instance.disconnect();
         if (count == party_count)
           done();
       })(0);

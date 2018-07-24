@@ -60,5 +60,5 @@ function handleResult(result) {
 }
 
 function handleError() {
-  console.log("Error in open_all");
+  console.log("Error in open_array");
 }
