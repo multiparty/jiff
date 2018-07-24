@@ -3,7 +3,15 @@
 var assert = require('chai').assert;
 
 var party_count = 2;
+var testCasesCount = 5;
+
 var mpc = require('./mpc.js');
+
+// graph limits
+const minX = -5;
+const maxX = 25;
+const minY = -5;
+const maxY = 25;
 
 // convex hull algorithm. https://github.com/indy256/convexhull-js/blob/master/convexhull.js
 function convexHull(points) {
@@ -48,12 +56,11 @@ const mapToTuples = (array) => {
       let p1 = array[i];
       let p2 = array[(i+1)%array.length];
       let p3 = array[(i+2)%array.length];
-      console.log(p1,p2,p3);
       let {gradient, yIntercept} = getEquationOfLineFromTwoPoints(p1, p2);
       r.push({
-          m:gradient,
-          b:yIntercept,
-          above:insideCalculator(gradient, yIntercept, p3.x, p3.y)
+        m:gradient,
+        b:yIntercept,
+        above:insideCalculator(gradient, yIntercept, p3.x, p3.y)
       });
   }
   return r;
@@ -66,7 +73,7 @@ const noVerticalLines = (array) => {
   return false;
 }
 
-const fillHelperRandom = () => {
+const generateRandomPolygon = () => {
   let convexHullPoints;
 
   do {
@@ -80,9 +87,10 @@ const fillHelperRandom = () => {
     convexHullPoints = convexHull(randomPoints);
   } while(noVerticalLines(convexHullPoints))
 
-  console.log(convexHullPoints);
-  return mapToTuples(convexHullPoints);
-  //TODO: fuse in the "submitLine" function
+  let tuples = mapToTuples(convexHullPoints);
+  let polygon = [];
+  tuples.forEach(line => polygon.push(line));
+  return polygon;
 }
 
 
@@ -94,15 +102,24 @@ const fillHelperRandom = () => {
  *   'party_id': [ 'test1_input', 'test2_input', ...]
  * }
  */
-function generateInputs(party_count) {
-  var inputs = {};
+function generateInputs(party_count_unused) {
+  var inputs = {1:[], 2:[]};
 
-  /*
-   * INPUT GENERATION CODE GOES HERE
-   */
-
+  for (var i = 0; i < testCasesCount; i++) {
+    inputs[1].push(generateRandomPolygon());
+    inputs[2].push({
+      x:Math.floor(Math.random()*(maxX - minX + 1) + minX),
+      y:Math.floor(Math.random()*(maxY - minY + 1) + minY)
+    });
+  }
+  // inputs[1].forEach(i => console.log(i));
+  // console.log(inputs[2]);
   return inputs;
 }
+
+// const computeLine = (m, b, a, x, y) => a ? y > m*x+b : y < m*x+b;
+const computeLine = (m, b, a, x, y) => a === "above" ? y > m*x+b : y < m*x+b;
+
 
 /**
  * CHANGE THIS: Compute the expected results not in MPC
@@ -114,9 +131,11 @@ function computeResults(inputs) {
   var results = [];
 
   for (var j = 0; j < inputs['1'].length; j++) {
-    /*
-     * COMPUTING THE RESULT IN THE OPEN CODE GOES HERE
-     */
+    let inside = true;
+    for (var i = 0; i < inputs[1][j].length; i++) {
+      inside = inside && computeLine(inputs[1][j][i].m, inputs[1][j][i].b, inputs[1][j][i].above, inputs[2][j].x, inputs[2][j].y);
+    }
+    results.push(inside);
   }
   return results;
 }
@@ -138,7 +157,12 @@ describe('Test', function() {
       var partyInputs = inputs[jiff_instance.id];
       var promises = [];
       for (var j = 0; j < partyInputs.length; j++) {
-        var promise = mpc.compute(partyInputs[j], jiff_instance);
+        // var promise = mpc.compute(partyInputs[j], jiff_instance);
+        var promise;
+        if (jiff_instance.id === 1)
+          promise = mpc.computePolygon(partyInputs[j], jiff_instance);
+        else
+          promise = mpc.computePoint(partyInputs[j], jiff_instance);
         promises.push(promise);
       }
 
