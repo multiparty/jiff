@@ -93,7 +93,7 @@ function handlePartyID(result) {
 function handleAnswers(result) {
     console.log('reached handle answers');
     // Gati's two functions to update gameboards
-    let p1_answers = result.splice(0, guesses_len);
+    let p1_answers = result.splice(0, emptyBoard.length);
     let p2_answers = result;
 
     let myAnswers = (jiffPartyID == 1) ? p1_answers : p2_answers;
@@ -280,7 +280,7 @@ function updateOppoBoard(data) {
     $('#my_answer_log').text('Answers for my guesses: ' + data);
 
     for(let i = 0; i < data.length; i++) {
-        let id = '#o_' + data[i];
+        let id = '#o_' + i;
         
         if(data[i] == 1) {
             // hits are brownish
@@ -311,6 +311,7 @@ function resetGameVars() {
     $('#hitsOnOppo').text('Hits On Opponent: ' + numHitsOnOppo + '/' + ships_len);
 
     guesses = emptyBoard.slice();
+    guessesCount = 0;
 
     if (numHitsOnOppo === ships_len) {iWon();}
 
