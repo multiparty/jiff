@@ -23,7 +23,7 @@ describe('MPC Operations', function () {
   this.timeout(0); // Remove timeout
   var i = 2;
 
-  describe('Primitives', function () {
+  /*describe('Primitives', function () {
     it('Sharing', function (done) {
       share.run_test(i++, callback(done));
     });
@@ -38,12 +38,12 @@ describe('MPC Operations', function () {
     it('Subtraction', function (done) {
       arithmetic_op.run_test(i++, 'sub', callback(done));
     });
-    // *
+    // * */
     it('Mutliplication', function (done) {
       arithmetic_op.run_test(i++, 'mult', callback(done));
     });
     // ^
-    it('Bitwise XOR', function (done) {
+    /*it('Bitwise XOR', function (done) {
       arithmetic_op.run_test(i++, 'xor', callback(done));
     });
     // /
@@ -137,5 +137,5 @@ describe('MPC Operations', function () {
     it('Not Equal', function (done) {
       constant_comparison.run_test(i++, 'neq_cst', callback(done));
     });
-  });
+  });*/
 });

@@ -62,7 +62,7 @@ var dual = {'add': '+', 'sub': '-', 'mult': '*', 'xor': '^', 'div': '/'};
 function run_test(computation_id, operation, callback) {
 
   // Generate Numbers - make sure we generate both positive and negative numbers.
-  for (var i = 0; i < 200; i++) {
+  for (var i = 0; i < 1; i++) {
 
     var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits);
     var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
