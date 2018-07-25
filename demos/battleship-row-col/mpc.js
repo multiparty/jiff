@@ -14,7 +14,7 @@
      */
     exports.connect = function (hostname, computation_id, options) {
       var opt = Object.assign({}, options);
-      opt.Zp = 2;
+      opt.Zp = 11;
       if(node)
         jiff = require('../../lib/jiff-client');
   
@@ -30,13 +30,21 @@
         var shares = jiff_instance.share(0);
         ss_0 = shares[1];
 
-        return new Promise(function(resolve, reject) {
-            let promise_ships = jiff_instance.share_array(input);
-            promise_ships.then(function(res_ships) {
-                ships = res_ships;
-                resolve(jiff_instance.id);
-            });
-        });
+        // return new Promise(function(resolve, reject) {
+        //     let promise_ships = jiff_instance.share_array(input);
+        //     promise_ships.then(function(res_ships) {
+        //         ships = res_ships;
+        //         resolve(jiff_instance.id);
+        //     });
+        // });
+        ships = [];
+        for(let i = 0; i < input.length; i++) {
+            ships[i] = [];
+            for(let j = 0; j < input.length; j++) {
+                ships[i][j] = jiff_instance.share(input[i][j]);
+            }
+        }
+        return jiff_instance.id;
     };
 
     /**
