@@ -31,7 +31,7 @@ describe("MPC Operations", function() {
   });
 
   describe("Arithmetic Operations", function() {
-    //+/*
+    //+
     it("Addition", function(done) {
       arithmetic_op.run_test(i++, "add", callback(done));
     });
@@ -50,7 +50,7 @@ describe("MPC Operations", function() {
     // |
     it("Bitwise OR", function(done) {
       arithmetic_op.run_test(i++, "or", callback(done));
-    });*/
+    });
     // /
     it("Integer Divison", function(done) {
       arithmetic_op.run_test(i++, "div", callback(done));
