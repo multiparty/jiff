@@ -32,7 +32,10 @@ options.onConnect = function(jiff_instance) {
 
 
   promise.then(function(v) {
-    console.log(v);
+    if (result === 1)
+      console.log("Point is inside.");
+    else
+      console.log("Point is outside.");
     jiff_instance.disconnect();
   });
 };
