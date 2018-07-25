@@ -14,7 +14,7 @@
      */
     exports.connect = function (hostname, computation_id, options) {
       var opt = Object.assign({}, options);
-      opt.Zp = 67;
+      opt.Zp = 11;
       if(node)
         jiff = require('../../lib/jiff-client');
   
@@ -78,6 +78,26 @@
         return answers; // an array of secret shares
     };
 
+    function row_col_check_answers(p_guesses, p_ships){
+        let answers = []; // numGuesses long
+        // 0 = miss
+        // 1 = hit
+        for (let g = 0; g < p_guesses.length; g+=2) {
+            //answers[g] = ss_0.cadd(1); // is this a secret share?
+            answers[g/2] = ss_0.cadd(1);
+            let g_row = p_guesses[g];
+            let g_col = p_guesses[g+1];
+            for (let s = 0; s < p_ships.length; s+=2) {
+                let s_row = p_ships[s];
+                let s_col = p_ships[s+1];
+                answers[g/2] = answers[g/2].smult((g_row.ssub(s_row)).sadd(g_col.ssub(s_col))); // if this is 0, then there should be a hit
+            }
+           answers[g/2] = answers[g/2].seq(ss_0);
+        }
+        console.log('checked p answers');
+        return answers; // an array of secret shares
+    };
+
     // gets guesses and partyID, shares guesses, check guesses, return answers and party_id
     exports.share_guesses = function (input, jiff_instance) {
         if(jiff_instance == null) jiff_instance = saved_instance;
@@ -93,9 +113,9 @@
 
             // do MPC computation and get answers
             console.log('about to check p1 answers');
-            p1_answers = optimized_check_answers(guesses[1], ships[2]);
+            p1_answers = row_col_check_answers(guesses[1], ships[2]);
             console.log('about to check p2 answers');
-            p2_answers = optimized_check_answers(guesses[2], ships[1]);
+            p2_answers = row_col_check_answers(guesses[2], ships[1]);
 
             // open returns a promise, put all those promises into arrays, with player1's answers put in first
             var allPromises = [];

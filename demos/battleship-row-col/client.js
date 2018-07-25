@@ -146,8 +146,10 @@ function createOppoBoard() {
     $('#status').text('Pick ' + guesses_len + ' locations to attack');
 
     for (let i = 0; i < numRows*numCols; i++) {
+        let row = Math.floor(i/numRows);
+        let col = i%numCols;
         var button = $('<button/>', {
-            text: i,
+            text: '(' + row + ', ' + col + ')',
             id: 'o_' + i,
             disabled: false,
             width: window.innerWidth/(numCols + 1),
@@ -172,13 +174,16 @@ function clickOppoBoardButton(event) {
 
 // add all guesses to guesses[] and when get 5 guesses, sort and send to server
 function addGuesses(guess) {
-    guesses.push(guess);
-    if (guesses.length == guesses_len) {
+    let row = Math.floor(guess/numRows);
+    let col = guess%numCols;
+    guesses.push(row);
+    guesses.push(col);
+    if (guesses.length == guesses_len*2) {
 
         canPlay = false;
         $('#status').text('Waiting for other player...');
 
-        guesses.sort(function(a, b) {return a-b});
+        // guesses.sort(function(a, b) {return a-b});
 
         $('#guess_log').text('Guesses: ' + guesses);
 
@@ -205,8 +210,10 @@ function createMyBoard() {
     }));
     
     for (let i = 0; i < numRows*numCols; i++) {
+        let row = Math.floor(i/numRows);
+        let col = i%numCols;
         var button = $('<button/>', {
-            text: i,
+            text: '(' + row + ', ' + col + ')',
             id: 'm_' + i,
             disabled: false,
             width: window.innerWidth/(numCols + 1),
@@ -245,10 +252,13 @@ function placeShips() {
         event.target.disabled = true;
         // placement is white
         event.target.style.background = '#ffffff';
-        myShips.push(index);
-        $('#hitsOnMe').text('Ships placed: ' + myShips.length  + '/' + ships_len);
+        let row = Math.floor(index/numRows);
+        let col = index%numCols;
+        myShips.push(row);
+        myShips.push(col);
+        $('#hitsOnMe').text('Ships placed: ' + myShips.length/2  + '/' + ships_len);
     }
-    if (myShips.length === ships_len) {
+    if (myShips.length === ships_len*2) {
         isSettingUp = false;
         canPlay = true;
         $('.myboard-buttons').attr("disabled", "disabled");
@@ -265,10 +275,11 @@ function placeShips() {
 function updateOppoBoard(data) {
     $('#my_answer_log').text('Answers for my guesses: ' + data);
 
-    for(let i = 0; i < guesses.length; i++) {
-        let id = '#o_' + guesses[i];
+    for(let i = 0; i < guesses.length; i+=2) {
+        let index = guesses[i]*numRows + guesses[i+1]; // index = row*numRows + col
+        let id = '#o_' + index;
         
-        if(data[i] == 1) {
+        if(data[i/2] == 1) {
             // hits are brownish
             $(id).css("background-color", "Crimson");
             numHitsOnOppo++;
