@@ -4,8 +4,6 @@
     var ships;
     var guesses;
 
-    var ss_0;
-
     var p1_answers = null;
     var p2_answers = null;
   
@@ -14,7 +12,7 @@
      */
     exports.connect = function (hostname, computation_id, options) {
       var opt = Object.assign({}, options);
-      opt.Zp = 67;
+    //   opt.Zp = 67;
       if(node)
         jiff = require('../../lib/jiff-client');
   
@@ -26,9 +24,6 @@
     // share ship locations, return your party_id
     exports.share_ships = function (input, jiff_instance) {
         if(jiff_instance == null) jiff_instance = saved_instance;
-
-        var shares = jiff_instance.share(0);
-        ss_0 = shares[1];
 
         return new Promise(function(resolve, reject) {
             let promise_ships = jiff_instance.share_array(input);
@@ -43,17 +38,15 @@
      * The MPC computation
      */
     function optimized_check_answers(p_guesses, p_ships){
-        let answers = [];
+        let answers = saved_instance.server_generate_and_share({nonzero: true, count: p_guesses.length});
         // 0 = miss
         // 1 = hit
         for (let g = 0; g < p_guesses.length; g++) {
-            answers[g] = ss_0.cadd(1);
             let a = p_guesses[g];
             for (let s = 0; s < p_ships.length; s++) {
                 let b = p_ships[s];
                 answers[g] = answers[g].smult(a.ssub(b)); // if this is 0, then there should be a hit
             }
-           answers[g] = answers[g].seq(ss_0);
         }
         console.log('checked p answers');
         return answers; // an array of secret shares
