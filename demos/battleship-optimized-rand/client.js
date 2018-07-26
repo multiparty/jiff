@@ -31,14 +31,12 @@ function connect() {
     var computation_id = $('#computation_id').val();
     $('#room').text('Player Joined ' + computation_id);
 
-    // var party_count = parseInt($('#count').val());
     var party_count = 2; // always 2 player game
 
     // options will be passed down and eventually called when JIFF is ready
     var options = { party_count: party_count};
     options.onError = function(error) { $("#JIFF_output").append("<p class='error'>"+error+"</p>"); };
     options.onConnect = function() {
-        // $("#button").attr("disabled", false); 
         $("#JIFF_output").append("<p>All parties Connected!</p>");
         startSetUpBoard();
     };
@@ -57,8 +55,6 @@ function connect() {
   
     hostname = hostname + ":" + port;
     mpc.connect(hostname, computation_id, options);
-
-    //}
 }
 
 //==============================
