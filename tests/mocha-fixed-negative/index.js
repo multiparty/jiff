@@ -38,7 +38,7 @@ describe('MPC Operations', function () {
     it('Subtraction', function (done) {
       arithmetic_op.run_test(i++, 'sub', callback(done));
     });
-    // * */
+    // *
     it('Mutliplication', function (done) {
       arithmetic_op.run_test(i++, 'mult', callback(done));
     });
@@ -50,7 +50,7 @@ describe('MPC Operations', function () {
     it('Integer Divison', function (done) {
       arithmetic_op.run_test(i++, 'div', callback(done));
     });
-  });
+  });*/
 
   describe('Constant Arithmetic Operations', function () {
     // constant +
@@ -64,7 +64,7 @@ describe('MPC Operations', function () {
     // constant *
     it('Constant Multiplication', function (done) {
       constant_arithmetic_op.run_test(i++, 'mult_cst', callback(done));
-    });
+    });/*
     // constant ^
     it('Constant Bitwise XOR', function (done) {
       constant_arithmetic_op.run_test(i++, 'xor_cst', callback(done));
@@ -72,9 +72,9 @@ describe('MPC Operations', function () {
     // /
     it('Constant Integer Divison', function (done) {
       constant_arithmetic_op.run_test(i++, 'div_cst', callback(done));
-    });
+    });*/
   });
-
+  /*
   describe('Comparison', function () {
     // <
     it('Less than', function (done) {
