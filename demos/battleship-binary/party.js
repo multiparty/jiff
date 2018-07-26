@@ -6,7 +6,7 @@
 
 // console.log("Command line arguments: <input> [<party count> [<computation_id> [<party id>]]]]");
 console.log("Command line arguments: <ships> [<guesses> [<computation_id> [<party id>]]]]");
-console.log("Use party id 1 when providing the haystack, and party id 2 when providing needle.")
+console.log("Party id can be 1 or 2");
 
 var mpc = require('./mpc');
 
