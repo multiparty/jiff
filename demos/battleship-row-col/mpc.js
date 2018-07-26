@@ -92,29 +92,18 @@
                 let s_row = p_ships[s];
                 let s_col = p_ships[s+1];
 
-                // answers[g/2] = 
-
-                // actual calculation starts
-
-                // Non-MPC version
-                // let d1 = g_row - s_row;
-                // let d2 = g_col - s_col;
-                // answers[g/2] = answers[g/2] * (d1 + d2 + d1 - d2 + 1) * (d2 + 1);
-
-                // MPC version
-                // let d1 = g_row.ssub(s_row);
-                // let d2 = g_col.ssub(s_col);
-                // answers[g/2] = answers[g/2].smult(d1.cadd(1).smult(d2.cadd(1))).csub(1);
-
-                // answers[g/2] = answers[g/2].smult((g_row.ssub(s_row)).sadd(g_col.ssub(s_col))); // if this is 0, then there should be a hit
+                // MPC
+                let d1 = g_row.ssub(s_row);
+                let d2 = g_col.ssub(s_col);
+                answers[g/2] = answers[g/2].smult(d1.cadd(1).smult(d2.cadd(1))).csub(1);
+                // a = a * (d1 + 1) * (d2 + 1) - 1; // this doesn't work if a != 1, which happens whenever there isn't a match
             }
-           //answers[g/2] = answers[g/2].seq(ss_1);
         }
         console.log('checked p answers');
         return answers; // an array of secret shares
     };
 
-    // gets guesses and partyID, shares guesses, check guesses, return answers and party_id
+    // gets guesses, shares guesses, check guesses, return answers
     exports.share_guesses = function (input, jiff_instance) {
         if(jiff_instance == null) jiff_instance = saved_instance;
 
