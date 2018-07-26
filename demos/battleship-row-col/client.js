@@ -279,7 +279,7 @@ function updateOppoBoard(data) {
         let index = guesses[i]*numRows + guesses[i+1]; // index = row*numRows + col
         let id = '#o_' + index;
         
-        if(data[i/2] == 1) {
+        if(data[i/2] == 0) {
             // hits are brownish
             $(id).css("background-color", "Crimson");
             numHitsOnOppo++;
@@ -297,7 +297,7 @@ function updateMyBoard(data) {
 
     for(let i = 0; i < data.length; i++) {
 
-        if(data[i] == 1) {
+        if(data[i] == 0) {
             // hits are brownish
             numHitsOnMe++;
         }

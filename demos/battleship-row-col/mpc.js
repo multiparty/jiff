@@ -4,7 +4,7 @@
     var ships;
     var guesses;
 
-    var ss_0;
+    var ss_1;
 
     var p1_answers = null;
     var p2_answers = null;
@@ -27,8 +27,8 @@
     exports.share_ships = function (input, jiff_instance) {
         if(jiff_instance == null) jiff_instance = saved_instance;
 
-        var shares = jiff_instance.share(0);
-        ss_0 = shares[1];
+        var shares = jiff_instance.share(1);
+        ss_1 = shares[1];
 
         return new Promise(function(resolve, reject) {
             let promise_ships = jiff_instance.share_array(input);
@@ -60,39 +60,55 @@
     // };
 
     // does numGuesses seq
-    function optimized_check_answers(p_guesses, p_ships){
-        let answers = [];
-        // 0 = miss
-        // 1 = hit
-        for (let g = 0; g < p_guesses.length; g++) {
-            //answers[g] = ss_0.cadd(1); // is this a secret share?
-            answers[g] = ss_0.cadd(1);
-            let a = p_guesses[g];
-            for (let s = 0; s < p_ships.length; s++) {
-                let b = p_ships[s];
-                answers[g] = answers[g].smult(a.ssub(b)); // if this is 0, then there should be a hit
-            }
-           answers[g] = answers[g].seq(ss_0);
-        }
-        console.log('checked p answers');
-        return answers; // an array of secret shares
-    };
+    // careful -- ss_0 is never shared, replaced with ss_1
+    // function optimized_check_answers(p_guesses, p_ships){
+    //     let answers = [];
+    //     // 0 = miss
+    //     // 1 = hit
+    //     for (let g = 0; g < p_guesses.length; g++) {
+    //         //answers[g] = ss_0.cadd(1); // is this a secret share?
+    //         answers[g] = ss_0.cadd(1);
+    //         let a = p_guesses[g];
+    //         for (let s = 0; s < p_ships.length; s++) {
+    //             let b = p_ships[s];
+    //             answers[g] = answers[g].smult(a.ssub(b)); // if this is 0, then there should be a hit
+    //         }
+    //        answers[g] = answers[g].seq(ss_0);
+    //     }
+    //     console.log('checked p answers');
+    //     return answers; // an array of secret shares
+    // };
 
     function row_col_check_answers(p_guesses, p_ships){
-        let answers = []; // numGuesses long
+        // let answers = saved_instance.server_generate_and_share({nonzero: true, count: p_guesses.length/2});
         // 0 = miss
         // 1 = hit
+        let answers = [];
         for (let g = 0; g < p_guesses.length; g+=2) {
-            //answers[g] = ss_0.cadd(1); // is this a secret share?
-            answers[g/2] = ss_0.cadd(1);
+            answers[g/2] = ss_1;
             let g_row = p_guesses[g];
             let g_col = p_guesses[g+1];
             for (let s = 0; s < p_ships.length; s+=2) {
                 let s_row = p_ships[s];
                 let s_col = p_ships[s+1];
-                answers[g/2] = answers[g/2].smult((g_row.ssub(s_row)).sadd(g_col.ssub(s_col))); // if this is 0, then there should be a hit
+
+                // answers[g/2] = 
+
+                // actual calculation starts
+
+                // Non-MPC version
+                // let d1 = g_row - s_row;
+                // let d2 = g_col - s_col;
+                // answers[g/2] = answers[g/2] * (d1 + d2 + d1 - d2 + 1) * (d2 + 1);
+
+                // MPC version
+                // let d1 = g_row.ssub(s_row);
+                // let d2 = g_col.ssub(s_col);
+                // answers[g/2] = answers[g/2].smult(d1.cadd(1).smult(d2.cadd(1))).csub(1);
+
+                // answers[g/2] = answers[g/2].smult((g_row.ssub(s_row)).sadd(g_col.ssub(s_col))); // if this is 0, then there should be a hit
             }
-           answers[g/2] = answers[g/2].seq(ss_0);
+           //answers[g/2] = answers[g/2].seq(ss_1);
         }
         console.log('checked p answers');
         return answers; // an array of secret shares
