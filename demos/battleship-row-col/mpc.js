@@ -14,7 +14,7 @@
      */
     exports.connect = function (hostname, computation_id, options) {
       var opt = Object.assign({}, options);
-      opt.Zp = 11;
+      //opt.Zp = 11;
       if(node)
         jiff = require('../../lib/jiff-client');
   
@@ -95,8 +95,8 @@
                 // MPC
                 let d1 = g_row.ssub(s_row);
                 let d2 = g_col.ssub(s_col);
-                answers[g/2] = answers[g/2].smult(d1.cadd(1).smult(d2.cadd(1))).csub(1);
-                // a = a * (d1 + 1) * (d2 + 1) - 1; // this doesn't work if a != 1, which happens whenever there isn't a match
+                answers[g/2] = d1.cadd(5).smult(d2.cadd(5)).csub(25).smult(answers[g/2]);
+                // a = ((d1 + 5) * (d2 + 5) - 25) * a;
             }
         }
         console.log('checked p answers');
