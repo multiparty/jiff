@@ -12,7 +12,7 @@
      */
     exports.connect = function (hostname, computation_id, options) {
       var opt = Object.assign({}, options);
-    //   opt.Zp = 67;
+      // opt.Zp = 67;
       if(node)
         jiff = require('../../lib/jiff-client');
   

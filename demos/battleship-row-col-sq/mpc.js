@@ -4,8 +4,6 @@
     var ships;
     var guesses;
 
-    var ss_1;
-
     var p1_answers = null;
     var p2_answers = null;
   
@@ -26,9 +24,6 @@
     // share ship locations, return your party_id
     exports.share_ships = function (input, jiff_instance) {
         if(jiff_instance == null) jiff_instance = saved_instance;
-
-        var shares = jiff_instance.share(1);
-        ss_1 = shares[1];
 
         return new Promise(function(resolve, reject) {
             let promise_ships = jiff_instance.share_array(input);
