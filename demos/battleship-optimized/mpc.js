@@ -42,30 +42,11 @@
     /**
      * The MPC computation
      */
-    // fix me - does numGuesses*numShips seq
-    // function check_answers(p_guesses, p_ships){
-    //     let answers = [];
-    //     // 0 = miss
-    //     // 1 = hit
-    //     for (let g = 0; g < p_guesses.length; g++) {
-    //         answers[g] = p_guesses[g].cmult(0); // is this a secret share?
-    //         for (let s = 0; s < p_ships.length; s++) {
-    //             let a = p_guesses[g];
-    //             let b = p_ships[s];
-    //             answers[g] = answers[g].sadd(a.seq(b));
-    //         }
-    //     }
-    //     console.log('checked p answers');
-    //     return answers; // an array of secret shares
-    // };
-
-    // does numGuesses seq
     function optimized_check_answers(p_guesses, p_ships){
         let answers = [];
         // 0 = miss
         // 1 = hit
         for (let g = 0; g < p_guesses.length; g++) {
-            //answers[g] = ss_0.cadd(1); // is this a secret share?
             answers[g] = ss_0.cadd(1);
             let a = p_guesses[g];
             for (let s = 0; s < p_ships.length; s++) {
