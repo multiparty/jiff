@@ -12,6 +12,6 @@ http.listen(8080, function() {
   console.log('listening on *:8080');
 });
 
-console.log("Direct your browser to *:8080/demos/battleship-row-col/client.html.");
-console.log("To run a node.js based party: node demos/battleship-row-col/party <input>");
+console.log("Direct your browser to *:8080/demos/battleship-optimized-rand/client.html.");
+console.log("To run a node.js based party: node demos/battleship-optimized-rand/party <input>");
 console.log();
