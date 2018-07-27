@@ -6,7 +6,7 @@ var parties = 0;
 var tests = [];
 var has_failed = false;
 var Zp = 2039;
-//function mod(x, y) { if (x < 0) return x % y + y; return x.mod(y); }
+function mod(x, y) { if (x < 0) return x % y + y; return x.mod(y); }
 
 // Operation strings to "lambdas"
 var operations = {
@@ -40,6 +40,12 @@ var operations = {
   "div" : function (operand1, operand2) {
     return operand1.sdiv(operand2);
   },
+  "%" : function (operand1, operand2) {
+    return mod(operand1, operand2);
+  },
+  "mod" : function (operand1, operand2) {
+    return operand1.smod(operand2);
+  },
 };
 
 // Maps MPC operation to its open dual
@@ -65,9 +71,9 @@ function run_test(computation_id, operation, callback) {
   for (var i = 0; i < 200; i++) {
     tests[i] = [];
 
-    for(var p = 0; p < 3; p++) {      
+    for(var p = 0; p < 3; p++) {
       var randnum = Math.floor(Math.random() * max) - offset;
-      if(p == 1 && operation == "div" && randnum == 0) randnum = 1;
+      if(p == 1 && (operation == "div" || operation == "mod") && randnum == 0) randnum = 1;
       tests[i].push(randnum);
     }
   }
@@ -99,7 +105,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == "div" ? 10 : tests.length;
+  var length = (mpc_operator == "div" || mpc_operator == "mod") ? 10 : tests.length;
   for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
@@ -125,7 +131,7 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
   var shares_list = [];
   for(var i = 1; i <= parties; i++) shares_list.push(shares[i]);
 
-  if(mpc_operator == "div")
+  if(mpc_operator == "div" ||  mpc_operator == "mod")
     res = operations[mpc_operator](shares_list[0], shares_list[1]);
   else
     res = shares_list.reduce(operations[mpc_operator]);
