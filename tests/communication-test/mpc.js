@@ -6,6 +6,7 @@
    */
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
+    opt.Zp = 2049;
 
     if (node) {
       jiff = require('../../lib/jiff-client');
@@ -13,6 +14,7 @@
     }
 
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
+    exports.saved_instance = saved_instance;
     return saved_instance;
   };
 
@@ -36,13 +38,14 @@
     var element = shares[1].sdiv(shares[2]);
 
     var c = 0;
-    element.promise.then(function() {
+    element.promise.then(function one_div() {
       console.log('div', c);
-      if (c > 5) {
+      if (c > 3) {
         jiff_instance.open(element).then(final_deferred.resolve);
       } else {
-        element = element.sdiv(shares[2]);
         c++;
+        element = element.sdiv(shares[2]);
+        element.promise.then(one_div);
       }
     });
 
