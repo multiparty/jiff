@@ -11,8 +11,8 @@ console.log("Party id can be 1 or 2");
 var mpc = require('./mpc');
 
 // Read Command line arguments
-var ships = process.argv[2];
-var guesses = process.argv[3];
+var ships = JSON.parse(process.argv[2]);
+var guesses = JSON.parse(process.argv[3]);
 
 var party_count = 2;
 
