@@ -10,6 +10,8 @@
 var jiff_client = require('../../../lib/jiff-client');
 const _sodium = require('libsodium-wrappers-sumo');
 const _oprf = require('oprf');
+const boston = require('../data/boston');
+const fs = require('fs');
 
 const SRC = 0;
 const DEST = 1;
@@ -66,9 +68,25 @@ function startServer() {
   oprf = new _oprf.OPRF(_sodium);
 }
 
+function hashData() {
+  let json = [];
+  for (let i in boston) {
+    let a = oprf.hashToPoint(boston[i][0].toString());
+    let b = oprf.hashToPoint(boston[i][1].toString());
+    let c = oprf.hashToPoint(boston[i][2].toString());
+
+    json.push([boston[i][0], boston[i][1], boston[i][2], a, b, c]);
+  }
+
+  json = JSON.stringify(json);
+
+  fs.writeFile('../data/bostonHashed.json', json, 'utf8', function() {
+    console.log('success!!!');
+  });
+}
+
 /* Preprocess the table in MPC, then start listening and handling secure requests */
 function mpc_preprocess(table) {
-  console.log("PREPROCESSING START");
 
   // Figure out the recomputation number
   var recompute_number = recompute_count++;
