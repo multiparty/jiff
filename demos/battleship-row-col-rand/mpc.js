@@ -38,8 +38,8 @@
      * The MPC computation
      */
     function row_col_check_answers(p_guesses, p_ships){
-        // 0 = miss
-        // 1 = hit
+        // any number = miss
+        // 0 = hit
         let answers = saved_instance.server_generate_and_share({nonzero: true, count: p_guesses.length/2});
         for (let g = 0; g < p_guesses.length; g+=2) {
             let g_row = p_guesses[g];

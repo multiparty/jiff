@@ -39,8 +39,8 @@
      */
     function optimized_check_answers(p_guesses, p_ships){
         let answers = saved_instance.server_generate_and_share({nonzero: true, count: p_guesses.length});
-        // 0 = miss
-        // 1 = hit
+        // any number = miss
+        // 0 = hit
         for (let g = 0; g < p_guesses.length; g++) {
             let a = p_guesses[g];
             for (let s = 0; s < p_ships.length; s++) {

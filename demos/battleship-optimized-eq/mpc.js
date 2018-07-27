@@ -44,8 +44,8 @@
      */
     function optimized_check_answers(p_guesses, p_ships){
         let answers = [];
-        // 0 = miss
-        // 1 = hit
+        // 1 = miss
+        // 0 = hit
         for (let g = 0; g < p_guesses.length; g++) {
             answers[g] = ss_1;
             let a = p_guesses[g];
