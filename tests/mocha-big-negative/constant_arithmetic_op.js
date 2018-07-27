@@ -137,19 +137,19 @@ function test(callback, mpc_operator) {
 
 // Run test case at index
 function single_test(index, jiff_instance, mpc_operator, open_operator) {
-  var numbers = tests[index];
-  var party_index = jiff_instance.id - 1;
-  var shares = jiff_instance.share(numbers[party_index]);
+      var numbers = tests[index];
+      var party_index = jiff_instance.id - 1;
+      var shares = jiff_instance.share(numbers[party_index]);
 
-  // Apply operation on shares
-  var res = operations[mpc_operator](shares[1], numbers[1]);
+      // Apply operation on shares
+      var res = operations[mpc_operator](shares[1], numbers[1]);
 
-  var deferred = $.Deferred();
-  res.open(function (result) {
-    test_output(index, result, open_operator);
-    deferred.resolve();
-  }, error);
-  return deferred.promise();
+      var deferred = $.Deferred();
+      res.open(function (result) {
+          test_output(index, result, open_operator);
+          deferred.resolve();
+      }, error);
+      return deferred.promise();
 }
 
 // Determine if the output is correct

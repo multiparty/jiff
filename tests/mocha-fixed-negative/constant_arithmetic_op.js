@@ -76,14 +76,17 @@ function run_test(computation_id, operation, callback) {
         max = Zp;
       }
 
-      var offset = Math.floor(max / 2);
+      // var magnitude = jiff.helpers.magnitude(share.jiff.decimal_digits);
+      var offset = Math.floor(max / 2) * decimal_magnitude;
       if (operation == 'xor_cst') {
         max = 2;
         offset = 0;
       }
 
-      var randnum = BigNumber.random().times(total_magnitude).div(3).floor().div(decimal_magnitude);
-      randnum = Math.random() < 0.5 ? randnum.times(-1) : randnum;
+      // var randnum = BigNumber.random().times(total_magnitude).div(3).floor().div(decimal_magnitude) + offset;
+      // var randnum = Math.random() * max - offset;
+       var randnum = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+      // randnum = Math.random() < 0.5 ? randnum.times(-1) : randnum;
       tests[i].push(randnum);
     }
   }
@@ -96,9 +99,7 @@ function run_test(computation_id, operation, callback) {
   options = {party_count: parties, Zp: Zp, autoConnect: false};
   options.onConnect = function () {
     if (++counter == 3) {
-      try {
         test(callback, operation);
-      } catch(e) {console.log(e)};
     }
   };
   options.onError = function (error) {
@@ -107,13 +108,13 @@ function run_test(computation_id, operation, callback) {
   };
 
   var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
-  jiff_instance1 = jiffFixedNumber.make_jiff(jiff_instance1);
+  jiff_instance1 = jiffFixedNumber.make_jiff(jiff_instance1, { decimal_digits: decimal_digits, integer_digits: integer_digits});
   jiff_instance1 = jiffNegNumber.make_jiff(jiff_instance1);
   var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
-  jiff_instance1 = jiffFixedNumber.make_jiff(jiff_instance1);
+  jiff_instance2 = jiffFixedNumber.make_jiff(jiff_instance2, { decimal_digits: decimal_digits, integer_digits: integer_digits});
   jiff_instance2 = jiffNegNumber.make_jiff(jiff_instance2);
   var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
-  jiff_instance1 = jiffFixedNumber.make_jiff(jiff_instance1);
+  jiff_instance3 = jiffFixedNumber.make_jiff(jiff_instance3, { decimal_digits: decimal_digits, integer_digits: integer_digits});
   jiff_instance3 = jiffNegNumber.make_jiff(jiff_instance3);
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
   jiff_instance1.connect();
