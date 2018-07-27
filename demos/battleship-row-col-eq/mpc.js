@@ -42,7 +42,7 @@
     /**
      * The MPC computation
      */
-    function row_col_check_answers(p_guesses, p_ships){
+    function row_col_eq_check_answers(p_guesses, p_ships){
         // 0 = miss
         // 1 = hit
         let answers = [];
@@ -79,9 +79,9 @@
 
             // do MPC computation and get answers
             console.log('about to check p1 answers');
-            p1_answers = row_col_check_answers(guesses[1], ships[2]);
+            p1_answers = row_col_eq_check_answers(guesses[1], ships[2]);
             console.log('about to check p2 answers');
-            p2_answers = row_col_check_answers(guesses[2], ships[1]);
+            p2_answers = row_col_eq_check_answers(guesses[2], ships[1]);
 
             // open returns a promise, put all those promises into arrays, with player1's answers put in first
             var allPromises = [];

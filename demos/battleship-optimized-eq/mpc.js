@@ -42,7 +42,7 @@
     /**
      * The MPC computation
      */
-    function optimized_check_answers(p_guesses, p_ships){
+    function optimized_eq_check_answers(p_guesses, p_ships){
         let answers = [];
         // 1 = miss
         // 0 = hit
@@ -74,9 +74,9 @@
 
             // do MPC computation and get answers
             console.log('about to check p1 answers');
-            p1_answers = optimized_check_answers(guesses[1], ships[2]);
+            p1_answers = optimized_eq_check_answers(guesses[1], ships[2]);
             console.log('about to check p2 answers');
-            p2_answers = optimized_check_answers(guesses[2], ships[1]);
+            p2_answers = optimized_eq_check_answers(guesses[2], ships[1]);
 
             // open returns a promise, put all those promises into arrays, with player1's answers put in first
             var allPromises = [];
