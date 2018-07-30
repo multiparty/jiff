@@ -6,7 +6,13 @@ var parties = 0;
 var tests = [];
 var has_failed = false;
 var Zp = 2039;
-function mod(x, y) { if (x < 0) return x % y + y; return x.mod(y); }
+function mod(x, y) {
+  if (x < 0) {
+    return (x + y) % y;
+  } else {
+    return x % y;
+  }
+}
 
 // Operation strings to 'lambdas'
 var operations = {
@@ -41,7 +47,7 @@ var operations = {
     return operand1.sdiv(operand2);
   },
   '%' : function (operand1, operand2) {
-    return new BigNumber(mod(operand1, operand2));
+    return mod(operand1, operand2);
   },
   'mod' : function (operand1, operand2) {
     return operand1.smod(operand2);
@@ -57,7 +63,7 @@ function run_test(computation_id, operation, callback) {
   var max = Zp / 3;
   if (operation === 'mult') {
     max = Math.cbrt(Zp);
-  } else if(operation === 'div' || operation === 'mod') {
+  } else if (operation === 'div' || operation === 'mod') {
     max = Zp;
   }
 

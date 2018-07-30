@@ -56,7 +56,7 @@ describe('MPC Operations', function () {
       arithmetic_op.run_test(i++, 'div', callback(done));
     });
     // %
-    it('modulus', function(done) {
+    it('modulus', function (done) {
       arithmetic_op.run_test(i++, 'mod', callback(done));
     });
   });

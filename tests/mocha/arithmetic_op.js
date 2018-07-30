@@ -63,7 +63,7 @@ var dual = {add: '+', sub: '-', mult: '*', mult_bgw: '*', xor: '^', div: '/', mo
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 200; i++) {
-    if(operation === 'div' || operation === 'mod') {
+    if (operation === 'div' || operation === 'mod') {
       Zp = 2039;
     }
     var m = operation === 'xor' ? 2 : Zp;
@@ -150,7 +150,7 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
     shares_list.push(shares[i]);
   }
 
-  if(mpc_operator === 'div' || mpc_operator === 'mod') {
+  if (mpc_operator === 'div' || mpc_operator === 'mod') {
     res = operations[mpc_operator](shares_list[0], shares_list[1]);
   } else {
     res = shares_list.reduce(operations[mpc_operator]);
@@ -172,8 +172,7 @@ function test_output(index, result, open_operator) {
   var res;
   if (open_operator === '/' || open_operator === '%') {
     res = operations[open_operator](numbers[0], numbers[1]);
-  }
-  else {
+  } else {
     res = numbers.reduce(operations[open_operator]);
   }
 

@@ -190,7 +190,7 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
     shares_list.push(shares[i]);
   }
 
-  if(mpc_operator === 'div' || mpc_operator === 'mod') {
+  if (mpc_operator === 'div' || mpc_operator === 'mod') {
     res = operations[mpc_operator](shares_list[0], shares_list[1]);
   } else {
     res = shares_list.reduce(operations[mpc_operator]);

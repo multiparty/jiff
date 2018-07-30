@@ -57,7 +57,7 @@ var operations = {
 };
 
 // Maps MPC operation to its open dual
-var dual = { 'add': '+', 'sub': '-', 'mult': '*', 'xor': '^', 'div': '/', 'mod': '%' };
+var dual = {add: '+', sub: '-', mult: '*', xor: '^', div: '/', mod: '%'};
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
@@ -114,7 +114,7 @@ function test(callback, mpc_operator) {
   // Run every test and accumelate all the promises
   var promises = [];
   var length = (mpc_operator === 'div' || mpc_operator === 'mod') ? 10 : tests.length;
-  for(var i = 0; i < length; i++) {
+  for (var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
       promises.push(promise);
@@ -144,7 +144,7 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
   }
 
   var res;
-  if (operation === 'div' || operation === 'mod') {
+  if (mpc_operator === 'div' || mpc_operator === 'mod') {
     res = operations[mpc_operator](shares_list[0], shares_list[1]);
   } else {
     res = shares_list.reduce(operations[mpc_operator]);

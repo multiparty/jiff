@@ -55,7 +55,7 @@ describe('MPC Operations', function () {
     it('Integer Division', function (done) {
       arithmetic_op.run_test(i++, 'div', callback(done));
     });
-    it('Modulo', function(done) {
+    it('Modulo', function (done) {
       arithmetic_op.run_test(i++, 'mod', callback(done));
     });
   });
