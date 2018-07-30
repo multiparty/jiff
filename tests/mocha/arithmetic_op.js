@@ -55,12 +55,8 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "mult_bgw": "*", "xor": "^", "
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
-  var count = 200;
-  if (operation == 'div' || operation == 'mod') {
-    count = 20;
-  }
   // Generate Numbers
-  for (var i = 0; i < count; i++) {
+  for (var i = 0; i < 200; i++) {
     if(operation == "div" || operation == "mod") Zp = 2039;
     var m = operation == "xor" ? 2 : Zp;
     m = operation == "div"  || operation == "mod" ? m-1 : m;
