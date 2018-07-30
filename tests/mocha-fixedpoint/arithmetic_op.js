@@ -61,7 +61,7 @@ var operations = {
     return operand1.sdiv(operand2);
   },
   '%' : function (operand1, operand2) {
-    return new BigNumber(mod(operand1, operand2));
+    return new BigNumber(mod(operand1, operand2).toFixed(decimal_digits, BigNumber.ROUND_FLOOR));
   },
   'mod' : function (operand1, operand2) {
     return operand1.smod(operand2);
