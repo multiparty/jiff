@@ -10,15 +10,17 @@ console.log("Command line arguments: <ships> <guesses> [<computation_id> [<party
 var mpc = require('./mpc');
 
 // Read Command line arguments -- time is process.argv[0] on AWS
-var ships = JSON.parse(process.argv[3]);
-var guesses = JSON.parse(process.argv[4]);
+var ships = JSON.parse(process.argv[2]);
+console.log(process.argv[2]);
+var guesses = JSON.parse(process.argv[3]);
+console.log(process.argv[3]);
 
 var party_count = 2;
 
-var computation_id = process.argv[5];
+var computation_id = process.argv[4];
 if(computation_id == null) computation_id = 'test';
 
-var party_id = process.argv[6];
+var party_id = process.argv[5];
 if(party_id != null) party_id = parseInt(party_id, 10);
 
 // JIFF options
