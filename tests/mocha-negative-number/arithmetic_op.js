@@ -68,7 +68,7 @@ function run_test(computation_id, operation, callback) {
   }
 
   // Generate Numbers - make sure we generate both positive and negative numbers.
-  for (var i = 0; i < 20; i++) {
+  for (var i = 0; i < 200; i++) {
     tests[i] = [];
 
     for(var p = 0; p < 3; p++) {
