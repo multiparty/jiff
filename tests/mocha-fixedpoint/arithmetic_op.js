@@ -71,7 +71,7 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "or": "|", "div": 
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < 200; i++) {
     var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits);
     var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
 
