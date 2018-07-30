@@ -6,14 +6,13 @@
 
 // console.log("Command line arguments: <input> [<party count> [<computation_id> [<party id>]]]]");
 console.log("Command line arguments: <ships> <guesses> [<computation_id> [<party id>]]");
+console.log("Party id can be 1 or 2");
 
 var mpc = require('./mpc');
 
-// Read Command line arguments -- time is process.argv[0] on AWS
+// Read Command line arguments
 var ships = JSON.parse(process.argv[2]);
-console.log(process.argv[2]);
 var guesses = JSON.parse(process.argv[3]);
-console.log(process.argv[3]);
 
 var party_count = 2;
 
