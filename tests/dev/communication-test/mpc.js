@@ -12,7 +12,7 @@
 
     if (node) {
       // eslint-disable-next-line no-global-assign
-      jiff = require('../../lib/jiff-client');
+      jiff = require('../../../lib/jiff-client');
       // eslint-disable-next-line no-global-assign
       $ = require('jquery-deferred');
     }

@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 
-require('../../lib/jiff-server').make_jiff(http, {logs: true});
+require('../../lib/jiff-server').make_jiff(http, { logs: true });
 
 // Serve static files.
 app.use('/tests', express.static('tests'));
@@ -12,6 +12,6 @@ http.listen(8080, function () {
   console.log('listening on *:8080');
 });
 
-console.log('Direct your browser to *:8080/tests/communication-test/client.html.');
-console.log('To run a node.js based party: node tests/communication-test/party <input>');
+console.log('Direct your browser to *:8080/tests/dev/communication-test/client.html.');
+console.log('To run a node.js based party: node tests/dev/communication-test/party.js <input>');
 console.log();
