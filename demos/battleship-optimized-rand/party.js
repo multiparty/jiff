@@ -4,9 +4,7 @@
  * and calls the appropriate initialization and MPC protocol from ./mpc.js
  */
 
-// console.log("Command line arguments: <input> [<party count> [<computation_id> [<party id>]]]]");
-console.log("Command line arguments: <ships> <guesses> [<computation_id> [<party id>]]");
-console.log("Party id can be 1 or 2");
+console.log("Running party.js");
 
 var mpc = require('./mpc');
 
@@ -22,10 +20,14 @@ if(computation_id == null) computation_id = 'test';
 var party_id = process.argv[5];
 if(party_id != null) party_id = parseInt(party_id, 10);
 
+var t0;
+var t1;
+
 // JIFF options
 var options = {party_count: party_count, party_id: party_id};
 options.onConnect = function(jiff_instance) {
     // first share ships
+    t0 = Date.now();
     var promise_ships = mpc.share_ships(ships);
     promise_ships.then(function(ID) {
         var jiffPartyID = ID;
@@ -34,12 +36,14 @@ options.onConnect = function(jiff_instance) {
         // then share guesses and do calculations
         var promise_guesses = mpc.share_guesses(guesses);
         promise_guesses.then(function(result) {
+            t1 = Date.now();
             let p1_answers = result.splice(0, result.length/2);
             let p2_answers = result;
             let myAnswers = (jiffPartyID == 1) ? p1_answers : p2_answers;
             for(var i = 0; i < myAnswers.length; i++) {
                 console.log("Guess: " + guesses[i] + "| Answer: " + myAnswers[i]);
             }
+            console.log('TIME: ' + (t1 - t0) + ' miliseconds');
             jiff_instance.disconnect();
       });
 
