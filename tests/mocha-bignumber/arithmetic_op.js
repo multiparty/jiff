@@ -55,7 +55,7 @@ var dual = { "add": "+", "sub": "-", "mult": "*", "xor": "^", "div": "/", "mod":
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < 200; i++) {
     if(operation == "div" || operation == "mod") Zp = new BigNumber(2039);
     var m = operation == "xor" ? new BigNumber(2) : Zp;
     m = (operation == "div" || operation == "mod") ? m.minus(1) : m;
