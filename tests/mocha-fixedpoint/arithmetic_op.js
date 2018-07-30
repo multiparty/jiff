@@ -22,7 +22,7 @@ function mod(x, y) {
   return x.mod(y).div(decimal_magnitude);
 }
 
-// Operation strings to "lambdas"
+// Operation strings to 'lambdas'
 var operations = {
   '+': function (operand1, operand2) {
     return new BigNumber(operand1.plus(operand2).toFixed(decimal_digits, BigNumber.ROUND_DOWN));
@@ -59,11 +59,17 @@ var operations = {
   },
   'div': function (operand1, operand2) {
     return operand1.sdiv(operand2);
+  },
+  '%' : function (operand1, operand2) {
+    return new BigNumber(mod(operand1, operand2));
+  },
+  'mod' : function (operand1, operand2) {
+    return operand1.smod(operand2);
   }
 };
 
 // Maps MPC operation to its open dual
-var dual = {add: '+', sub: '-', mult: '*', xor: '^', or: '|', div: '/'};
+var dual = {add: '+', sub: '-', mult: '*', xor: '^', or: '|', div: '/', mod: '%'};
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
@@ -141,7 +147,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator === 'div' ? 3 : tests.length;
+  var length = (mpc_operator === 'div' || mpc_operator === 'mod') ? 3 : tests.length;
   length = mpc_operator === 'mult' ? 10 : length;
 
   (function do_test(i) {
@@ -184,7 +190,7 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
     shares_list.push(shares[i]);
   }
 
-  if (mpc_operator === 'div') {
+  if(mpc_operator === 'div' || mpc_operator === 'mod') {
     res = operations[mpc_operator](shares_list[0], shares_list[1]);
   } else {
     res = shares_list.reduce(operations[mpc_operator]);
@@ -204,7 +210,7 @@ function test_output(index, result, open_operator) {
 
   // Apply operation in the open to test
   var res;
-  if (open_operator === '/') {
+  if (open_operator === '/' || open_operator === '%') {
     res = operations[open_operator](numbers[0], numbers[1]);
   } else {
     res = numbers.reduce(operations[open_operator]);

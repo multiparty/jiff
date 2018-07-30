@@ -15,7 +15,7 @@ function mod(x, y) {
   return x.mod(y);
 }
 
-// Operation strings to "lambdas"
+// Operation strings to 'lambdas'
 var operations = {
   '+': function (operand1, operand2) {
     return operand1.plus(operand2);
@@ -46,22 +46,30 @@ var operations = {
   },
   'div': function (operand1, operand2) {
     return operand1.sdiv(operand2);
-  }
+
+  },
+  '%' : function (operand1, operand2) {
+    return mod(operand1, operand2).floor();
+  },
+  'mod' : function (operand1, operand2) {
+    return operand1.smod(operand2);
+  },
 };
 
 // Maps MPC operation to its open dual
-var dual = {add: '+', sub: '-', mult: '*', xor: '^', div: '/'};
+var dual = { 'add': '+', 'sub': '-', 'mult': '*', 'xor': '^', 'div': '/', 'mod': '%' };
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 200; i++) {
-    if (operation === 'div') {
+    if (operation === 'div' || operation === 'mod') {
       Zp = new BigNumber(2039);
     }
     var m = operation === 'xor' ? new BigNumber(2) : Zp;
-    m = operation === 'div' ? m.minus(1) : m;
-    var o = operation === 'div' ? 1 : 0; // ensure not to divide by zero
+    m = (operation === 'div' || operation === 'mod') ? m.minus(1) : m;
+    var o = (operation === 'div' || operation === 'mod') ? 1 : 0; // ensure not to divide by zero
+
     var num1 = BigNumber.random().times(Zp).floor().mod(m.plus(o));
     var num2 = BigNumber.random().times(Zp).floor().mod(m).plus(o);
     var num3 = BigNumber.random().times(Zp).floor().mod(m).plus(o);
@@ -105,8 +113,8 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator === 'div' ? 10 : tests.length;
-  for (var i = 0; i < length; i++) {
+  var length = (mpc_operator === 'div' || mpc_operator === 'mod') ? 10 : tests.length;
+  for(var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
       promises.push(promise);
@@ -136,7 +144,7 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
   }
 
   var res;
-  if (mpc_operator === 'div') {
+  if (operation === 'div' || operation === 'mod') {
     res = operations[mpc_operator](shares_list[0], shares_list[1]);
   } else {
     res = shares_list.reduce(operations[mpc_operator]);
@@ -156,11 +164,12 @@ function test_output(index, result, open_operator) {
 
   // Apply operation in the open to test
   var res;
-  if (open_operator === '/') {
+  if (open_operator === 'div' || open_operator === 'mod') {
     res = operations[open_operator](numbers[0], numbers[1]);
   } else {
     res = numbers.reduce(operations[open_operator]);
   }
+
   res = mod(res, Zp);
 
   // Incorrect result
