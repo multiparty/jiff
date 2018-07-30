@@ -1,3 +1,5 @@
+/* global jiff */
+
 (function (exports, node) {
   var saved_instance;
 
@@ -9,7 +11,9 @@
     opt.Zp = 2049;
 
     if (node) {
+      // eslint-disable-next-line no-global-assign
       jiff = require('../../lib/jiff-client');
+      // eslint-disable-next-line no-global-assign
       $ = require('jquery-deferred');
     }
 
@@ -52,4 +56,4 @@
     // Return a promise to the final output(s)
     return final_deferred.promise();
   };
-}((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
+}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
