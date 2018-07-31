@@ -8,13 +8,11 @@
    */
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
-    opt.Zp = 2049;
+    opt.Zp = 11;
 
     if (node) {
       // eslint-disable-next-line no-global-assign
       jiff = require('../../../lib/jiff-client');
-      // eslint-disable-next-line no-global-assign
-      $ = require('jquery-deferred');
     }
 
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
@@ -34,26 +32,27 @@
       input = 1;
     }
 
-    var final_deferred = $.Deferred();
-
     // The MPC implementation should go *HERE*
-
     var shares = jiff_instance.share(input);
-    var element = shares[1].sdiv(shares[2]);
+    var i = 1;
+    console.log(i);
+    (function next() {
+      jiff_instance.start_barrier();
 
-    var c = 0;
-    element.promise.then(function one_div() {
-      console.log('div', c);
-      if (c > 3) {
-        jiff_instance.open(element).then(final_deferred.resolve);
-      } else {
-        c++;
-        element = element.sdiv(shares[2]);
-        element.promise.then(one_div);
+      for (var j = 0; j < 5; j++) {
+        shares[1].sdiv(shares[2]);
       }
-    });
 
-    // Return a promise to the final output(s)
-    return final_deferred.promise();
+      i++;
+      console.log(i);
+
+      if (i < 3) {
+        jiff_instance.end_barrier(next);
+      } else {
+        jiff_instance.end_barrier(function () {
+          jiff_instance.open(shares[1]).then(console.log).then(jiff_instance.disconnect);
+        })
+      }
+    }());
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
