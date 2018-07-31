@@ -28,6 +28,7 @@ var options = {party_count: party_count, party_id: party_id};
 options.onConnect = function(jiff_instance) {
     // first share ships
     t0 = Date.now();
+    console.log("Started timer");
     var promise_ships = mpc.share_ships(ships);
     promise_ships.then(function(ID) {
         var jiffPartyID = ID;
