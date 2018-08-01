@@ -99,6 +99,16 @@ function startServer() {
 
 }
 
+const saltDict = {};
+function saltPoint(point, scalarKey) {
+  const index = JSON.stringify(point);
+  const scalarString = scalarKey.toString();
+  if(saltDict[scalarString][index] == null) 
+    saltDict[scalarString][index] = oprf.saltInput(point, scalarKey);
+
+  return saltDict[scalarString][index];
+}
+
 // Performs the Preprocessing on the given table
 function handle_preprocess(_, message) {
   var message = JSON.parse(message);
@@ -110,6 +120,7 @@ function handle_preprocess(_, message) {
   // Generate keys (in batches)
   var scalarKey = oprf.generateRandomScalar();
   prf_keys_map[recompute_number] = scalarKey;
+  saltDict[scalarKey.toString()] = {};
 
   // in place very fast shuffle
   (function(a,b,c,d,r) { // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
@@ -119,11 +130,11 @@ function handle_preprocess(_, message) {
   var random = Math.random;
   var Zp = jiff_instance.Zp;
   var mod = jiff_instance.helpers.mod;
+
   for(var i = 0; i < table.length; i++) {
     var entry = table[i];
-
-    entry[0] = oprf.saltInput(entry[0], scalarKey);
-    entry[1] = oprf.saltInput(entry[1], scalarKey);
+    entry[SRC] = saltPoint(entry[SRC], scalarKey);
+    entry[DEST] = saltPoint(entry[DEST], scalarKey);
   }
 
   // Forward table to next party

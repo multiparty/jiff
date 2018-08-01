@@ -10,11 +10,12 @@
 var jiff_client = require('../../../lib/jiff-client');
 const _sodium = require('libsodium-wrappers-sumo');
 const _oprf = require('oprf');
-const boston = require('../data/boston');
+// const boston = require('../data/boston');
 const fs = require('fs');
 
 const SRC = 0;
 const DEST = 1;
+const NEXT_HOP = 2;
 
 /*
  * Global variables and counter,
@@ -71,30 +72,31 @@ function startServer() {
 function hashData() {
   let json = [];
   for (let i in boston) {
+    console.log(boston[i])
     let a = oprf.hashToPoint(boston[i][0].toString());
     let b = oprf.hashToPoint(boston[i][1].toString());
     let c = oprf.hashToPoint(boston[i][2].toString());
 
-    json.push([boston[i][0], boston[i][1], boston[i][2], a, b, c]);
+    json.push([a, b, c]);
   }
 
   json = JSON.stringify(json);
 
-  fs.writeFile('../data/bostonHashed.json', json, 'utf8', function() {
+  fs.writeFile('data/bostonHashed.json', json, 'utf8', function() {
     console.log('success!!!');
   });
 }
 
 /* Preprocess the table in MPC, then start listening and handling secure requests */
 function mpc_preprocess(table) {
-
+  // hashData();
   // Figure out the recomputation number
   var recompute_number = recompute_count++;
 
-  for (let i = 0; i < table.length; i++) {
-    table[i][SRC] = oprf.hashToPoint(table[i][SRC].toString());
-    table[i][DEST] = oprf.hashToPoint(table[i][DEST].toString());
-  }
+  // for (let i = 0; i < table.length; i++) {
+  //  table[i][SRC] = oprf.hashToPoint(table[i][SRC].toString());
+  //  table[i][DEST] = oprf.hashToPoint(table[i][DEST].toString());
+  // }
   
   // Announce to frontends the start of the preprocessing.
   jiff_instance.emit("preprocess", [ frontends[0] ], JSON.stringify( { "recompute_number": recompute_number, "table": table } ));
@@ -106,9 +108,9 @@ function mpc_preprocess(table) {
     var encrypted_table  = {};
     for(var i = 0; i < encrypted_result.length; i++) {
       var single_entry = encrypted_result[i];
-      var source = single_entry[0];
-      var destination = single_entry[1];
-      var jump = single_entry.slice(2); // Should contain the encrypted jump and one element per frontend server.
+      var source = single_entry[SRC];
+      var destination = single_entry[DEST];
+      var jump = single_entry[NEXT_HOP]; // Should contain the encrypted jump and one element per frontend server.
 
       if(encrypted_table[source] == null) encrypted_table[source] = {};
       encrypted_table[source][destination] = jump;
@@ -124,7 +126,10 @@ function mpc_preprocess(table) {
     if(recompute_number - 3 >= 0)
       encrypted_tables[recompute_number - 3] = null;
     
-    console.log("PREPROCESSING FINISHED");
+
+    fs.writeFile('data/saltyBoston.json', JSON.stringify(encrypted_table), 'utf8', function() {
+      console.log('PREPROCESSING FINISHED');
+    });
   });
 }
 

@@ -45,6 +45,7 @@ function get_one_step(source, dest) {
 
 
 function make_query() {
+  console.log(window.localStorage.getItem("StartPointId"));
   var source = oprf.hashToPoint(window.localStorage.getItem("StartPointId"));
   var dest = oprf.hashToPoint(window.localStorage.getItem("StopPointId"));
 
