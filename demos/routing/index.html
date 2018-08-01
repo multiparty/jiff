@@ -27,13 +27,14 @@
         document.getElementById('leaflet').style.cursor = 'crosshair';
       });
 
-      // var oprf = new OPRF_(sodium);
+
+      var oprf_ = new oprf.OPRF(sodium);
 
         sodium.ready.then(function () {
         var points = obj.features;
         for(var i = 0; i < points.length; i++) {
           var id = points[i].properties.point_id;
-          points[i].properties.point_id = oprf.hashToPoint(id.toString());
+          points[i].properties.point_id = oprf_.hashToPoint(id.toString());
         }
 
         var pointCount = 0
