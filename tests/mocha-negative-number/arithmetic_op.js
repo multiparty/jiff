@@ -77,18 +77,12 @@ function run_test(computation_id, operation, callback) {
   for (var i = 0; i < 200; i++) {
     tests[i] = [];
 
-<<<<<<< HEAD
-    for(var p = 0; p < 3; p++) {
-      var randnum = Math.floor(Math.random() * max) - offset;
-      if(p == 1 && (operation == "div" || operation == "mod") && randnum == 0) randnum = 1;
-=======
     for (var p = 0; p < 3; p++) {
       var randnum = Math.floor(Math.random() * max) - offset;
       if (p === 1 && (operation === 'div' || operation === 'mod') && randnum === 0) {
         randnum = 1;
       }
 
->>>>>>> d13029920b138d5b51e6893044042c9ff4ddc4d8
       tests[i].push(randnum);
     }
   }
@@ -130,13 +124,8 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-<<<<<<< HEAD
-  var length = (mpc_operator == "div" || mpc_operator == "mod") ? 10 : tests.length;
-  for(var i = 0; i < length; i++) {
-=======
   var length = (mpc_operator === 'div' || mpc_operator === 'mod') ? 10 : tests.length;
   for (var i = 0; i < length; i++) {
->>>>>>> d13029920b138d5b51e6893044042c9ff4ddc4d8
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
       promises.push(promise);
@@ -166,11 +155,7 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
     shares_list.push(shares[i]);
   }
 
-<<<<<<< HEAD
-  if(mpc_operator == "div" || mpc_operator == "mod")
-=======
   if (mpc_operator === 'div' || mpc_operator === 'mod') {
->>>>>>> d13029920b138d5b51e6893044042c9ff4ddc4d8
     res = operations[mpc_operator](shares_list[0], shares_list[1]);
   } else {
     res = shares_list.reduce(operations[mpc_operator]);
