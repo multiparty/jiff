@@ -94,7 +94,7 @@ function run_test(computation_id, operation, callback) {
   var counter = 0;
   var options = {party_count: parties, Zp: Zp, autoConnect: false};
   options.onConnect = function () {
-    if (++counter === 2) {
+    if (counter++ === 2) {
       test(callback, operation);
     }
   };
