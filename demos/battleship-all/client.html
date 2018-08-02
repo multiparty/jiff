@@ -1,0 +1,50 @@
+<!-- Basic UI for running the demo in the browser -->
+
+<html>
+  <head>
+    <title>MPC BattleShip Game - All</title>
+    <style>
+      .error {
+        color: #FF0000;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="./client.js"></script>
+
+    <!-- Contains the MPC implementation -->
+    <script type="text/javascript" src="./mpc.js"></script>
+  </head>
+
+  <body>
+    <h1 id="title">Gati's BattleShip Game - All</h1>
+    <h4 id="room">Room: - </h3>
+    <h4 id="status" style="background-color:rgb(0, 255, 200);">Join a game</h3>
+    <div id="menu">
+        <h1>Connect JIFF</h1>
+        <label for="computation_id">Computation ID</label>
+        <input id="computation_id" value="test"></input>
+        <p>VERSIONS:</p>
+        <p>1 = index-original</p>
+        <p>2 = index-ceq</p>
+        <p>3 = binary</p>
+        <p>4 = index-rand</p>
+        <p>5 = row-col-quad-rand</p>
+        <p>6 = row-col-sq-rand</p>
+        <p>7 = row-col-seq</p>
+        <label for="version">Version</label>
+        <input id="version" value="3"></input>
+        <br/><br/>
+        <button id="connectButton" onclick="connect();">Connect</button>
+        <br/><br/>
+    </div>
+    <div class="gameboard" id="oppoBoard"></div>
+    <div class="gameboard" id="myBoard"></div>
+    <hr/>
+    <div id="JIFF_output"></div>
+  </body>
+</html>
