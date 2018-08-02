@@ -33,11 +33,13 @@ function connect() {
 }
 
 function submit() {
+  var vote = $("#cheat").prop("checked") ? 2 : 1;
+
   var inputs = [];
   var radios = $("input[type=radio]");
   var oneChecked = false;
   for(var i = 0; i < radios.length; i++) {
-    inputs.push( radios[i].checked ? 1 : 0 );
+    inputs.push( radios[i].checked ? vote : 0 );
     oneChecked = oneChecked || radios[i].checked;
   }
 
@@ -60,5 +62,5 @@ function handleResult(result) {
 }
 
 function handleError() {
-  console.log("Error in open_all");
+  console.log("Error in open_array");
 }

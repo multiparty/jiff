@@ -109,6 +109,40 @@ Run the bignumber test suite in the following way:
 npm run-script test-bignumber
 ```
 
+### Costs of Operations:
+Below is a table of the current costs of operations in the *base* jiff with no extensions:
+
+| Operation         | Rounds            | Total Messages                   | Preprocessing Rounds | Preprocessing Total Messages               | Dependenices |
+|-------------------|-------------------|----------------------------------|----------------------|--------------------------------------------|--------------|
+| Share             | 1                 | senders \* receivers             | 0                    | 0                                          | N/A          |
+| Open              | 2                 | sender + sender \* receivers     | 1                    | senders \* senders                         | N/A          |
+| +, -, c+, c-, c\* | 0                 | 0                                | 0                    | 0                                          | N/A          |
+| \*                | 2                 | 2\*parties + parties\*(parties-1)| 2                    | 2 \* (parties \* parties - 1)              | triplet,open |
+| <, <=, >, >=      | 2\*(bits+3)       | O( bits \* parties^2 )           | 3                    | bits \* (2\*parties + parties^2)           | \*, open     |
+| c<, c<=, c>, c>=  | 2\*(bits+3)       | O( bits \* parties^2 )           | 3                    | bits \* (2\*parties + parties^2)           | \*, open     |
+| =, c=, !=, c!=    | 2\*(bits+4)       | O( bits \* parties^2 )           | 3                    | 2\*bits \* (2\*parties + parties^2)        | c<, c>, \*   |
+| /                 | bits^2 + 5\*bits  | O( bits^2 \* parties^2 )         | 3                    | bits\*(2\*bits \* (2\*parties + parties^2))| <, c<, \*    |
+| c/                | 2\*(bits+3) + 5   | O( bits \* parties^2 )           | 3                    | 4 \* bits \* (2\*parties + parties^2)      | open, \*, c< |
+
+
+Some exact costs not shown in the table:
+1. Exact total number of messages for secret inequalities is: 3\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1))) + 2\*parties + parties\*(parties-1) 
+2. Exact total number of messages for constant inequalities is: 2\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1))) + 2\*parties + parties\*(parties-1) 
+3. Exact total number of messages for equality checks: 2\*(\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1))) + 2\*parties + parties\*(parties-1)) + 2\*parties + parties\*(parties-1)
+4. Exact total number of messages for division is: bits \* ( 5\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1))) + 2\*parties + parties\*(parties-1) + 2\*parties + parties\*(parties-1) )
+5. Exact total number of messages for constant division is: 1 + 7\*parties + 4\*parties^2 + 8\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1)))
+
+Dependenices:
+1. Multiplication has one message to synchronize beaver triplets and one open in sequence.
+2. inequality tests has 3 less than half primes in parallel, each has an open and as many multiplication in sequence as bits.
+3. constant inequality test has 2 less than half primes in parallel.
+4. equality and constant equality tests have 2 inequalities in parallel, sequenced with a multiplication.
+5. division has as many sequential iterations as bits, each iteration contains a constant inequality, secret inequality, and multiplication.
+6. constant division has one open sequenced with 4 parallel constant inequality checks and two multiplications.
+7. Secret XORs and ORs are equivalent to a single multiplication, constant XORs and ORs are free.
+
+
+
 ## Information and Collaborators
 
 More information about this project, including collaborators and publications, can be found at [multiparty.org](https://multiparty.org/).
