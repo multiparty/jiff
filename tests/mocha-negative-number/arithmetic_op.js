@@ -47,7 +47,7 @@ var operations = {
     return operand1.sdiv(operand2);
   },
   '%' : function (operand1, operand2) {
-    return mod(operand1, operand2);
+    return operand1 % operand2;
   },
   'mod' : function (operand1, operand2) {
     return operand1.smod(operand2);
