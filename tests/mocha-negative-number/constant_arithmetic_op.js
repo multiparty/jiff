@@ -67,7 +67,7 @@ function run_test(computation_id, operation, callback) {
         max = 2;
         offset = 0;
       }
-      
+
       var randnum = Math.floor(Math.random() * max) - offset;
       tests[i].push(randnum);
     }
