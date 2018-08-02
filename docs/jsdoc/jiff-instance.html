@@ -2892,18 +2892,18 @@ Removes any previously set listener for this tag.
             
 
             <td class="description last">an array with party ids (1 to n) of receiving parties.
-                         This must be one of 3 cases:
-                         1. null:                       open all shares to all parties.
-                         2. { parties: [parties] }         opens all shares (all rows) to all the parties specified in the array.
+                         This must be one of 3 cases: <br>
+                         1. null:                       open all shares to all parties. <br>
+                         2. { parties: [parties] }         opens all shares (all rows) to all the parties specified in the array. <br>
                          3. { parties: [parties], <row_index>: { parties: [ parties ids]  } }: opens all shares (all rows) to all parties
                                                         specified in the outer parties array, except rows with index explicitly mapped to
-                                                        another parties ids array. default value for outer parties array is all parties.
+                                                        another parties ids array. default value for outer parties array is all parties. <br>
                          4. { parties: [parties], <row_index>: { parties: [parties ids], <col_index>: [parties] }}:
                                                         Gives the highest level of granularity, every element in the 2D array will
                                                         be opened to the parties ids arrays that match its row and col index, if no
                                                         such array is provided, the parties matching its row index will be used, if
                                                         this is not provided as well, the outer-most parties array is used, which defaults
-                                                        to all parties.</td>
+                                                        to all parties. <br></td>
         </tr>
 
     
@@ -3191,12 +3191,12 @@ Removes any previously set listener for this tag.
             
 
             <td class="description last">an array with party ids (1 to n) of receiving parties.
-                         This must be one of 3 cases:
-                         1. null:                       open all shares to all parties.
-                         2. array of numbers:           open all shares to all the parties specified in the array.
+                         This must be one of 3 cases: <br>
+                         1. null:                       open all shares to all parties. <br>
+                         2. array of numbers:           open all shares to all the parties specified in the array. <br>
                          3. array of array of numbers:  open share with index i to the parties specified
                                                         in the nested array at parties[i]. if parties[i] was null,
-                                                        then shares[i] will be opened to all parties.</td>
+                                                        then shares[i] will be opened to all parties. <br></td>
         </tr>
 
     
@@ -4505,14 +4505,14 @@ values.
             <td class="description last">the lengths of the arrays to be shared. For this to work successfully, the
                                       same exact value must be used in the calling code for each party. Any missing
                                       lengths for a row will be automatically publicly revealed by this function.
-                                      Must have the following format:
-                                      1. null: lengths are unknown, each sender will publicly reveal the lengths of its own array.
+                                      Must have the following format: <br>
+                                      1. null: lengths are unknown, each sender will publicly reveal the lengths of its own array. <br>
                                       2. { rows: <number>, cols: <number>, 0: <number>, 1: <number>, ...}: all parties have arrays
                                          with the given number of rows and cols. In case of jagged 2D arrays, different rows
                                          can have a different number of cols specified by using <row_index>: <col_size>.
-                                         rows is mandatory, cols and any other number matching a specific row are optional.
+                                         rows is mandatory, cols and any other number matching a specific row are optional. <br>
                                       3. { <sender_party_id>: <length_object> }: must specify the lengths for each party by using
-                                         an object with the same format as 2. Must include every party.</td>
+                                         an object with the same format as 2. Must include every party. <br></td>
         </tr>
 
     
@@ -4939,10 +4939,10 @@ values.
                 </td>
             
 
-            <td class="description last">the lengths of the arrays to be shared, has the following options:
-                                      1. null: lengths are unknown, each sender will publicly reveal the lengths of its own array.
-                                      2. number: all arrays are of this length
-                                      3. object: { <sender_party_id>: length }: must specify the length of the array for each sender.</td>
+            <td class="description last">the lengths of the arrays to be shared, has the following options: <br>
+                                      1. null: lengths are unknown, each sender will publicly reveal the lengths of its own array. <br>
+                                      2. number: all arrays are of this length <br>
+                                      3. object: { <sender_party_id>: length }: must specify the length of the array for each sender. <br></td>
         </tr>
 
     
@@ -5548,7 +5548,7 @@ The server generates and sends the triplets on demand.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Aug 02 2018 11:59:42 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Aug 02 2018 12:03:59 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
