@@ -78,5 +78,8 @@ function make_query() {
   var source = window.localStorage.getItem("StartPointId");
   var dest = window.localStorage.getItem("StopPointId");
 
+  var key = oprf_.generateRandomScalar();
+  console.log('sc mult', oprf_.saltInput(source, key));
+
   get_one_step(source, dest);
 }
