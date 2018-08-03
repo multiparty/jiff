@@ -127,7 +127,6 @@ function user_query(req, res) {
   var sourcePoint = JSON.parse(req.params.source); // EC point
   var destinationPoint = JSON.parse(req.params.destination); // EC point
 
-
   var query = queryMap[query_number];
   if(query == null) {
     query = [];

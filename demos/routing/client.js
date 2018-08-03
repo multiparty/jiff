@@ -54,6 +54,7 @@ function get_one_step(source, dest) {
 
   // Receive results from every front-end server
   Promise.all(promises).then(function(results) {
+    console.log(results);
     for(var i = 0; i < results.length; i++)
       results[i] = JSON.parse(results[i]);
 
