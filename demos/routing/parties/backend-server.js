@@ -62,9 +62,6 @@ function startServer() {
   // Listen to queries from frontends
   jiff_instance.listen("query", frontend_query);
 
-  // Listen to queries from user
-  app.get('/query/:number/:source/:destination', user_query);
-  
   // Cross Origin Requests Allowed
   app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -73,6 +70,9 @@ function startServer() {
     res.header("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control");
     next();
   });
+
+  // Listen to queries from user
+  app.get('/query/:number/:source/:destination', user_query);
 
   // Start listening on port 9111
   app.listen(9111, function() {
@@ -86,7 +86,7 @@ function startServer() {
 function mpc_preprocess(table) {
   // Figure out the recomputation number
   var recompute_number = recompute_count++;
-  
+
   // Announce to frontends the start of the preprocessing.
   jiff_instance.emit("preprocess", [ frontends[0] ], JSON.stringify( { "recompute_number": recompute_number, "table": table } ));
 
@@ -104,10 +104,10 @@ function mpc_preprocess(table) {
       if(encrypted_table[source] == null) encrypted_table[source] = {};
       encrypted_table[source][destination] = jump;
     }
-    
+
     // Store the encrypted table at the appropriate index
     encrypted_tables[recompute_number] = encrypted_table;
-    
+
     // Tell frontends to use this table from now on.
     jiff_instance.emit('update', frontends, JSON.stringify( { "recompute_number": recompute_number } ));
 
@@ -147,7 +147,7 @@ function frontend_query(_, query_info) {
   var query_number = query_info.query_number;
   var sourceMask = new BN(query_info.source);
   var destMask = new BN(query_info.destination);
-  
+
   var query = queryMap[query_number];
   if(query == null) {
     query = [];
@@ -163,10 +163,10 @@ function finish_query(query_number) {
   var query = queryMap[query_number];
   var recompute_number = query[query.length-1].recompute_number;
   var encrypted_table = encrypted_tables[recompute_number];
-  
+
   // Clean up
   queryMap[query_number] = null;
-  
+
   // Logs
   console.log("QUERY START: compute: " + recompute_number + ". #: " + query_number);
 
@@ -194,10 +194,10 @@ function finish_query(query_number) {
     jiff_instance.emit('finish_query', frontends, JSON.stringify( { "query_number": query_number, "error": "invalid source or destination" }));
     return;
   }
-  
+
   // Found garbled jump
   var jump = JSON.parse(encrypted_table[source][dest]);
-  
+
   // Share jump and send shares to user and frontends
   jump = multiplicative_share(jump);
   for(var i = 0; i < frontends.length; i++)
@@ -211,7 +211,7 @@ function finish_query(query_number) {
 function multiplicative_share(point) {
   var shares = [];
   var total_mask = new BN(1);
-  for(var i = 0; i < frontends.length - 1; i++) {
+  for(var i = 0; i < frontends.length; i++) {
     var r = oprf.generateRandomScalar();
     total_mask = total_mask.mul(r).mod(prime);
     shares[i+1] = r.toString();

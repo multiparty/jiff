@@ -23,13 +23,20 @@
 
 	<script>
       $( document ).ready(function() {
-        console.log( "ready!" );
         document.getElementById('leaflet').style.cursor = 'crosshair';
       });
 
-      var pointCount = 0
+      var pointCount = 0;
       var path = Array();
       var isPathRendered = false;
+
+      function getPointById(id) {
+        for(var i = 0; i < obj.features.length; i++) {
+          if(obj.features[i].properties.point_id == id)
+            return obj.features[i];
+        }
+        return null;
+      }
 
       function randomColor() {
         var color = '', letters = '0123456'; //789ABCDEF
@@ -54,12 +61,10 @@
 
       function drawPath(points){
         pointCount = 0;
-        for(jump in points){
-          console.log("rendering path...");
-          jump = parseInt(jump);
+        for(var jump = 0; jump < points.length; jump++){
           if(jump < points.length-1){
-            source = obj["features"][points[jump]]["coordinates"].slice().reverse();
-            dest = obj["features"][points[jump+1]]["coordinates"].slice().reverse();
+            source = getPointById(points[jump])["coordinates"].slice().reverse();
+            dest =  getPointById(points[jump+1])["coordinates"].slice().reverse();
             drawLineBetweenPoints(source,dest)
           }
 
@@ -67,7 +72,7 @@
 
           //attach event
           $( "#leaflet" ).mousedown(function() {
-        
+
             if(isPathRendered){
               //erase everything
               for(item in path){
@@ -107,7 +112,7 @@
             circle.on('click', function(){
               lat = circle._latlng["lat"];
               lng = circle._latlng["lng"]
-              console.log(circle);         
+
               var marker = L.marker([lat, lng])
               path.push(marker);
               leaflet.addLayer(marker);
@@ -122,7 +127,7 @@
                 //make ajax call to server
                 //'https://hri.appliedmpc.org/calculate/'
                 make_query();
-                
+
               }
               pointCount++;
             });

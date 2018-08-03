@@ -6,20 +6,20 @@ _sodium.ready.then(function() {
     var oprf = new _oprf.OPRF(_sodium);
 
     var filename = process.argv[2];
-    var file = require("../"+filename);
+    var file = require('../'+filename);
 
     var hashed = [];
-    for(var i = 0; i < file.length; i++) {
+    for (var i = 0; i < file.length; i++) {
       hashed[i] = [];
       var row = file[i];
-      for(var j = 0; j < row.length; j++) {
+      for (var j = 0; j < row.length; j++) {
         var val = row[j];
         hashed[i][j] = oprf.hashToPoint(val.toString());
-      }  
+      }
     }
-    
+
     console.log(JSON.stringify(hashed, null, 2));
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   }
 });

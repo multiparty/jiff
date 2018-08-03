@@ -66,7 +66,7 @@ function startServer() {
     if(current_recomputation_count - 3 >= 0)
       prf_keys_map[current_recomputation_count - 3] = null;
   });
-  
+
   // Setup express server to handle client queries
   var express = require('express');
   var app = express();
@@ -80,7 +80,7 @@ function startServer() {
   });
 
   app.get('/query/:number/:source/:destination', handle_query);
-  
+
   // Listen to responses to queries from backend
   jiff_instance.listen("finish_query", finalize_query);
 
@@ -98,7 +98,7 @@ const saltDict = {};
 function saltPoint(point, scalarKey) {
   const index = JSON.stringify(point);
   const scalarString = scalarKey.toString();
-  if(saltDict[scalarString][index] == null) 
+  if(saltDict[scalarString][index] == null)
     saltDict[scalarString][index] = oprf.saltInput(point, scalarString);
 
   return saltDict[scalarString][index];
@@ -111,7 +111,7 @@ function handle_preprocess(_, message) {
 
   var recompute_number = message.recompute_number;
   var table = message.table;
-  
+
   // Generate keys (in batches)
   var scalarKey = new BN(oprf.generateRandomScalar());
   prf_keys_map[recompute_number] = scalarKey;
@@ -130,6 +130,7 @@ function handle_preprocess(_, message) {
     var entry = table[i];
     entry[SRC] = saltPoint(entry[SRC], scalarKey);
     entry[DEST] = saltPoint(entry[DEST], scalarKey);
+    entry[NEXT_HOP] = saltPoint(entry[NEXT_HOP], scalarKey);
   }
 
   // Forward table to next party
@@ -159,7 +160,7 @@ function handle_query(req, res) {
   var key = prf_keys_map[recompute_number];
   sourceMask = sourceMask.mul(key).mod(prime);
   destinationMask = destinationMask.mul(key).mod(prime);
-  
+
   jiff_instance.emit("query", backends, JSON.stringify( { "query_number": query_number, "recompute_number": recompute_number, "source": sourceMask.toString(), "destination": destinationMask.toString() }));
 }
 
@@ -175,7 +176,7 @@ function finalize_query(_, message) {
   // clean up
   query_to_recomputation_numbers[query_number] = null;
   response_map[query_number] = null;
-  
+
   // Errors
   if(message.error != null) {
     response.send(JSON.stringify( { "error": message.error } ));
@@ -186,7 +187,7 @@ function finalize_query(_, message) {
   var jump = new BN(message.jump);
   var key = prf_keys_map[recompute_number];
   jump = jump.mul(key.invm(prime)).mod(prime);
-  
+
   // Send result when ready to client
   response.send(JSON.stringify( { share: jump.toString() } ));
 }

@@ -9,7 +9,7 @@ sodium.ready.then(function() {
 
 // order of elliptic curve
 var prime = new BN(2).pow(new BN(252)).add(new BN('27742317777372353535851937790883648493'));
- 
+
  // query count
 var query_count = 0;
 
@@ -35,7 +35,7 @@ function multiplicative_reconstruct(shares) {
   for(var i = 1; i < shares.length; i++) {
     total_mask = total_mask.mul(new BN(shares[i].share));
   }
-  
+
   return oprf_.saltInput(shares[0].point, total_mask);
 }
 
@@ -45,7 +45,7 @@ function get_one_step(source, dest) {
 
   var source_shares = multiplicative_share(JSON.parse(source));
   var dest_shares = multiplicative_share(JSON.parse(dest));
-  
+
   var promises = [];
   for(var i = 0; i < urls.length; i++) {
     var url = urls[i]+"/query/"+query_number+"/"+source_shares[i]+"/"+dest_shares[i];
@@ -54,17 +54,16 @@ function get_one_step(source, dest) {
 
   // Receive results from every front-end server
   Promise.all(promises).then(function(results) {
-    console.log(results);
-    for(var i = 0; i < results.length; i++)
+    for (var i = 0; i < results.length; i++)
       results[i] = JSON.parse(results[i]);
 
     // Error
-    if(results[0].error != null) {
+    if (results[0].error != null) {
       console.log(results[0].error);
       return;
     }
 
-    var result = JSON.stringify(multiplicative_reconstruct(result));
+    var result = JSON.stringify(multiplicative_reconstruct(results));
     console.log(result);
     drawPath([ source, result ]); // Draw one step of the path
 
@@ -75,7 +74,6 @@ function get_one_step(source, dest) {
 
 
 function make_query() {
-  // console.log(window.localStorage.getItem("StartPointId"));
   var source = window.localStorage.getItem("StartPointId");
   var dest = window.localStorage.getItem("StopPointId");
 
