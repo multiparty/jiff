@@ -11,11 +11,11 @@ var jiff_client = require('../../../lib/jiff-client');
 $ = require('jquery-deferred');
 const _sodium = require('libsodium-wrappers-sumo');
 const _oprf = require('oprf');
+const BN = require('bn.js');
 
-let oprf = null;
+const prime = new BN(2).pow(new BN(252)).add(new BN('27742317777372353535851937790883648493'));
 
-// How many keys in a batch
-var KEY_BATCH_SIZE = 25;
+var oprf;
 
 const SRC = 0;
 const DEST = 1;
@@ -81,12 +81,6 @@ function startServer() {
 
   app.get('/query/:number/:source/:destination', handle_query);
   
-  // Listen to forwarded queries from other frontends
-  jiff_instance.listen("start_query", function(_, message) {
-    message = JSON.parse(message);
-    chain_query(message.recompute_number, message.query_number, message.source, message.destination);
-  });
-  
   // Listen to responses to queries from backend
   jiff_instance.listen("finish_query", finalize_query);
 
@@ -99,12 +93,13 @@ function startServer() {
 
 }
 
+// performs the OPRF with a table lookup for speed up
 const saltDict = {};
 function saltPoint(point, scalarKey) {
   const index = JSON.stringify(point);
   const scalarString = scalarKey.toString();
   if(saltDict[scalarString][index] == null) 
-    saltDict[scalarString][index] = oprf.saltInput(point, scalarKey);
+    saltDict[scalarString][index] = oprf.saltInput(point, scalarString);
 
   return saltDict[scalarString][index];
 }
@@ -118,7 +113,7 @@ function handle_preprocess(_, message) {
   var table = message.table;
   
   // Generate keys (in batches)
-  var scalarKey = oprf.generateRandomScalar();
+  var scalarKey = new BN(oprf.generateRandomScalar());
   prf_keys_map[recompute_number] = scalarKey;
   saltDict[scalarKey.toString()] = {};
 
@@ -147,8 +142,8 @@ function handle_preprocess(_, message) {
 function handle_query(req, res) {
   // Parse Query
   var query_number = parseInt(req.params.number, 10);
-  var source = parseInt(req.params.source, 10);
-  var destination = parseInt(req.params.destination, 10);
+  var sourceMask = new BN(req.params.source);
+  var destinationMask = new BN(req.params.destination);
 
   var recompute_number = current_recomputation_count;
   if(recompute_number < 0) {
@@ -159,101 +154,40 @@ function handle_query(req, res) {
   // Store response to reply to client when ready
   response_map[query_number] = res;
   query_to_recomputation_numbers[query_number] = recompute_number;
-  
-  
-  // Signal that you have received the client request
-  if(promises[query_number] == null) {
-    deferreds[query_number] = $.Deferred();
-    promises[query_number] = deferreds[query_number].promise();
-  }
-  deferreds[query_number].resolve();
 
-  // First Frontend begin handling request and forwards it to other parties.
-  if(jiff_instance.id == frontends[0]) chain_query(recompute_number, query_number, source, destination);
-}
-
-function chain_query(recompute_number, query_number, source, destination) {
-  console.log("New Query: " + query_number + " : " + source + " -> " + destination);
-  
-  // Apply PRF to query
+  // multiply mask by scalar key
   var key = prf_keys_map[recompute_number];
-  source = oprf.saltInput(source, key)
-  destination = oprf.saltInput(destination, key);
-
-  // Forward query to next party
-  var index = frontends.indexOf(jiff_instance.id);
-  var next_party = (index + 1 < frontends.length) ? [ frontends[index + 1] ] : backends;
-  jiff_instance.emit("start_query", next_party, JSON.stringify( { "query_number": query_number, "recompute_number": recompute_number, "source": source, "destination": destination }));
+  sourceMask = sourceMask.mul(key).mod(prime);
+  destinationMask = destinationMask.mul(key).mod(prime);
+  
+  jiff_instance.emit("query", backends, JSON.stringify( { "query_number": query_number, "recompute_number": recompute_number, "source": sourceMask.toString(), "destination": destinationMask.toString() }));
 }
 
 // Receives the query result from the backend server, de-garble it, and send it back to client.
 function finalize_query(_, message) {
   // Parse message
   message = JSON.parse(message);
+
   var query_number = message.query_number;
+  var recompute_number = query_to_recomputation_numbers[query_number];
+  var response = response_map[query_number];
+
+  // clean up
+  query_to_recomputation_numbers[query_number] = null;
+  response_map[query_number] = null;
   
-  if(promises[query_number] == null) {
-    deferreds[query_number] = $.Deferred();
-    promises[query_number] = deferreds[query_number].promise();
+  // Errors
+  if(message.error != null) {
+    response.send(JSON.stringify( { "error": message.error } ));
+    return;
   }
+
+  // All good! Decrypt the jump by applying the inverse of the key to the mask
+  var jump = new BN(message.jump);
+  var key = prf_keys_map[recompute_number];
+  jump = jump.mul(key.invm(prime)).mod(prime);
   
-  // Just in case this came back quicker than client query/request.
-  promises[query_number].then(function() {
-    var recompute_number = query_to_recomputation_numbers[query_number];
-    
-    // Errors
-    if(message.error != null) {
-      response_map[message.query_number].send(JSON.stringify( { "error": message.error } ));
-      return;
-    }
-
-    // All good! Decrypt the jump
-    var jump = message.jump;
-    
-
-    var shares = jiff_instance.share(jump, frontends.length, frontends, frontends, jiff_instance.Zp, "decrypt:"+recompute_number+":"+query_number);
-    
-    var result = shares[frontends[0]];
-    for(var i = 1; i < frontends.length; i++)
-      result = result.sadd(shares[frontends[i]]);
-
-    result = result.cmult(-1).cadd(jump); // result = jump - sum(salts) mod Zp
-    
-    // Send result when ready to client
-    var response = response_map[query_number];
-    if(result.ready) response.send(JSON.stringify( { "id": jiff_instance.id, "result": result.value} ));
-    else result.promise.then(function() { response.send(JSON.stringify( { "id": jiff_instance.id, "result": result.value } )); });
-
-    // clean up
-    query_to_recomputation_numbers[query_number] = null;
-    response_map[query_number] = null;
-    promises[query_number] = null;
-    deferreds[query_number] = null;
-  });
+  // Send result when ready to client
+  response.send(JSON.stringify( { share: jump.toString() } ));
 }
 
-// // Makes a batch of keys of the given size
-// function genPRFKeysBatch() {
-//   // Store Batch
-//   return (Math.random() * (jiff_instance.Zp - 1) + 1)|0; // key in [1, Zp)
-  
-// }
-
-// Evaluate the PRF
-function applyPRF(keys, value) {
-  var mod = jiff_instance.helpers.mod;
-  var Zp = jiff_instance.Zp;
-  var power = (Zp - 1) / 2; /* Must be an integer since Zp is an odd prime */
-
-  var result = 0; // Each Key gives us a bit of the result
-  for(var i = 0; i < keys.length; i++) {
-    var single_value = value + keys[i];
-    single_value = jiff_instance.helpers.pow_mod(single_value, power, Zp); // Fast Exponentiation modulo prime
-    single_value = mod((single_value + 1) * inv2, Zp); // Normalize
-    single_value = mod(Math.pow(2, i) * single_value, Zp); // Expand
-
-    result = mod(result + single_value, Zp); // Aggregate
-  }
-  
-  return result;
-}

@@ -10,12 +10,15 @@
 var jiff_client = require('../../../lib/jiff-client');
 const _sodium = require('libsodium-wrappers-sumo');
 const _oprf = require('oprf');
-// const boston = require('../data/boston');
-const fs = require('fs');
+const BN = require('bn.js');
+
+const prime = new BN(2).pow(new BN(252)).add(new BN('27742317777372353535851937790883648493'));
 
 const SRC = 0;
 const DEST = 1;
 const NEXT_HOP = 2;
+
+var oprf;
 
 /*
  * Global variables and counter,
@@ -31,8 +34,6 @@ var encrypted_tables = [];
 var config = require('./config.json');
 var backends = [ 1 ]; // Backend server is the only sender and always has ID 1.
 var frontends = config.frontends; // Frontend servers are the receivers.
-
-let oprf = null;
 
 // Connect JIFF
 var options = {
@@ -59,7 +60,19 @@ function startServer() {
   });
 
   // Listen to queries from frontends
-  jiff_instance.listen("start_query", mpc_query);
+  jiff_instance.listen("query", frontend_query);
+
+  // Listen to queries from user
+  app.get('/query/:number/:source/:destination', user_query);
+  
+  // Cross Origin Requests Allowed
+  app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control");
+    next();
+  });
 
   // Start listening on port 9111
   app.listen(9111, function() {
@@ -69,34 +82,10 @@ function startServer() {
   oprf = new _oprf.OPRF(_sodium);
 }
 
-function hashData() {
-  let json = [];
-  for (let i in boston) {
-    console.log(boston[i])
-    let a = oprf.hashToPoint(boston[i][0].toString());
-    let b = oprf.hashToPoint(boston[i][1].toString());
-    let c = oprf.hashToPoint(boston[i][2].toString());
-
-    json.push([a, b, c]);
-  }
-
-  json = JSON.stringify(json);
-
-  fs.writeFile('data/bostonHashed.json', json, 'utf8', function() {
-    console.log('success!!!');
-  });
-}
-
 /* Preprocess the table in MPC, then start listening and handling secure requests */
 function mpc_preprocess(table) {
-  // hashData();
   // Figure out the recomputation number
   var recompute_number = recompute_count++;
-
-  // for (let i = 0; i < table.length; i++) {
-  //  table[i][SRC] = oprf.hashToPoint(table[i][SRC].toString());
-  //  table[i][DEST] = oprf.hashToPoint(table[i][DEST].toString());
-  // }
   
   // Announce to frontends the start of the preprocessing.
   jiff_instance.emit("preprocess", [ frontends[0] ], JSON.stringify( { "recompute_number": recompute_number, "table": table } ));
@@ -108,9 +97,9 @@ function mpc_preprocess(table) {
     var encrypted_table  = {};
     for(var i = 0; i < encrypted_result.length; i++) {
       var single_entry = encrypted_result[i];
-      var source = single_entry[SRC];
-      var destination = single_entry[DEST];
-      var jump = single_entry[NEXT_HOP]; // Should contain the encrypted jump and one element per frontend server.
+      var source = JSON.stringify(single_entry[SRC]);
+      var destination = JSON.stringify(single_entry[DEST]);
+      var jump = JSON.stringify(single_entry[NEXT_HOP]); // Should contain the encrypted jump and one element per frontend server.
 
       if(encrypted_table[source] == null) encrypted_table[source] = {};
       encrypted_table[source][destination] = jump;
@@ -125,47 +114,122 @@ function mpc_preprocess(table) {
     // Delete old tables
     if(recompute_number - 3 >= 0)
       encrypted_tables[recompute_number - 3] = null;
-    
 
-    fs.writeFile('data/saltyBoston.json', JSON.stringify(encrypted_table), 'utf8', function() {
-      console.log('PREPROCESSING FINISHED');
-    });
+    console.log("PREPROCESSING COMPLETE");
   });
 }
 
+var queryMap = {};
+function user_query(req, res) {
+  console.log("user query");
+  // Parse Query
+  var query_number = parseInt(req.params.number, 10);
+  var sourcePoint = JSON.parse(req.params.source); // EC point
+  var destinationPoint = JSON.parse(req.params.destination); // EC point
+
+
+  var query = queryMap[query_number];
+  if(query == null) {
+    query = [];
+    queryMap[query_number] = query;
+  }
+
+  query.unshift( { source: sourcePoint, dest: destinationPoint, response: res })
+  if(query.length == frontends.length + backends.length)
+    finish_query(query_number);
+}
+
 /* Handles a query in MPC */
-function mpc_query(_, query_info) {
+function frontend_query(_, query_info) {
+  console.log("frontend query", _);
   // Parse the query info
   query_info = JSON.parse(query_info);
   var recompute_number = query_info.recompute_number;
   var query_number = query_info.query_number;
-  var garbled_source = query_info.source;
-  var garbled_destination = query_info.destination;
+  var sourceMask = new BN(query_info.source);
+  var destMask = new BN(query_info.destination);
+  
+  var query = queryMap[query_number];
+  if(query == null) {
+    query = [];
+    queryMap[query_number] = query;
+  }
 
-  console.log("QUERY START: compute: " + recompute_number + ". #: " + query_number + ". FROM: " + garbled_source + " TO: " + garbled_destination);
+  query.push( { source: sourceMask, dest: destMask, recompute_number: recompute_number });
+  if(query.length == frontends.length + backends.length)
+    finish_query(query_number);
+}
 
-  // Get the appropriate table
+function finish_query(query_number) {
+  var query = queryMap[query_number];
+  var recompute_number = query[query.length-1].recompute_number;
   var encrypted_table = encrypted_tables[recompute_number];
+  
+  // Clean up
+  queryMap[query_number] = null;
+  
+  // Logs
+  console.log("QUERY START: compute: " + recompute_number + ". #: " + query_number);
+
+  // Error: no table matching set of keys
   if(encrypted_table == null) {
     console.log("QUERY ERROR 1: compute: " + recompute_number + ". #: " + query_number);
     jiff_instance.emit('finish_query', frontends, JSON.stringify( { "query_number": query_number, "error": "recompute number not available" }));
     return;
   }
 
-  if(encrypted_table[garbled_source] == null || encrypted_table[garbled_source][garbled_destination] == null) {
+  // Reconstruct the garbled source and destination
+  var sourceShares = [];
+  var destShares = [];
+  for(var i = 0; i < query.length; i++) {
+    sourceShares.push(query[i].source);
+    destShares.push(query[i].dest);
+  }
+
+  var source = multiplicative_reconstruct(sourceShares);
+  var dest = multiplicative_reconstruct(destShares);
+
+  // Error: garbled source and destination do not exist in table!
+  if(encrypted_table[source] == null || encrypted_table[source][dest] == null) {
     console.log("QUERY ERROR 2: compute: " + recompute_number + ". #: " + query_number);
     jiff_instance.emit('finish_query', frontends, JSON.stringify( { "query_number": query_number, "error": "invalid source or destination" }));
     return;
   }
   
-  // All good
-  var encrypted_jump = encrypted_table[garbled_source][garbled_destination];
+  // Found garbled jump
+  var jump = JSON.parse(encrypted_table[source][dest]);
   
-  // Send encrypted jump with the ``salt'' correponding to each frontend
-  for(var i = 0; i < frontends.length; i++) // Maybe multiply the salt by random c^2?
-    jiff_instance.emit('finish_query', [frontends[i]], JSON.stringify( { "query_number": query_number, "jump": encrypted_jump[0], "salt": encrypted_jump[i+1] }));
+  // Share jump and send shares to user and frontends
+  jump = multiplicative_share(jump);
+  for(var i = 0; i < frontends.length; i++)
+    jiff_instance.emit('finish_query', [frontends[i]], JSON.stringify( { "query_number": query_number, "jump": jump[i+1] }));
+
+  query[0].response.send(JSON.stringify( { point: jump[0] } ));
 
   console.log("QUERY SUCCESS: compute: " + recompute_number + ". #: " + query_number );
+}
+
+function multiplicative_share(point) {
+  var shares = [];
+  var total_mask = new BN(1);
+  for(var i = 0; i < frontends.length - 1; i++) {
+    var r = oprf.generateRandomScalar();
+    total_mask = total_mask.mul(r).mod(prime);
+    shares[i+1] = r.toString();
+  }
+
+  shares[0] = oprf.saltInput(point, total_mask.invm(prime).toString());
+  return shares;
+}
+
+// first share is a point, then a bunch of scalar multiplicative shares of an inverse
+function multiplicative_reconstruct(shares) {
+  var total_mask = new BN(1);
+  for(var i = 1; i < shares.length; i++) {
+    total_mask = total_mask.mul(new BN(shares[i]));
+  }
+
+  return JSON.stringify(oprf.saltInput(shares[0], total_mask));
 }
 
 
