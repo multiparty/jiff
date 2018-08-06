@@ -25,7 +25,7 @@
 
 
     var triplets = {};
-    for (var i = 0; i < 300; i++) {
+    for (var i = 0; i < 100; i++) {
       // generate beaver triple
       var id = jiff_instance.counters.gen_op_id('*', [1,2,3]);
       triplets[id] = jiff_instance.protocols.generate_beaver_bgw(null, null, null, [1,2,3], null, 'preprocess' + i);
