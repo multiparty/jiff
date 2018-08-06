@@ -11,8 +11,8 @@ var has_failed = false;
 // function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
 var Zp = new BigNumber(2).pow(45).minus(55);
 
-var decimal_digits = 5;
-var integer_digits = 5;
+var decimal_digits = 3;
+var integer_digits = 3;
 
 // Operation strings to "lambdas"
 var operations = {
@@ -60,7 +60,7 @@ var dual = {'add_cst': '+', 'sub_cst': '-', 'mult_cst': '*', 'xor_cst': '^', 'di
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers - make sure we generate both positive and negative numbers.
-  for (var i = 0; i < 200; i++) {
+  for (var i = 0; i < 10; i++) {
 
     var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits);
     var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
@@ -69,7 +69,7 @@ function run_test(computation_id, operation, callback) {
 
     for (var p = 0; p < 3; p++) {
       // ensure numbers wont wrap around
-      var max = Zp / 2;
+      /*var max = Zp / 2;
       if (operation == 'mult_cst') {
         max = Math.sqrt(Zp);
       } else if (operation == 'div_cst') {
@@ -81,7 +81,7 @@ function run_test(computation_id, operation, callback) {
       if (operation == 'xor_cst') {
         max = 2;
         offset = 0;
-      }
+      }*/
 
       // var randnum = BigNumber.random().times(total_magnitude).div(3).floor().div(decimal_magnitude) + offset;
       // var randnum = Math.random() * max - offset;
@@ -154,19 +154,21 @@ function test(callback, mpc_operator) {
 
 // Run test case at index
 function single_test(index, jiff_instance, mpc_operator, open_operator) {
-  var numbers = tests[index];
-  var party_index = jiff_instance.id - 1;
-  var shares = jiff_instance.share(numbers[party_index]);
+  try {
+      var numbers = tests[index];
+      var party_index = jiff_instance.id - 1;
+      var shares = jiff_instance.share(numbers[party_index]);
 
-  // Apply operation on shares
-  var res = operations[mpc_operator](shares[1], numbers[1]);
+      // Apply operation on shares
+      var res = operations[mpc_operator](shares[1], numbers[1]);
 
-  var deferred = $.Deferred();
-  res.open(function (result) {
-    test_output(index, result, open_operator);
-    deferred.resolve();
-  }, error);
-  return deferred.promise();
+      var deferred = $.Deferred();
+      res.open(function (result) {
+          test_output(index, result, open_operator);
+          deferred.resolve();
+      }, error);
+      return deferred.promise();
+  } catch (e) {console.log(e)}
 }
 
 // Determine if the output is correct
