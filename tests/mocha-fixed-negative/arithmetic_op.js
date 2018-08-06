@@ -8,10 +8,10 @@ var jiff_instances = null;
 var parties = 0;
 var tests = [];
 var has_failed = false;
-var Zp = new BigNumber(2).pow(45).minus(55);
+var Zp = new BigNumber(2).pow(51).minus(129);
 
-var decimal_digits = 5;
-var integer_digits = 5;
+var decimal_digits = 2;
+var integer_digits = 3;
 
 //function mod(x, y) { if (x < 0) return x % y + y; return x.mod(y); }
 
@@ -94,7 +94,7 @@ function run_test(computation_id, operation, callback) {
   var counter = 0;
   options = {party_count: parties, Zp: Zp, autoConnect: false};
   options.onConnect = function () {
-    if (++counter == 2) {
+    if (counter++ == 2) {
       test(callback, operation);
     }
   };
@@ -104,13 +104,13 @@ function run_test(computation_id, operation, callback) {
   };
 
   var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
-  jiff_instance1 = jiffFixedNumber.make_jiff(jiff_instance1, {integer_digits: 5, decimal_digits: 5});
+  jiff_instance1 = jiffFixedNumber.make_jiff(jiff_instance1, {integer_digits: 3, decimal_digits: 2});
   jiff_instance1 = jiffNegNumber.make_jiff(jiff_instance1);
   var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
-  jiff_instance2 = jiffFixedNumber.make_jiff(jiff_instance2, {integer_digits: 5, decimal_digits: 5});
+  jiff_instance2 = jiffFixedNumber.make_jiff(jiff_instance2, {integer_digits: 3, decimal_digits: 2});
   jiff_instance2 = jiffNegNumber.make_jiff(jiff_instance2);
   var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
-  jiff_instance3 = jiffFixedNumber.make_jiff(jiff_instance3, {integer_digits: 5, decimal_digits: 5});
+  jiff_instance3 = jiffFixedNumber.make_jiff(jiff_instance3, {integer_digits: 3, decimal_digits: 2});
   jiff_instance3 = jiffNegNumber.make_jiff(jiff_instance3);
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
   jiff_instance1.connect();
@@ -160,7 +160,7 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
     shares_list.push(shares[i]);
   }
 
-  if (mpc_operator == 'div') {
+  if (mpc_operator == 'div' || mpc_operator == 'mult') {
     res = operations[mpc_operator](shares_list[0], shares_list[1]);
   } else {
     res = shares_list.reduce(operations[mpc_operator]);
@@ -180,7 +180,7 @@ function test_output(index, result, open_operator) {
 
   // Apply operation in the open to test
   var res;
-  if (open_operator == '/') {
+  if (open_operator == '/' || open_operator == '*') {
     res = operations[open_operator](numbers[0], numbers[1]);
   } else {
     res = numbers.reduce(operations[open_operator]);

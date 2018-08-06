@@ -11,7 +11,7 @@ var has_failed = false;
 // function mod(x, y) { if (x < 0) return (x % y) + y; return x % y; }
 var Zp = new BigNumber(2).pow(45).minus(55);
 
-var decimal_digits = 3;
+var decimal_digits = 2;
 var integer_digits = 3;
 
 // Operation strings to "lambdas"
@@ -60,7 +60,7 @@ var dual = {'add_cst': '+', 'sub_cst': '-', 'mult_cst': '*', 'xor_cst': '^', 'di
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers - make sure we generate both positive and negative numbers.
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < 3; i++) {
 
     var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits);
     var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
