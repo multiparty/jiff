@@ -6,13 +6,6 @@ var parties = 0;
 var tests = [];
 var has_failed = false;
 var Zp = 2039;
-function mod(x, y) {
-  if (x < 0) {
-    return (x + y) % y;
-  } else {
-    return x % y;
-  }
-}
 
 // Operation strings to 'lambdas'
 var operations = {
@@ -47,7 +40,7 @@ var operations = {
     return operand1.sdiv(operand2);
   },
   '%' : function (operand1, operand2) {
-    return mod(operand1, operand2);
+    return operand1 % operand2;
   },
   'mod' : function (operand1, operand2) {
     return operand1.smod(operand2);
@@ -175,7 +168,7 @@ function test_output(index, result, open_operator) {
 
   // Apply operation in the open to test
   var res;
-  if (open_operator === '/' || open_operator == '%') {
+  if (open_operator === '/' || open_operator === '%') {
     res = operations[open_operator](numbers[0], numbers[1]);
   } else {
     res = numbers.reduce(operations[open_operator]);

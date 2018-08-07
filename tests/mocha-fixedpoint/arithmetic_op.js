@@ -13,13 +13,7 @@ var decimal_digits = 4;
 var integer_digits = 4;
 
 function mod(x, y) {
-  var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
-
-  x = x.times(decimal_magnitude);
-  if (x.isNeg()) {
-    return x.mod(y).plus(y).div(decimal_magnitude);
-  }
-  return x.mod(y).div(decimal_magnitude);
+  return x.minus( x.div(y).floor().times(y) );
 }
 
 // Operation strings to 'lambdas'
@@ -61,7 +55,7 @@ var operations = {
     return operand1.sdiv(operand2);
   },
   '%' : function (operand1, operand2) {
-    return new BigNumber(mod(operand1, operand2).toFixed(decimal_digits, BigNumber.ROUND_FLOOR));
+    return new BigNumber(mod(operand1, operand2).toFixed(decimal_digits, BigNumber.ROUND_DOWN));
   },
   'mod' : function (operand1, operand2) {
     return operand1.smod(operand2);
