@@ -13,5 +13,5 @@ http.listen(8080, function() {
 });
 
 console.log("Direct your browser to *:8080/demos/battleship-all/client.html.");
-console.log("To run a node.js based party: node demos/battleship-all/party, Command line arguments: <ships> <guesses> [<computation_id>] [<party id>]");
+console.log("To run a node.js based party: node demos/battleship-all/party, Command line arguments: <ships> <guesses> [<computation_id>] [<version(1-3)>] [<party id>]");
 console.log();
