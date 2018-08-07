@@ -6,6 +6,9 @@ cd spatialindex-src-1.8.5/
 ./configure
 make
 sudo make install
+sudo ldconfig
+
+cd ..
 
 rm spatialindex-src-1.8.5.tar.gz
-rm -r spatialindex-src-1.8.5
+rm -rf spatialindex-src-1.8.5
