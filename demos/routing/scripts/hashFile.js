@@ -6,7 +6,7 @@ _sodium.ready.then(function() {
     var oprf = new _oprf.OPRF(_sodium);
 
     var filename = process.argv[2];
-    var file = require('../'+filename);
+    var file = require('../scrape/server.json');
 
     var hashed = [];
     for (var i = 0; i < file.length; i++) {
@@ -18,7 +18,7 @@ _sodium.ready.then(function() {
       }
     }
 
-    console.log(JSON.stringify(hashed, null, 2));
+    console.log(JSON.stringify(hashed));
   } catch (err) {
     console.log(err);
   }

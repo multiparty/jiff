@@ -7,6 +7,8 @@ sodium.ready.then(function() {
   oprf_ = new oprf.OPRF(sodium);
 });
 
+console.log(unreached);
+
 // order of elliptic curve
 var prime = new BN(2).pow(new BN(252)).add(new BN('27742317777372353535851937790883648493'));
 
@@ -41,6 +43,7 @@ function multiplicative_reconstruct(shares) {
 
 // one step in the query, recursive
 function get_one_step(source, dest) {
+  console.log("query");
   var query_number = query_count++;
 
   var source_shares = multiplicative_share(JSON.parse(source));
@@ -59,16 +62,21 @@ function get_one_step(source, dest) {
 
     // Error
     if (results[0].error != null) {
+      alert('error');
       console.log(results[0].error);
       return;
     }
 
     var result = JSON.stringify(multiplicative_reconstruct(results));
-    console.log(result);
+    if(result == unreached) {
+      alert("Unreachable!");
+      return;
+    }
     drawPath([ source, result ]); // Draw one step of the path
 
     // If more steps are left, compute them
     if(result != dest) get_one_step(result, dest);
+    else console.log("done")
   }, console.log);
 }
 

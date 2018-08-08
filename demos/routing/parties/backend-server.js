@@ -191,7 +191,9 @@ function finish_query(query_number) {
   // Error: garbled source and destination do not exist in table!
   if(encrypted_table[source] == null || encrypted_table[source][dest] == null) {
     console.log("QUERY ERROR 2: compute: " + recompute_number + ". #: " + query_number);
+
     jiff_instance.emit('finish_query', frontends, JSON.stringify( { "query_number": query_number, "error": "invalid source or destination" }));
+    query[0].response.send(JSON.stringify( { "error": "invalid source or destination" } ));
     return;
   }
 
