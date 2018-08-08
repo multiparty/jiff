@@ -24,11 +24,10 @@
     }
 
 
-    var triplets = {};
     for (var i = 0; i < 100; i++) {
       // generate beaver triple
       var id = jiff_instance.counters.gen_op_id('*', [1,2,3]);
-      triplets[id] = jiff_instance.protocols.generate_beaver_bgw(null, null, null, [1,2,3], null, 'preprocess' + i);
+      jiff_instance.preprocessing_table[id] = jiff_instance.protocols.generate_beaver_bgw(null, null, null, [1,2,3], null, 'preprocess' + i);
     }
 
     jiff_instance.counters.op_count['1,2,3'] = 0;
@@ -43,7 +42,7 @@
     for (var k = 0; k < values.length; k++) {
       var result = values[k][1];
       for (var l = 2; l <= jiff_instance.party_count; l++) {
-        result = result.smult(values[k][l], null , triplets);
+        result = result.smult(values[k][l], null , jiff_instance.preprocessing_table);
       }
       results.push(result);
     }
