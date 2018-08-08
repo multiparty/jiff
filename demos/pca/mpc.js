@@ -11,12 +11,14 @@
     if(node) {
       jiff = require('../../lib/jiff-client');
       jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
+      jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
       jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber');
       $ = require('jquery-deferred');
     }
 
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     saved_instance = jiff_bignumber.make_jiff(saved_instance);
+    saved_instance = jiff_fixedpoint.make_jiff(saved_instance);
     saved_instance = jiff_negativenumber.make_jiff(saved_instance, options); // Max bits allowed after decimal.
     // if you need any extensions, put them here
 
@@ -43,7 +45,8 @@
     var results = [];
 
     // SHARE VECTOR & SECRET ADD
-    var shares_2d = jiff_instance.share_vec(arr);
+    // var shares_2d = jiff_instance.share_vec(arr); apparently doesnt exist
+    var shares_2d = jiff_instance.share_array(arr);
 
     for (var i = 0; i < shares_2d.length; i++) {
       var shares = shares_2d[i];
