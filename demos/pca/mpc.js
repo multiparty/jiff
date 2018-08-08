@@ -42,128 +42,131 @@
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
 
-    var results = [];
+    //arr[0] = new BigNumber(arr[0]);
+    //arr[1] = new BigNumber(arr[1]);
+    //arr[2] = new BigNumber(arr[2]);
 
     // SHARE VECTOR & SECRET ADD
     // var shares_2d = jiff_instance.share_vec(arr); apparently doesnt exist
-    var shares_2d = jiff_instance.share_array(arr);
+    jiff_instance.share_array(arr).then(function(shares_2d) {
+// [ {1 ,2 }     ]
+// { 1: [  ], 2: [,  ]  }
+      var results = [];
+      for (var i = 0; i < shares_2d[1].length; i++) {
+        var sum = shares_2d[1][i];
 
-    for (var i = 0; i < shares_2d.length; i++) {
-      var shares = shares_2d[i];
-      var sum = shares[1];
+        for (var j = 2; j <= jiff_instance.party_count; j++) {
+          sum = sum.sadd(shares_2d[j][i]);
+        }
 
-      for (var j = 2; j <= jiff_instance.party_count; j++) {
-        sum = sum.sadd(shares[j]);
+        results.push(sum.open().then(successCallback, failureCallback));
       }
 
-      results.push(sum.open().then(successCallback, failureCallback));
-    }
-
-    // COMPUTE MEAN VECTOR
-    Promise.all(results).then(function (results) {
-      var mean = results.map(function (item) {
-        return item / jiff_instance.party_count;
-      });
-
-      console.log("local arr = " + arr);
-      console.log("mean vector = " + mean);
-
-      // SCATTER MATRIX
-      diff = [subtractArrays(arr, mean)];
-
-      diff_T = numeric.transpose(diff);
-      console.log("arr = " + arr);
-      console.log("mean = " + mean);
-      console.log(diff);
-      console.log(diff_T);
-
-      var scatter = numeric.dot(diff_T, diff);
-
-      console.log("local scatter:");
-      console.log(scatter);
-
-      console.log("begin calculating scatter sum")
-      scatter_sum = [];
-      scatter.map(function (row) {
-
-        // SECURE SCATTER SUM (AGGREGATE SCATTER MATRIX)
-        scatter_sum.push(new Promise(function (resolve, reject) {
-          console.log("sharing row = " + row);
-          row_sum = [];
-          row.map(function (item) {
-            console.log("sharing item = " + item)
-            var shares = jiff_instance.share(item);
-            var sum = shares[1];
-            for (var k = 2; k <= jiff_instance.party_count; k++) {
-              sum = sum.sadd(shares[k]);
-            }
-            row_sum.push(sum.open().then(successCallback, failureCallback));
-          });
-
-          Promise.all(row_sum).then(function (results) {
-            console.log("this row is done = " + results);
-            resolve(results);
-          });
-
-        }).then(successCallback, failureCallback));
-
-      });
-
-      Promise.all(scatter_sum).then(function (results) {
-
-        console.log(results)
-        for (var i = 0; i < results.length; i++) {
-          for (var j = 0; j < results[i].length; j++) {
-            results[i][j] = results[i][j].toNumber();
-          }
-        }
-
-        console.log("scatter_sum computed = ");
-        console.log(results);
-
-        console.log("scatter_sum eig = ");
-
-        try {
-          var eig = numeric.eig(results);
-        }
-        catch (err) {
-          console.log(err) // zero mat, etc
-        }
-
-        // var eig_copy = Object.assign({}, eig);
-        console.log(eig);
-        console.log("here");
-        console.log(eig.E);
-        console.log("find the two largest eigenvalues");
-        // Fix sorting 6/11
-        // The fact that the wrong eigenvalues are returned doesn't affect PCA. Only need the vectors,
-        // which seem to be correct.
-        var sorted_eigen_values = eig.lambda.x.sort((a,b) => b - a).slice(0, 2);
-        console.log("two largest eigen values = " + sorted_eigen_values);
-        var corresponding_largest_eigenvectors = []
-        sorted_eigen_values.map(function (item) {
-          var eigenvecs = numeric.transpose(eig.E.x); // to get one eigenvec per row
-          // Fix incorrect transpose of eigenvector 6/12
-          // (eig.E.x[0]); // NOT the eigenvector of lambda[0]. incorrect indexing
-          corresponding_largest_eigenvectors.push(eigenvecs[eig.lambda.x.indexOf(item)])
-          // corresponding_largest_eigenvectors.push(eig.E.x[eig.lambda.x.indexOf(item)])
+      // COMPUTE MEAN VECTOR
+      Promise.all(results).then(function (results) {
+        var mean = results.map(function (item) {
+          return item.div(jiff_instance.party_count);
         });
-        corresponding_largest_eigenvectors = numeric.transpose(corresponding_largest_eigenvectors);
-        console.log("corresponding eigenvectors:");
-        console.log(corresponding_largest_eigenvectors);
-        console.log("array to dot");
-        console.log(arr);
-        // confirmed correct algorithm 6/12. PCA_vec = arr (dot) EV_mat
-        // dim: 1x3 * 3x2 = 1x2
-        // var result = numeric.dot(numeric.transpose(corresponding_largest_eigenvectors), arr);
-        var result = numeric.dot(arr, corresponding_largest_eigenvectors);
-        console.log("transpose of corr eigenvec for 2 largest eigenvalues (W matrix):");
-        console.log(numeric.transpose(corresponding_largest_eigenvectors));
-        final_deferred.resolve(result);
-      });
 
-    }, failureCallback);
+        console.log("local arr = " + arr);
+        console.log("mean vector = " + mean);
 
+        // SCATTER MATRIX
+        diff = [subtractArrays(arr, mean)];
+
+        diff_T = numeric.transpose(diff);
+        console.log("arr = " + arr);
+        console.log("mean = " + mean);
+        console.log(diff);
+        console.log(diff_T);
+
+        var scatter = numeric.dot(diff_T, diff);
+
+        console.log("local scatter:");
+        console.log(scatter);
+
+        console.log("begin calculating scatter sum")
+        scatter_sum = [];
+        scatter.map(function (row) {
+
+          // SECURE SCATTER SUM (AGGREGATE SCATTER MATRIX)
+          scatter_sum.push(new Promise(function (resolve, reject) {
+            console.log("sharing row = " + row);
+            row_sum = [];
+            row.map(function (item) {
+              console.log("sharing item = " + item)
+              var shares = jiff_instance.share(item);
+              var sum = shares[1];
+              for (var k = 2; k <= jiff_instance.party_count; k++) {
+                sum = sum.sadd(shares[k]);
+              }
+              row_sum.push(sum.open().then(successCallback, failureCallback));
+            });
+
+            Promise.all(row_sum).then(function (results) {
+              console.log("this row is done = " + results);
+              resolve(results);
+            });
+
+          }).then(successCallback, failureCallback));
+
+        });
+
+        Promise.all(scatter_sum).then(function (results) {
+
+          console.log(results)
+          for (var i = 0; i < results.length; i++) {
+            for (var j = 0; j < results[i].length; j++) {
+              results[i][j] = results[i][j].toNumber();
+            }
+          }
+
+          console.log("scatter_sum computed = ");
+          console.log(results);
+
+          console.log("scatter_sum eig = ");
+
+          try {
+            var eig = numeric.eig(results);
+          }
+          catch (err) {
+            console.log(err) // zero mat, etc
+          }
+
+          // var eig_copy = Object.assign({}, eig);
+          console.log(eig);
+          console.log("here");
+          console.log(eig.E);
+          console.log("find the two largest eigenvalues");
+          // Fix sorting 6/11
+          // The fact that the wrong eigenvalues are returned doesn't affect PCA. Only need the vectors,
+          // which seem to be correct.
+          var sorted_eigen_values = eig.lambda.x.sort((a,b) => b - a).slice(0, 2);
+          console.log("two largest eigen values = " + sorted_eigen_values);
+          var corresponding_largest_eigenvectors = []
+          sorted_eigen_values.map(function (item) {
+            var eigenvecs = numeric.transpose(eig.E.x); // to get one eigenvec per row
+            // Fix incorrect transpose of eigenvector 6/12
+            // (eig.E.x[0]); // NOT the eigenvector of lambda[0]. incorrect indexing
+            corresponding_largest_eigenvectors.push(eigenvecs[eig.lambda.x.indexOf(item)])
+            // corresponding_largest_eigenvectors.push(eig.E.x[eig.lambda.x.indexOf(item)])
+          });
+          corresponding_largest_eigenvectors = numeric.transpose(corresponding_largest_eigenvectors);
+          console.log("corresponding eigenvectors:");
+          console.log(corresponding_largest_eigenvectors);
+          console.log("array to dot");
+          console.log(arr);
+          // confirmed correct algorithm 6/12. PCA_vec = arr (dot) EV_mat
+          // dim: 1x3 * 3x2 = 1x2
+          // var result = numeric.dot(numeric.transpose(corresponding_largest_eigenvectors), arr);
+          var result = numeric.dot(arr, corresponding_largest_eigenvectors);
+          console.log("transpose of corr eigenvec for 2 largest eigenvalues (W matrix):");
+          console.log(numeric.transpose(corresponding_largest_eigenvectors));
+          final_deferred.resolve(result);
+        });
+
+      }, failureCallback);
+    });
     return final_promise;
   };
 }((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));

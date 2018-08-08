@@ -10,9 +10,8 @@ function connect() {
     var options = {
       party_count: party_count,
       Zp: new BigNumber(32416190071),
-      offset: 100000,
-      bits: 8,
-      digits: 2
+      integer_digits: 2,
+      decimal_digits: 3
     };
     options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
     options.onConnect = function() { $("#button").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };

@@ -31,7 +31,7 @@ var party_id = process.argv[5];
 if(party_id != null) party_id = parseInt(party_id, 10);
 
 // JIFF options
-var options = {party_count: party_count, Zp: new BigNumber(32416190071), offset: 100000, bits: 8, digits: 2 };
+var options = {party_count: party_count, Zp: new BigNumber(32416190071), integer_digits: 2, decimal_digits: 3};
 options.onConnect = function(jiff_instance) {
 
   var promise = mpc.compute(arr, successCallback, failureCallback);
