@@ -31,7 +31,7 @@ describe('MPC Operations', function () {
   });
 
   describe('Arithmetic Operations', function () {
-    //+/*
+    //+
     it('Addition', function (done) {
       arithmetic_op.run_test(i++, 'add', callback(done));
     });
@@ -55,7 +55,10 @@ describe('MPC Operations', function () {
     it('Integer Division', function (done) {
       arithmetic_op.run_test(i++, 'div', callback(done));
     });
-
+    // %
+    it('Modulo', function (done) {
+      arithmetic_op.run_test(i++, 'mod', callback(done));
+    });
   });
 
   describe('Constant Arithmetic Operations', function () {

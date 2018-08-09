@@ -2,6 +2,7 @@ var jiff = require('../../lib/jiff-client.js');
 var jiffBigNumber = require('../../lib/ext/jiff-client-bignumber.js');
 var jiffNegNumber = require('../../lib/ext/jiff-client-negativenumber.js');
 var jiffFixedNumber = require('../../lib/ext/jiff-client-fixedpoint.js');
+var BigNumber = require('bignumber.js');
 
 var jiff_instances = null;
 var parties = 0;
@@ -55,7 +56,7 @@ var operations = {
 };
 
 // Maps MPC operation to its open dual
-var dual = {'add_cst': '+', 'sub_cst': '-', 'mult_cst': '*', 'xor_cst': '^', 'div_cst': '/'};
+var dual = {add_cst: '+', sub_cst: '-', mult_cst: '*', xor_cst: '^', div_cst: '/'};
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
@@ -68,25 +69,8 @@ function run_test(computation_id, operation, callback) {
     tests[i] = [];
 
     for (var p = 0; p < 3; p++) {
-      // ensure numbers wont wrap around
-      /*var max = Zp / 2;
-      if (operation == 'mult_cst') {
-        max = Math.sqrt(Zp);
-      } else if (operation == 'div_cst') {
-        max = Zp;
-      }
-
-      // var magnitude = jiff.helpers.magnitude(share.jiff.decimal_digits);
-      var offset = Math.floor(max / 2) * decimal_magnitude;
-      if (operation == 'xor_cst') {
-        max = 2;
-        offset = 0;
-      }*/
-
-      // var randnum = BigNumber.random().times(total_magnitude).div(3).floor().div(decimal_magnitude) + offset;
-      // var randnum = Math.random() * max - offset;
-       var randnum = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
-      // randnum = Math.random() < 0.5 ? randnum.times(-1) : randnum;
+      var randnum = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+      randnum = Math.random() < 0.5 ? randnum.times(-1) : randnum;
       tests[i].push(randnum);
     }
   }
@@ -96,10 +80,10 @@ function run_test(computation_id, operation, callback) {
   computation_id = computation_id + '';
 
   var counter = 0;
-  options = {party_count: parties, Zp: Zp, autoConnect: false};
+  var options = {party_count: parties, Zp: Zp, autoConnect: false};
   options.onConnect = function () {
-    if (++counter == 3) {
-        test(callback, operation);
+    if (++counter === 3) {
+      test(callback, operation);
     }
   };
   options.onError = function (error) {
@@ -134,7 +118,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == 'div_cst' ? 10 : tests.length;
+  var length = mpc_operator === 'div_cst' ? 10 : tests.length;
   for (var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
@@ -154,21 +138,19 @@ function test(callback, mpc_operator) {
 
 // Run test case at index
 function single_test(index, jiff_instance, mpc_operator, open_operator) {
-  try {
-      var numbers = tests[index];
-      var party_index = jiff_instance.id - 1;
-      var shares = jiff_instance.share(numbers[party_index]);
+  var numbers = tests[index];
+  var party_index = jiff_instance.id - 1;
+  var shares = jiff_instance.share(numbers[party_index]);
 
-      // Apply operation on shares
-      var res = operations[mpc_operator](shares[1], numbers[1]);
+  // Apply operation on shares
+  var res = operations[mpc_operator](shares[1], numbers[1]);
 
-      var deferred = $.Deferred();
-      res.open(function (result) {
-          test_output(index, result, open_operator);
-          deferred.resolve();
-      }, error);
-      return deferred.promise();
-  } catch (e) {console.log(e)}
+  var deferred = $.Deferred();
+  res.open(function (result) {
+    test_output(index, result, open_operator);
+    deferred.resolve();
+  }, error);
+  return deferred.promise();
 }
 
 // Determine if the output is correct
@@ -180,7 +162,7 @@ function test_output(index, result, open_operator) {
   //  res = mod(res, Zp);
 
   // Incorrect result
-  if (!(res.toString() == result.toString())) {
+  if (!(res.toString() === result.toString())) {
     has_failed = true;
     console.log(numbers.join(open_operator) + ' = ' + res + ' != ' + result);
   }

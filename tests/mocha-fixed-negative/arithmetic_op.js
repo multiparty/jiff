@@ -56,7 +56,7 @@ var operations = {
 };
 
 // Maps MPC operation to its open dual
-var dual = {'add': '+', 'sub': '-', 'mult': '*', 'xor': '^', 'div': '/'};
+var dual = {add: '+', sub: '-', mult: '*', xor: '^', div: '/'};
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
@@ -92,9 +92,9 @@ function run_test(computation_id, operation, callback) {
   computation_id = computation_id + '';
 
   var counter = 0;
-  options = {party_count: parties, Zp: Zp, autoConnect: false};
+  var options = {party_count: parties, Zp: Zp, autoConnect: false};
   options.onConnect = function () {
-    if (counter++ == 2) {
+    if (counter++ === 2) {
       test(callback, operation);
     }
   };
@@ -104,13 +104,13 @@ function run_test(computation_id, operation, callback) {
   };
 
   var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
-  jiff_instance1 = jiffFixedNumber.make_jiff(jiff_instance1, {integer_digits: 3, decimal_digits: 2});
+  jiff_instance1 = jiffFixedNumber.make_jiff(jiff_instance1, {integer_digits: integer_digits, decimal_digits: decimal_digits});
   jiff_instance1 = jiffNegNumber.make_jiff(jiff_instance1);
   var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
-  jiff_instance2 = jiffFixedNumber.make_jiff(jiff_instance2, {integer_digits: 3, decimal_digits: 2});
+  jiff_instance2 = jiffFixedNumber.make_jiff(jiff_instance2, {integer_digits: integer_digits, decimal_digits: decimal_digits});
   jiff_instance2 = jiffNegNumber.make_jiff(jiff_instance2);
   var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
-  jiff_instance3 = jiffFixedNumber.make_jiff(jiff_instance3, {integer_digits: 3, decimal_digits: 2});
+  jiff_instance3 = jiffFixedNumber.make_jiff(jiff_instance3, {integer_digits: integer_digits, decimal_digits: decimal_digits});
   jiff_instance3 = jiffNegNumber.make_jiff(jiff_instance3);
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
   jiff_instance1.connect();
@@ -120,7 +120,7 @@ function run_test(computation_id, operation, callback) {
 
 // Run all tests after setup
 function test(callback, mpc_operator) {
-  open_operator = dual[mpc_operator];
+  var open_operator = dual[mpc_operator];
 
   if (!jiff_instances[0] || !jiff_instances[0].isReady()) {
     console.log('Please wait!');
@@ -130,7 +130,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator == 'div' ? 10 : tests.length;
+  var length = mpc_operator === 'div' ? 10 : tests.length;
   for (var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
@@ -160,7 +160,8 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
     shares_list.push(shares[i]);
   }
 
-  if (mpc_operator == 'div' || mpc_operator == 'mult') {
+  var res;
+  if (mpc_operator === 'div' || mpc_operator === 'mult') {
     res = operations[mpc_operator](shares_list[0], shares_list[1]);
   } else {
     res = shares_list.reduce(operations[mpc_operator]);
@@ -180,14 +181,14 @@ function test_output(index, result, open_operator) {
 
   // Apply operation in the open to test
   var res;
-  if (open_operator == '/' || open_operator == '*') {
+  if (open_operator === '/' || open_operator === '*') {
     res = operations[open_operator](numbers[0], numbers[1]);
   } else {
     res = numbers.reduce(operations[open_operator]);
   }
 
   // Incorrect result
-  if (!(res.toString() == result.toString())) {
+  if (!(res.toString() === result.toString())) {
     has_failed = true;
     console.log(numbers.join(open_operator) + ' = ' + res + ' != ' + result);
   }
@@ -196,7 +197,7 @@ function test_output(index, result, open_operator) {
 // Register Communication Error
 function error() {
   has_failed = true;
-  console.log("Communication error");
+  console.log('Communication error');
 }
 
 // Export API

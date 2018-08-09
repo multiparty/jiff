@@ -47,22 +47,29 @@ var operations = {
   },
   'div': function (operand1, operand2) {
     return operand1.sdiv(operand2);
+  },
+  'mod' : function (operand1, operand2) {
+    return operand1.smod(operand2);
+  },
+  '%' : function (operand1, operand2) {
+    return mod(operand1, operand2);
   }
 };
 
 // Maps MPC operation to its open dual
-var dual = {add: '+', sub: '-', mult: '*', mult_bgw: '*', xor: '^', div: '/'};
+var dual = {add: '+', sub: '-', mult: '*', mult_bgw: '*', xor: '^', div: '/', mod: '%'};
 
 // Entry Point
 function run_test(computation_id, operation, callback) {
   // Generate Numbers
   for (var i = 0; i < 200; i++) {
-    if (operation === 'div') {
+    if (operation === 'div' || operation === 'mod') {
       Zp = 2039;
     }
     var m = operation === 'xor' ? 2 : Zp;
-    m = operation === 'div' ? m - 1 : m;
-    var o = operation === 'div' ? 1 : 0; // ensure not to divide by zero
+    m = (operation === 'div'  || operation === 'mod') ? m-1 : m;
+    var o = (operation === 'div' || operation === 'mod') ? 1 : 0; // ensure not to divide by zero
+
     var num1 = Math.floor(Math.random() * Zp) % (m + o);
     var num2 = (Math.floor(Math.random() * Zp) % m) + o;
     var num3 = (Math.floor(Math.random() * Zp) % m) + o;
@@ -107,7 +114,7 @@ function test(callback, mpc_operator) {
 
   // Run every test and accumelate all the promises
   var promises = [];
-  var length = mpc_operator === 'div' ? 10 : tests.length;
+  var length = (mpc_operator === 'div' || mpc_operator === 'mod') ? 10 : tests.length;
   for (var i = 0; i < length; i++) {
     for (var j = 0; j < jiff_instances.length; j++) {
       var promise = single_test(i, jiff_instances[j], mpc_operator, open_operator);
@@ -143,7 +150,7 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
     shares_list.push(shares[i]);
   }
 
-  if (mpc_operator === 'div') {
+  if (mpc_operator === 'div' || mpc_operator === 'mod') {
     res = operations[mpc_operator](shares_list[0], shares_list[1]);
   } else {
     res = shares_list.reduce(operations[mpc_operator]);
@@ -163,11 +170,12 @@ function test_output(index, result, open_operator) {
 
   // Apply operation in the open to test
   var res;
-  if (open_operator === '/') {
+  if (open_operator === '/' || open_operator === '%') {
     res = operations[open_operator](numbers[0], numbers[1]);
   } else {
     res = numbers.reduce(operations[open_operator]);
   }
+
   res = mod(res, Zp);
 
   // Incorrect result

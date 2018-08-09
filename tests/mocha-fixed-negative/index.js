@@ -1,5 +1,5 @@
+/* global describe, it */
 // Chai
-var expect = require('chai').expect;
 var assert = require('chai').assert;
 
 // Require test cases for every operation
@@ -31,13 +31,13 @@ describe('MPC Operations', function () {
 
   describe('Arithmetic Operations', function () {
     //+
-    /*it('Addition', function (done) {
+    it('Addition', function (done) {
       arithmetic_op.run_test(i++, 'add', callback(done));
     });
     // -
     it('Subtraction', function (done) {
       arithmetic_op.run_test(i++, 'sub', callback(done));
-    });*/
+    });
     // *
     it('Mutliplication', function (done) {
       arithmetic_op.run_test(i++, 'mult', callback(done));
@@ -75,7 +75,7 @@ describe('MPC Operations', function () {
     });*/
   });
 
-  /*describe('Comparison', function () {
+  describe('Comparison', function () {
     // <
     it('Less than', function (done) {
       comparison.run_test(i++, 'less', callback(done));
@@ -137,5 +137,5 @@ describe('MPC Operations', function () {
     it('Not Equal', function (done) {
       constant_comparison.run_test(i++, 'neq_cst', callback(done));
     });
-  });*/
+  });
 });
