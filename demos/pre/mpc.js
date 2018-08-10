@@ -27,7 +27,11 @@
     for (var i = 0; i < 100; i++) {
       // generate beaver triple
       var id = jiff_instance.counters.gen_op_id('*', [1,2,3]);
-      jiff_instance.preprocessing_table[id] = jiff_instance.protocols.generate_beaver_bgw(null, null, null, [1,2,3], null, 'preprocess' + i);
+      try{
+        jiff_instance.preprocessing('triplet', '*', jiff_instance.protocols.generate_beaver_bgw, 300, []);
+      }catch(e){
+        console.log(e);
+      }
     }
 
     jiff_instance.counters.op_count['1,2,3'] = 0;
