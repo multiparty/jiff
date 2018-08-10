@@ -42,15 +42,9 @@
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
 
-    //arr[0] = new BigNumber(arr[0]);
-    //arr[1] = new BigNumber(arr[1]);
-    //arr[2] = new BigNumber(arr[2]);
-
+    console.log("About to share array")
     // SHARE VECTOR & SECRET ADD
-    // var shares_2d = jiff_instance.share_vec(arr); apparently doesnt exist
     jiff_instance.share_array(arr).then(function(shares_2d) {
-// [ {1 ,2 }     ]
-// { 1: [  ], 2: [,  ]  }
       var results = [];
       for (var i = 0; i < shares_2d[1].length; i++) {
         var sum = shares_2d[1][i];
