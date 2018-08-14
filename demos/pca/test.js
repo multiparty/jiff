@@ -10,7 +10,7 @@ math.import(numeric, {wrap: true, silent: true});
 // Generic Testing Parameters
 var party_count = 2; // must be 2 parties
 var parallelismDegree = 1; // Max number of test cases running in parallel
-var n = 10; // Number of test cases in total
+var n = 1; // Number of test cases in total
 
 // Parameters specific to this demo
 var maxElement = 10;
@@ -159,7 +159,12 @@ describe('Test', function() {
           var promises = [];
           for(var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++)
             console.log("Computing test case under MPC...")
-            promises.push(mpc.compute(partyInputs[j+t], jiff_instance));
+            promises.push(mpc.compute(partyInputs[j+t], function(){}, function () {}, jiff_instance));
+
+            promises.then(function(v) {
+              console.log("the result of PCA is:");
+              console.log(v);
+            });
 
             console.log("Promise pushed.")
 

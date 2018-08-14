@@ -5,9 +5,10 @@
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
-    var opt = Object.assign({}, options);
     // Added options goes here
+    var opt = Object.assign({}, options);
 
+    // if you need any extensions, put them here
     if(node) {
       jiff = require('../../lib/jiff-client');
       jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
@@ -20,12 +21,11 @@
     saved_instance = jiff_bignumber.make_jiff(saved_instance);
     saved_instance = jiff_fixedpoint.make_jiff(saved_instance);
     saved_instance = jiff_negativenumber.make_jiff(saved_instance, options); // Max bits allowed after decimal.
-    // if you need any extensions, put them here
 
     return saved_instance;
   };
 
-  // element-wise subtraction of arrays of the same length
+  // Helper function: element-wise subtraction of arrays of the same length
   function subtractArrays(arr1, arr2) {
     result = [];
     for (var i = 0; i < arr1.length; i++) {
@@ -53,7 +53,7 @@
           sum = sum.sadd(shares_2d[j][i]);
         }
 
-        results.push(sum.open().then(successCallback, failureCallback));
+        results.push(sum.open())//.then(successCallback, failureCallback));
       }
 
       // COMPUTE MEAN VECTOR
@@ -94,7 +94,7 @@
               for (var k = 2; k <= jiff_instance.party_count; k++) {
                 sum = sum.sadd(shares[k]);
               }
-              row_sum.push(sum.open().then(successCallback, failureCallback));
+              row_sum.push(sum.open());//.then(successCallback, failureCallback));
             });
 
             Promise.all(row_sum).then(function (results) {
@@ -102,7 +102,7 @@
               resolve(results);
             });
 
-          }).then(successCallback, failureCallback));
+          }));//.then(successCallback, failureCallback));
 
         });
 
@@ -159,7 +159,7 @@
           final_deferred.resolve(result);
         });
 
-      }, failureCallback);
+      }); //failureCallback);
     });
     return final_promise;
   };
