@@ -10,7 +10,7 @@ var options = {
 };
 options.onConnect = function() {
 
-  // Benchmark id.
+  // Benchmark id. Not sure what this is.
   var id = Math.floor(Math.random() * 100000);
 
   // The upper and lower party ids.

@@ -7,9 +7,10 @@
 console.log("Command line arguments: <input> [<party count> [<computation_id> [<party id>]]]]");
 
 var mpc = require('./mpc');
+var BigNumber = require('bignumber.js');
 
 // Read Command line arguments
-var input = parseInt(process.argv[2], 10);
+var input = parseInt(process.argv[2], 10); // this is the mpc input
 
 var party_count = process.argv[3];
 if(party_count == null) party_count = 2;
@@ -27,7 +28,7 @@ options.onConnect = function(jiff_instance) {
   var promise = mpc.compute(input);
 
   promise.then(function(v) {
-    console.log(v);
+    console.log("The result is: ", v);
     jiff_instance.disconnect();
   });
 };

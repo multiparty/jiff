@@ -10,9 +10,10 @@
 
     if(node)
       jiff = require('../../lib/jiff-client');
+      jiff_BigNumber = require('../../lib/ext/jiff-client-bignumber');
 
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
-    // if you need any extensions, put them here
+    saved_instance = jiff_BigNumber.make_jiff(saved_instance);
 
     return saved_instance;
   };
@@ -23,8 +24,22 @@
   exports.compute = function (input, jiff_instance) {
     if(jiff_instance == null) jiff_instance = saved_instance;
 
-    // The MPC implementation should go *HERE*
-    
+    // Operate on received shares.
+    var result = shares[1].cgteq(config.threshold);
+
+    if (config.aggregate) {
+
+      // Compute the total number of lower parties satisfying the threshold.
+      for (var i = 2; i <= config.lower; i++) {
+        result = result.sadd(shares[i].cgteq(config.threshold));
+      }
+    } else {
+
+      // Compute if all of lower parties satisfy the threshold.
+      for (var j = 2; j <= config.lower; j++) {
+        result = result.smult(shares[j].cgteq(config.threshold));
+      }
+    }
     // Return a promise to the final output(s)
     /// return jiff_instance.open(result);
   };

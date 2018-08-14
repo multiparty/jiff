@@ -10,11 +10,11 @@ var options = {
 };
 options.onConnect = function() {
 
-  // Generate a random value between 0 and 19 inclusive.
+  // Generate a random value between 0 and 19 inclusive. This is the input on the command line.
   var value = Math.floor(Math.random() * 20);
   console.log("Value is: " + value);
 
-  // The upper and lower party ids.
+  // The upper and lower party ids. This will be fixed when the user enters the party id on the command line!
   var uppers = Array.from({length: config.upper}, (x,i) => i + config.lower + 1);
   var lowers = Array.from({length: config.lower}, (x,i) => i + 1);
 
@@ -23,6 +23,7 @@ options.onConnect = function() {
   // Threshold for reconstruction: # of upper parties.
   // Receivers: upper parties.
   // Senders: lower parties.
+  // This is what I need to figure out how to incorporate into the template!!
   jiff_instance.share(value, config.upper, uppers, lowers);
 
   // Disconnect the party.
