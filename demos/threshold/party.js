@@ -20,11 +20,13 @@ else party_count = parseInt(party_count);
 // boolean (is additive thresholding desired? Otherwise, multiplicative thresholding will be computed.)
 // Defaults to multiplicative thresholding
 var aggregate = process.argv[4];
-if (aggregate == null) aggregate = false;
+if(aggregate != null) aggregate = JSON.parse(aggregate);
+else aggregate = false;
 
 // Value of the threshold to compare.
 var threshold_val = process.argv[5];
 if(threshold_val != null) threshold_val = parseInt(threshold_val, 10);
+else threshold_val = 10;
 
 // Each judge must have a different party id. We assume they know what this is.
 var party_id = process.argv[6];
