@@ -4,7 +4,7 @@
  * and calls the appropriate initialization and MPC protocol from ./mpc.js
  */
 
-console.log("Command line arguments: <input> <party count> <aggregate_bool> <threshold_val> <computation_id> <party id>");
+console.log("Command line arguments: <input> <party count> <aggregate_bool> <threshold_val> <party id> <computation_id>");
 
 var mpc = require('./mpc');
 var BigNumber = require('bignumber.js');
@@ -17,15 +17,10 @@ var party_count = process.argv[3];
 if(party_count == null) party_count = 2;
 else party_count = parseInt(party_count);
 
-// 0 or 1 (is additive thresholding desired? Otherwise, multiplicative thresholding will be computed.)
+// boolean (is additive thresholding desired? Otherwise, multiplicative thresholding will be computed.)
 // Defaults to multiplicative thresholding
 var aggregate = process.argv[4];
-if(aggregate != null) {
-  aggregate = parseInt(aggregate, 10);
-} else {
-  aggregate = false;
-}
-if (aggregate != false) aggregate = true;
+if (aggregate == null) aggregate = false;
 
 // Value of the threshold to compare.
 var threshold_val = process.argv[5];
