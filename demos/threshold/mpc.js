@@ -21,26 +21,21 @@
   /**
    * The MPC computation
    */
-  exports.compute = function (input, aggregate, threshold_val, jiff_instance) {
+  exports.compute = function (received_shares, aggregate, threshold_val, jiff_instance) {
     if(jiff_instance == null) jiff_instance = saved_instance;
 
-    // array of upper party ids and lower party ids
-    var shares = jiff_instance.share(input);
-
     // Operate on received shares.
-    var result = shares[1].cgteq(threshold_val);
+    var result = received_shares[0].cgteq(threshold_val);
 
     if (aggregate) {
-
       // Compute the total number of lower parties satisfying the threshold.
-      for (var i = 2; i <= jiff_instance.party_count; i++) {
-        result = result.sadd(shares[i].cgteq(threshold_val)); // returns 0 if less than
+      for (var i = 1; i < received_shares.length; i++) {
+        result = result.sadd(received_shares[i].cgteq(threshold_val)); // returns 0 if less than threshold
       }
-
     } else {
       // Compute if all of lower parties satisfy the threshold.
-      for (var j = 2; j <= jiff_instance.party_count; j++) {
-        result = result.smult(shares[j].cgteq(threshold_val));
+      for (var j = 1; j < received_shares.length; j++) {
+        result = result.smult(received_shares[j].cgteq(threshold_val));
       }
     }
 
