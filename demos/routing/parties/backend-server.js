@@ -219,7 +219,7 @@ function multiplicative_share(point) {
     shares[i+1] = r.toString();
   }
 
-  shares[0] = oprf.saltInput(point, total_mask.invm(prime).toString());
+  shares[0] = oprf.scalarMult(point, total_mask.invm(prime).toString());
   return shares;
 }
 
@@ -230,7 +230,7 @@ function multiplicative_reconstruct(shares) {
     total_mask = total_mask.mul(new BN(shares[i]));
   }
 
-  return JSON.stringify(oprf.saltInput(shares[0], total_mask));
+  return JSON.stringify(oprf.scalarMult(shares[0], total_mask));
 }
 
 

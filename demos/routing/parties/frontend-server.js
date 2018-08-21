@@ -99,7 +99,7 @@ function saltPoint(point, scalarKey) {
   const index = JSON.stringify(point);
   const scalarString = scalarKey.toString();
   if(saltDict[scalarString][index] == null)
-    saltDict[scalarString][index] = oprf.saltInput(point, scalarString);
+    saltDict[scalarString][index] = oprf.scalarMult(point, scalarString);
 
   return saltDict[scalarString][index];
 }

@@ -4,7 +4,7 @@ var urls = [ "http://localhost:9111", "http://localhost:9112", "http://localhost
 // oprf library
 var oprf_;
 sodium.ready.then(function() {
-  oprf_ = new oprf.OPRF(sodium);
+  oprf_ = new OPRF(sodium);
 });
 
 console.log(unreached);
@@ -27,7 +27,7 @@ function multiplicative_share(point) {
     shares[i+1] = r.toString();
   }
 
-  shares[0] = JSON.stringify(oprf_.saltInput(point, total_mask.invm(prime).toString()));
+  shares[0] = JSON.stringify(oprf_.scalarMult(point, total_mask.invm(prime).toString()));
   return shares;
 }
 
@@ -38,7 +38,7 @@ function multiplicative_reconstruct(shares) {
     total_mask = total_mask.mul(new BN(shares[i].share));
   }
 
-  return oprf_.saltInput(shares[0].point, total_mask);
+  return oprf_.scalarMult(shares[0].point, total_mask);
 }
 
 // one step in the query, recursive
