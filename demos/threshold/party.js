@@ -4,7 +4,7 @@
  * and calls the appropriate initialization and MPC protocol from ./mpc.js
  */
 
-console.log("Command line arguments: <input> <lower party count> <upper party count> <aggregate_bool> <threshold_val> <party id> <computation_id>");
+console.log("Command line arguments: <input> <upper party count> <lower party count> <aggregate_bool> <threshold_val> <party id> <computation_id>");
 
 var mpc = require('./mpc');
 var BigNumber = require('bignumber.js');
@@ -87,7 +87,7 @@ options.onConnect = function(jiff_instance) {
 
     // Once all shares are received, the upper party can go into the MPC computation
     Promise.all(received_wait).then(function (shares) {
-      console.log("Shares from lower parties received. Computing MPC...")
+      console.log("Shares from lower parties received. Computing MPC...");
       var promise = mpc.compute(shares, aggregate, threshold_val);
 
       // When the MPC is done, we print the result
