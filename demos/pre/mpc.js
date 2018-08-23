@@ -26,10 +26,13 @@
 
     for (var i = 0; i < 100; i++) {
       // generate beaver triple
-      var id = jiff_instance.counters.gen_op_id('*', [1,2,3]);
-      try{
-        jiff_instance.preprocessing('triplet', '*', jiff_instance.protocols.generate_beaver_bgw, 300, []);
-      }catch(e){
+      var id = jiff_instance.counters.gen_op_id('lt_hp', [1,2,3]);
+      try {
+        // TODO build generate_bit_sequences (mpdify to actually work) instead of using server_generate_and_share.
+        jiff_instance.preprocessing('bit_sequences', 'lt_hp', jiff_instance.server_generate_and_share({bit: true,
+          count: 8
+        }, ['1','2','3'], jiff_instance.threshold, jiff_instance.Zp, id +':number:' ), 1, []);
+      } catch (e) {
         console.log(e);
       }
     }
@@ -43,11 +46,8 @@
     }
 
     var results = [];
-    for (var k = 0; k < values.length; k++) {
-      var result = values[k][1];
-      for (var l = 2; l <= jiff_instance.party_count; l++) {
-        result = result.smult(values[k][l], null , jiff_instance.preprocessing_table);
-      }
+    for (var k = 0; k < values.length - 1; k++) {
+      var result = values[k].slt(values[k+1]);
       results.push(result);
     }
 
