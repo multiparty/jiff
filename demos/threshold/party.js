@@ -66,7 +66,7 @@ options.onConnect = function(jiff_instance) {
 
     // Create array of share promises
     var send_wait = [];
-    for (var k = 3; k <=5; k++) {
+    for (var k = lower_party_count; k <= party_count; k++) {
       send_wait.push(shares[k]);
     }
 
@@ -81,7 +81,7 @@ options.onConnect = function(jiff_instance) {
 
     // Create array of received share promises
     var received_wait = [];
-    for (var g = 3; g <=5; g++) {
+    for (var g =lower_party_count; g <= party_count; g++) {
       received_wait.push(received_shares[g]);
     }
 
