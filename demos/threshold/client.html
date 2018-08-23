@@ -2,7 +2,7 @@
 
 <html>
   <head>
-    <title>MPC Template</title>
+    <title>Hierarchical MPC</title>
     <style>
       .error {
         color: #FF0000;
@@ -12,6 +12,8 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="/lib/sodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
+    <script src="/lib/ext/jiff-client-bignumber.js"></script>
+    <script src="/bignumber.js/bignumber.min.js"></script>
 
     <!-- Contains UI Handlers and Input Checks -->
     <script type="text/javascript" src="./client.js"></script>
@@ -21,12 +23,14 @@
   </head>
   <body>
     <h1>Connect JIFF</h1>
-    <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
-    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*" value="2"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
+    <label for="computation_id">Computation ID</label> <input id="computation_id" value="test-threshold"><br/><br/>
+    <label for="upper_count">Upper Party Count</label> <input id="upper_count" pattern="[0-9]*" value="2">
+    <label for="lower_count">Lower Party Count</label> <input id="lower_count" pattern="[0-9]*" value="3"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
-    <h1>Template MPC</h1>
-    <label for="number">Describe the input</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="submit();" disabled="disabled" id="button">Sum</button><br/>
+    <h1>Hierarchical Thresholding under MPC</h1>
+    <label for="number">Input (Upper party input will be ignored)</label> <input id="number" pattern="[0-9]+"> <label for="party_id">Party ID</label> <input id="party_id" pattern="[0-9]+"> <br/><br/>
+    <label for="agg">Aggregation?</label> <input id="agg" pattern="[a-z]+" value="false"> <label for="threshold_val">Threshold Value</label> <input id="threshold_val" pattern="[0-9]+" value="10"> &nbsp; <button onclick="submit();" disabled="disabled" id="button">Compute</button><br/>
     <div id="output"></div>
   </body>
 </html>
