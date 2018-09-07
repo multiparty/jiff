@@ -92,10 +92,13 @@ function run_test(computation_id, operation, callback) {
     has_failed = true;
   };
 
-  var jiff_instance1 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3001', computation_id, options));
-  var jiff_instance2 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3001', computation_id, options));
-  var jiff_instance3 = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3001', computation_id, options));
+  var jiff_instance1 = jiff.make_jiff('http://localhost:3001', computation_id, options);
+  var jiff_instance2 = jiff.make_jiff('http://localhost:3001', computation_id, options);
+  var jiff_instance3 = jiff.make_jiff('http://localhost:3001', computation_id, options);
   jiff_instances = [jiff_instance1, jiff_instance2, jiff_instance3];
+  for (var ins = 0; ins < jiff_instances.length; ins++) {
+    jiff_instances[ins].apply_extension(jiffBigNumber);
+  }
   jiff_instance1.connect();
   jiff_instance2.connect();
   jiff_instance3.connect();
