@@ -1,7 +1,7 @@
 
 // Default Computation Scheme
 exports.default = function (jiff_instance, test, inputs, testParallel, assert, done) {
-  jiff_instance.disconnect();
+  jiff_instance.disconnect(true);
 
   if (jiff_instance.id === 1) {
     assert.equal(true, true);
