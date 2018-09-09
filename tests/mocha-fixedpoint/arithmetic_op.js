@@ -13,7 +13,12 @@ var decimal_digits = 4;
 var integer_digits = 4;
 
 function mod(x, y) {
-  return x.minus( x.div(y).floor().times(y) );
+  var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
+  x = x.times(decimal_magnitude);
+  if (x.isNeg()) {
+    return x.mod(y).plus(y).div(decimal_magnitude);
+  }
+  return x.mod(y).div(decimal_magnitude);
 }
 
 // Operation strings to 'lambdas'
@@ -139,7 +144,7 @@ function test(callback, mpc_operator) {
   }
   has_failed = false;
 
-  // Run every test and accumelate all the promises
+  // Run every test and accumulate all the promises
   var promises = [];
   var length = (mpc_operator === 'div' || mpc_operator === 'mod') ? 3 : tests.length;
   length = mpc_operator === 'mult' ? 10 : length;
@@ -191,7 +196,7 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
   }
 
   var deferred = $.Deferred();
-  res.open(function (result) {
+  res.open().then(function (result) {
     test_output(index, result, open_operator);
     deferred.resolve();
   }, error);

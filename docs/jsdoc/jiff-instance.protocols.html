@@ -74,7 +74,7 @@ common protocols here, under a sub namespace corresponding to the extension name
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3805">line 3805</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3835">line 3835</a>
     </li></ul></dd>
     
 
@@ -106,380 +106,6 @@ common protocols here, under a sub namespace corresponding to the extension name
 
     
         <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".generate_random_bit"><span class="type-signature">(static) </span>generate_random_bit<span class="signature">(compute_threshold<span class="signature-attributes">opt</span>, compute_list<span class="signature-attributes">opt</span>, receiving_threshold<span class="signature-attributes">opt</span>, receivers_list<span class="signature-attributes">opt</span>, Zp<span class="signature-attributes">opt</span>, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="SecretShare.html">SecretShare</a>}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    generates a random bit under MPC by xoring all bits sent by participating parties
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>compute_threshold</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    compute_list.length
-                
-                </td>
-            
-
-            <td class="description last">the threshold used during bit generation.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>compute_list</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    all_parties
-                
-                </td>
-            
-
-            <td class="description last">array of party ids that will perform this protocol, by default, this includes all parties.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>receiving_threshold</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    receivers_list.length
-                
-                </td>
-            
-
-            <td class="description last">the threshold of the bit when stored by receivers after generation.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>receivers_list</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    all_parties
-                
-                </td>
-            
-
-            <td class="description last">array of party ids that want to receive the triplet shares, by default, this includes all parties.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>Zp</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    jiff-instance.Zp
-                
-                </td>
-            
-
-            <td class="description last">the mod (if null then the default Zp for the instance is used).</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>op_id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    auto_gen()
-                
-                </td>
-            
-
-            <td class="description last">the operation id which is used to identify this operation.
-                        This id must be unique, and must be passed by all parties to the same instruction, to
-                        ensure that corresponding instructions across different parties are matched correctly.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3909">line 3909</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    this party's share of the generated bit
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="SecretShare.html">SecretShare</a></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
 
         
             
@@ -589,7 +215,7 @@ Requires no communication, only local operations.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3964">line 3964</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3995">line 3995</a>
     </li></ul></dd>
     
 
@@ -839,7 +465,7 @@ Requires l-1 rounds of communication (a total of l-1 multiplications in sequence
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3984">line 3984</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line4015">line 4015</a>
     </li></ul></dd>
     
 
@@ -1181,7 +807,7 @@ Then every party combines all the received shares to construct one share of the 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3813">line 3813</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3843">line 3843</a>
     </li></ul></dd>
     
 
@@ -1524,7 +1150,7 @@ in a new share of 0 for every party.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3835">line 3835</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3865">line 3865</a>
     </li></ul></dd>
     
 
@@ -1575,6 +1201,380 @@ in a new share of 0 for every party.
 
 
         
+            
+
+    
+
+    
+    <h4 class="name" id="generate_random_bit"><span class="type-signature"></span>generate_random_bit<span class="signature">(compute_threshold<span class="signature-attributes">opt</span>, compute_list<span class="signature-attributes">opt</span>, receiving_threshold<span class="signature-attributes">opt</span>, receivers_list<span class="signature-attributes">opt</span>, Zp<span class="signature-attributes">opt</span>, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="SecretShare.html">SecretShare</a>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    generates a random bit under MPC by xoring all bits sent by participating parties
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>compute_threshold</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    compute_list.length
+                
+                </td>
+            
+
+            <td class="description last">the threshold used during bit generation.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>compute_list</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    all_parties
+                
+                </td>
+            
+
+            <td class="description last">array of party ids that will perform this protocol, by default, this includes all parties.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>receiving_threshold</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    receivers_list.length
+                
+                </td>
+            
+
+            <td class="description last">the threshold of the bit when stored by receivers after generation.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>receivers_list</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    all_parties
+                
+                </td>
+            
+
+            <td class="description last">array of party ids that want to receive the triplet shares, by default, this includes all parties.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Zp</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    jiff-instance.Zp
+                
+                </td>
+            
+
+            <td class="description last">the mod (if null then the default Zp for the instance is used).</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    auto_gen()
+                
+                </td>
+            
+
+            <td class="description last">the operation id which is used to identify this operation.
+                        This id must be unique, and must be passed by all parties to the same instruction, to
+                        ensure that corresponding instructions across different parties are matched correctly.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3939">line 3939</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    this party's share of the generated bit
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="SecretShare.html">SecretShare</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
     
 
     
@@ -1596,7 +1596,7 @@ in a new share of 0 for every party.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Aug 02 2018 12:03:59 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Sep 08 2018 21:04:17 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
