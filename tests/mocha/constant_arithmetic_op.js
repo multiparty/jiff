@@ -125,7 +125,7 @@ function single_test(index, jiff_instance, mpc_operator, open_operator) {
   var res = operations[mpc_operator](shares[1], numbers[1]);
 
   var deferred = $.Deferred();
-  res.open(function (result) {
+  res.open().then(function (result) {
     test_output(index, result, open_operator);
     deferred.resolve();
   }, error);
