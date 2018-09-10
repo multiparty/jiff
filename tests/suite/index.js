@@ -1,8 +1,5 @@
 /* global describe it */
 
-// Chai
-var assert = require('chai').assert;
-
 // Extensions
 var init = require('./init.js');
 
@@ -65,7 +62,7 @@ describe(extensions + ': ' + suite, function () {
 
         // Create and run instances
         options.onConnect = function (jiff_instance) {
-          computation(jiff_instance, test, inputs, testParallel, assert, done);
+          computation(jiff_instance, test, inputs, testParallel, done);
         };
         init.createInstances(party_count, port, computation_id, options, extensions);
       });
