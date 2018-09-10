@@ -1,6 +1,8 @@
 var jiff = require('../../lib/jiff-client.js');
 var jiffBigNumber = require('../../lib/ext/jiff-client-bignumber.js');
 var jiffNegNumber = require('../../lib/ext/jiff-client-negativenumber.js');
+var jiffFixedNumber = require('../../lib/ext/jiff-client-fixedpoint.js');
+var BigNumber = require('bignumber.js');
 
 var jiff_instances = [];
 var parties = 0;
@@ -8,17 +10,27 @@ var tests = [];
 var senders = [];
 var receivers = [];
 var has_failed = false;
-var Zp = 15485867;
+var Zp = new BigNumber(32416190071);
+
+var decimal_digits = 5;
+var integer_digits = 5;
 
 // Entry Point
 function run_test(computation_id, callback) {
+  var total_magnitude = new BigNumber(10).pow(decimal_digits + integer_digits);
+  var decimal_magnitude = new BigNumber(10).pow(decimal_digits);
+
   // Generate Numbers
   for (var i = 0; i < 500; i++) {
     // Generate numbers. switched to Math 6/18, range -100 to 100
-    var num1 = Math.floor(Math.random() * Zp) - Math.floor(Zp / 2);
-    var num2 = Math.floor(Math.random() * Zp) - Math.floor(Zp / 2)
-    var num3 = Math.floor(Math.random() * Zp) - Math.floor(Zp / 2)
-    var num4 = Math.floor(Math.random() * Zp) - Math.floor(Zp / 2)
+    var num1 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    num1 = Math.random() < 0.5 ? num1.times(-1) : num1;
+    var num2 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    num2 = Math.random() < 0.5 ? num2.times(-1) : num2;
+    var num3 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    num3 = Math.random() < 0.5 ? num3.times(-1) : num3;
+    var num4 = BigNumber.random().times(total_magnitude).floor().div(decimal_magnitude);
+    num4 = Math.random() < 0.5 ? num4.times(-1) : num4;
 
     // Generate thresholds
     var threshold = Math.ceil(Math.random() * 4);
@@ -62,8 +74,9 @@ function run_test(computation_id, callback) {
     has_failed = true;
   };
 
-  for (var p = 0; p < parties; p++) {
+  for (i = 0; i < parties; i++) {
     var jiff_instance = jiffBigNumber.make_jiff(jiff.make_jiff('http://localhost:3004', computation_id, options));
+    jiff_instance = jiffFixedNumber.make_jiff(jiff_instance, {integer_digits: 5, decimal_digits: 5});
     jiff_instance = jiffNegNumber.make_jiff(jiff_instance);
     jiff_instances.push(jiff_instance);
     jiff_instance.connect();
@@ -72,6 +85,7 @@ function run_test(computation_id, callback) {
 
 // Run all tests after setup
 function test(callback) {
+
   if (jiff_instances[0] == null || !jiff_instances[0].isReady()) {
     console.log('Please wait!');
     return;
@@ -115,27 +129,30 @@ function single_test(index, jiff_instance) {
     return null;
   }
 
+  var deferred, promise;
   // receiver but not sender, must send open shares of each number to its owner.
   if (rs.indexOf(jiff_instance.id) > -1 && ss.indexOf(jiff_instance.id) === -1) {
+    deferred = $.Deferred();
+    promise = deferred.promise();
+
     // Send opens
-    for (var i = 0; i < ss.length; i++) {
+    for (i = 0; i < ss.length; i++) {
       jiff_instance.open(shares[ss[i]], [ss[i]]);
     }
 
     return null;
   }
 
-  // define a deferred and a promise to encapsulate the final result
-  var deferred = $.Deferred();
-  var promise = deferred.promise();
-
   // receiver and sender, must send open shares of each number to its owner, and receive one open.
   if (rs.indexOf(jiff_instance.id) > -1 && ss.indexOf(jiff_instance.id) > -1) {
+    deferred = $.Deferred();
+    promise = deferred.promise();
+
     var promises = [];
 
     // Send opens
-    for (var k = 0; k < ss.length; k++) {
-      var p = jiff_instance.open(shares[ss[k]], [ss[k]]);
+    for (var i = 0; i < ss.length; i++) {
+      var p = jiff_instance.open(shares[ss[i]], [ss[i]]);
       if (p != null) {
         promises.push(p);
       }
@@ -153,6 +170,9 @@ function single_test(index, jiff_instance) {
 
   // sender, but not receiver, should get back the number, without sending any shares.
   if (ss.indexOf(jiff_instance.id) > -1 && rs.indexOf(jiff_instance.id) === -1) {
+    deferred = $.Deferred();
+    promise = deferred.promise();
+
     jiff_instance.receive_open(rs, threshold).then(function (result) {
       test_output(jiff_instance, index, jiff_instance.id, result);
       deferred.resolve();
