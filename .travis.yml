@@ -2,8 +2,8 @@ language: node_js
 node_js:
 - '10'
 env:
-- TEST_EXTENSION=base TEST_SUITE='"constant arithmetic"'
-- TEST_EXTENSION=base TEST_SUITE='"constant comparison"'
+- TEST_EXTENSION=base TEST_SUITE='constant\ arithmetic'
+- TEST_EXTENSION=base TEST_SUITE='constant\ comparison'
 script:
 - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
 - npm run test -- $TEST_EXTENSION $TEST_SUITE
