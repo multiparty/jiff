@@ -1,7 +1,7 @@
 /* global describe it */
 
 // Parameters
-var extensions = process.env['JIFF_TEST_EXT']; // the extension(s) to test
+var name = process.env['JIFF_TEST_EXT']; // the extension(s) to test
 var suite = process.env['JIFF_TEST_SUITE']; // the test suite
 
 // Extensions
@@ -11,10 +11,10 @@ var init = require('./init.js');
 var defaultComputation = require('./computations.js');
 
 // JIFF test configuration
-var config = require('./config/' + extensions + '/' + suite + '.json');
+var config = require('./config/' + name + '/' + suite + '.json');
 
 // Start tests
-describe(extensions + ': ' + suite, function () {
+describe(name + ': ' + suite, function () {
   this.timeout(0); // Remove timeout
   var tests = config.tests;
 
@@ -33,13 +33,14 @@ describe(extensions + ': ' + suite, function () {
 
         // instance creation parameters
         var port = config['suiteConf'].port;
-        var computation_id = extensions + ':' + suite + ':' + test;
+        var computation_id = name + ':' + suite + ':' + test;
 
         // computation size
         var testCount = testConfig.count;
         var testParallel = testConfig.parallel;
 
         // instance options
+        var extensions = config['suiteConf']['extensions'];
         var options = testConfig.options;
         var party_count = options.party_count;
         var alias = testConfig.alias != null ? testConfig.alias : test;

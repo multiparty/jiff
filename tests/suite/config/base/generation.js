@@ -109,7 +109,7 @@ exports.generateComparisonInputs = function (test, count, options, helpers) {
     for (t = 0; t < count; t++) {
       oneInput = {};
       oneInput[1] = helpers.generateUniform(Zp);
-      oneInput[2] = Math.random() < 0.5 ? oneInput[1] : helpers.generateUniform(Zp);;
+      oneInput[2] = Math.random() < 0.5 ? oneInput[1] : helpers.generateUniform(Zp);
       inputs.push(oneInput);
     }
   } else {
@@ -141,7 +141,7 @@ exports.generateConstantComparisonInputs = function (test, count, options, helpe
     for (t = 0; t < count; t++) {
       oneInput = {};
       oneInput[1] = helpers.generateUniform(Zp);
-      oneInput['constant'] = Math.random() < 0.5 ? oneInput[1] : helpers.generateUniform(Zp);;
+      oneInput['constant'] = Math.random() < 0.5 ? oneInput[1] : helpers.generateUniform(Zp);
       inputs.push(oneInput);
     }
   } else {

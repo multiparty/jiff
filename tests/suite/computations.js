@@ -120,15 +120,15 @@ var _openOps = {
 function myJoin(indices, values, sep) {
   var str = '';
   for (var i = 0; i < indices.length - 1; i++) {
-    str = str + values[indices[i]] + sep;
+    str = str + values[indices[i]].toString() + sep;
   }
 
   if (indices.length > 0) {
-    str += values[indices[indices.length - 1]];
+    str += values[indices[indices.length - 1]].toString();
   }
 
   if (values['constant'] != null) {
-    str += sep + 'c[' + values['constant'] + ']';
+    str += sep + 'c[' + values['constant'].toString() + ']';
   }
 
   return str;
@@ -155,6 +155,7 @@ function compute(test, values, interpreter) {
     }
     return result;
   } catch (err) {
+    console.log(err);
     errors.push(err);
     return null;
   }
@@ -202,7 +203,7 @@ function batchTest(jiff_instance, startIndex) {
 
   // Reached the end
   if (startIndex >= end) {
-    jiff_instance.disconnect(true);
+    jiff_instance.disconnect(true, true);
 
     if (jiff_instance.id === 1) {
       var exception;
