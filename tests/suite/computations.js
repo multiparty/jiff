@@ -1,7 +1,7 @@
 // Global parameters
 var done;
 
-// Test symbol/name, inputs, and parrallelism degree
+// Test symbol/name, inputs, and parallelism degree
 var test;
 var inputs;
 var testParallel;
@@ -50,6 +50,24 @@ var _mpcOps = {
   },
   '%' : function (operand1, operand2) {
     return operand1.smod(operand2);
+  },
+  '<': function (operand1, operand2) {
+    return operand1.lt(operand2);
+  },
+  '<=': function (operand1, operand2) {
+    return operand1.lteq(operand2);
+  },
+  '>': function (operand1, operand2) {
+    return operand1.gt(operand2);
+  },
+  '>=': function (operand1, operand2) {
+    return operand1.gteq(operand2);
+  },
+  '==': function (operand1, operand2) {
+    return operand1.eq(operand2);
+  },
+  '!=': function (operand1, operand2) {
+    return operand1.neq(operand2);
   }
 };
 
@@ -78,6 +96,24 @@ var _openOps = {
   },
   '%' : function (operand1, operand2) {
     return mod(operand1, operand2);
+  },
+  '<': function (operand1, operand2) {
+    return Number(operand1 < operand2);
+  },
+  '<=': function (operand1, operand2) {
+    return Number(operand1 <= operand2);
+  },
+  '>': function (operand1, operand2) {
+    return Number(operand1 > operand2);
+  },
+  '>=': function (operand1, operand2) {
+    return Number(operand1 >= operand2);
+  },
+  '==': function (operand1, operand2) {
+    return Number(operand1 === operand2);
+  },
+  '!=': function (operand1, operand2) {
+    return Number(operand1 !== operand2);
   }
 };
 
@@ -91,6 +127,10 @@ function myJoin(indices, values, sep) {
     str += values[indices[indices.length - 1]];
   }
 
+  if (values['constant'] != null) {
+    str += sep + 'c[' + values['constant'] + ']';
+  }
+
   return str;
 }
 
@@ -102,7 +142,7 @@ function compute(test, values, interpreter) {
     // Figure who the inputs belong to
     var indices = [];
     for (var p in values) {
-      if (values.hasOwnProperty(p)) {
+      if (values.hasOwnProperty(p) && values[p] != null) {
         indices.push(p);
       }
     }
@@ -140,11 +180,12 @@ function singleTest(jiff_instance, t) {
   // Compute in MPC
   var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
   var shares = jiff_instance.share(input, threshold, null, senders);
+  shares['constant'] = testInputs['constant'];
   var mpcResult = compute(test, shares, mpcOps);
   if (mpcResult == null) {
     return null;
   }
-  return mpcResult.open().then(function(mpcResult) {
+  return mpcResult.open().then(function (mpcResult) {
     // Assert both results are equal
     if (actualResult.toString() !== mpcResult.toString()) {
       if (jiff_instance.id === 1) {
@@ -161,7 +202,7 @@ function batchTest(jiff_instance, startIndex) {
 
   // Reached the end
   if (startIndex >= end) {
-    //jiff_instance.disconnect(true);
+    jiff_instance.disconnect(true);
 
     if (jiff_instance.id === 1) {
       var exception;
@@ -185,7 +226,7 @@ function batchTest(jiff_instance, startIndex) {
 }
 
 // Default Computation Scheme
-exports.default = function (jiff_instance, _test, _inputs, _testParallel, _done, _mpcInterpreter, _openInterpreter, _mod) {
+exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done, _mpcInterpreter, _openInterpreter, _mod) {
   errors = [];
   if (_mpcInterpreter == null) {
     _mpcInterpreter = _mpcOps;

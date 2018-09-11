@@ -3,8 +3,12 @@
   "suiteConf": {
     "port": 3001,
     "generation": {
-      "file": "config/default/generation.js",
+      "file": "config/base/generation.js",
       "function": "generateArithmeticInputs"
+    },
+    "computation": {
+      "file": "computations.js",
+      "function": "compute"
     }
   },
 

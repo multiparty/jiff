@@ -21,7 +21,7 @@ exports.createInstances = function (party_count, port, computation_id, options, 
     // Apply extensions in order
     var extArray = ext.split('|');
     for (var e = 0 ; e < extArray.length; e++) {
-      if (extArray[e] !== 'default') {
+      if (extArray[e] !== 'base') {
         instance.apply_extension(extensions[extArray[e]], options);
       }
     }

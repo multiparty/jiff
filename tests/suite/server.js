@@ -1,7 +1,16 @@
+var extensions = process.env['JIFF_TEST_EXT'];
+
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var jiff_instance = require('../../lib/jiff-server').make_jiff(http, { logs: false });
+var jiffServer = require('../../lib/jiff-server');
+
+var jiff_instance = jiffServer.make_jiff(http, { logs: false });
+if (extensions != null && (extensions.indexOf('bigNumber') > -1 || extensions.indexOf('fixedpoint') > -1)) {
+  var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
+  console.log('bigNumber');
+  jiff_instance = jiffBigNumberServer.make_jiff(jiff_instance);
+}
 
 
 // Serve static files.

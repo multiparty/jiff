@@ -1,14 +1,14 @@
 /* global describe it */
 
+// Parameters
+var extensions = process.env['JIFF_TEST_EXT']; // the extension(s) to test
+var suite = process.env['JIFF_TEST_SUITE']; // the test suite
+
 // Extensions
 var init = require('./init.js');
 
 // Computations
 var defaultComputation = require('./computations.js');
-
-// Parameters
-var extensions = 'default'; // the extension(s) to test
-var suite = 'arithmetic'; // the test suite
 
 // JIFF test configuration
 var config = require('./config/' + extensions + '/' + suite + '.json');
@@ -42,6 +42,7 @@ describe(extensions + ': ' + suite, function () {
         // instance options
         var options = testConfig.options;
         var party_count = options.party_count;
+        var alias = testConfig.alias != null ? testConfig.alias : test;
 
         // figure out computation inputs
         var generation = require('./' + config['suiteConf']['generation']['file']);
@@ -54,7 +55,7 @@ describe(extensions + ': ' + suite, function () {
         }
 
         // figure out computation
-        var computation = defaultComputation.default;
+        var computation = defaultComputation.compute;
         if (config['suiteConf']['computation'] != null) {
           computation = require('./' + config['suiteConf']['computation']['file']);
           computation = computation[config['suiteConf']['computation']['function']];
@@ -62,7 +63,7 @@ describe(extensions + ': ' + suite, function () {
 
         // Create and run instances
         options.onConnect = function (jiff_instance) {
-          computation(jiff_instance, test, inputs, testParallel, done);
+          computation(jiff_instance, alias, inputs, testParallel, done);
         };
         init.createInstances(party_count, port, computation_id, options, extensions);
       });
