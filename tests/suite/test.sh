@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-export JIFF_TEST_EXT=$1
+export JIFF_TEST_NAME=$1
 export JIFF_TEST_SUITE=$2
 
-logs="tests/suite/logs/${JIFF_TEST_EXT}/${JIFF_TEST_SUITE}.log"
+logs="tests/suite/logs/${JIFF_TEST_NAME}/${JIFF_TEST_SUITE}.log"
 
-mkdir -p "tests/suite/logs/${JIFF_TEST_EXT}"
+mkdir -p "tests/suite/logs/${JIFF_TEST_NAME}"
 echo "====================" >> "${logs}"
 echo "====================" >> "${logs}"
 echo "NEW TEST $(date)" >> "${logs}"

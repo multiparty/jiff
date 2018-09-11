@@ -1,4 +1,4 @@
-var extensions = process.env['JIFF_TEST_EXT'];
+var extensions = process.env['JIFF_TEST_NAME'];
 
 var express = require('express');
 var app = express();

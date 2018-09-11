@@ -1,7 +1,7 @@
 /* global describe it */
 
 // Parameters
-var name = process.env['JIFF_TEST_EXT']; // the extension(s) to test
+var name = process.env['JIFF_TEST_NAME']; // the extension(s) to test
 var suite = process.env['JIFF_TEST_SUITE']; // the test suite
 
 // Extensions

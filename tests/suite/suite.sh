@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-export JIFF_TEST_EXT=$1
+export JIFF_TEST_NAME=$1
 
-mkdir -p "tests/suite/logs/${JIFF_TEST_EXT}"
+mkdir -p "tests/suite/logs/${JIFF_TEST_NAME}"
 
-logs="tests/suite/logs/${JIFF_TEST_EXT}/suite.logs"
+logs="tests/suite/logs/${JIFF_TEST_NAME}/suite.logs"
 echo "====================" >> "${logs}"
 echo "====================" >> "${logs}"
 echo "NEW TEST $(date)" >> "${logs}"
@@ -13,7 +13,7 @@ echo "====================" >> "${logs}"
 node tests/suite/server.js >> "${logs}" &
 
 i=0
-for f in tests/suite/config/${JIFF_TEST_EXT}/*.json; do
+for f in tests/suite/config/${JIFF_TEST_NAME}/*.json; do
     FULLNAME=$(basename "$f")
     export JIFF_TEST_SUITE="${FULLNAME%.json}"
 

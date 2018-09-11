@@ -42,6 +42,7 @@
   },
   "scripts": {
     "test": "./tests/suite/test.sh",
+    "suite": "./tests/suite/suite.sh",
     "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html",
     "test-demo": "./node_modules/mocha/bin/mocha --full-trace",
     "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit"
