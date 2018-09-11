@@ -74,7 +74,11 @@ exports.create = function (id, c, options) {
     party_count = c;
   }
   if (options == null) {
-    options = { onConnect: function(j) { console.log('Connected ', j.id); }};
+    options = {
+      onConnect: function (j) {
+        console.log('Connected ', j.id);
+      }
+    };
   }
 
   options.party_count = party_count;
