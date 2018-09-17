@@ -191,6 +191,7 @@ function singleTest(jiff_instance, t) {
     if (actualResult.toString() !== mpcResult.toString()) {
       if (jiff_instance.id === 1) {
         errors.push(myJoin(senders, testInputs, test) + ' != ' + mpcResult.toString() + ' ----- Expected ' + actualResult.toString());
+        console.log(myJoin(senders, testInputs, test) + ' != ' + mpcResult.toString() + ' ----- Expected ' + actualResult.toString());
       }
     }
   });
