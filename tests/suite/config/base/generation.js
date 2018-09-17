@@ -23,7 +23,7 @@ exports.generateArithmeticInputs = function (test, count, options, helpers) {
   var party_count = options.party_count;
   var inputs = [];
   var t, p, oneInput;
-  if (test === '/' || test === '%') {
+  if (test.startsWith('/') || test === '%') {
     // division and mod: only two inputs, the second is non-zero.
     for (t = 0; t < count; t++) {
       oneInput = {};
