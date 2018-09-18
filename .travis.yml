@@ -11,6 +11,10 @@ env:
 - TEST_NAME='bigNumber' TEST_SUITE='constant arithmetic'
 - TEST_NAME='bigNumber' TEST_SUITE='constant comparison'
 - TEST_NAME='bigNumber' TEST_SUITE='comparison'
+- TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
+- TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
+- TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
+- TEST_NAME='fixedpoint' TEST_SUITE='comparison'
 script:
 - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
 - npm run test -- "$TEST_NAME" "$TEST_SUITE"
