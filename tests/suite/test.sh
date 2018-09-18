@@ -2,12 +2,12 @@
 export JIFF_TEST_NAME=$1
 export JIFF_TEST_SUITE=$2
 
-if [ "$1" == "" ]
+if [ "$1" == "" ] || [[ "$1" == "-"* ]]
 then
-  ./tests/suite/all.sh
-elif [ "$2" == "" ]
+  ./tests/suite/all.sh "${1:1}"
+elif [[ "$2" == "" ]] || [[ "$2" == "-"* ]]
 then
-  ./tests/suite/suite.sh "$1"
+  ./tests/suite/suite.sh "$1" "${2:1}"
 else
   logs="tests/suite/logs/${JIFF_TEST_NAME}/${JIFF_TEST_SUITE}.log"
 
