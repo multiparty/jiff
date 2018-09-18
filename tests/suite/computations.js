@@ -157,44 +157,49 @@ function compute(test, values, interpreter) {
   } catch (err) {
     console.log(err);
     errors.push(err);
-    return null;
   }
 }
 
 // Run a single test case under MPC and in the open and compare the results
 function singleTest(jiff_instance, t) {
-  var testInputs = inputs[t];
+  try {
+    var testInputs = inputs[t];
 
-  // Compute in the Open
-  var actualResult = compute(test, testInputs, openOps);
+    // Compute in the Open
+    var actualResult = compute(test, testInputs, openOps);
 
-  // Figure out who is sharing
-  var input = testInputs[jiff_instance.id];
-  var senders = [];
-  for (var p in testInputs) {
-    if (testInputs.hasOwnProperty(p) && p !== 'constant') {
-      senders.push(/^\d+$/.test(p.toString()) ? parseInt(p) : p);
-    }
-  }
-  senders.sort();
-
-  // Compute in MPC
-  var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
-  var shares = jiff_instance.share(input, threshold, null, senders);
-  shares['constant'] = testInputs['constant'];
-  var mpcResult = compute(test, shares, mpcOps);
-  if (mpcResult == null) {
-    return null;
-  }
-  return mpcResult.open().then(function (mpcResult) {
-    // Assert both results are equal
-    if (actualResult.toString() !== mpcResult.toString()) {
-      if (jiff_instance.id === 1) {
-        errors.push(myJoin(senders, testInputs, test) + ' != ' + mpcResult.toString() + ' ----- Expected ' + actualResult.toString());
-        console.log(myJoin(senders, testInputs, test) + ' != ' + mpcResult.toString() + ' ----- Expected ' + actualResult.toString());
+    // Figure out who is sharing
+    var input = testInputs[jiff_instance.id];
+    var senders = [];
+    for (var p in testInputs) {
+      if (testInputs.hasOwnProperty(p) && p !== 'constant') {
+        senders.push(/^\d+$/.test(p.toString()) ? parseInt(p) : p);
       }
     }
-  });
+    senders.sort();
+
+    // Compute in MPC
+    var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
+    var shares = jiff_instance.share(input, threshold, null, senders);
+    shares['constant'] = testInputs['constant'];
+    var mpcResult = compute(test, shares, mpcOps);
+    if (mpcResult == null) {
+      return null;
+    }
+
+    return mpcResult.open().then(function (mpcResult) {
+      // Assert both results are equal
+      if (actualResult.toString() !== mpcResult.toString()) {
+        if (jiff_instance.id === 1) {
+          errors.push(myJoin(senders, testInputs, test) + ' != ' + mpcResult.toString() + ' ----- Expected ' + actualResult.toString());
+        }
+      }/* else if (jiff_instance.id === 1) {
+        console.log(myJoin(senders, testInputs, test) + ' = ' + mpcResult.toString());
+      }*/
+    });
+  } catch (err) {
+    errors.push(err);
+  }
 }
 
 // Run a batch of tests according to parallelism degree until all tests are consumed
