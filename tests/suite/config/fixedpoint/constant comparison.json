@@ -2,24 +2,26 @@
   "tests": [ "<", "<=", ">", ">=", "==", "!=" ],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ "bigNumber" ],
+    "extensions": [ "bigNumber", "fixedpoint" ],
     "generation": {
-      "file": "config/bigNumber/generation.js",
+      "file": "config/fixedpoint/generation.js",
       "function": "generateConstantComparisonInputs"
     },
     "computation": {
-      "file": "config/bigNumber/computations.js",
+      "file": "config/fixedpoint/computations.js",
       "function": "compute"
     }
   },
 
   "testConf": {
     "default": {
-      "count": 20,
+      "count": 10,
       "parallel": 5,
       "options": {
-        "Zp": 2039,
-        "party_count": 3
+        "Zp": 16381,
+        "party_count": 3,
+        "decimal_digits": 2,
+        "integer_digits": 2
       }
     }
   }

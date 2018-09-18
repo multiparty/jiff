@@ -1,14 +1,14 @@
 {
-  "tests": [ "+", "-", "*", "|", "^", "/Zp127", "/Zp2039" ],
+  "tests": [ "+", "-", "*", "|", "^", "/" ],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ "bigNumber" ],
+    "extensions": [ "bigNumber", "fixedpoint" ],
     "generation": {
-      "file": "config/bigNumber/generation.js",
+      "file": "config/fixedpoint/generation.js",
       "function": "generateConstantArithmeticInputs"
     },
     "computation": {
-      "file": "config/bigNumber/computations.js",
+      "file": "config/fixedpoint/computations.js",
       "function": "compute"
     }
   },
@@ -16,28 +16,32 @@
   "testConf": {
     "default": {
       "count": 100,
-      "parallel": 50,
+      "parallel": 25,
       "options": {
-        "Zp": "2425967623052370772757633156976982469681",
-        "party_count": 3
+        "Zp": "7212610147295474909544523785043492409969382148186765460082500085393519556525921455588705423020751421",
+        "party_count": 3,
+        "decimal_digits": 49,
+        "integer_digits": 50
       }
     },
-    "/Zp127": {
-      "alias": "/",
+    "*": {
       "count": 10,
       "parallel": 3,
       "options": {
-        "Zp": 127,
-        "party_count": 3
+        "Zp": "134217689",
+        "party_count": 3,
+        "decimal_digits": 2,
+        "integer_digits": 4
       }
     },
-    "/Zp2039": {
-      "alias": "/",
-      "count": 5,
+    "/": {
+      "count": 8,
       "parallel": 3,
       "options": {
-        "Zp": 2039,
-        "party_count": 3
+        "Zp": "1048573",
+        "party_count": 3,
+        "integer_digits": 2,
+        "decimal_digits": 2
       }
     }
   }

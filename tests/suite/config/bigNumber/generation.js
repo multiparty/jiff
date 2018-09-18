@@ -3,15 +3,15 @@ var BigNumber = require('bignumber.js');
 
 // helpers: organized like this to make it easy for extension generation to override functionality.
 var _helpers = {};
-_helpers.generateUniform = function (Zp) {
-  Zp = new BigNumber(Zp);
+_helpers.generateUniform = function (test, options) {
+  var Zp = new BigNumber(options.Zp);
   return BigNumber.random().times(Zp).floor();
 };
-_helpers.generateNonZeroUniform = function (Zp) {
-  Zp = new BigNumber(Zp);
+_helpers.generateNonZeroUniform = function (test, options) {
+  var Zp = new BigNumber(options.Zp);
   return BigNumber.random().times(Zp.minus(1)).plus(1).floor();
 };
-_helpers.generateBit = function () {
+_helpers.generateBit = function (test, options) {
   return Math.random() < 0.5 ? new BigNumber(0) : new BigNumber(1);
 };
 
