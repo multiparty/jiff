@@ -30,7 +30,7 @@
       }
     },
     "/": {
-      "count": 12,
+      "count": 8,
       "parallel": 3,
       "options": {
         "Zp": 127,
@@ -38,7 +38,7 @@
       }
     },
     "%": {
-      "count": 12,
+      "count": 8,
       "parallel": 3,
       "options": {
         "Zp": 127,

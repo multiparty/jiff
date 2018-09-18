@@ -23,6 +23,26 @@
         "decimal_digits": 2,
         "integer_digits": 2
       }
+    },
+    "==": {
+      "count": 5,
+      "parallel": 5,
+      "options": {
+        "Zp": 16381,
+        "party_count": 3,
+        "decimal_digits": 2,
+        "integer_digits": 2
+      }
+    },
+    "!=": {
+      "count": 5,
+      "parallel": 5,
+      "options": {
+        "Zp": 16381,
+        "party_count": 3,
+        "decimal_digits": 2,
+        "integer_digits": 2
+      }
     }
   }
 }

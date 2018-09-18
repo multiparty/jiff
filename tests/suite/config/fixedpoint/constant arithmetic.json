@@ -28,10 +28,10 @@
       "count": 10,
       "parallel": 3,
       "options": {
-        "Zp": "134217689",
+        "Zp": "131071",
         "party_count": 3,
-        "decimal_digits": 2,
-        "integer_digits": 4
+        "decimal_digits": 1,
+        "integer_digits": 3
       }
     },
     "/": {

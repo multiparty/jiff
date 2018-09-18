@@ -15,7 +15,23 @@
 
   "testConf": {
     "default": {
-      "count": 20,
+      "count": 15,
+      "parallel": 5,
+      "options": {
+        "Zp": 2039,
+        "party_count": 3
+      }
+    },
+    "==": {
+      "count": 5,
+      "parallel": 5,
+      "options": {
+        "Zp": 2039,
+        "party_count": 3
+      }
+    },
+    "!=": {
+      "count": 5,
       "parallel": 5,
       "options": {
         "Zp": 2039,
