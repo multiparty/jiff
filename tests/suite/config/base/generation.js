@@ -101,7 +101,7 @@ exports.generateComparisonInputs = function (test, count, options, helpers) {
 
   var inputs = [];
   var t, oneInput;
-  if (test === '==' || test === '!=') {
+  if (test === '==' || test === '!=' || test === '<=' || test === '>=') {
     // equality checks: make it likely that the numbers are equal.
     for (t = 0; t < count; t++) {
       oneInput = {};
@@ -132,7 +132,7 @@ exports.generateConstantComparisonInputs = function (test, count, options, helpe
 
   var inputs = [];
   var t, oneInput;
-  if (test === '==' || test === '!=') {
+  if (test === '==' || test === '!=' || test === '<=' || test === '>=') {
     // equality checks: make it likely that the numbers are equal.
     for (t = 0; t < count; t++) {
       oneInput = {};
