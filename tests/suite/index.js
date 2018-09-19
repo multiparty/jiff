@@ -51,7 +51,7 @@ describe(name + ': ' + suite, function () {
         try {
           inputs = generation[config['suiteConf']['generation']['function']](test, testCount, options);
         } catch (error) {
-          console.log('Input generation error');
+          console.log('Input generation error ', error);
           done(error);
         }
 
