@@ -6,6 +6,7 @@ env:
 - TEST_NAME='base' TEST_SUITE='-parallel'
 - TEST_NAME='bigNumber' TEST_SUITE='-parallel'
 - TEST_NAME='negativeNumber' TEST_SUITE='-parallel'
+- TEST_NAME='bigNumber|negativeNumber' TEST_SUITE='-parallel'
 - TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
 - TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
 - TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
