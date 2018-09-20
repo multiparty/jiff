@@ -4,15 +4,16 @@ var BigNumber = require('bignumber.js');
 var isConstant;
 function determineMax(test, party_count, Zp) {
   var max = BigNumber(Zp).div(2).floor();
+  var operation_count = isConstant ? 2 : party_count;
+
   // +: max + max ... + max = party_count * max <= 10^(digits)
   if (test === '+' || test === '-') {
-    max = max.div(party_count).floor();
+    max = max.div(operation_count).floor();
   }
 
   // *: max * max * ... * max = max^(party_count) <= Zp/2
   // max <= 2^(log_2(Zp/2)/party_count)   [all floored]
   if (test === '*' || test === '*bgw') {
-    var operation_count = isConstant ? 2 : party_count;
     var log2 = max.toString(2).length - 1;
     var pow = Math.floor(log2 / operation_count);
     max = new BigNumber(2).pow(pow);
