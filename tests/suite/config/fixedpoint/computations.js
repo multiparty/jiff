@@ -31,8 +31,7 @@ var bigNumberOpenOps = {
     return fix(operand1.div(operand2));
   },
   '%' : function (operand1, operand2) {
-    var r = operand1.div(operand2).floor();
-    return fix(operand1.minus(operand2.times(r)));
+    return fix(operand1.mod(operand2));
   },
   '<': function (operand1, operand2) {
     return new BigNumber(Number(operand1.lt(operand2)));

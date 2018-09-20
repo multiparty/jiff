@@ -7,9 +7,10 @@ var isConstant;
 var genMem = [];
 function determineMax(test, party_count, integer_digits, decimal_digits) {
   var max = new BigNumber(10).pow(integer_digits + decimal_digits);
+  var operation_count = isConstant ? 2 : party_count;
   // +: max + max ... + max = party_count * max <= 10^(digits)
   if (test === '+') {
-    max = max.div(party_count).floor();
+    max = max.div(operation_count).floor();
   }
 
   // -: harder, first party's input can be as large as fits, the sum of the other party's input must be
@@ -27,7 +28,6 @@ function determineMax(test, party_count, integer_digits, decimal_digits) {
   // => max <= 10^(digits)^(1/party_count) = 10^(digits/party_count)
   // Note that for constant *, we only perform a single multiplication in the test
   if (test === '*' || test === '*bgw') {
-    var operation_count = isConstant ? 2 : party_count;
     var pow = Math.floor((integer_digits + decimal_digits) / operation_count);
     max = new BigNumber(10).pow(pow);
   }
