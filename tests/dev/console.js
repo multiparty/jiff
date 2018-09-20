@@ -87,7 +87,7 @@ exports.create = function (id, c, options) {
   for (var p = 0; p < c; p++) {
     result[p] = jiff.make_jiff('http://localhost:' + port, computation_id, options);
     for (var i = 0; i < extensions.length; i++) {
-      result[p] = extensions[i].make_jiff(result[p], options);
+      result[p].apply_extension(extensions[i], options);
     }
   }
 
