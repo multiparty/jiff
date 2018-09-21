@@ -39,11 +39,10 @@
       "count": 8,
       "parallel": 3,
       "options": {
-        "Zp": "1048573",
+        "Zp": "2097143",
         "party_count": 3,
         "integer_digits": 2,
-        "decimal_digits": 2,
-        "warn": false
+        "decimal_digits": 2
       }
     }
   }

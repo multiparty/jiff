@@ -2,13 +2,13 @@
   "tests": [ "<", "<=", ">", ">=", "==", "!=" ],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ "bigNumber", "fixedpoint" ],
+    "extensions": [ "bigNumber", "fixedpoint", "negativeNumber" ],
     "generation": {
-      "file": "config/fixedpoint/generation.js",
+      "file": "config/fixedpoint|negativeNumber/generation.js",
       "function": "generateComparisonInputs"
     },
     "computation": {
-      "file": "config/fixedpoint/computations.js",
+      "file": "config/fixedpoint|negativeNumber/computations.js",
       "function": "compute"
     }
   },
@@ -18,30 +18,33 @@
       "count": 10,
       "parallel": 5,
       "options": {
-        "Zp": 16381,
+        "Zp": 32749,
         "party_count": 3,
         "decimal_digits": 2,
-        "integer_digits": 2
+        "integer_digits": 2,
+        "warn": false
       }
     },
     "==": {
       "count": 5,
       "parallel": 5,
       "options": {
-        "Zp": 16381,
+        "Zp": 32749,
         "party_count": 3,
         "decimal_digits": 2,
-        "integer_digits": 2
+        "integer_digits": 2,
+        "warn": false
       }
     },
     "!=": {
       "count": 5,
       "parallel": 5,
       "options": {
-        "Zp": 16381,
+        "Zp": 32749,
         "party_count": 3,
         "decimal_digits": 2,
-        "integer_digits": 2
+        "integer_digits": 2,
+        "warn": false
       }
     }
   }
