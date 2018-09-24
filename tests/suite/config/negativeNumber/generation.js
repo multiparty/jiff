@@ -35,8 +35,11 @@ baseGeneration.generateBit = function (test, options) {
   return num;
 };
 baseGeneration.generateMultiple = function (test, options, factor) {
-  var coef = baseGeneration.generateUniform(test, { Zp: Math.floor(options.Zp/Math.abs(factor)) });
-  return coef * factor;
+  var max = determineMax(test, options.party_count, options.Zp);
+  max = Math.floor(max / Math.abs(factor));
+
+  var nat = Math.floor(Math.random() * max);
+  return factor * (Math.random() < 0.5 ? nat : -1 * nat);
 };
 
 exports.generateArithmeticInputs = function (test, count, options) {

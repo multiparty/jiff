@@ -1,5 +1,5 @@
 {
-  "tests": [ "+", "-", "*", "|", "^", "/" ],
+  "tests": [ "+", "-", "*", "|", "^", "cdivfac", "/" ],
   "suiteConf": {
     "port": 3001,
     "extensions": [ "bigNumber", "fixedpoint" ],

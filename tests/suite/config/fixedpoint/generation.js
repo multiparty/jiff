@@ -64,8 +64,10 @@ baseGeneration.generateBit = function (test, options) {
   return num;
 };
 baseGeneration.generateMultiple = function (test, options, factor) {
-  var Zp = new BigNumber(options.Zp);
-  var coef = baseGeneration.generateUniform(test, { Zp: Zp.div(factor).floor() });
+  var max = determineMax(test, options.party_count, options.integer_digits, 0);
+  var nmax = max.div(factor).abs().floor();
+  max = nmax.gt(max) ? max : nmax;
+  var coef = BigNumber.random().times(max).floor();
   return coef.times(factor);
 };
 

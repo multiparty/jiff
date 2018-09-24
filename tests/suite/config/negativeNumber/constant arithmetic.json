@@ -1,5 +1,5 @@
 {
-  "tests": [ "+", "-", "*", "|", "^", "/Zp127", "/Zp2039" ],
+  "tests": [ "+", "-", "*", "|", "^", "cdivfac", "/Zp127", "/Zp2039" ],
   "suiteConf": {
     "port": 3001,
     "extensions": [ "negativeNumber" ],
@@ -19,6 +19,14 @@
       "parallel": 50,
       "options": {
         "Zp": 15485867,
+        "party_count": 3
+      }
+    },
+    "cdivfac": {
+      "count": 20,
+      "parallel": 5,
+      "options": {
+        "Zp": 2039,
         "party_count": 3
       }
     },

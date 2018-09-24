@@ -46,10 +46,10 @@
       }
     },
     "abs": {
-      "count": 10,
-      "parallel": 3,
+      "count": 20,
+      "parallel": 5,
       "options": {
-        "Zp": 127,
+        "Zp": 251,
         "integer_digits": 1,
         "decimal_digits": 1,
         "party_count": 3,
@@ -77,10 +77,10 @@
       }
     },
     "floor": {
-      "count": 5,
-      "parallel": 3,
+      "count": 15,
+      "parallel": 5,
       "options": {
-        "Zp": 127,
+        "Zp": 251,
         "party_count": 3,
         "integer_digits": 1,
         "decimal_digits": 1,

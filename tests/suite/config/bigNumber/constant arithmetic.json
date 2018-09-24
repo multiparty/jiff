@@ -1,5 +1,5 @@
 {
-  "tests": [ "+", "-", "*", "|", "^", "/Zp127", "/Zp2039" ],
+  "tests": [ "+", "-", "*", "|", "^", "cdivfac", "/Zp127", "/Zp2039" ],
   "suiteConf": {
     "port": 3001,
     "extensions": [ "bigNumber" ],

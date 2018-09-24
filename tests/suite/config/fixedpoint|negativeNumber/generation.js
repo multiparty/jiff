@@ -44,8 +44,11 @@ baseGeneration.generateBit = function (test, options) {
   return Math.random() < 0.5 ? new BigNumber(0) : new BigNumber(1);
 };
 baseGeneration.generateMultiple = function (test, options, factor) {
-  var Zp = new BigNumber(options.Zp);
-  var coef = baseGeneration.generateUniform(test, { Zp: Zp.div(factor).floor() });
+  var max = determineMax(test, options.party_count, options.integer_digits, 0);
+  var nmax = max.div(factor).abs().floor();
+  max = nmax.gt(max) ? max : nmax;
+  var nat = BigNumber.random().times(max).floor();
+  var coef = Math.random() < 0.5 ? nat : nat.times(-1);
   return coef.times(factor);
 };
 

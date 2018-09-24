@@ -63,7 +63,7 @@ exports.generateArithmeticInputs = function (test, count, options) {
 exports.generateConstantArithmeticInputs = function (test, count, options) {
   var inputs = [];
   var t, oneInput;
-  if (test === '/' || test === '%' || test === 'cdivfac') {
+  if (test.startsWith('/') || test === '%' || test === 'cdivfac') {
     // division and mod: only two inputs, the second is non-zero.
     for (t = 0; t < count; t++) {
       oneInput = {};
