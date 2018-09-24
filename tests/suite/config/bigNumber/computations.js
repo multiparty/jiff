@@ -1,21 +1,24 @@
+// Use base computation but override interpreters.
+var baseComputations = require('../../computations.js');
+
 var BigNumber = require('bignumber.js');
 var Zp;
 
 // Real mod as opposed to remainder
-function bigNumberMod(x, y) {
+baseComputations.mod = function (x, y){
   if (x.lt(0)) {
     return x.plus(y).mod(y);
   }
   return x.mod(y);
-}
+};
 
 // How to interpret non-MPC operations
-var bigNumberOpenOps = {
+baseComputations.openInterpreter = {
   '+': function (operand1, operand2) {
     return operand1.plus(operand2).mod(Zp);
   },
   '-': function (operand1, operand2) {
-    return bigNumberMod(operand1.minus(operand2), Zp);
+    return baseComputations.mod(operand1.minus(operand2), Zp);
   },
   '*': function (operand1, operand2) {
     return operand1.times(operand2).mod(Zp);
@@ -55,10 +58,8 @@ var bigNumberOpenOps = {
   }
 };
 
-var baseComputations = require('../../computations.js');
-
 // Default Computation Scheme
 exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done) {
   Zp = jiff_instance.Zp;
-  return baseComputations.compute(jiff_instance, _test, _inputs, _testParallel, _done, null, bigNumberOpenOps, bigNumberMod);
+  return baseComputations.compute(jiff_instance, _test, _inputs, _testParallel, _done);
 };

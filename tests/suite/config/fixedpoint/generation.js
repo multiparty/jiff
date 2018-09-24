@@ -2,6 +2,9 @@
 var BigNumber = require('bignumber.js');
 BigNumber.config({ DECIMAL_PLACES: 131 });
 
+// Reuse base generation but with different underlying generation methods
+var baseGeneration = require('../base/generation.js');
+
 // functions specific to fixedpoint
 var isConstant;
 var genMem = [];
@@ -42,46 +45,41 @@ function pushToMem(party_count, num) {
   }
 }
 
-
-// helpers: organized like this to make it easy for extension generation to override functionality.
-var _helpers = {};
-_helpers.generateUniform = function (test, options) {
+// Override generation
+baseGeneration.generateUniform = function (test, options) {
   var max = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits);
   var wholeNum = BigNumber.random().times(max).floor();
   pushToMem(options.party_count, wholeNum);
   return wholeNum.div(new BigNumber(10).pow(options.decimal_digits));
 };
-_helpers.generateNonZeroUniform = function (test, options) {
+baseGeneration.generateNonZeroUniform = function (test, options) {
   var max = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits);
   var wholeNum = BigNumber.random().times(max.minus(1)).plus(1).floor();
   pushToMem(options.party_count, wholeNum);
   return wholeNum.div(new BigNumber(10).pow(options.decimal_digits));
 };
-_helpers.generateBit = function (test, options) {
+baseGeneration.generateBit = function (test, options) {
   var num = Math.random() < 0.5 ? new BigNumber(0) : new BigNumber(1);
   pushToMem(options.party_count, num);
   return num;
 };
 
-// Reuse base generation but with different helpers
-var baseGeneration = require('../base/generation.js');
-
 exports.generateArithmeticInputs = function (test, count, options) {
   isConstant = false;
-  return baseGeneration.generateArithmeticInputs(test, count, options, _helpers);
+  return baseGeneration.generateArithmeticInputs(test, count, options);
 };
 
 exports.generateConstantArithmeticInputs = function (test, count, options) {
   isConstant = true;
-  return baseGeneration.generateConstantArithmeticInputs(test, count, options, _helpers);
+  return baseGeneration.generateConstantArithmeticInputs(test, count, options);
 };
 
 exports.generateComparisonInputs = function (test, count, options) {
   isConstant = false;
-  return baseGeneration.generateComparisonInputs(test, count, options, _helpers);
+  return baseGeneration.generateComparisonInputs(test, count, options);
 };
 
 exports.generateConstantComparisonInputs = function (test, count, options) {
   isConstant = true;
-  return baseGeneration.generateConstantComparisonInputs(test, count, options, _helpers);
+  return baseGeneration.generateConstantComparisonInputs(test, count, options);
 };

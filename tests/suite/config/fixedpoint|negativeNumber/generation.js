@@ -2,6 +2,9 @@
 var BigNumber = require('bignumber.js');
 BigNumber.config({ DECIMAL_PLACES: 131 });
 
+// Reuse base generation but with different underlying generation methods
+var baseGeneration = require('../base/generation.js');
+
 // functions specific to fixedpoint
 var isConstant;
 function determineMax(test, party_count, integer_digits, decimal_digits) {
@@ -24,43 +27,48 @@ function determineMax(test, party_count, integer_digits, decimal_digits) {
   return max;
 }
 
-// helpers: organized like this to make it easy for extension generation to override functionality.
-var _helpers = {};
-_helpers.generateUniform = function (test, options) {
+// Override
+baseGeneration.generateUniform = function (test, options) {
   var max = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits);
   var wholeNum = BigNumber.random().times(max).floor();
   var deciNum = wholeNum.div(new BigNumber(10).pow(options.decimal_digits));
   return Math.random() < 0.5 ? deciNum : deciNum.times(-1);
 };
-_helpers.generateNonZeroUniform = function (test, options) {
+baseGeneration.generateNonZeroUniform = function (test, options) {
   var max = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits);
   var wholeNum = BigNumber.random().times(max.minus(1)).plus(1).floor();
   var deciNum = wholeNum.div(new BigNumber(10).pow(options.decimal_digits));
   return Math.random() < 0.5 ? deciNum : deciNum.times(-1);
 };
-_helpers.generateBit = function (test, options) {
+baseGeneration.generateBit = function (test, options) {
   return Math.random() < 0.5 ? new BigNumber(0) : new BigNumber(1);
 };
 
-// Reuse base generation but with different helpers
-var baseGeneration = require('../base/generation.js');
-
 exports.generateArithmeticInputs = function (test, count, options) {
   isConstant = false;
-  return baseGeneration.generateArithmeticInputs(test, count, options, _helpers);
+  if (test === 'floor' || test === 'abs') {
+    var inputs = [];
+    for (var t = 0; t < count; t++) {
+      var oneInput = {};
+      oneInput[1] = baseGeneration.generateUniform(test, options);
+      inputs.push(oneInput);
+    }
+    return inputs;
+  }
+  return baseGeneration.generateArithmeticInputs(test, count, options);
 };
 
 exports.generateConstantArithmeticInputs = function (test, count, options) {
   isConstant = true;
-  return baseGeneration.generateConstantArithmeticInputs(test, count, options, _helpers);
+  return baseGeneration.generateConstantArithmeticInputs(test, count, options);
 };
 
 exports.generateComparisonInputs = function (test, count, options) {
   isConstant = false;
-  return baseGeneration.generateComparisonInputs(test, count, options, _helpers);
+  return baseGeneration.generateComparisonInputs(test, count, options);
 };
 
 exports.generateConstantComparisonInputs = function (test, count, options) {
   isConstant = true;
-  return baseGeneration.generateConstantComparisonInputs(test, count, options, _helpers);
+  return baseGeneration.generateConstantComparisonInputs(test, count, options);
 };

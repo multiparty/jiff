@@ -1,7 +1,10 @@
+// Use base computation but override interpreters.
+var baseComputations = require('../../computations.js');
+
 var BigNumber = require('bignumber.js');
 
 // How to interpret non-MPC operations
-var bigNumberOpenOps = {
+baseComputations.openInterpreter = {
   '+': function (operand1, operand2) {
     return operand1.plus(operand2);
   },
@@ -46,9 +49,7 @@ var bigNumberOpenOps = {
   }
 };
 
-var baseComputations = require('../../computations.js');
-
 // Default Computation Scheme
 exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done) {
-  return baseComputations.compute(jiff_instance, _test, _inputs, _testParallel, _done, null, bigNumberOpenOps);
+  return baseComputations.compute(jiff_instance, _test, _inputs, _testParallel, _done);
 };

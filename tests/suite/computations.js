@@ -9,24 +9,37 @@ var testParallel;
 // Acquire Zp from the jiff instance
 var Zp;
 
-// Interpreters: by default will take values from mod, _mpcOps and _openOps below
-var mpcOps;
-var openOps;
-var mod;
-
 // Flags success/failure
 var errors = [];
 
+// For logging purposes
+function myJoin(indices, values, sep) {
+  var str = '';
+  for (var i = 0; i < indices.length - 1; i++) {
+    str = str + values[indices[i]].toString() + sep;
+  }
+
+  if (indices.length > 0) {
+    str += values[indices[indices.length - 1]].toString();
+  }
+
+  if (values['constant'] != null) {
+    str += sep + 'c[' + values['constant'].toString() + ']';
+  }
+
+  return str;
+}
+
 // Real mod as opposed to remainder
-function _defaultMod(x, y) {
+exports.mod = function (x, y) {
   if (x < 0) {
     return (x % y) + y;
   }
   return x % y;
-}
+};
 
 // How to interpret MPC operations
-var _mpcOps = {
+exports.mpcInterpreter = {
   '+': function (operand1, operand2) {
     return operand1.add(operand2);
   },
@@ -72,18 +85,18 @@ var _mpcOps = {
 };
 
 // How to interpret non-MPC operations
-var _openOps = {
+exports.openInterpreter = {
   '+': function (operand1, operand2) {
-    return mod(operand1 + operand2, Zp);
+    return exports.mod(operand1 + operand2, Zp);
   },
   '-': function (operand1, operand2) {
-    return mod(operand1 - operand2, Zp);
+    return exports.mod(operand1 - operand2, Zp);
   },
   '*': function (operand1, operand2) {
-    return mod(operand1 * operand2, Zp);
+    return exports.mod(operand1 * operand2, Zp);
   },
   '*bgw': function (operand1, operand2) {
-    return mod(operand1 * operand2, Zp);
+    return exports.mod(operand1 * operand2, Zp);
   },
   '^': function (operand1, operand2) {
     return operand1 ^ operand2;
@@ -95,7 +108,7 @@ var _openOps = {
     return Math.floor(operand1 / operand2);
   },
   '%' : function (operand1, operand2) {
-    return mod(operand1, operand2);
+    return exports.mod(operand1, operand2);
   },
   '<': function (operand1, operand2) {
     return Number(operand1 < operand2);
@@ -116,23 +129,6 @@ var _openOps = {
     return Number(operand1 !== operand2);
   }
 };
-
-function myJoin(indices, values, sep) {
-  var str = '';
-  for (var i = 0; i < indices.length - 1; i++) {
-    str = str + values[indices[i]].toString() + sep;
-  }
-
-  if (indices.length > 0) {
-    str += values[indices[indices.length - 1]].toString();
-  }
-
-  if (values['constant'] != null) {
-    str += sep + 'c[' + values['constant'].toString() + ']';
-  }
-
-  return str;
-}
 
 // Interpret the computation on the given values
 function compute(test, values, interpreter) {
@@ -166,7 +162,7 @@ function singleTest(jiff_instance, t) {
     var testInputs = inputs[t];
 
     // Compute in the Open
-    var actualResult = compute(test, testInputs, openOps);
+    var actualResult = compute(test, testInputs, exports.openInterpreter);
 
     // Figure out who is sharing
     var input = testInputs[jiff_instance.id];
@@ -182,7 +178,7 @@ function singleTest(jiff_instance, t) {
     var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
     var shares = jiff_instance.share(input, threshold, null, senders);
     shares['constant'] = testInputs['constant'];
-    var mpcResult = compute(test, shares, mpcOps);
+    var mpcResult = compute(test, shares, exports.mpcInterpreter);
     if (mpcResult == null) {
       return null;
     }
@@ -233,25 +229,12 @@ function batchTest(jiff_instance, startIndex) {
 }
 
 // Default Computation Scheme
-exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done, _mpcInterpreter, _openInterpreter, _mod) {
+exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done) {
   errors = [];
-  if (_mpcInterpreter == null) {
-    _mpcInterpreter = _mpcOps;
-  }
-  if (_openInterpreter == null) {
-    _openInterpreter = _openOps;
-  }
-  if (_mod == null) {
-    _mod = _defaultMod;
-  }
-
   done = _done;
   test = _test;
   inputs = _inputs;
   testParallel = _testParallel;
-  mpcOps = _mpcInterpreter;
-  openOps = _openInterpreter;
-  mod = _mod;
 
   Zp = jiff_instance.Zp;
 
