@@ -43,6 +43,11 @@ baseGeneration.generateNonZeroUniform = function (test, options) {
 baseGeneration.generateBit = function (test, options) {
   return Math.random() < 0.5 ? new BigNumber(0) : new BigNumber(1);
 };
+baseGeneration.generateMultiple = function (test, options, factor) {
+  var Zp = new BigNumber(options.Zp);
+  var coef = baseGeneration.generateUniform(test, { Zp: Zp.div(factor).floor() });
+  return coef.times(factor);
+};
 
 exports.generateArithmeticInputs = function (test, count, options) {
   isConstant = false;

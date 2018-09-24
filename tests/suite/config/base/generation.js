@@ -7,6 +7,10 @@ exports.generateNonZeroUniform = function (test, options) {
 exports.generateBit = function (test, options) {
   return Math.random() < 0.5 ? 0 : 1;
 };
+exports.generateMultiple = function (test, options, factor) {
+  var coef = exports.generateUniform(test, { Zp: Math.floor(options.Zp/factor) });
+  return coef * factor;
+};
 
 // Generation API referred to from configuration JSON files
 
@@ -16,7 +20,7 @@ exports.generateArithmeticInputs = function (test, count, options) {
   var party_count = options.party_count;
   var inputs = [];
   var t, p, oneInput;
-  if (test.startsWith('/') || test === '%' || test === 'cdivfac') {
+  if (test.startsWith('/') || test === '%') {
     // division and mod: only two inputs, the second is non-zero.
     for (t = 0; t < count; t++) {
       oneInput = {};
@@ -59,12 +63,16 @@ exports.generateArithmeticInputs = function (test, count, options) {
 exports.generateConstantArithmeticInputs = function (test, count, options) {
   var inputs = [];
   var t, oneInput;
-  if (test === '/' || test === '%') {
+  if (test === '/' || test === '%' || test === 'cdivfac') {
     // division and mod: only two inputs, the second is non-zero.
     for (t = 0; t < count; t++) {
       oneInput = {};
-      oneInput[1] = exports.generateUniform(test, options);
       oneInput['constant'] = exports.generateNonZeroUniform(test, options);
+      if (test === 'cdivfac') {
+        oneInput[1] = exports.generateMultiple(test, options, oneInput['constant']);
+      } else {
+        oneInput[1] = exports.generateUniform(test, options);
+      }
       inputs.push(oneInput);
     }
   } else if (test === '|' || test === '^') {

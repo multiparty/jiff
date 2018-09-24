@@ -44,6 +44,9 @@ baseComputations.openInterpreter = {
   },
   '!=': function (operand1, operand2) {
     return Number(operand1 !== operand2);
+  },
+  '!' : function (operand1, _) {
+    return (operand1 + 1) % 2;
   }
 };
 

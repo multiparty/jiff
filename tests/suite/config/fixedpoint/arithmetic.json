@@ -1,5 +1,5 @@
 {
-  "tests": [ "+", "-", "*", "*bgw", "|", "^", "/", "%" ],
+  "tests": [ "+", "-", "*", "*bgw", "|", "^", "!", "/", "%", "floor" ],
   "suiteConf": {
     "port": 3001,
     "extensions": [ "bigNumber", "fixedpoint" ],
@@ -63,6 +63,17 @@
         "party_count": 3,
         "integer_digits": 3,
         "decimal_digits": 3,
+        "warn": false
+      }
+    },
+    "floor": {
+      "count": 5,
+      "parallel": 3,
+      "options": {
+        "Zp": 127,
+        "party_count": 3,
+        "integer_digits": 1,
+        "decimal_digits": 1,
         "warn": false
       }
     }

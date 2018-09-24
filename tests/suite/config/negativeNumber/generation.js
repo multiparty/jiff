@@ -34,6 +34,10 @@ baseGeneration.generateBit = function (test, options) {
   var num = Math.random() < 0.5 ? 0 : 1;
   return num;
 };
+baseGeneration.generateMultiple = function (test, options, factor) {
+  var coef = baseGeneration.generateUniform(test, { Zp: Math.floor(options.Zp/Math.abs(factor)) });
+  return coef * factor;
+};
 
 exports.generateArithmeticInputs = function (test, count, options) {
   isConstant = false;

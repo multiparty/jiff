@@ -25,6 +25,8 @@ function myJoin(indices, values, sep) {
 
   if (values['constant'] != null) {
     str += sep + 'c[' + values['constant'].toString() + ']';
+  } else if (indices.length === 1) {
+    str = '!' + str;
   }
 
   return str;
@@ -61,6 +63,9 @@ exports.mpcInterpreter = {
   '/': function (operand1, operand2) {
     return operand1.div(operand2);
   },
+  'cdivfac': function (operand1, operand2) {
+    return operand1.cdivfac(operand2);
+  },
   '%' : function (operand1, operand2) {
     return operand1.smod(operand2);
   },
@@ -81,6 +86,9 @@ exports.mpcInterpreter = {
   },
   '!=': function (operand1, operand2) {
     return operand1.neq(operand2);
+  },
+  '!': function (operand1, _) {
+    return operand1.not();
   }
 };
 
@@ -107,6 +115,9 @@ exports.openInterpreter = {
   '/': function (operand1, operand2) {
     return Math.floor(operand1 / operand2);
   },
+  'cdivfac': function (operand1, operand2) {
+    return exports.openInterpreter['/'](operand1, operand2);
+  },
   '%' : function (operand1, operand2) {
     return exports.mod(operand1, operand2);
   },
@@ -127,6 +138,9 @@ exports.openInterpreter = {
   },
   '!=': function (operand1, operand2) {
     return Number(operand1 !== operand2);
+  },
+  '!' : function (operand1, _) {
+    return (operand1 + 1) % 2;
   }
 };
 

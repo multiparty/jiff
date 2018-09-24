@@ -46,6 +46,9 @@ baseComputations.openInterpreter = {
   },
   '!=': function (operand1, operand2) {
     return new BigNumber(Number(!operand1.eq(operand2)));
+  },
+  '!' : function (operand1, _) {
+    return new BigNumber(operand1).plus(1).mod(2);
   }
 };
 

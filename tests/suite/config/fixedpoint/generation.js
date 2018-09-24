@@ -63,6 +63,11 @@ baseGeneration.generateBit = function (test, options) {
   pushToMem(options.party_count, num);
   return num;
 };
+baseGeneration.generateMultiple = function (test, options, factor) {
+  var Zp = new BigNumber(options.Zp);
+  var coef = baseGeneration.generateUniform(test, { Zp: Zp.div(factor).floor() });
+  return coef.times(factor);
+};
 
 exports.generateArithmeticInputs = function (test, count, options) {
   isConstant = false;
