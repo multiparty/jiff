@@ -11,6 +11,9 @@ exports.generateMultiple = function (test, options, factor) {
   var coef = exports.generateUniform(test, { Zp: Math.floor(options.Zp/factor) });
   return coef * factor;
 };
+exports.generateDividend = function (test, options, divisor) {
+  return exports.generateUniform(test, options);
+};
 
 // Generation API referred to from configuration JSON files
 
@@ -24,8 +27,8 @@ exports.generateArithmeticInputs = function (test, count, options) {
     // division and mod: only two inputs, the second is non-zero.
     for (t = 0; t < count; t++) {
       oneInput = {};
-      oneInput[1] = exports.generateUniform(test, options);
       oneInput[2] = exports.generateNonZeroUniform(test, options);
+      oneInput[1] = exports.generateDividend(test, options, oneInput[2]);
       inputs.push(oneInput);
     }
   } else if (test === '|' || test === '^') {
@@ -71,7 +74,7 @@ exports.generateConstantArithmeticInputs = function (test, count, options) {
       if (test === 'cdivfac') {
         oneInput[1] = exports.generateMultiple(test, options, oneInput['constant']);
       } else {
-        oneInput[1] = exports.generateUniform(test, options);
+        oneInput[1] = exports.generateDividend(test, options, oneInput['constant']);
       }
       inputs.push(oneInput);
     }
