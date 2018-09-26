@@ -52,6 +52,10 @@ baseGeneration.generateMultiple = function (test, options, factor) {
   return coef.times(factor);
 };
 
+exports.generateShareInputs = function (test, count, options) {
+  return baseGeneration.generateShareInputs(test, count, options);
+};
+
 exports.generateArithmeticInputs = function (test, count, options) {
   isConstant = false;
   if (test === 'floor' || test === 'abs') {

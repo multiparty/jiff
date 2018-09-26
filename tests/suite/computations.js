@@ -26,7 +26,7 @@ function myJoin(indices, values, sep) {
   if (values['constant'] != null) {
     str += sep + 'c[' + values['constant'].toString() + ']';
   } else if (indices.length === 1) {
-    str = '!' + str;
+    str = sep + str;
   }
 
   return str;

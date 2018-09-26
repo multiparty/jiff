@@ -42,6 +42,10 @@ baseGeneration.generateMultiple = function (test, options, factor) {
   return factor * (Math.random() < 0.5 ? nat : -1 * nat);
 };
 
+exports.generateShareInputs = function (test, count, options) {
+  return baseGeneration.generateShareInputs(test, count, options);
+};
+
 exports.generateArithmeticInputs = function (test, count, options) {
   isConstant = false;
   return baseGeneration.generateArithmeticInputs(test, count, options);

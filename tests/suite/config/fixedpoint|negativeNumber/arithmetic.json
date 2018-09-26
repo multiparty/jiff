@@ -72,8 +72,9 @@
       "options": {
         "Zp": "2097143",
         "party_count": 3,
-        "integer_digits": 2,
-        "decimal_digits": 2
+        "integer_digits": 3,
+        "decimal_digits": 3,
+        "warn": false
       }
     },
     "floor": {
