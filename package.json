@@ -41,12 +41,8 @@
     "url": "git+https://github.com/multiparty/jiff-server.git"
   },
   "scripts": {
-    "test": "./tests/mocha/test.sh",
-    "test-bignumber": "./tests/mocha-bignumber/test.sh",
-    "test-negativenumber": "./tests/mocha-negative-number/test.sh",
-    "test-big-negative": "./tests/mocha-big-negative/test.sh",
-    "test-fixedpoint": "./tests/mocha-fixedpoint/test.sh",
-    "test-fixed-negative": "./tests/mocha-fixed-negative/test.sh",
+    "test": "./tests/suite/test.sh",
+    "suite": "./tests/suite/suite.sh",
     "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html",
     "test-demo": "./node_modules/mocha/bin/mocha --full-trace",
     "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit"

@@ -19,11 +19,15 @@ exports.createInstances = function (party_count, port, computation_id, options, 
     var instance = jiff.make_jiff('http://localhost:' + port, computation_id, options);
 
     // Apply extensions in order
-    var extArray = ext.split('|');
-    for (var e = 0 ; e < extArray.length; e++) {
-      if (extArray[e] !== 'default') {
-        instance.apply_extension(extensions[extArray[e]], options);
+    if (ext == null) {
+      ext = [];
+    }
+    for (var e = 0 ; e < ext.length; e++) {
+      if (ext[e] == null) {
+        console.log('could not find extension ' + e);
+        continue;
       }
+      instance.apply_extension(extensions[ext[e]], options);
     }
 
     instance.connect();
