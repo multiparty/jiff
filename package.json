@@ -41,18 +41,20 @@
     "url": "git+https://github.com/multiparty/jiff-server.git"
   },
   "scripts": {
-    "test": "./tests/mocha/test.sh",
-    "test-bignumber": "./tests/mocha-bignumber/test.sh",
-    "test-negativenumber": "./tests/mocha-negative-number/test.sh",
-    "test-big-negative": "./tests/mocha-big-negative/test.sh",
-    "test-fixedpoint": "./tests/mocha-fixedpoint/test.sh",
+    "test": "./tests/suite/test.sh",
+    "suite": "./tests/suite/suite.sh",
     "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html",
-    "test-demo": "./node_modules/mocha/bin/mocha --full-trace"
+    "test-demo": "./node_modules/mocha/bin/mocha --full-trace",
+    "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit"
   },
   "dependencies": {
     "bignumber.js": "^5.0.0",
+    "cross-env": "^5.0.5",
+    "increase-memory-limit": "^1.0.3",
     "jquery-deferred": "^0.3.1",
     "libsodium-wrappers": "^0.7.2",
+    "mathjs": "^5.0.4",
+    "numeric": "^1.2.6",
     "socket.io": "^2.0.2",
     "socket.io-client": "^2.1.1"
   },
