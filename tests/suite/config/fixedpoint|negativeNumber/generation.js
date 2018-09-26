@@ -23,7 +23,6 @@ function determineMax(test, party_count, integer_digits, decimal_digits) {
     var pow = Math.floor((integer_digits + decimal_digits) / operation_count);
     max = new BigNumber(10).pow(pow);
   }
-
   return max;
 }
 
@@ -50,6 +49,14 @@ baseGeneration.generateMultiple = function (test, options, factor) {
   var nat = BigNumber.random().times(max).floor();
   var coef = Math.random() < 0.5 ? nat : nat.times(-1);
   return coef.times(factor);
+};
+baseGeneration.generateDividend = function (test, options, divisor) {
+  var max1 = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits);
+  var max2 = new BigNumber(10).pow(options.integer_digits + options.decimal_digits).times(divisor).abs().floor();
+  var max = max1.lt(max2) ? max1 : max2;
+  var wholeNum = BigNumber.random().times(max).floor();
+  var deciNum = wholeNum.div(new BigNumber(10).pow(options.decimal_digits));
+  return Math.random() < 0.5 ? deciNum : deciNum.times(-1);
 };
 
 exports.generateShareInputs = function (test, count, options) {

@@ -12,6 +12,7 @@ echo "====================" >> "${logs}"
 
 node tests/suite/server.js >> "${logs}" &
 
+EXIT_CODE=0
 i=0
 for f in tests/suite/config/${JIFF_TEST_NAME}/*.json; do
     FULLNAME=$(basename "$f")
@@ -25,14 +26,23 @@ for f in tests/suite/config/${JIFF_TEST_NAME}/*.json; do
         sleep 1
     else
         ./node_modules/.bin/mocha --reporter spec tests/suite/index.js
+        CODE=$?
+        if [[ "${CODE}" != "0" ]]; then
+          EXIT_CODE=$CODE
+        fi
     fi
 done
 
 if [ "$2" == "parallel" ]
 then
     for tpid in ${tests_pids[*]}; do
-        wait $tpid
+        CODE=0
+        wait $tpid || CODE=$?
+        if [[ "${CODE}" != "0" ]]; then
+          EXIT_CODE=$CODE
+        fi
     done
 fi
 
 kill $(ps aux | grep "node tests/suite/server\.js" | awk '{ print $2}')
+exit "$EXIT_CODE"

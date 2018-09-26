@@ -70,27 +70,38 @@ baseGeneration.generateMultiple = function (test, options, factor) {
   var coef = BigNumber.random().times(max).floor();
   return coef.times(factor);
 };
+baseGeneration.generateDividend = function (test, options, divisor) {
+  var max1 = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits);
+  var max2 = new BigNumber(10).pow(options.integer_digits + options.decimal_digits).times(divisor).floor();
+  var max = max1.lt(max2) ? max1 : max2;
+  var wholeNum = BigNumber.random().times(max).floor();
+  return wholeNum.div(new BigNumber(10).pow(options.decimal_digits));
+};
 
 exports.generateShareInputs = function (test, count, options) {
   return baseGeneration.generateShareInputs(test, count, options);
 };
 
 exports.generateArithmeticInputs = function (test, count, options) {
+  genMem = [];
   isConstant = false;
   return baseGeneration.generateArithmeticInputs(test, count, options);
 };
 
 exports.generateConstantArithmeticInputs = function (test, count, options) {
+  genMem = [];
   isConstant = true;
   return baseGeneration.generateConstantArithmeticInputs(test, count, options);
 };
 
 exports.generateComparisonInputs = function (test, count, options) {
+  genMem = [];
   isConstant = false;
   return baseGeneration.generateComparisonInputs(test, count, options);
 };
 
 exports.generateConstantComparisonInputs = function (test, count, options) {
+  genMem = [];
   isConstant = true;
   return baseGeneration.generateConstantComparisonInputs(test, count, options);
 };
