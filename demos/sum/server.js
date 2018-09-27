@@ -1,13 +1,23 @@
 var express = require('express');
 var app = express();
+const bodyParser  = require("body-parser");
 var http = require('http').Server(app);
-var jiff_instance = require('../../lib/jiff-server').make_jiff(http, { logs:true });
 
-// Serve static files.
+//Serve static files
+//Configure App
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use("/demos", express.static("demos"));
 app.use("/lib", express.static("lib"));
 app.use("/lib/ext", express.static("lib/ext"));
-http.listen(8080, function() {
+
+
+var jiff_instance = require('../../lib/jiff-server').make_jiff(http, { logs:true }, app);
+
+//for future production release
+
+const port = process.env.port || 8080;
+http.listen(8080, function () {
   console.log('listening on *:8080');
 });
 
