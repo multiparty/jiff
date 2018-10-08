@@ -1,0 +1,51 @@
+{
+  "tests": [ "<", "<=", ">", ">=", "==", "!=" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "bigNumber", "fixedpoint" ],
+    "generation": {
+      "file": "config/fixedpoint/generation.js",
+      "function": "generateComparisonInputs"
+    },
+    "computation": {
+      "file": "config/fixedpoint/computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 10,
+      "parallel": 5,
+      "options": {
+        "Zp": 16381,
+        "party_count": 3,
+        "decimal_digits": 2,
+        "integer_digits": 2,
+        "warn": false
+      }
+    },
+    "==": {
+      "count": 5,
+      "parallel": 5,
+      "options": {
+        "Zp": 16381,
+        "party_count": 3,
+        "decimal_digits": 2,
+        "integer_digits": 2,
+        "warn": false
+      }
+    },
+    "!=": {
+      "count": 5,
+      "parallel": 5,
+      "options": {
+        "Zp": 16381,
+        "party_count": 3,
+        "decimal_digits": 2,
+        "integer_digits": 2,
+        "warn": false
+      }
+    }
+  }
+}
