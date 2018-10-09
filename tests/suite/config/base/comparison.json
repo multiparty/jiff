@@ -22,7 +22,7 @@
       }
     },
     "==": {
-      "count": 5,
+      "count": 15,
       "parallel": 5,
       "options": {
         "Zp": 2039,
@@ -30,7 +30,7 @@
       }
     },
     "!=": {
-      "count": 5,
+      "count": 15,
       "parallel": 5,
       "options": {
         "Zp": 2039,
