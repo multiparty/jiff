@@ -6,19 +6,22 @@
    */
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
+    opt.warn = false;
 
     // Added options goes here
     if(node) {
       jiff = require('../../lib/jiff-client');
       jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
       jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
+      jiff_negativeNumber = require('../../lib/ext/jiff-client-negativenumber');
       BigNumber = require('bignumber.js');    
     }
     
     opt.autoConnect = false;
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
-    saved_instance = jiff_bignumber.make_jiff(saved_instance, opt)
-    saved_instance = jiff_fixedpoint.make_jiff(saved_instance, opt); // Max bits after decimal allowed
+    saved_instance.apply_extension(jiff_bignumber, opt)
+    saved_instance.apply_extension(jiff_fixedpoint, opt); // Max bits after decimal allowed
+    saved_instance.apply_extension(jiff_negativeNumber, opt); // Max bits after decimal allowed
     saved_instance.connect();
 
     return saved_instance;
@@ -35,7 +38,7 @@
     var min = shares[1];
     for(var i = 2; i <= jiff_instance.party_count; i++) {
       var cmp = min.slt(shares[i]);
-      min = min.smult(cmp).sadd(shares[i].smult(cmp.not()));
+      min = cmp.if_else(min, shares[i]);
     }
 
     return min.open();

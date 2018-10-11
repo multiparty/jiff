@@ -13,7 +13,7 @@ function connect() {
     $("#output").append("<p class='error'>Party count must be a valid number!</p>");
     $('#connectButton').prop('disabled', false);
   } else {
-    var options = { party_count: party_count, decimal_digits: 5, integral_digits: 2, Zp: new BigNumber(2).pow(40).minus(87) };
+    var options = { party_count: party_count, decimal_digits: 2, integral_digits: 2, Zp: 32749 };
     options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
     options.onConnect = function() { $("#button").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
     
@@ -38,8 +38,8 @@ function submit() {
 
   if (isNaN(input))
     $("#output").append("<p class='error'>Input a valid number!</p>");
-  else if (100 < input || input < 0)
-    $("#output").append("<p class='error'>Input a number between 0 and 100!</p>");
+  else if (99 < input || input < -99)
+    $("#output").append("<p class='error'>Input a number between -100 and 100!</p>");
   else {
     $("#button").attr("disabled", true);
     $("#output").append("<p>Starting...</p>");

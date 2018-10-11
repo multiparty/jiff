@@ -10,11 +10,11 @@ var party_count = 3;
 var parallelismDegree = 3; // Max number of test cases running in parallel
 var n = 5; // Number of test cases in total
 
-var Zp = new BigNumber(2).pow(40).minus(87); // 12 whole digits available in Zp
-var magnitude = 2; // 2 digit of magnitude: need to have enough free digits to fit multiplication (5)
-var accuracy = 5; // 5 digits of accuracy after decimal point
-var maxValue = Math.pow(10, magnitude);
-
+var Zp = new BigNumber(32749);
+var magnitude = 2;
+var accuracy = 2;
+var maxValue = new BigNumber(10).pow(accuracy + magnitude);
+    
 /**
  * CHANGE THIS: Generate inputs for your tests
  * Should return an object with this format:
@@ -30,8 +30,9 @@ function generateInputs(party_count) {
   // Generate test cases one at a time
   for(var t = 0; t < n; t++) {
     for (var i = 1; i <= party_count; i++) {
-      var numString = (Math.random() * maxValue).toFixed(accuracy);
-      inputs[i].push(new BigNumber(numString)); 
+      num = maxValue.times(Math.random().toString()).floor().div(Math.pow(10, accuracy));
+      num = Math.random() < 0.5 ? num : num.times(-1);
+      inputs[i].push(num); 
     }
   }
 
@@ -74,6 +75,10 @@ describe('Test', function() {
 
       var testResults = [];      
       (function one_test_case(j) {
+        if (jiff_instance.id === 1) {
+          console.log("\tStart ", j > partyInputs.length ? partyInputs.length : j, "/", partyInputs.length);
+        }
+
         if(j < partyInputs.length) {
           var promises = [];
           for(var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++)
@@ -113,7 +118,7 @@ describe('Test', function() {
       })(0);
     };
 
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, decimal_digits: accuracy, integral_digits: magnitude, Zp: Zp };
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, decimal_digits: accuracy, integer_digits: magnitude, Zp: Zp };
     
     for(var i = 0; i < party_count; i++)
       mpc.connect("http://localhost:8080", "mocha-test", options);

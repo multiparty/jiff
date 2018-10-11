@@ -6,6 +6,7 @@
    */
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
+    opt.warn = false;
 
     // Added options goes here
     if(node) {
@@ -17,8 +18,8 @@
     
     opt.autoConnect = false;
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
-    saved_instance = jiff_bignumber.make_jiff(saved_instance, opt)
-    saved_instance = jiff_fixedpoint.make_jiff(saved_instance, opt); // Max bits after decimal allowed
+    saved_instance.apply_extension(jiff_bignumber, opt)
+    saved_instance.apply_extension(jiff_fixedpoint, opt); // Max bits after decimal allowed
     saved_instance.connect();
 
     return saved_instance;

@@ -112,7 +112,7 @@ describe('Test', function() {
       })(0);
     };
 
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, decimal_digits: accuracy, integral_digits: magnitude, Zp: new BigNumber(32416190071) };
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, decimal_digits: accuracy, integer_digits: magnitude, Zp: new BigNumber(32416190071) };
     
     for(var i = 0; i < party_count; i++)
       mpc.connect("http://localhost:8080", "mocha-test", options);

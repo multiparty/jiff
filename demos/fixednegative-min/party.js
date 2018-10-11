@@ -10,6 +10,10 @@ var mpc = require('./mpc');
 
 // Read Command line arguments
 var input = Number(process.argv[2]);
+if (input >= 100 || input <= -100) {
+  console.log("input must be between -100 and 100 exclusive");
+  return
+}
 
 var party_count = process.argv[3];
 if(party_count == null) party_count = 2;
@@ -24,7 +28,7 @@ if(party_id != null) party_id = parseInt(party_id, 10);
 var BigNumber = require('bignumber.js');
 
 // JIFF options
-var options = { party_count: party_count, party_id: party_id, decimal_digits: 5, integral_digits: 2, Zp: new BigNumber(2).pow(40).minus(87) };
+    var options = { party_count: party_count, party_id: party_id, decimal_digits: 2, integral_digits: 2, Zp: 32749 };
 options.onConnect = function(jiff_instance) {
   var promise = mpc.compute(input);
 
