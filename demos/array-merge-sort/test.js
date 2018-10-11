@@ -4,12 +4,12 @@ var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
 var party_count = 4;
-var parallelismDegree = 2; // Max number of test cases running in parallel
-var n = 4;
+var parallelismDegree = 3; // Max number of test cases running in parallel
+var n = 8;
 
 // Parameters specific to this demo
-var maxElement = 1000;
-var maxLength = 4;
+var maxElement = 13;
+var maxLength = 16;
 
 /**
  * CHANGE THIS: Generate inputs for your tests
@@ -19,17 +19,21 @@ var maxLength = 4;
  * }
  */
 function generateInputs(party_count) {
+  // merge sort works only for arrays with length that is a power of 2
+  var lg = Math.log(maxLength)/Math.log(2) + 1;
+
   var inputs = {};
   for (var i = 1; i <= party_count; i++)
     inputs[i] = [];
 
   
   for (var t = 0; t < n; t++) {
-    var length = Math.floor(Math.random() * maxLength) + 1;
+    var pow = Math.floor(Math.random() * (lg-1) + 1);
+    var length = Math.pow(2, pow);
     for (var p = 1; p <= party_count; p++) {  
       var arr = [];
       while (arr.length < length)
-        arr.push(Math.floor(Math.random() * maxElement));
+        arr.push(Math.floor(Math.random() * maxElement / party_count));
 
       inputs[p][t] = arr;
     }
@@ -81,6 +85,10 @@ describe('Test', function() {
 
       var testResults = [];      
       (function one_test_case(j) {
+        if (jiff_instance.id === 1) {
+          console.log("\tStart ", j > partyInputs.length ? partyInputs.length : j, "/", partyInputs.length);
+        }
+
         if(j < partyInputs.length) {
           var promises = [];
           for(var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++)
@@ -120,7 +128,7 @@ describe('Test', function() {
       })(0);
     };
     
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect };
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: maxElement };
     for(var i = 0; i < party_count; i++)
       mpc.connect("http://localhost:8080", "mocha-test", options);
   });

@@ -7,10 +7,10 @@ var mpc = require('./mpc.js');
 // Generic Testing Parameters
 var party_count = 4;
 var parallelismDegree = 5; // Max number of test cases running in parallel
-var n = 25;
+var n = 15;
 
 // Parameters specific to this demo
-var maxElement = 50000;
+var maxElement = 31;
 var maxLength = 10;
 
 /**
@@ -31,7 +31,7 @@ function generateInputs(party_count) {
     for (var p = 1; p <= party_count; p++) {  
       var arr = [];
       while (arr.length < length)
-        arr.push(Math.floor(Math.random() * maxElement));
+        arr.push(Math.floor(Math.random() * maxElement / party_count));
 
       inputs[p][t] = arr;
     }
@@ -83,6 +83,10 @@ describe('Test', function() {
 
       var testResults = [];      
       (function one_test_case(j) {
+        if (jiff_instance.id === 1) {
+          console.log("\tStart ", j > partyInputs.length ? partyInputs.length : j, "/", partyInputs.length);
+        }
+
         if(j < partyInputs.length) {
           var promises = [];
           for(var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++)
@@ -122,7 +126,7 @@ describe('Test', function() {
       })(0);
     };
     
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect };
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: maxElement };
     for(var i = 0; i < party_count; i++)
       mpc.connect("http://localhost:8080", "mocha-test", options);
   });

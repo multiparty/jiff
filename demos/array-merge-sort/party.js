@@ -11,6 +11,17 @@ var mpc = require('./mpc');
 // Read Command line arguments
 var input = JSON.parse(process.argv[2]);
 
+// verify input has length power of 2
+var lg = input.length;
+while(lg > 1) {
+  if(lg % 2 !== 0) {
+    console.log("Input array length must be a power of 2!");
+    return;
+  }
+  
+  lg = lg / 2;
+}
+
 var party_count = process.argv[3];
 if(party_count == null) party_count = 2;
 else party_count = parseInt(party_count);

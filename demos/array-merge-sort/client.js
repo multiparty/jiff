@@ -41,6 +41,17 @@ function submit() {
       return;
     }
   }
+  
+  var lg = arr.length;
+  while(lg > 1) {    
+    if(lg % 2 !== 0) {
+      alert("Input array length must be a power of 2!");
+      return;
+    }
+    
+    lg = lg / 2;
+  }
+
 
   $("#processButton").attr("disabled", true);
   $("#output").append("<p>Starting...</p>");

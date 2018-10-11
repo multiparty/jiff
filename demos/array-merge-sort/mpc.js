@@ -23,7 +23,7 @@
 
   function oddEvenSort(a, lo, n) {
     if (n > 1) {
-      var m = n/2;
+      var m = Math.floor(n/2);
       oddEvenSort(a, lo, m);
       oddEvenSort(a, lo+m, m);
       oddEvenMerge(a, lo, n, 1);
@@ -46,6 +46,9 @@
   }
 
   function compareExchange(a, i, j) {
+    if (j >= a.length || i >= a.length) {
+      return;
+    }
 
     var x = a[i];
     var y = a[j];
@@ -55,17 +58,18 @@
   
     a[i] = (x.mult(c)).add((y.mult(d)));
     a[j] = (x.mult(d)).add((y.mult(c)));
-  
   }
 
   exports.compute = function (input, jiff_instance) {
+    try {
     if(jiff_instance == null) jiff_instance = saved_instance;
 
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
 
     // Share the arrays
-    jiff_instance.share_array(input, input.length).then(function(shares) {    
+    jiff_instance.share_array(input, input.length).then(function(shares) {
+      try {
       // sum all shared input arrays element wise
       var array = shares[1];
       for(var p = 2; p <= jiff_instance.party_count; p++) {
@@ -82,10 +86,16 @@
         allPromises.push(jiff_instance.open(array[i]));
     
       Promise.all(allPromises).then(function(results) {
-        console.log(results)
         final_deferred.resolve(results);
       });
+      } catch(err) {
+      console.log(err);
+      }
     });
+    
+    } catch(err) {
+    console.log(err);
+    }
 
     return final_promise;
   };

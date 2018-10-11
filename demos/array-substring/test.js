@@ -94,6 +94,10 @@ describe('Test', function() {
 
       var testResults = [];      
       (function one_test_case(j) {
+        if (jiff_instance.id === 1) {
+          console.log("\tStart ", j > partyInputs.length ? partyInputs.length : j, "/", partyInputs.length);
+        }
+
         if(j < partyInputs.length) {
           var promises = [];
           for(var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++)
