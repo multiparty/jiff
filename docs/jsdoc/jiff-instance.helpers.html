@@ -73,7 +73,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2753">line 2753</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3405">line 3405</a>
     </li></ul></dd>
     
 
@@ -162,7 +162,7 @@
             <td class="type">
             
                 
-<span class="param-type">array</span>
+<span class="param-type">Array</span>
 
 
             
@@ -185,7 +185,7 @@
             <td class="type">
             
                 
-<span class="param-type">array</span>
+<span class="param-type">Array</span>
 
 
             
@@ -236,7 +236,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2839">line 2839</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3493">line 3493</a>
     </li></ul></dd>
     
 
@@ -292,7 +292,7 @@
     
 
     
-    <h4 class="name" id="bLog"><span class="type-signature"></span>bLog<span class="signature">(value, base)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    <h4 class="name" id="bLog"><span class="type-signature"></span>bLog<span class="signature">(value, base<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
     
 
     
@@ -324,7 +324,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -349,7 +353,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">the number to find log for.</td>
@@ -372,10 +388,26 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">the base (2 by default). [optional]</td>
+            
+                <td class="default">
+                
+                    2
+                
+                </td>
+            
+
+            <td class="description last">the base (2 by default).</td>
         </tr>
 
     
@@ -416,7 +448,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2823">line 2823</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3477">line 3477</a>
     </li></ul></dd>
     
 
@@ -472,7 +504,7 @@
     
 
     
-    <h4 class="name" id="extended_gcd"><span class="type-signature"></span>extended_gcd<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    <h4 class="name" id="extended_gcd"><span class="type-signature"></span>extended_gcd<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {Array.&lt;number>}</span></h4>
     
 
     
@@ -555,7 +587,7 @@
 
             
 
-            <td class="description last">the modulos.</td>
+            <td class="description last">the mod.</td>
         </tr>
 
     
@@ -596,7 +628,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2804">line 2804</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3456">line 3456</a>
     </li></ul></dd>
     
 
@@ -623,7 +655,7 @@
 
         
 <div class="param-desc">
-    inverse of a mod b.
+    [inverse of a mod b, coefficient for a, coefficient for b].
 </div>
 
 
@@ -634,7 +666,7 @@
     </dt>
     <dd>
         
-<span class="param-type">number</span>
+<span class="param-type">Array.&lt;number></span>
 
 
     </dd>
@@ -735,7 +767,7 @@
 
             
 
-            <td class="description last">the modulos.</td>
+            <td class="description last">the mod.</td>
         </tr>
 
     
@@ -776,7 +808,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2761">line 2761</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3413">line 3413</a>
     </li></ul></dd>
     
 
@@ -832,7 +864,7 @@
     
 
     
-    <h4 class="name" id="pow_mod"><span class="type-signature"></span>pow_mod<span class="signature">(base, pow, m)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    <h4 class="name" id="pow_mod"><span class="type-signature"></span>pow_mod<span class="signature">(a, b, n)</span><span class="type-signature"> &rarr; {number}</span></h4>
     
 
     
@@ -876,7 +908,7 @@
 
         <tr>
             
-                <td class="name"><code>base</code></td>
+                <td class="name"><code>a</code></td>
             
 
             <td class="type">
@@ -899,7 +931,7 @@
 
         <tr>
             
-                <td class="name"><code>pow</code></td>
+                <td class="name"><code>b</code></td>
             
 
             <td class="type">
@@ -922,7 +954,7 @@
 
         <tr>
             
-                <td class="name"><code>m</code></td>
+                <td class="name"><code>n</code></td>
             
 
             <td class="type">
@@ -938,7 +970,7 @@
 
             
 
-            <td class="description last">the modulos.</td>
+            <td class="description last">the mod.</td>
         </tr>
 
     
@@ -979,7 +1011,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2777">line 2777</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3429">line 3429</a>
     </li></ul></dd>
     
 
@@ -1137,7 +1169,7 @@ Modify this to change the source of randomness and how it is generated.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2875">line 2875</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3529">line 3529</a>
     </li></ul></dd>
     
 
@@ -1243,7 +1275,7 @@ Modify this to change the source of randomness and how it is generated.
             <td class="type">
             
                 
-<span class="param-type"><a href="secret-share.html">secret-share</a></span>
+<span class="param-type"><a href="SecretShare.html">SecretShare</a></span>
 
 
             
@@ -1266,7 +1298,7 @@ Modify this to change the source of randomness and how it is generated.
             <td class="type">
             
                 
-<span class="param-type"><a href="secret-share.html">secret-share</a></span>
+<span class="param-type"><a href="SecretShare.html">SecretShare</a></span>
 
 
             
@@ -1317,7 +1349,7 @@ Modify this to change the source of randomness and how it is generated.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2862">line 2862</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3516">line 3516</a>
     </li></ul></dd>
     
 
@@ -1383,13 +1415,13 @@ Modify this to change the source of randomness and how it is generated.
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.sharing_schemes.html">sharing_schemes</a></li><li><a href="jiff.utils.html">utils</a></li><li><a href="jiff-instance.html">jiff-instance</a></li><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="jiff-instance.protocols.html">protocols</a></li><li><a href="secret-share.html">secret-share</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.sharing_schemes.html">sharing_schemes</a></li><li><a href="jiff.utils.html">utils</a></li><li><a href="jiff-instance.html">jiff-instance</a></li><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="jiff-instance.protocols.html">protocols</a></li><li><a href="SecretShare.html">SecretShare</a></li></ul><h3>Global</h3><ul><li><a href="global.html">if_else</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jun 25 2018 12:19:40 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Oct 11 2018 14:05:37 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

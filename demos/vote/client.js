@@ -49,9 +49,7 @@ function submit() {
   $("#sumButton").attr("disabled", true);
   $("#output").append("<p>Starting...</p>");
 
-  var promise = mpc.compute(inputs);
-  if(promise != null)
-    promise.then(handleResult, handleError);
+  mpc.compute(inputs).then(handleResult, handleError);
 }
 
 function handleResult(result) {
@@ -60,5 +58,5 @@ function handleResult(result) {
 }
 
 function handleError() {
-  console.log("Error in open_all");
+  console.log("Error in open_array");
 }

@@ -1,0 +1,52 @@
+{
+  "tests": [ "+", "-", "*", "|", "^", "cdivfac", "/Zp127", "/Zp2039" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "negativeNumber" ],
+    "generation": {
+      "file": "config/negativeNumber/generation.js",
+      "function": "generateConstantArithmeticInputs"
+    },
+    "computation": {
+      "file": "config/negativeNumber/computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 100,
+      "parallel": 50,
+      "options": {
+        "Zp": 15485867,
+        "party_count": 3
+      }
+    },
+    "cdivfac": {
+      "count": 20,
+      "parallel": 5,
+      "options": {
+        "Zp": 2039,
+        "party_count": 3
+      }
+    },
+    "/Zp127": {
+      "alias": "/",
+      "count": 8,
+      "parallel": 3,
+      "options": {
+        "Zp": 127,
+        "party_count": 3
+      }
+    },
+    "/Zp2039": {
+      "alias": "/",
+      "count": 5,
+      "parallel": 3,
+      "options": {
+        "Zp": 2039,
+        "party_count": 3
+      }
+    }
+  }
+}
