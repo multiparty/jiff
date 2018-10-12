@@ -12,7 +12,7 @@ if [ "$1" == "*" ]; then
                 if [[ "${CODE}" != "0" ]]; then
                   EXIT_CODE=$CODE
                 fi
-                sleep 2
+                sleep 5
             fi
         fi
     done
