@@ -2,32 +2,32 @@
  * Do not modify this file unless you have too
  * This file has UI handlers.
  */
-
+var Zp = 15485867;
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
   var party_count = 2;
 
   if(isNaN(party_count)) {
-    $("#output").append("<p class='error'>Party count must be a valid number!</p>");
+    $('#output').append('<p class="error">Party count must be a valid number!</p>');
     $('#connectButton').prop('disabled', false);
   } else {
-    var options = { party_count: party_count};
-    options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
-    options.onConnect = function() { $("#button").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
+    var options = { party_count: party_count, Zp: Zp };
+    options.onError = function(error) { $('#output').append('<p class="error">'+error+'</p>'); };
+    options.onConnect = function() { $('#button').attr('disabled', false); $('#output').append('<p>All parties Connected!</p>'); };
 
     var hostname = window.location.hostname.trim();
     var port = window.location.port;
     if(port == null || port == '')
-      port = "80";
-    if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
-      hostname = "http://" + hostname;
-    if(hostname.endsWith("/"))
+      port = '80';
+    if(!(hostname.startsWith('http://') || hostname.startsWith('https://')))
+      hostname = 'http://' + hostname;
+    if(hostname.endsWith('/'))
       hostname = hostname.substring(0, hostname.length-1);
-    if(hostname.indexOf(":") > -1 && hostname.lastIndexOf(":") > hostname.indexOf(":"))
-      hostname = hostname.substring(0, hostname.lastIndexOf(":"));
+    if(hostname.indexOf(':') > -1 && hostname.lastIndexOf(':') > hostname.indexOf(':'))
+      hostname = hostname.substring(0, hostname.lastIndexOf(':'));
 
-    hostname = hostname + ":" + port;
+    hostname = hostname + ':' + port;
     mpc.connect(hostname, computation_id, options);
   }
 }
@@ -42,7 +42,12 @@ function hashImage(imgData) {
     hash  = ((hash << 5) - hash) + chr;
     hash |= 0; // Convert to 32bit integer
   }
-  return hash;
+
+  if (hash < 0) {
+    hash = hash * -1;
+  }
+
+  return hash % Zp;
 }
 
 function submit() {
@@ -73,7 +78,8 @@ function submit() {
 
 
 function handleResult(result) {
-  var statement = result == 1 ? "the same" : "different";
-  $("#output").append("<p>The images are " + statement + "</p>");
-  $("#button").attr("disabled", false);
+  console.log(result);
+  var statement = result === 1 ? 'the same' : 'different';
+  $('#output').append('<p>The images are ' + statement + '</p>');
+  $('#button').attr('disabled', false);
 }

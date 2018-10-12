@@ -1,4 +1,4 @@
-// Chai 
+// Chai
 // var expect = require('chai').expect;
 var assert = require('chai').assert;
 
@@ -6,8 +6,8 @@ var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
 var party_count = 4;
-var parallelismDegree = 4; // Max number of test cases running in parallel
-var n = 10; // Number of test cases in total
+var parallelismDegree = 3; // Max number of test cases running in parallel
+var n = 8; // Number of test cases in total
 
 var minimumVotingOptions = 2;
 var maximumVotingOptions = 5;
@@ -30,7 +30,7 @@ function generateInputs(party_count) {
   for(var t = 0; t < n; t++) {
     // pick a random number of voting options
     var votingOptions = Math.floor(Math.random()*(maximumVotingOptions - minimumVotingOptions + 1) + minimumVotingOptions);
-    
+
     // pick a random vote
     for (var i = 1; i <= party_count; i++) {
       var vote = Math.floor(Math.random()*(votingOptions));
@@ -85,8 +85,12 @@ describe('Test', function() {
     var onConnect = function(jiff_instance) {
       var partyInputs = inputs[jiff_instance.id];
 
-      var testResults = [];      
+      var testResults = [];
       (function one_test_case(j) {
+        if (jiff_instance.id === 1) {
+          console.log("\tStart ", j > partyInputs.length ? partyInputs.length : j, "/", partyInputs.length);
+        }
+
         if(j < partyInputs.length) {
           var promises = [];
           for(var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++)
@@ -126,8 +130,8 @@ describe('Test', function() {
           done();
       })(0);
     };
-    
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect };
+
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: 5 };
     for(var i = 0; i < party_count; i++)
       mpc.connect("http://localhost:8080", "mocha-test", options);
   });

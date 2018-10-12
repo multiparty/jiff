@@ -47,7 +47,7 @@
       // Handle the results
       Promise.all(promises).then(function(results) {
         // convert each opened number to a character
-        // and add it to the final stringls
+        // and add it to the final strings
         var string = "";
         for(let i = 0; i < results.length; i++)
           string += String.fromCharCode(results[i]);

@@ -12,13 +12,13 @@ function connect() {
     $("#output").append("<p class='error'>Party count must be a valid number!</p>");
     $('#connectButton').prop('disabled', false);
   } else {
-    var options = { party_count: party_count};
+    var options = { party_count: party_count, Zp: 31};
     options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
     options.onConnect = function() { $("#button").attr("disabled", false); $("#output").append("<p>All parties Connected!</p>"); };
-    
+
     var hostname = window.location.hostname.trim();
     var port = window.location.port;
-    if(port == null || port == '') 
+    if(port == null || port == '')
       port = "80";
     if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
       hostname = "http://" + hostname;
@@ -47,7 +47,7 @@ function submit() {
     $("#output").append("<p class='error'>Please select a beer!</p>");
     return;
   }
-  
+
   $("#sumButton").attr("disabled", true);
   $("#output").append("<p>Starting...</p>");
 
