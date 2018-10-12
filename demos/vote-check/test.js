@@ -12,7 +12,7 @@ var n = 8; // Number of test cases in total
 
 var minimumVotingOptions = 2;
 var maximumVotingOptions = 5;
-var Zp = 31;
+var Zp = 13;
 
 // Parameters specific to this demo
 

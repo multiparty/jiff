@@ -9,7 +9,7 @@ var parallelismDegree = 5; // Max number of test cases running in parallel
 var n = 10;
 
 var showProgress = false;
-var Zp = null;
+var Zp = 251;
 
 // Parameters specific to this demo
 var maxStackLength = 10;

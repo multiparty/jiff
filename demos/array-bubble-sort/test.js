@@ -10,11 +10,11 @@ var parallelismDegree = 5; // Max number of test cases running in parallel
 var n = 15;
 
 // Parameters specific to this demo
-var maxElement = 31;
+var maxElement = 13;
 var maxLength = 10;
 
 var showProgress = true;
-var Zp = 31;
+var Zp = 13;
 
 /**
  * CHANGE THIS: Generate inputs for your tests

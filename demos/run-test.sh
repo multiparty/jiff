@@ -10,6 +10,7 @@ if [ "$1" == "*" ]; then
                 npm run-script test-demo -- "$i"
                 CODE=$?
                 EXIT_CODE=${EXIT_CODE}||${CODE}
+                sleep 2
             fi
         fi
     done

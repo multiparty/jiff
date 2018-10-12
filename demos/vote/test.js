@@ -125,7 +125,7 @@ describe('Test', function () {
 
           // assert results are accurate
           try {
-            assert.deepEqual(testResults[i].toString(), realResults[i].toString(), msg);
+            assert.deepEqual(testResults[i].toString(), (realResults[i]+1).toString(), msg);
           } catch (assertionError) {
             done(assertionError);
             done = function () { };
