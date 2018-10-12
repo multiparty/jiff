@@ -2,7 +2,7 @@
  * Do not modify this file unless you have too
  * This file has UI handlers.
  */
-
+// eslint-disable-next-line no-unused-vars
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
@@ -43,6 +43,7 @@ function connect() {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 function submit() {
   var input = parseInt($('#number').val());
 
