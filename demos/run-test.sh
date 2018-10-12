@@ -7,12 +7,12 @@ if [ "$1" == "*" ]; then
     for i in demos/*; do
         if [ -f "$i/test.js" ]; then
             if ! [[ "$i" =~ ^demos/(graphs.*|pca|routing|mpc-web|template)$ ]]; then
+                sleep 3
                 npm run-script test-demo -- "$i"
                 CODE=$?
                 if [[ "${CODE}" != "0" ]]; then
                   EXIT_CODE=$CODE
                 fi
-                sleep 5
             fi
         fi
     done
@@ -30,6 +30,7 @@ else
     echo "====================" >> "${logs}"
     node ${TESTDIR}/server.js >> "${logs}" &
 
+    sleep 3
 
     # Run test
     ./node_modules/.bin/mocha --full-trace --reporter spec ${TESTDIR}/test.js
