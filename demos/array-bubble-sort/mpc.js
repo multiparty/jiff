@@ -1,4 +1,4 @@
-(function(exports, node) {
+(function (exports, node) {
   var saved_instance;
 
   /**
@@ -8,9 +8,14 @@
     var opt = Object.assign({}, options);
     // Added options goes here
 
-    if(node)
+    if (node) {
+      // eslint-disable-next-line no-undef
       jiff = require('../../lib/jiff-client');
+      // eslint-disable-next-line no-undef,no-global-assign
+      $ = require('jquery-deferred');
+    }
 
+    // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     exports.saved_instance = saved_instance;
     // if you need any extensions, put them here
@@ -39,17 +44,19 @@
   }
 
   exports.compute = function (input, jiff_instance) {
-    if(jiff_instance == null) jiff_instance = saved_instance;
+    if (jiff_instance == null) {
+      jiff_instance = saved_instance;
+    }
 
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
 
     // Share the arrays
-    jiff_instance.share_array(input, input.length).then(function(shares) { 
+    jiff_instance.share_array(input, input.length).then(function (shares) {
       // sum all shared input arrays element wise
       var array = shares[1];
-      for(var p = 2; p <= jiff_instance.party_count; p++) {
-        for(var i = 0; i < array.length; i++) {
+      for (var p = 2; p <= jiff_instance.party_count; p++) {
+        for (var i = 0; i < array.length; i++) {
           array[i] = array[i].sadd(shares[p][i]);
         }
       }
@@ -59,14 +66,15 @@
 
       // Open the array
       var allPromises = [];
-      for (var i = 0; i < sorted.length; i++)
-        allPromises.push(jiff_instance.open(sorted[i]));
-    
-      Promise.all(allPromises).then(function(results) {
+      for (var k = 0; k < sorted.length; k++) {
+        allPromises.push(jiff_instance.open(sorted[k]));
+      }
+
+      Promise.all(allPromises).then(function (results) {
         final_deferred.resolve(results);
       });
     });
 
     return final_promise;
   };
-}((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
+}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));

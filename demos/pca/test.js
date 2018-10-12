@@ -1,11 +1,12 @@
-// Chai 
-var expect = require('chai').expect;
+// Chai
 var assert = require('chai').assert;
 
 var mpc = require('./mpc.js');
 var numeric = require('numeric/numeric-1.2.6');
 var math = require('mathjs');
 math.import(numeric, {wrap: true, silent: true});
+
+var showProgress = true;
 
 // Generic Testing Parameters
 var party_count = 2; // must be 2 parties
@@ -15,6 +16,7 @@ var n = 1; // Number of test cases in total
 // Parameters specific to this demo
 var maxElement = 10;
 var length = 3; // must be 3 dimensional arrays for now
+var Zp = null;
 
 /**
  * Generate sets of random vectors of size 3 for PCA.
@@ -25,14 +27,16 @@ var length = 3; // must be 3 dimensional arrays for now
  */
 function generateInputs(party_count) {
   var inputs = {};
-  for (var i = 1; i <= party_count; i++)
+  for (var i = 1; i <= party_count; i++) {
     inputs[i] = [];
+  }
 
   for (var t = 0; t < n; t++) {
     for (var p = 1; p <= party_count; p++) {
       var arr = [];
-      while (arr.length < length)
-        arr.push(Math.floor(Math.random() * maxElement) + 1); // avoid zero
+      while (arr.length < length) {
+        arr.push(Math.floor(Math.random() * maxElement) + 1);
+      } // avoid zero
 
       inputs[p][t] = arr;
     }
@@ -58,7 +62,7 @@ function correspondingEig(eigenvalues, scatter_eig) {
 
 // computing aggregate mean vector for PCA
 function computeMean(aggregate, party_count) {
-  result = [];
+  var result = [];
   for (var i = 0; i < aggregate.length; i++) {
     result.push(aggregate[i] / party_count);
   }
@@ -67,7 +71,7 @@ function computeMean(aggregate, party_count) {
 
 // element-wise addition of arrays of the same length
 function addArrays(arr1, arr2) {
-  result = [];
+  var result = [];
   for (var i = 0; i < arr1.length; i++) {
     result.push(arr1[i] + arr2[i]);
   }
@@ -76,7 +80,7 @@ function addArrays(arr1, arr2) {
 
 // element-wise subtraction of arrays of the same length
 function subtractArrays(arr1, arr2) {
-  result = [];
+  var result = [];
   for (var i = 0; i < arr1.length; i++) {
     result.push(arr1[i] - arr2[i]);
   }
@@ -98,8 +102,8 @@ function computeResults(inputs) {
     var party1 = inputs[1][j].slice();
     var party2 = inputs[2][j].slice();
 
-    console.log("Party 1: ", inputs[1][j].slice());
-    console.log("Party 2: ", inputs[2][j].slice());
+    console.log('Party 1: ', inputs[1][j].slice());
+    console.log('Party 2: ', inputs[2][j].slice());
     // PERFORM PCA IN THE OPEN
     // Add vectors to create shared vector V
     var aggregate_vector = addArrays(party1, party2);
@@ -120,9 +124,13 @@ function computeResults(inputs) {
     // Compute eigenvectors and eigenvalues of scatter matrix, which already happens in the open
     try {
       var scatter_eig = numeric.eig(scatter); // can be undefined!
-    } catch (err) { console.log(err) }
+    } catch (err) {
+      console.log(err)
+    }
 
-    var sorted_eigenvalues = scatter_eig.lambda.x.sort((a,b) => b - a).slice(0, 2);
+    var sorted_eigenvalues = scatter_eig.lambda.x.sort(function (a, b) {
+      return (b - a).slice(0, 2);
+    });
 
     // Get corresponding eigenvectors, related to eigenvalues
     var corresponding_largest_eigenvectors = correspondingEig(sorted_eigenvalues, scatter_eig);
@@ -136,42 +144,40 @@ function computeResults(inputs) {
   return results;
 }
 
+
 /**
- * Perform tests.
+ * Do not change unless you have to.
  */
-describe('Test', function() {
+// eslint-disable-next-line no-undef
+describe('Test', function () {
   this.timeout(0); // Remove timeout
 
-  it('Exhaustive', function(done) {
+  // eslint-disable-next-line no-undef
+  it('Exhaustive', function (done) {
     var count = 0;
 
     var inputs = generateInputs(party_count);
     var realResults = computeResults(inputs);
-    console.log("Done computing real results.")
 
-    var onConnect = function(jiff_instance) {
-      console.log("Connected to JIFF.")
+    var onConnect = function (jiff_instance) {
       var partyInputs = inputs[jiff_instance.id];
 
-      var testResults = [];      
+      var testResults = [];
       (function one_test_case(j) {
-        if(j < partyInputs.length) {
+        if (jiff_instance.id === 1 && showProgress) {
+          console.log('\tStart ', j > partyInputs.length ? partyInputs.length : j, '/', partyInputs.length);
+        }
+
+        if (j < partyInputs.length) {
           var promises = [];
-          for(var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++)
-            console.log("Computing test case under MPC...")
-            promises.push(mpc.compute(partyInputs[j+t], function(){}, function () {}, jiff_instance));
+          for (var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++) {
+            promises.push(mpc.compute(partyInputs[j + t], jiff_instance));
+          }
 
-            promises.then(function(v) {
-              console.log("the result of PCA is:");
-              console.log(v);
-            });
-
-            console.log("Promise pushed.")
-
-          Promise.all(promises).then(function(parallelResults) {
-            for(var t = 0; t < parallelResults.length; t++)
+          Promise.all(promises).then(function (parallelResults) {
+            for (var t = 0; t < parallelResults.length; t++) {
               testResults.push(parallelResults[t]);
-              console.log("Pushed parallel results.")
+            }
 
             one_test_case(j+parallelismDegree);
           });
@@ -179,33 +185,35 @@ describe('Test', function() {
           return;
         }
 
-        console.log("Checking for equality...")
         // If we reached here, it means we are done
         count++;
         for (var i = 0; i < testResults.length; i++) {
           // construct debugging message
-          var ithInputs = inputs[1][i] + "";
-          for (var j = 2; j <= party_count; j++)
-            ithInputs += "," + inputs[j][i];
-          var msg = "Party: " + jiff_instance.id + ". inputs: [" + ithInputs + "]";
+          var ithInputs = inputs[1][i] + '';
+          for (var p = 2; p <= party_count; p++) {
+            ithInputs += ',' + inputs[p][i];
+          }
+          var msg = 'Party: ' + jiff_instance.id + '. inputs: [' + ithInputs + ']';
 
           // assert results are accurate
           try {
             assert.deepEqual(testResults[i], realResults[i], msg);
-          } catch(assertionError) {
+          } catch (assertionError) {
             done(assertionError);
-            done = function(){}
+            done = function () { };
           }
         }
 
         jiff_instance.disconnect();
-        if (count == party_count)
+        if (count === party_count) {
           done();
+        }
       })(0);
     };
-    
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect };
-    for(var i = 0; i < party_count; i++)
-      mpc.connect("http://localhost:8080", "mocha-test", options);
+
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp };
+    for (var i = 0; i < party_count; i++) {
+      mpc.connect('http://localhost:8080', 'mocha-test', options);
+    }
   });
 });

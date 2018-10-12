@@ -2,6 +2,7 @@
  * Do not modify this file unless you have too
  * This file has UI handlers.
  */
+// eslint-disable-next-line no-unused-vars
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
@@ -39,6 +40,7 @@ function connect() {
   mpc.connect(hostname, computation_id, options);
 }
 
+// eslint-disable-next-line no-unused-vars
 function submitArray() {
   var arr = JSON.parse($('#inputArray').val());
   for (var i = 0; i < arr.length; i++) {
@@ -57,6 +59,7 @@ function submitArray() {
   });
 }
 
+// eslint-disable-next-line no-unused-vars
 function submitElement() {
   var element = $('#inputElement').val();
   element = parseInt(element);
