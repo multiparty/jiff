@@ -9,7 +9,9 @@ if [ "$1" == "*" ]; then
             if ! [[ "$i" =~ ^demos/(graphs.*|pca|routing|mpc-web|template)$ ]]; then
                 npm run-script test-demo -- "$i"
                 CODE=$?
-                EXIT_CODE=${EXIT_CODE}||${CODE}
+                if [[ "${CODE}" != "0" ]]; then
+                  EXIT_CODE=$CODE
+                fi
                 sleep 2
             fi
         fi
