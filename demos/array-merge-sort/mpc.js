@@ -58,11 +58,9 @@
     var x = a[i];
     var y = a[j];
 
-    var c = x.lt(y);
-    var d = c.not();
-
-    a[i] = (x.mult(c)).add((y.mult(d)));
-    a[j] = (x.mult(d)).add((y.mult(c)));
+    var cmp = x.lt(y);
+    a[i] = cmp.if_else(x, y);
+    a[j] = cmp.if_else(y, x);
   }
 
   exports.compute = function (input, jiff_instance) {
