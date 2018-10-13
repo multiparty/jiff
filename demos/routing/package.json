@@ -8,12 +8,14 @@
   "author": "Kinan Dak Albab <babman@bu.edu>, Rawane Issa <ra1issa@bu.edu",
   "license": "MIT",
   "dependencies": {
+    "bignumber.js": "^5.0.0",
+    "bn.js": "^4.4.0",
     "elliptic": "^6.4.0",
     "express": "^4.16.3",
-    "bignumber.js": "^5.0.0",
     "jquery-deferred": "^0.3.1",
     "libsodium-wrappers": "^0.7.2",
-    "socket.io": "^2.0.2",
-    "bn.js": "^4.4.0"
+    "libsodium-wrappers-sumo": "^0.7.3",
+    "oprf": "0.0.12",
+    "socket.io": "^2.0.2"
   }
 }

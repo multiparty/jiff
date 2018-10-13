@@ -2,6 +2,7 @@ language: node_js
 node_js:
 - '10'
 env:
+- DEMOS="TRUE"
 - TEST_NAME='base' TEST_SUITE='-parallel'
 - TEST_NAME='bigNumber' TEST_SUITE='-parallel'
 - TEST_NAME='negativeNumber' TEST_SUITE='-parallel'
@@ -18,7 +19,7 @@ env:
 - TEST_NAME='fixedpoint|negativeNumber' TEST_SUITE='comparison'
 script:
 - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
-- npm run test -- "$TEST_NAME" "$TEST_SUITE"
+- if [ "$DEMOS" == "TRUE" ]; then npm run-script test-demo -- \*; else npm run test -- "$TEST_NAME" "$TEST_SUITE"; fi
 - kill %1
 cache:
   directories:

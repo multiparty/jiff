@@ -1,4 +1,4 @@
-(function(exports, node) {
+(function (exports, node) {
   var saved_instance;
 
   /**
@@ -8,9 +8,12 @@
     var opt = Object.assign({}, options);
     // Added options goes here
 
-    if(node)
+    if (node) {
+      // eslint-disable-next-line no-undef
       jiff = require('../../lib/jiff-client');
+    }
 
+    // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     // if you need any extensions, put them here
 
@@ -21,15 +24,14 @@
    * The MPC computation
    */
   exports.compute = function (input, jiff_instance) {
-    if(jiff_instance == null) jiff_instance = saved_instance;
+    if (jiff_instance == null) {
+      jiff_instance = saved_instance;
+    }
 
     var shares = jiff_instance.share(input);
 
     shares = shares[1].mult(shares[2]);
 
     return shares.open();
-    
-    // Return a promise to the final output(s)
-    /// return jiff_instance.open(result);
   };
-}((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
+}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
