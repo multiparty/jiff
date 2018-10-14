@@ -4,48 +4,51 @@
  * and calls the appropriate initialization and MPC protocol from ./mpc.js
  */
 
-console.log('Command line arguments: <input> [<party count> [<computation_id> [<party id>]]]]');
+console.log('Command line arguments: < party id: 1 for polygon, 2 for point> <input> [<computation_id>]');
+console.log('<<>> For polygon, input must look like: [x1,y1,x2,y3,...]');
+console.log('<<>> For point, input must look like: [x0,y0]');
+console.log('<<>> all points coordinates must be between -50 and 50.');
+console.log('<<>> Polygons with sides with very high or infinite slope are not acceptable.');
 
+var geometry = require('./geometry.js');
 var mpc = require('./mpc');
 
 // Read Command line arguments
-var input = JSON.parse(process.argv[2]);
-
-var party_count = process.argv[3];
-if (party_count == null) {
-  party_count = 2;
-} else {
-  party_count = parseInt(party_count);
-}
-
+var party_id = parseInt(process.argv[2]);
+var input = JSON.parse(process.argv[3]);
 var computation_id = process.argv[4];
 if (computation_id == null) {
   computation_id = 'test';
 }
 
-var party_id = process.argv[5];
-if (party_id != null) {
-  party_id = parseInt(party_id, 10);
+var formatted = [];
+for (var i = 0; i < input.length; i+=2) {
+  formatted.push({x: input[i], y: input[i+1] });
 }
+input = formatted;
 
 // JIFF options
-var options = {party_count: party_count, party_id: party_id};
+var options = {
+  party_count: 2,
+  party_id: party_id,
+  Zp: '1000000000100011',
+  integer_digits: 3,
+  decimal_digits: 5
+};
 options.onConnect = function (jiff_instance) {
-  var promise;
-  if (jiff_instance.id === 1) {
-    promise = mpc.computePolygon(input);
+  if (party_id === 1) {
+    input = geometry.convexHull(input);
   } else {
-    promise = mpc.computePoint(input);
+    input = input[0];
   }
 
-
-  promise.then(function (v) {
-    if (v === 1) {
+  mpc.compute(input).then(function (v) {
+    if (v) {
       console.log('Point is inside.');
     } else {
       console.log('Point is outside.');
     }
-    jiff_instance.disconnect();
+    jiff_instance.disconnect(true);
   });
 };
 
