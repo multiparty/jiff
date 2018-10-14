@@ -41,7 +41,7 @@ options.onConnect = function (jiff_instance) {
       }
     }
 
-    jiff_instance.disconnect();
+    jiff_instance.disconnect(true);
   });
 };
 

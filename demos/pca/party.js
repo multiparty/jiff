@@ -46,7 +46,7 @@ options.onConnect = function (jiff_instance) {
   promise.then(function (v) {
     console.log('the result of PCA is:');
     console.log(v);
-    jiff_instance.disconnect();
+    jiff_instance.disconnect(true);
   });
 };
 

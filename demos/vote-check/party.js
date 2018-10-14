@@ -34,7 +34,7 @@ var options = {party_count: party_count, party_id: party_id, Zp: 31 };
 options.onConnect = function (jiff_instance) {
   mpc.compute(input).then(function (v) {
     console.log(v);
-    jiff_instance.disconnect();
+    jiff_instance.disconnect(true);
   }, function (e) {
     console.log(e);
   });

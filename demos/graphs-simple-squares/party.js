@@ -42,7 +42,7 @@ options.onConnect = function (jiff_instance) {
 
   promise.then(function ({m, b}) {
     console.info('Slope:', m, 'Y-Intercept:', b);
-    jiff_instance.disconnect();
+    jiff_instance.disconnect(true);
   });
 };
 

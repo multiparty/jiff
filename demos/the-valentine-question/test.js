@@ -97,7 +97,7 @@ describe('Test', function () {
           }
         }
 
-        jiff_instance.disconnect();
+        jiff_instance.disconnect(true);
         if (count === party_count) {
           done();
         }
