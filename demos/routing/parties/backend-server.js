@@ -182,7 +182,7 @@ function finish_query(query_number) {
     return;
   }
 
-  // Revarruct the garbled source and destination
+  // Reconstruct the garbled source and destination
   var sourceShares = [];
   var destShares = [];
   for (var i = 0; i < query.length; i++) {
@@ -190,8 +190,8 @@ function finish_query(query_number) {
     destShares.push(query[i].dest);
   }
 
-  var source = multiplicative_revarruct(sourceShares);
-  var dest = multiplicative_revarruct(destShares);
+  var source = multiplicative_reconstruct(sourceShares);
+  var dest = multiplicative_reconstruct(destShares);
 
   // Error: garbled source and destination do not exist in table!
   if (encrypted_table[source] == null || encrypted_table[source][dest] == null) {
@@ -230,7 +230,7 @@ function multiplicative_share(point) {
 }
 
 // first share is a point, then a bunch of scalar multiplicative shares of an inverse
-function multiplicative_revarruct(shares) {
+function multiplicative_reconstruct(shares) {
   var total_mask = new BN(1);
   for (var i = 1; i < shares.length; i++) {
     total_mask = total_mask.mul(new BN(shares[i]));

@@ -158,7 +158,7 @@ describe('Test', function () {
         // If we reached here, it means we are done
         count++;
         for (var i = 0; i < testResults.length; i++) {
-          // varruct debugging message
+          // construct debugging message
           var ithInputs = inputs[1][i] + '';
           for (var p = 2; p <= party_count; p++) {
             ithInputs += ',' + inputs[p][i];
