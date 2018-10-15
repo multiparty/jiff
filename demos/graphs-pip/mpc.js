@@ -49,6 +49,7 @@
     }
 
     var deferred = $.Deferred();
+    var magnitude = jiff_instance.helpers.magnitude(jiff_instance.decimal_digits);
 
     // Pre sharing local organization
     var hullX, hullY, sidesM, sidesP, sidesMInv;
@@ -102,15 +103,29 @@
       // if line intersects that side, then it must intersect one (or two) other sides connecting to that side.
       // so the count will never be 1. The only possibility is that the point is on that side.
 
+      // Optimization:
+      // Do not divide during smult to reduce precision, the result of the multiplication
+      // is only used for comparisons. This speeds up the computation. However, we must be careful
+      // because we cannot use strict equality all the time, as we must take into account fixedpoint accuracy
+      // errors.
+      // Instead of checking value == pointY, we must check: value >= pointY*mag && value <= (pointY*mag)+(mag-1)
+      // i.e. value * mag \in [pointY * mag, (pointY + 1) * mag)
+      var pointYmin = pointY.cmult(magnitude);
+      var pointYmax = pointYmin.cadd(magnitude.minus(1));
+
       // Check if point is one a side: plug coordinate in equation of line
       var onSomeSide = null;
       for (var i = 0; i < sidesM.length; i++) {
         var m = sidesM[i], p = sidesP[i];
-        var Y = m.smult(pointX).sadd(p);
-        var onThisSide = Y.seq(pointY);
+        var Y = m.smult(pointX, null, false);
+        Y = Y.sadd(p.cmult(magnitude));
+
+        var eq1 = Y.sgteq(pointYmin);
+        var eq2 = Y.slteq(pointYmax);
+        var onThisSide = eq1.if_else(eq2, 0); // optimized and
+
         onSomeSide = onSomeSide == null ? onThisSide : onSomeSide.sadd(onThisSide);
       }
-      onSomeSide = onSomeSide.cgt(1);
 
       // Check if line drawn from point to *the right* intersects a single side
       var intersections = null;
@@ -126,8 +141,9 @@
         var cond2 = pointY.slteq(maxY);
         var intersects = cond1.if_else(cond2, 0); // optimized and.
 
-        var interX = x1.sadd(sidesMInv[j].smult(pointY.ssub(y1)));
-        var toTheRight = interX.sgteq(pointX);
+        var interX = sidesMInv[j].smult(pointY.ssub(y1), null, false);
+        interX = interX.sadd(x1.cmult(magnitude));
+        var toTheRight = interX.sgteq(pointX.cmult(magnitude));
 
         var and = toTheRight.if_else(intersects, 0); // optimized and.
         intersections = intersections == null ? and : intersections.sadd(and);
