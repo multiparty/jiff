@@ -52,14 +52,24 @@
     var magnitude = jiff_instance.helpers.magnitude(jiff_instance.decimal_digits);
 
     // Pre sharing local organization
-    var hullX, hullY, sidesM, sidesP, sidesMInv;
+    var hullX, hullY, sidesMinX, sidesMinY, sidesM, sidesP, sidesMInv;
     var pointX, pointY;
     if (jiff_instance.id === 1) { //polygon
       hullX = [];
       hullY = [];
+      sidesMinX = [];
+      sidesMinY = [];
       for (var k = 0; k < input.length; k++) {
-        hullX.push(input[k].x);
-        hullY.push(input[k].y);
+        var nK = (k + 1) % input.length;
+        // eslint-disable-next-line no-undef
+        var x1 = new BigNumber(input[k].x), x2 = input[nK].x;
+        // eslint-disable-next-line no-undef
+        var y1 = new BigNumber(input[k].y), y2 = input[nK].y;
+
+        hullX[k] = x1;
+        hullY[k] = y1;
+        sidesMinX[k] = x1.lt(x2) ? x1 : x2;
+        sidesMinY[k] = y1.lt(y2) ? y1 : y2;
       }
 
       sidesM = [];
@@ -83,15 +93,19 @@
     pointY = jiff_instance.share(pointY, 2, [1, 2], [2])[2];
     var promise1 = jiff_instance.share_array(hullX, null, 2, [1, 2], [1]);
     var promise2 = jiff_instance.share_array(hullY, null, 2, [1, 2], [1]);
-    var promise3 = jiff_instance.share_array(sidesM, null, 2, [1, 2], [1]);
-    var promise4 = jiff_instance.share_array(sidesP, null, 2, [1, 2], [1]);
-    var promise5 = jiff_instance.share_array(sidesMInv, null, 2, [1, 2], [1]);
-    Promise.all([promise1, promise2, promise3, promise4, promise5]).then(function (arrs) {
+    var promise3 = jiff_instance.share_array(sidesMinX, null, 2, [1, 2], [1]);
+    var promise4 = jiff_instance.share_array(sidesMinY, null, 2, [1, 2], [1]);
+    var promise5 = jiff_instance.share_array(sidesM, null, 2, [1, 2], [1]);
+    var promise6 = jiff_instance.share_array(sidesP, null, 2, [1, 2], [1]);
+    var promise7 = jiff_instance.share_array(sidesMInv, null, 2, [1, 2], [1]);
+    Promise.all([promise1, promise2, promise3, promise4, promise5, promise6, promise7]).then(function (arrs) {
       hullX = arrs[0][1];
       hullY = arrs[1][1];
-      sidesM = arrs[2][1];
-      sidesP = arrs[3][1];
-      sidesMInv = arrs[4][1];
+      sidesMinX = arrs[2][1];
+      sidesMinY = arrs[3][1];
+      sidesM = arrs[4][1];
+      sidesP = arrs[5][1];
+      sidesMInv = arrs[6][1];
 
       // Computation:
       // Draw a line parallel to x passing through pointY, check how many
@@ -124,28 +138,34 @@
         var eq2 = Y.slteq(pointYmax);
         var onThisSide = eq1.if_else(eq2, 0); // optimized and
 
+        var minX = sidesMinX[i];
+        var maxX = hullX[i].sadd(hullX[(i+1) % hullX.length]).ssub(minX);
+        var cond1 = pointX.sgteq(minX);
+        var cond2 = pointX.slteq(maxX);
+        var and = cond1.if_else(cond2, 0);
+        onThisSide = onThisSide.if_else(and, 0);
+
         onSomeSide = onSomeSide == null ? onThisSide : onSomeSide.sadd(onThisSide);
       }
 
       // Check if line drawn from point to *the right* intersects a single side
       var intersections = null;
       for (var j = 0; j < sidesM.length; j++) {
-        var x1 = hullX[j], y1 = hullY[j];
-        var y2 = hullY[(j + 1) % sidesM.length];
+        var x1 = sidesMinX[j];
+        var y1 = sidesMinY[j];
 
-        var cmp = y1.slt(y2);
-        var minY = cmp.if_else(y1, y2);
-        var maxY = cmp.if_else(y2, y1);
+        var minY = sidesMinY[j];
+        var maxY = y1.sadd(hullY[(j+1) % hullY.length]).ssub(minY);
 
-        var cond1 = pointY.sgteq(minY);
-        var cond2 = pointY.slteq(maxY);
+        cond1 = pointY.sgteq(minY);
+        cond2 = pointY.slteq(maxY);
         var intersects = cond1.if_else(cond2, 0); // optimized and.
 
         var interX = sidesMInv[j].smult(pointY.ssub(y1), null, false);
         interX = interX.sadd(x1.cmult(magnitude));
         var toTheRight = interX.sgteq(pointX.cmult(magnitude));
 
-        var and = toTheRight.if_else(intersects, 0); // optimized and.
+        and = toTheRight.if_else(intersects, 0); // optimized and.
         intersections = intersections == null ? and : intersections.sadd(and);
       }
 

@@ -1,8 +1,8 @@
 // Limits of the graph and inputs
-var minX = -50;
-var maxX = 50;
-var minY = -50;
-var maxY = 50;
+var minX = -25;
+var maxX = 25;
+var minY = -25;
+var maxY = 25;
 
 // Stores the coordinates of the vertices
 var vertices = [];
@@ -70,9 +70,9 @@ function connect() {
   var options = {
     party_count: party_count,
     party_id: party_id,
-    Zp: '1000000000100011',
+    Zp: '2147483647',
     integer_digits: 3,
-    decimal_digits: 5
+    decimal_digits: 3
   };
   options.onError = function (error) {
     $('#output').append("<p class='error'>"+error+'</p>');

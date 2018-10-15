@@ -7,7 +7,7 @@
 console.log('Command line arguments: < party id: 1 for polygon, 2 for point> <input> [<computation_id>]');
 console.log('<<>> For polygon, input must look like: [x1,y1,x2,y3,...]');
 console.log('<<>> For point, input must look like: [x0,y0]');
-console.log('<<>> all points coordinates must be between -50 and 50.');
+console.log('<<>> all points coordinates must be between -25 and 25.');
 console.log('<<>> Polygons with sides with very high or infinite slope are not acceptable.');
 
 var geometry = require('./geometry.js');
@@ -31,9 +31,9 @@ input = formatted;
 var options = {
   party_count: 2,
   party_id: party_id,
-  Zp: '1000000000100011',
+  Zp: '2147483647',
   integer_digits: 3,
-  decimal_digits: 5
+  decimal_digits: 3
 };
 options.onConnect = function (jiff_instance) {
   if (party_id === 1) {
@@ -48,7 +48,7 @@ options.onConnect = function (jiff_instance) {
     } else {
       console.log('Point is outside.');
     }
-    jiff_instance.disconnect(true);
+    jiff_instance.disconnect(true, true);
   });
 };
 
