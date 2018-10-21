@@ -1,4 +1,4 @@
-(function(exports, node) {
+(function (exports, node) {
   var saved_instance;
 
   /**
@@ -8,12 +8,14 @@
     var opt = Object.assign({}, options);
     // Added options goes here
 
-    if(node)
+    if (node) {
+      // eslint-disable-next-line no-undef
       jiff = require('../../lib/jiff-client');
-      jiff_BigNumber = require('../../lib/ext/jiff-client-bignumber');
+    }
 
+    // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
-    saved_instance = jiff_BigNumber.make_jiff(saved_instance);
+    // if you need any extensions, put them here
 
     return saved_instance;
   };
@@ -21,27 +23,48 @@
   /**
    * The MPC computation
    */
-  exports.compute = function (received_shares, aggregate, threshold_val, jiff_instance) {
-    if(jiff_instance == null) jiff_instance = saved_instance;
+  exports.compute = function (input, jiff_instance) {
+    if (jiff_instance == null) {
+      jiff_instance = saved_instance;
+    }
 
-    // Operate on received shares.
-    var result = received_shares[0].cgteq(threshold_val);
+    // inputs
+    var threshold = input.threshold;
+    var lower_count = input.lower_count;
+    input = input.value;
 
-    if (aggregate) {
-      // Compute the total number of lower parties satisfying the threshold.
-      for (var i = 1; i < received_shares.length; i++) {
-        result = result.sadd(received_shares[i].cgteq(threshold_val)); // returns 0 if less than threshold
-      }
-    } else {
-      // Compute if all of lower parties satisfy the threshold.
-      for (var j = 1; j < received_shares.length; j++) {
-        result = result.smult(received_shares[j].cgteq(threshold_val));
+    // sets of parties by role
+    var id = jiff_instance.id;
+    var upper_parties = [];
+    var lower_parties = [];
+    var all_parties = [];
+    for (var i = 1; i <= jiff_instance.party_count; i++) {
+      all_parties.push(i);
+      if (i <= lower_count) {
+        lower_parties.push(i);
+      } else {
+        upper_parties.push(i);
       }
     }
 
-    // Return a promise to the final output(s)
-    return jiff_instance.open(result);
+    // computation
 
+    if (lower_parties.indexOf(id) > -1) {
+      // I am a lower party, I have an input that I submit to the upper parties,
+      // and they send me back a result at the end.
+      jiff_instance.share(input, 1, upper_parties, lower_parties);
+      return jiff_instance.receive_open(upper_parties, upper_parties.length);
+    } else {
+      // I am an upper party, I have no input, but I receive all the lower parties inputs,
+      // I count how many of these inputs are above the threshold.
+      var shares = jiff_instance.share(input, upper_parties.length, upper_parties, lower_parties);
+      var result = shares[1].cgt(threshold);
+
+      for (var p = 2; p <= lower_count; p++) {
+        result = result.sadd(shares[p].cgt(threshold));
+      }
+
+      return result.open();
+    }
   };
-
-}((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
+}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
