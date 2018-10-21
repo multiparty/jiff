@@ -3,6 +3,8 @@
     // eslint-disable-next-line no-undef
     BigNumber = require('bignumber.js');
   }
+  // eslint-disable-next-line no-undef
+  var ZERO = new BigNumber('0.01');
 
   exports.toBigNumber = function (points) {
     var result = [];
@@ -31,7 +33,7 @@
   exports.convexHull = function (points) {
     points = points.slice(); // copy of points
 
-    if (points.length < 4) {
+    if (points.length < 3) {
       return points;
     }
 
@@ -97,6 +99,10 @@
 
       var p1 = hull[i];
       var p2 = hull[j];
+
+      if (p1.x.minus(p2.x).abs().lte(ZERO)) {
+        throw new Error('Convex Hull Side has slope with absolute value <= 0.01');
+      }
 
       var m = p1.y.minus(p2.y).div(p1.x.minus(p2.x));
       var p = p1.y.minus(m.times(p1.x));
