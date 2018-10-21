@@ -6,6 +6,7 @@ jiffclient.vim
 # Icon must end with two \r
 Icon
 
+jiffclient.vim
 
 # Thumbnails
 ._*
@@ -176,3 +177,5 @@ typings/
 
 # dotenv environment variables file
 .env
+
+logs/

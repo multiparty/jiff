@@ -9,30 +9,16 @@
     // Added options goes here
 
     if (node) {
+      // eslint-disable-next-line no-undef
       jiff = require('../../lib/jiff-client');
     }
 
+    // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     // if you need any extensions, put them here
 
     return saved_instance;
   };
-
-
-  function displayResult(result) { // result is a boolean
-    var h = document.createElement('h6');
-    var t;
-    if (result) {
-      t = document.createTextNode('Pictures are the same');
-    } else {
-      t = document.createTextNode('Pictures are different');
-    }
-    h.appendChild(t);
-    var resultDiv = document.getElementById('result');
-    resultDiv.appendChild(h);
-    $('#canvas').show();
-    $('#compareBtn').attr('disabled', false);
-  }
 
   /**
    * The MPC computation
@@ -45,7 +31,7 @@
     // The MPC implementation should go *HERE*
     var shares = jiff_instance.share(input); // Both parties will execute this instruction to secret share their image's hashes
 
-    var equal = shares[1].eq(shares[2]); // Check if the hash from party 1 is equal to hash from party 2
+    var equal = shares[1].seq(shares[2]); // Check if the hash from party 1 is equal to hash from party 2
     // Return a promise to the final output(s)
     return jiff_instance.open(equal);
 

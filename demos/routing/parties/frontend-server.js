@@ -8,18 +8,21 @@
 
 // Jiff library
 var jiff_client = require('../../../lib/jiff-client');
-$ = require('jquery-deferred');
-const _sodium = require('libsodium-wrappers-sumo');
-const _oprf = require('oprf');
-const BN = require('bn.js');
 
-const prime = new BN(2).pow(new BN(252)).add(new BN('27742317777372353535851937790883648493'));
+var _sodium = require('libsodium-wrappers-sumo');
+var _oprf = require('oprf');
+var BN = require('bn.js');
+
+// eslint-disable-next-line no-global-assign
+$ = require('jquery-deferred');
+
+var prime = new BN(2).pow(new BN(252)).add(new BN('27742317777372353535851937790883648493'));
 
 var oprf;
 
-const SRC = 0;
-const DEST = 1;
-const NEXT_HOP = 2;
+var SRC = 0;
+var DEST = 1;
+var NEXT_HOP = 2;
 
 /*
  * Global variables and counter,
@@ -34,11 +37,6 @@ var prf_keys_map = [];
 var response_map = {};
 // Maps query numbers to recomputation numbers
 var query_to_recomputation_numbers = {};
-// handles the case where queries arrive later than communication between servers
-var deferreds = {};
-var promises = {};
-// Inverse of 2 according to the used Zp
-var inv2;
 
 // Read configurations
 var config = require('./config.json');
@@ -51,41 +49,39 @@ var options = {
   party_count: frontends.length + backends.length,
   onConnect: startServer
 };
-var jiff_instance = jiff_client.make_jiff("http://localhost:3000", 'shortest-path-1', options);
+var jiff_instance = jiff_client.make_jiff('http://localhost:3000', 'shortest-path-1', options);
 
 function startServer() {
-  // Compute inverse of two mod Zp (will be used later in evaluatePRF)
-  inv2 = jiff_instance.helpers.extended_gcd(2, jiff_instance.Zp)[0];
+  // Listen to responses to queries from backend
+  jiff_instance.listen('preprocess', handle_preprocess);
 
   // Listen to responses to queries from backend
-  jiff_instance.listen("preprocess", handle_preprocess);
-
-  // Listen to responses to queries from backend
-  jiff_instance.listen("update", function(_, message) {
+  jiff_instance.listen('update', function (_, message) {
     current_recomputation_count = JSON.parse(message).recompute_number;
-    if(current_recomputation_count - 3 >= 0)
+    if (current_recomputation_count - 3 >= 0) {
       prf_keys_map[current_recomputation_count - 3] = null;
+    }
   });
 
   // Setup express server to handle client queries
   var express = require('express');
   var app = express();
 
-  app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.header("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control");
+  app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'OPTIONS, GET, POST');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control');
     next();
   });
 
   app.get('/query/:number/:source/:destination', handle_query);
 
   // Listen to responses to queries from backend
-  jiff_instance.listen("finish_query", finalize_query);
+  jiff_instance.listen('finish_query', finalize_query);
 
   // Start listening on port 9111
-  app.listen(9110 + options.party_id, function() {
+  app.listen(9110 + options.party_id, function () {
     console.log('frontend server up and listening on '+(9110 + options.party_id));
   });
 
@@ -94,20 +90,21 @@ function startServer() {
 }
 
 // performs the OPRF with a table lookup for speed up
-const saltDict = {};
+var saltDict = {};
 function saltPoint(point, scalarKey) {
-  const index = JSON.stringify(point);
-  const scalarString = scalarKey.toString();
-  if(saltDict[scalarString][index] == null)
-    saltDict[scalarString][index] = oprf.saltInput(point, scalarString);
+  var index = JSON.stringify(point);
+  var scalarString = scalarKey.toString();
+  if (saltDict[scalarString][index] == null) {
+    saltDict[scalarString][index] = oprf.scalarMult(point, scalarString);
+  }
 
   return saltDict[scalarString][index];
 }
 
 // Performs the Preprocessing on the given table
 function handle_preprocess(_, message) {
-  var message = JSON.parse(message);
-  console.log("BEGIN PREPROCESSING");
+  message = JSON.parse(message);
+  console.log('BEGIN PREPROCESSING');
 
   var recompute_number = message.recompute_number;
   var table = message.table;
@@ -118,15 +115,13 @@ function handle_preprocess(_, message) {
   saltDict[scalarKey.toString()] = {};
 
   // in place very fast shuffle
-  (function(a,b,c,d,r) { // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-    r=Math.random;c=a.length;while(c)b=r*(--c+1)|0,d=a[c],a[c]=a[b],a[b]=d
+  (function (a,b,c,d,r) { // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    r=Math.random;c=a.length;while (c) {
+      b=r*(--c+1)|0,d=a[c],a[c]=a[b],a[b]=d
+    }
   })(table);
 
-  var random = Math.random;
-  var Zp = jiff_instance.Zp;
-  var mod = jiff_instance.helpers.mod;
-
-  for(var i = 0; i < table.length; i++) {
+  for (var i = 0; i < table.length; i++) {
     var entry = table[i];
     entry[SRC] = saltPoint(entry[SRC], scalarKey);
     entry[DEST] = saltPoint(entry[DEST], scalarKey);
@@ -136,7 +131,7 @@ function handle_preprocess(_, message) {
   // Forward table to next party
   var index = frontends.indexOf(jiff_instance.id);
   var next_party = (index + 1 < frontends.length) ? [ frontends[index + 1] ] : backends;
-  jiff_instance.emit("preprocess", next_party, JSON.stringify(message));
+  jiff_instance.emit('preprocess', next_party, JSON.stringify(message));
 }
 
 // Handles user query
@@ -147,8 +142,8 @@ function handle_query(req, res) {
   var destinationMask = new BN(req.params.destination);
 
   var recompute_number = current_recomputation_count;
-  if(recompute_number < 0) {
-    res.send({ "error": "not ready yet!"});
+  if (recompute_number < 0) {
+    res.send({ error: 'not ready yet!'});
     return;
   }
 
@@ -161,7 +156,7 @@ function handle_query(req, res) {
   sourceMask = sourceMask.mul(key).mod(prime);
   destinationMask = destinationMask.mul(key).mod(prime);
 
-  jiff_instance.emit("query", backends, JSON.stringify( { "query_number": query_number, "recompute_number": recompute_number, "source": sourceMask.toString(), "destination": destinationMask.toString() }));
+  jiff_instance.emit('query', backends, JSON.stringify( { query_number: query_number, recompute_number: recompute_number, source: sourceMask.toString(), destination: destinationMask.toString() }));
 }
 
 // Receives the query result from the backend server, de-garble it, and send it back to client.
@@ -178,8 +173,8 @@ function finalize_query(_, message) {
   response_map[query_number] = null;
 
   // Errors
-  if(message.error != null) {
-    response.send(JSON.stringify( { "error": message.error } ));
+  if (message.error != null) {
+    response.send(JSON.stringify( { error: message.error } ));
     return;
   }
 

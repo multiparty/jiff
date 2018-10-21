@@ -1,4 +1,4 @@
-(function(exports, node) {
+(function (exports, node) {
   var saved_instance;
 
   /**
@@ -8,9 +8,14 @@
     var opt = Object.assign({}, options);
     // Added options goes here
 
-    if(node)
+    if (node) {
+      // eslint-disable-next-line no-undef
       jiff = require('../../lib/jiff-client');
+      // eslint-disable-next-line no-undef,no-global-assign
+      $ = require('jquery-deferred');
+    }
 
+    // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     // if you need any extensions, put them here
 
@@ -21,36 +26,41 @@
    * The MPC computation
    */
   exports.compute = function (input, jiff_instance) {
-    if(jiff_instance == null) jiff_instance = saved_instance;
+    if (jiff_instance == null) {
+      jiff_instance = saved_instance;
+    }
 
     // Convert the input string into an array of numbers
     // each number is the ascii encoding of the character at the same index
     var arr = [];
-    for(let i = 0; i < input.length; i++)
-      arr.push(input.charCodeAt(i));
+    for (var p= 0; p < input.length; p++) {
+      arr.push(input.charCodeAt(p));
+    }
 
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
 
     var promise = jiff_instance.share_array(arr);
-    promise.then(function(shares) {
+    promise.then(function (shares) {
       var result = [];
 
-      for(var i = 1; i <= jiff_instance.party_count; i++)
-        result = result.concat(shares[i]);
+      for (var p = 1; p <= jiff_instance.party_count; p++) {
+        result = result.concat(shares[p]);
+      }
 
       var promises = [];
-      for(var i = 0; i < result.length; i++) {
+      for (var i = 0; i < result.length; i++) {
         promises.push(jiff_instance.open(result[i]));
       }
 
       // Handle the results
-      Promise.all(promises).then(function(results) {
+      Promise.all(promises).then(function (results) {
         // convert each opened number to a character
-        // and add it to the final stringls
-        var string = "";
-        for(let i = 0; i < results.length; i++)
+        // and add it to the final strings
+        var string = '';
+        for (var i = 0; i < results.length; i++) {
           string += String.fromCharCode(results[i]);
+        }
 
         final_deferred.resolve(string);
       });
@@ -58,4 +68,4 @@
 
     return final_promise;
   };
-}((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
+}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));

@@ -7,11 +7,14 @@
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
     // Added options goes here
+    opt.Zp = 13;
 
     if (node) {
+      // eslint-disable-next-line no-undef
       jiff = require('../../lib/jiff-client');
     }
 
+    // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     // if you need any extensions, put them here
 
@@ -26,24 +29,23 @@
       jiff_instance = saved_instance;
     }
 
-    //This array holds the shares for each option in the voting
-    var option_shares = [];
+    var deferred = $.Deferred();
 
-    //save shares across parties for each option
-    for (var i = 0; i < inputs.length; i++) {
-      option_shares.push(jiff_instance.share(inputs[i]));
-    }
-
-    //Get a patial tally for each option in the vote by adding the shares across parties together.
-    for (var i = 0; i < option_shares.length; i++) {
-      var sum = option_shares[i][1];
+    // This array holds the shares for each option in the voting
+    jiff_instance.share_array(inputs).then(function (option_shares) {
+      var results = option_shares[1];
+      //Get a partial tally for each option in the vote by adding the shares across parties together.
       for (var j = 2; j <= jiff_instance.party_count; j++) {
-        sum = sum.sadd(option_shares[i][j]);
+        for (var i = 0; i < option_shares[j].length; i++) {
+          results[i] = results[i].sadd(option_shares[j][i]);
+        }
       }
-      option_shares[i] = sum;
-    }
 
-    //Now finally redistribute the partial tallys to compute a total tally across each client.
-    return jiff_instance.open_all(option_shares);
+      jiff_instance.open_array(results).then(function (results) {
+        deferred.resolve(results);
+      });
+    });
+
+    return deferred.promise();
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));

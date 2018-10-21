@@ -20,6 +20,10 @@
     <script src="/lib/jiff-client.js"></script>
     <script src="/lib/ext/jiff-client-bignumber.js"></script>
     <script src="/lib/ext/jiff-client-fixedpoint.js"></script>
+    <script src="/lib/ext/jiff-client-negativenumber.js"></script>
+
+    <!-- Contains geometry helpers -->
+    <script src="./geometry.js"></script>
 
     <!-- Contains UI Handlers and Input Checks -->
     <script type="text/javascript" src="./client.js"></script>
@@ -29,8 +33,8 @@
   </head>
   <body>
 
-    <div style="width:300px; height:300px;">
-        <canvas id="myChart" width="400" height="400"></canvas>
+    <div style="width:500px; height:500px;">
+        <canvas id="myChart" width="500" height="500"></canvas>
     </div>
 
     <h1>Connect JIFF</h1>
@@ -41,29 +45,34 @@
       <option value="1">Provide Polygon</option>
       <option value="2">Provide Point Coordinates</option>
     </select><br/><br/>
-    <button id="connectButton" onclick="connect();">Connect</button>    
+    <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
     <h1>PIP, Is point in polygon?</h1>
     <div id="role1">
-      <p>Please construct a closed polygon.</p>
-      <!-- <button id="fillHelper1Button" onclick="fillHelper1()">Fill Diamond</button><br/> -->
-      <!-- <button id="fillHelper2Button" onclick="fillHelper2()">Fill Hexagon</button><br/> -->
-      <button id="fillHelper3Button" onclick="fillHelperRandom()">Fill Random Polygon</button><br/><br/>
-      <label for="slopeInput">Input Slope</label> <input id="slopeInput" pattern="[0-9]+"><br/>
-      <label for="yInterceptInput">Input Y-intercept</label> <input id="yInterceptInput" pattern="[0-9]+"><br/>
-      <label for="aboveBelowInput">Which side is inside? </label><select id="aboveBelowInput">
-        <option value="above">Above Line</option>
-        <option value="below">Below Line</option>
-      </select><br/>
-      <button onclick="submitLine(slopeInput.value, yInterceptInput.value, aboveBelowInput.value);" id="submit1a">Add Line</button><br/><br/>
-      <button onclick="submitPolygon();" id="submit1b">Start</button><br/>
+      <p>Provide the polygon vertices: the convex hull will be automatically constructed for you.</p>
+      <p>Polygons with a side having a high (or infinite) slope are not acceptable.</p>
+      <div class="row">
+        &nbsp; &nbsp; &nbsp;
+        <label for="inputX1">X: </label> <input id="inputX1" pattern="^-?[0-9]+$" size="3"> &nbsp;
+        <label for="inputY1">Y: </label> <input id="inputY1" pattern="^-?[0-9]+$" size="3"> &nbsp;
+        <button onclick="addVertix();" id="vertixButton">Add</button> <br/>
+      </div> <br/>
+
+      <button onclick="submitPolygon();" id="submit1Button" disabled="disabled">Start</button><br/>
     </div>
+
     <div id="role2">
-        <label for="number">X Value:</label> <input id="xVal" pattern="[0-9]+"><br/>
-        <label for="number">Y Value:</label> <input id="yVal" pattern="[0-9]+"><br/>
-        <button onclick="submitPoint(xVal.value, yVal.value);" id="submit2">Start</button><br/>
+      <p>Provide the point to test: the computation will show whether the point is in the polygon (including its sides) or out.</p>
+      <div class="row">
+        &nbsp; &nbsp; &nbsp;
+        <label for="inputX2">X: </label> <input id="inputX2" pattern="^-?[0-9]+$" size="3"> &nbsp;
+        <label for="inputY2">Y: </label> <input id="inputY2" pattern="^-?[0-9]+$" size="3"> <br/>
+      </div> <br/>
+
+      <button onclick="submitPoint();" id="submit2Button">Start</button><br/>
     </div>
+    <br/><br/>
     <div id="output"></div>
   </body>
 </html>
