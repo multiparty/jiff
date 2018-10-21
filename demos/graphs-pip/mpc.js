@@ -1,5 +1,9 @@
 (function (exports, node) {
   var saved_instance;
+  var base_op_id = {
+    1: 0,
+    2: 0
+  };
 
   /**
    * Connect to the server and initialize the jiff instance
@@ -98,7 +102,10 @@
     var promise5 = jiff_instance.share_array(sidesM, null, 2, [1, 2], [1]);
     var promise6 = jiff_instance.share_array(sidesP, null, 2, [1, 2], [1]);
     var promise7 = jiff_instance.share_array(sidesMInv, null, 2, [1, 2], [1]);
+    var op_id = base_op_id[jiff_instance.id]++;
     Promise.all([promise1, promise2, promise3, promise4, promise5, promise6, promise7]).then(function (arrs) {
+      jiff_instance.seed_ids(op_id);
+
       hullX = arrs[0][1];
       hullY = arrs[1][1];
       sidesMinX = arrs[2][1];
@@ -122,10 +129,10 @@
       // is only used for comparisons. This speeds up the computation. However, we must be careful
       // because we cannot use strict equality all the time, as we must take into account fixedpoint accuracy
       // errors.
-      // Instead of checking value == pointY, we must check: value >= pointY*mag && value <= (pointY*mag)+(mag-1)
-      // i.e. value * mag \in [pointY * mag, (pointY + 1) * mag)
+      // Instead of checking value == pointY, we must check: value >= (pointY-1)*mag && value <= (pointY+1)*mag
       var pointYmin = pointY.cmult(magnitude);
-      var pointYmax = pointYmin.cadd(magnitude.minus(1));
+      var pointYmax = pointYmin.cadd(magnitude);
+      pointYmin = pointYmin.csub(magnitude);
 
       // Check if point is one a side: plug coordinate in equation of line
       var onSomeSide = null;
@@ -139,7 +146,7 @@
         var onThisSide = eq1.if_else(eq2, 0); // optimized and
 
         var minX = sidesMinX[i];
-        var maxX = hullX[i].sadd(hullX[(i+1) % hullX.length]).ssub(minX);
+        var maxX = hullX[i].sadd(hullX[(i + 1) % hullX.length]).ssub(minX);
         var cond1 = pointX.sgteq(minX);
         var cond2 = pointX.slteq(maxX);
         var and = cond1.if_else(cond2, 0);
@@ -155,7 +162,7 @@
         var y1 = sidesMinY[j];
 
         var minY = sidesMinY[j];
-        var maxY = y1.sadd(hullY[(j+1) % hullY.length]).ssub(minY);
+        var maxY = y1.sadd(hullY[(j + 1) % hullY.length]).ssub(minY);
 
         cond1 = pointY.sgteq(minY);
         cond2 = pointY.slteq(maxY);
