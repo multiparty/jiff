@@ -9,11 +9,10 @@
       }
     </style>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/lib/sodium.js"></script>
     <script src="/lib/jiff-client.js"></script>
-    <script src="/lib/ext/jiff-client-bignumber.js"></script>
-    <script src="/bignumber.js/bignumber.min.js"></script>
 
     <!-- Contains UI Handlers and Input Checks -->
     <script type="text/javascript" src="./client.js"></script>
@@ -24,13 +23,21 @@
   <body>
     <h1>Connect JIFF</h1>
     <label for="computation_id">Computation ID</label> <input id="computation_id" value="test-threshold"><br/><br/>
-    <label for="upper_count">Upper Party Count</label> <input id="upper_count" pattern="[0-9]*" value="2">
-    <label for="lower_count">Lower Party Count</label> <input id="lower_count" pattern="[0-9]*" value="3"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
+    <label for="upper_count">Upper Party Count</label> <input id="upper_count" pattern="[0-9]*" value="2"> <br/><br/>
+    <label for="lower_count">Lower Party Count</label> <input id="lower_count" pattern="[0-9]*" value="3"> <br/><br/>
+    <label for="party_id">Party ID</label> &nbsp;&nbsp; <input id="party_id" pattern="[0-9]+"> <small>(in [1, lower party count] for lower parties, [lower party count+1, lower + upper count] for upper parties</small> <br/><br/>
+    <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
+
     <hr/>
+
     <h1>Hierarchical Thresholding under MPC</h1>
-    <label for="number">Input (Upper party input will be ignored)</label> <input id="number" pattern="[0-9]+"> <label for="party_id">Party ID</label> <input id="party_id" pattern="[0-9]+"> <br/><br/>
-    <label for="agg">Aggregation?</label> <input id="agg" pattern="[a-z]+" value="false"> <label for="threshold_val">Threshold Value</label> <input id="threshold_val" pattern="[0-9]+" value="10"> &nbsp; <button onclick="submit();" disabled="disabled" id="button">Compute</button><br/>
+    <label for="number">Input:</label> &nbsp; &nbsp; &nbsp; &nbsp; <input id="number" pattern="[0-9]+"> <small>(Upper party input will be ignored)</small><br/>
+    <label for="threshold">Threshold:</label> <input id="threshold" pattern="[0-9]+" value="10"> <small>(should be the same for all parties)</small><br/>
+    <button onclick="submit();" disabled="disabled" id="button">Compute</button> &nbsp;
+    <button onclick="reconnect();" disabled="disabled" id="reconnect">Reconnect</button><br/>
+
     <div id="output"></div>
+
   </body>
 </html>
