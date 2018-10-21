@@ -12,3 +12,7 @@ app.use('/bignumber.js', express.static('node_modules/bignumber.js'));
 http.listen(8080, function () {
   console.log('listening on *:8080');
 });
+
+console.log('Direct your browser to *:8080/demos/graph-pip/client.html.');
+console.log('To run a server-based party: node demos/graph-pip/party <id> <input>');
+console.log();
