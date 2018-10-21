@@ -2,91 +2,55 @@
 // var expect = require('chai').expect;
 var assert = require('chai').assert;
 
+var geometry = require('./geometry.js');
 var mpc = require('./mpc.js');
 
 var showProgress = true;
 
 var party_count = 2;
+var Zp = '262139';
+var integer_digits = 3;
+var decimal_digits = 1;
+
+// counts
+var numberOfShapes = 3;
+var pointsInPerShape = 1;
+var pointsOutPerShape = 1;
+var pointsSideShape = 1;
+var pointsVertexShape = 1;
+
 var parallelismDegree = 1;
-var testCasesCount = 5;
-var Zp = null;
+
+// min and max vertices per polygon
+var minVertices = 3;
+var maxVertices = 5;
 
 // graph limits
-var minX = -5;
-var maxX = 25;
-var minY = -5;
-var maxY = 25;
+var minX = -3;
+var maxX = 4;
+var minY = -3;
+var maxY = 4;
 
-// convex hull algorithm. https://github.com/indy256/convexhull-js/blob/master/convexhull.js
-function convexHull(points) {
+// max slope
+var maxSlope = 4;
 
-}
+function generateRandomShape() {
+  var n = Math.random() * (maxVertices - minVertices) + minVertices;
+  n = Math.floor(n);
 
-function getEquationOfLineFromTwoPoints(point1, point2) {
-  var lineObj = {
-    gradient: (point1.y - point2.y) / (point1.x - point2.x)
-  };
-
-  lineObj.yIntercept = point1.y - lineObj.gradient * point1.x;
-
-  return lineObj;
-}
-
-var insideCalculator = function (m, b, x, y) {
-  return y > m*x+b ? 'above' : 'below';
-};
-
-var mapToTuples = function (array) {
-  var r = [];
-  for (var i = 0; i < array.length; i++) {
-    var p1 = array[i];
-    var p2 = array[(i+1)%array.length];
-    var p3 = array[(i+2)%array.length];
-
-    var tmp = getEquationOfLineFromTwoPoints(p1, p2);
-    var gradient = tmp.gradient;
-    var yIntercept = tmp.yIntercept;
-    r.push({
-      m:gradient,
-      b:yIntercept,
-      above:insideCalculator(gradient, yIntercept, p3.x, p3.y)
-    });
-  }
-  return r;
-};
-
-var verticalLines = function (array) {
-  for (var i = 0; i < array.length; i++) {
-    if (array[i].x === array[(i+1)%array.length].x) {
-      return true;
+  var vertices = [];
+  while (vertices.length !== n) {
+    for (var i = vertices.length; i < n; i++) {
+      var x = Math.floor(Math.random() * (maxX - minX) + minX);
+      var y = Math.floor(Math.random() * (maxY - minY) + minY);
+      vertices.push({x: x, y: y});
     }
+
+    vertices = geometry.convexHull(vertices);
   }
-  return false;
-};
 
-var generateRandomPolygon = function () {
-  var convexHullPoints;
-
-  do {
-    var randomPoints = [];
-
-    for (var i = 0; i < 10; i++) {
-      var x = Math.floor(Math.random()*(maxX - minX + 1) + minX);
-      var y = Math.floor(Math.random()*(maxY - minY + 1) + minY);
-      randomPoints.push({x:x,y:y});
-    }
-    convexHullPoints = convexHull(randomPoints);
-  } while (verticalLines(convexHullPoints));
-
-  var tuples = mapToTuples(convexHullPoints);
-  var polygon = [];
-  tuples.forEach(function (line) {
-    return polygon.push(line);
-  });
-  return polygon;
-};
-
-
+  return vertices;
+}
 
 /**
  * CHANGE THIS: Generate inputs for your tests
@@ -98,22 +62,76 @@ var generateRandomPolygon = function () {
 function generateInputs() {
   var inputs = {1:[], 2:[]};
 
-  for (var i = 0; i < testCasesCount; i++) {
-    inputs[1].push(generateRandomPolygon());
-    inputs[2].push({
-      x:Math.floor(Math.random()*(maxX - minX + 1) + minX),
-      y:Math.floor(Math.random()*(maxY - minY + 1) + minY)
-    });
+  for (var i = 0; i < numberOfShapes; i++) {
+    // Generate polygon
+    var vertices, sides;
+    try {
+      vertices = generateRandomShape();
+      sides = geometry.hullSides(vertices);
+      for (var s = 0; s < sides.length; s++) {
+        if (!sides[s].slope.abs().lt(maxSlope)) {
+          throw new Error('Convex Hull has slope with absolute value >= ' + maxSlope);
+        }
+      }
+    } catch (err) {
+      i--;
+      continue;
+    }
+
+    // Generate points
+
+    // Points inside shape
+    var j, c1, c2, v1, v2, x, y;
+    for (j = 0; j < pointsInPerShape; j++) {
+      c1 = Math.random() * sides.length;
+      c2 = Math.random() * sides.length;
+      c1 = Math.floor(c1);
+      c2 = Math.floor(c2);
+
+      v1 = vertices[c1];
+      v2 = vertices[c2];
+
+      x = (v1.x + v2.x) / 2;
+      y = (v1.y + v2.y) / 2;
+
+      inputs[1].push(vertices);
+      inputs[2].push({ x: x, y: y });
+    }
+
+    // Points outside shape
+    for (j = 0; j < pointsOutPerShape; j++) {
+      var signX = Math.random() < 0.5 ? -1 : 1;
+      var signY = Math.random() < 0.5 ? -1 : 1;
+
+      inputs[1].push(vertices);
+      inputs[2].push({ x: (maxX+1) * signX, y: (maxY+1) * signY });
+    }
+
+    // Points side shape
+    for (j = 0; j < pointsSideShape; j++) {
+      c1 = Math.random() * sides.length;
+      c1 = Math.floor(c1);
+      c2 = (c1+1) % vertices.length;
+
+      v1 = vertices[c1];
+      v2 = vertices[c2];
+
+      x = (v1.x + v2.x) / 2;
+      y = (v1.y + v2.y) / 2;
+
+      inputs[1].push(vertices);
+      inputs[2].push({ x: x, y: y });
+    }
+
+    // Points vertex shape
+    for (j = 0; j < pointsVertexShape; j++) {
+      inputs[1].push(vertices);
+      inputs[2].push(vertices[Math.floor(Math.random() * vertices.length)]);
+    }
   }
-  // inputs[1].forEach(i => console.log(i));
-  // console.log(inputs[2]);
+
   return inputs;
 }
-
-// var computeLine = (m, b, a, x, y) => a ? y > m*x+b : y < m*x+b;
-var computeLine = function (m, b, a, x, y) {
-  return a === 'above' ? y > m * x + b : y < m * x + b;
-};
 
 /**
  * CHANGE THIS: Compute the expected results not in MPC
@@ -124,13 +142,11 @@ var computeLine = function (m, b, a, x, y) {
 function computeResults(inputs) {
   var results = [];
 
-  for (var j = 0; j < inputs['1'].length; j++) {
-    var inside = true;
-    for (var i = 0; i < inputs[1][j].length; i++) {
-      inside = inside && computeLine(inputs[1][j][i].m, inputs[1][j][i].b, inputs[1][j][i].above, inputs[2][j].x, inputs[2][j].y);
-    }
-    results.push(inside);
+  for (var i = 0; i < inputs[1].length; i++) {
+    var j = i % (pointsInPerShape + pointsOutPerShape + pointsSideShape + pointsVertexShape);
+    results[i] = j < pointsInPerShape || j >= pointsInPerShape + pointsOutPerShape;
   }
+
   return results;
 }
 
@@ -178,11 +194,11 @@ describe('Test', function () {
         count++;
         for (var i = 0; i < testResults.length; i++) {
           // debugging message
-          var ithInputs = inputs[1][i] + '';
+          var ithInputs = JSON.stringify(inputs[1][i]) + '';
           for (var p = 2; p <= party_count; p++) {
-            ithInputs += ',' + inputs[p][i];
+            ithInputs += ',' + JSON.stringify(inputs[p][i]);
           }
-          var msg = 'Party: ' + jiff_instance.id + '. inputs: [' + ithInputs + ']';
+          var msg = '#' + i + 'Party: ' + jiff_instance.id + '. inputs: [' + ithInputs + ']';
 
           // assert results are accurate
           try {
@@ -200,7 +216,7 @@ describe('Test', function () {
       })(0);
     };
 
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp };
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp, integer_digits: integer_digits, decimal_digits: decimal_digits };
     for (var i = 0; i < party_count; i++) {
       mpc.connect('http://localhost:8080', 'mocha-test', options);
     }
