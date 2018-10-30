@@ -1,6 +1,0 @@
-how
-to debug mult_bgw:
-  * in demo, change format / parameters to match the jiff client version
-  * AKA: self.smult_bgw(o, op_id);
-  * debug from there
-

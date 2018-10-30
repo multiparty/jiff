@@ -1,0 +1,60 @@
+{
+  "tests": [ "+", "-", "*", "|", "^", "cdivfac", "/" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "bigNumber", "fixedpoint", "negativeNumber" ],
+    "generation": {
+      "file": "config/fixedpoint|negativeNumber/generation.js",
+      "function": "generateConstantArithmeticInputs"
+    },
+    "computation": {
+      "file": "config/fixedpoint|negativeNumber/computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 100,
+      "parallel": 25,
+      "options": {
+        "Zp": "7212610147295474909544523785043492409969382148186765460082500085393519556525921455588705423020751421",
+        "party_count": 3,
+        "decimal_digits": 49,
+        "integer_digits": 50,
+        "warn": false
+      }
+    },
+    "cdivfac": {
+      "count": 20,
+      "parallel": 3,
+      "options": {
+        "Zp": 251,
+        "party_count": 3,
+        "decimal_digits": 1,
+        "integer_digits": 1,
+        "warn": false
+      }
+    },
+    "*": {
+      "count": 10,
+      "parallel": 3,
+      "options": {
+        "Zp": "262139",
+        "party_count": 3,
+        "decimal_digits": 1,
+        "integer_digits": 3
+      }
+    },
+    "/": {
+      "count": 8,
+      "parallel": 3,
+      "options": {
+        "Zp": "2097143",
+        "party_count": 3,
+        "integer_digits": 2,
+        "decimal_digits": 2
+      }
+    }
+  }
+}

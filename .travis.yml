@@ -1,15 +1,25 @@
 language: node_js
 node_js:
-- '8'
 - '10'
 env:
-- TEST_SUITE=test
-- TEST_SUITE=test-bignumber
-- TEST_SUITE=test-negativenumber
-- TEST_SUITE=test-fixedpoint
+- DEMOS="TRUE"
+- TEST_NAME='base' TEST_SUITE='-parallel'
+- TEST_NAME='bigNumber' TEST_SUITE='-parallel'
+- TEST_NAME='negativeNumber' TEST_SUITE='-parallel'
+- TEST_NAME='bigNumber|negativeNumber' TEST_SUITE='-parallel'
+- TEST_NAME='fixedpoint' TEST_SUITE='share'
+- TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
+- TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
+- TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
+- TEST_NAME='fixedpoint' TEST_SUITE='comparison'
+- TEST_NAME='fixedpoint|negativeNumber' TEST_SUITE='share'
+- TEST_NAME='fixedpoint|negativeNumber' TEST_SUITE='arithmetic'
+- TEST_NAME='fixedpoint|negativeNumber' TEST_SUITE='constant arithmetic'
+- TEST_NAME='fixedpoint|negativeNumber' TEST_SUITE='constant comparison'
+- TEST_NAME='fixedpoint|negativeNumber' TEST_SUITE='comparison'
 script:
 - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
-- npm run $TEST_SUITE
+- if [ "$DEMOS" == "TRUE" ]; then npm run-script test-demo -- \*; else npm run test -- "$TEST_NAME" "$TEST_SUITE"; fi
 - kill %1
 cache:
   directories:

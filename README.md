@@ -70,15 +70,19 @@ npm run-script gen-docs # shortcut
 
 ## Running Tests
 
-The test cases can be run in the following way:
+All the JIFF library test cases can be run in the following way:
 ```shell
 npm test
 ```
 
-Demos are accompanied by test cases, to run a demo test case, use:
+Demos are accompanied by test cases. The following command can be used to run the demos servers and test cases:
 ```shell
-npm run-script test-demo -- demo/<demo-name>/test.js
+npm run-script test-demo -- demo/<demo-name>
 ```
+The command assumes that the server is located at demos/<demo-name>/server.js and the test cases are located at demos/<demo-name>/test.js
+See demos/run-test.sh for instructions for running test cases located in different directories or with different names.
+
+See the [testing suite framework documentation](tests/suite/README.md) for more details on running and creating tests for the JIFF library.
 
 ## Development
 
@@ -101,8 +105,7 @@ Both client and server libraries support extensions. Some extensions require cus
 For examples on how to use an extension, see out the following files:
 
 1. `demos/sum-fixed/server.js`: using the server with the Node bignumber.js module.
-3. `demos/sum-fixed/client.html`: using fixed point arithmetic extension in the browser.
-2. `tests/mocha-bignumber`: test suite of usage with the Node bignumber.js module.
+2. `demos/sum-fixed/client.html`: using fixed point arithmetic extension in the browser.
 
 Run the bignumber test suite in the following way:
 ```shell

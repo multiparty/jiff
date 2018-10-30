@@ -113,7 +113,6 @@
   /**
    * Encrypts and signs the given message.
    * @memberof jiff.utils
-   * @instance
    * @param {number/string} message - the message to encrypt.
    * @param {Uint8Array} encryption_public_key - ascii-armored public key to encrypt with.
    * @param {Uint8Array} signing_private_key - the private key of the encrypting party to sign with.
@@ -136,7 +135,6 @@
   /**
    * Decrypts and checks the signature of the given ciphertext.
    * @memberof jiff.utils
-   * @instance
    * @param {object} cipher_text - the ciphertext to decrypt, includes two properties: 'cipher' and 'nonce'.
    * @param {Uint8Array} decryption_secret_key - the secret key to decrypt with.
    * @param {Uint8Array} signing_public_key - ascii-armored public key to verify against signature.
@@ -431,8 +429,10 @@
       if (share.ready) {
         jiff_broadcast(jiff, share, parties, op_ids);
       } else {
+        jiff.counters.pending_opens++;
         // Share is not ready, setup sharing as a callback to its promise
         share.promise.then(function () {
+          jiff.counters.pending_opens--;
           jiff_broadcast(jiff, share, parties, op_ids);
         }, share.error);
       }
@@ -926,7 +926,7 @@
           }
         }
 
-        var value = r &lt; array.length ? array[r] : null;
+        var value = (senders_list.indexOf(jiff.id) > -1) &amp;&amp; (r &lt; array.length) ? array[r] : null;
         var round_results = jiff.share(value, threshold, receivers_list, round_senders, Zp, share_id + 'round:' + r);
 
         for (var sender_id in round_results) {
@@ -1270,6 +1270,9 @@
       '&lt;': function (v1, v2) {
         return v1 &lt; v2;
       },
+      '&lt;=': function (v1, v2) {
+        return v1 &lt;= v2;
+      },
       'floor': function (v) {
         return Math.floor(v);
       },
@@ -1284,6 +1287,12 @@
       },
       'binary': function (v) {
         return v === 1 || v === 0;
+      },
+      'abs': function (v) {
+        return Math.abs(v);
+      },
+      '==': function (v1, v2) {
+        return v1 == v2;
       }
     };
 
@@ -1293,38 +1302,45 @@
     /**
      * @member {jiff-instance} jiff
      * @memberof SecretShare
+     * @instance
      */
     self.jiff = jiff;
 
     /**
      * @member {boolean} ready
      * @memberof SecretShare
+     * @instance
      */
     self.ready = ready;
 
     /**
      * @member {promise} promise
      * @memberof SecretShare
+     * @instance
      */
     self.promise = promise;
     /**
      * @member {number} value
      * @memberof SecretShare
+     * @instance
      */
     self.value = value;
     /**
      * @member {Array} holders
      * @memberof SecretShare
+     * @instance
      */
     self.holders = holders;
     /**
      * @member {Array} threshold
      * @memberof SecretShare
+     * @instance
      */
     self.threshold = threshold;
     /**
      * @member {number} Zp
      * @memberof SecretShare
+     * @instance
      */
     self.Zp = Zp;
 
@@ -1335,6 +1351,7 @@
     /**
      * @member {string} id
      * @memberof SecretShare
+     * @instance
      */
     self.id = id;
 
@@ -1343,6 +1360,7 @@
      * @method valueOf
      * @returns {number} the value (undefined if not ready yet).
      * @memberof SecretShare
+     * @instance
      */
     self.valueOf = function () {
       if (ready) {
@@ -1357,6 +1375,7 @@
      * @method toString
      * @returns {string} the id and value of the share as a string.
      * @memberof SecretShare
+     * @instance
      */
     self.toString = function () {
       if (ready) {
@@ -1370,6 +1389,7 @@
      * Logs an error.
      * @method error
      * @memberof SecretShare
+     * @instance
      */
     self.error = function () {
       console.log('Error receiving ' + self.toString());
@@ -1380,6 +1400,7 @@
      * @method receive_share
      * @param {number} value - the value of the share.
      * @memberof SecretShare
+     * @instance
      */
     self.receive_share = function (value) {
       self.value = value;
@@ -1393,6 +1414,7 @@
      * @param {SecretShare} o - the other share object.
      * @returns {promise} the joined promise for both shares (or whichever is pending).
      * @memberof SecretShare
+     * @instance
      */
     self.pick_promise = function (o) {
       if (self.ready &amp;&amp; o.ready) {
@@ -1426,50 +1448,26 @@
      *                         suffice when all parties execute the instructions in the same order.
      * @returns {SecretShare} a new share of the same number.
      * @memberof SecretShare
+     * @instance
      */
     self.refresh = function (op_id) {
       return self.isadd(self.jiff.server_generate_and_share({number: 0}, self.holders, self.threshold, self.Zp, op_id)[0]);
     };
 
     /**
-     * Reveals/Opens the value of this share.
+     * Shortcut for opening/revealing the value of this share. Alias for open in jiff-instance.
+     * @see jiff-instance#open
      * @method open
-     * @param {function(number)} success - the function to handle successful open.
-     * @param {function(string)} [failure=SecretShare.error] - the function to handle errors and error messages.
-     * @returns {promise} a (JQuery) promise to the open value of the secret.
-     * @throws error if share does not belong to the passed jiff instance.
      * @memberof SecretShare
+     * @instance
+     * @param {Array} [parties=all_parties] - an array with party ids (1 to n) of receiving parties.
+     * @param {string|number|object} [op_ids=auto_gen()] - an optional mapping that specifies the ID/Tag associated with each
+     *                                        open message sent.
+     * @returns {promise|null} a (JQuery) promise to the open value of the secret, null if the party is not specified in the parties array as a receiver.
      */
-    self.open = function (success, failure) {
-      if (failure == null) {
-        failure = self.error;
-      }
-      var promise = self.jiff.open(self);
-      if (promise != null &amp;&amp; success != null) {
-        promise = promise.then(success, failure);
-      }
-      return promise;
+    self.open = function (parties, op_ids) {
+      return self.jiff.open(self, parties, op_ids);
     };
-
-    /**
-     * Reveals/Opens the value of this share to a specific array of parties.
-     * @method open_to
-     * @param {Array} [parties=all_parties] - the ids of parties to reveal secret to.
-     * @param {function(number)} success - the function to handle successful open.
-     * @param {function(string)} [failure=SecretShare.error] - the function to handle errors and error messages.
-     * @memberof SecretShare
-     */
-    self.open_to = function (parties, success, failure) {
-      if (failure == null) {
-        failure = self.error;
-      }
-      var promise = self.jiff.open(self, parties);
-      if (promise != null &amp;&amp; success != null) {
-        promise = promise.then(success, failure);
-      }
-      return promise;
-    };
-
 
     /**
      * Generic Addition.
@@ -1478,6 +1476,7 @@
      * @param {number|SecretShare} o - the other operand (can be either number or share).
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.add = function (o) {
       if (self.isConstant(o)) {
@@ -1494,6 +1493,7 @@
      * @param {number|SecretShare} o - the other operand (can be either number or share).
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.sub = function (o) {
       if (self.isConstant(o)) {
@@ -1515,6 +1515,7 @@
      *                         instructions in the same order. Only used if secret multiplication is used.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.mult = function (o, op_id) {
       if (self.isConstant(o)) {
@@ -1536,12 +1537,13 @@
      * @return {SecretShare} this party's share of the result, the final result is 1 if this &lt; o, and 0 otherwise.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.xor_bit = function (o, op_id) {
       if (self.isConstant(o)) {
-        return self.cor_bit(o);
+        return self.cxor_bit(o);
       }
-      return self.sor_bit(o, op_id);
+      return self.sxor_bit(o, op_id);
     };
 
 
@@ -1556,12 +1558,13 @@
      *                         Only used if secret or is used..
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.or_bit = function (o, op_id) {
       if (self.isConstant(o)) {
-        return self.cxor_bit(o);
+        return self.cor_bit(o);
       }
-      return self.sxor_bit(o, op_id);
+      return self.sor_bit(o, op_id);
     };
 
 
@@ -1575,6 +1578,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.gteq = function (o, op_id) {
       if (self.isConstant(o)) {
@@ -1594,6 +1598,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.gt = function (o, op_id) {
       if (self.isConstant(o)) {
@@ -1613,6 +1618,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.lteq = function (o, op_id) {
       if (self.isConstant(o)) {
@@ -1632,6 +1638,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.lt = function (o, op_id) {
       if (self.isConstant(o)) {
@@ -1651,6 +1658,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.eq = function (o, op_id) {
       if (self.isConstant(o)) {
@@ -1670,6 +1678,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.neq = function (o, op_id) {
       if (self.isConstant(o)) {
@@ -1690,6 +1699,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.div = function (o, l, op_id) {
       if (self.isConstant(o)) {
@@ -1704,6 +1714,7 @@
      * @param {number} cst - the constant to add.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.cadd = function (cst) {
       if (!(self.isConstant(cst))) {
@@ -1727,6 +1738,7 @@
      * @param {number} cst - the constant to subtract from this share.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.csub = function (cst) {
       if (!(self.isConstant(cst))) {
@@ -1750,6 +1762,7 @@
      * @param {number} cst - the constant to multiply to this share.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.cmult = function (cst) {
       if (!(self.isConstant(cst))) {
@@ -1773,13 +1786,14 @@
      * @param {number} cst - the constant by which to divide the share.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.cdivfac = function (cst) {
       if (!(self.isConstant(cst))) {
         throw 'Parameter should be a number (cdivfac)';
       }
 
-      var inv = jiff.helpers.extended_gcd(cst, self.Zp)[0];
+      var inv = self.jiff.helpers.extended_gcd(cst, self.Zp)[0];
 
       if (self.ready) {
         // If share is ready.
@@ -1798,6 +1812,7 @@
      * @param {SecretShare} o - the share to add to this share.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.sadd = function (o) {
       if (!(o.jiff === self.jiff)) {
@@ -1831,6 +1846,7 @@
      * @param {SecretShare} o - the share to subtract from this share.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.ssub = function (o) {
       if (!(o.jiff === self.jiff)) {
@@ -1869,6 +1885,7 @@
      *                         instructions in the same order.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.smult = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
@@ -1942,17 +1959,18 @@
      *                         instructions in the same order.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
 
     self.smult_bgw = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (*)';
+        throw 'shares do not belong to the same instance (bgw*)';
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (*)';
+        throw 'shares must belong to the same field (bgw*)';
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (*)';
+        throw 'shares must be held by the same parties (bgw*)';
       }
       if ((self.threshold - 1) + (o.threshold - 1) > self.holders.length - 1) {
         throw 'threshold too high for BGW (*)';
@@ -1987,6 +2005,7 @@
      *                         instructions in the same order.
      * @return {SecretShare} this party's share of the result under the new threshold
      * @memberof SecretShare
+     * @instance
      */
     self.change_threshold = function (threshold, op_id) {
       if (op_id == null) {
@@ -2016,7 +2035,7 @@
             //has attributes: {value: x, sender_id: y, Zp: jiff_instance.Zp}
             reconstruct_parts[i] = {value: intermediate_shares[party_id].value, sender_id: party_id, Zp: self.Zp};
           }
-          var value = exports.sharing_schemes.shamir_reconstruct(self.jiff, reconstruct_parts);
+          var value = self.jiff.hooks.reconstructShare(self.jiff, reconstruct_parts);
           final_deferred.resolve(value);
         });
       };
@@ -2036,6 +2055,7 @@
      * @param {number} cst - the constant bit to XOR with (0 or 1).
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.cxor_bit = function (cst) {
       if (!(self.isConstant(cst))) {
@@ -2054,6 +2074,7 @@
      * @param {number} cst - the constant bit to OR with (0 or 1).
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.cor_bit = function (cst) {
       if (!(self.isConstant(cst))) {
@@ -2076,6 +2097,7 @@
      * @return {SecretShare} this party's share of the result, the final result is 1 if this &lt; o, and 0 otherwise.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.sxor_bit = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
@@ -2101,6 +2123,7 @@
      * @return {SecretShare} this party's share of the result, the final result is 1 if this &lt; o, and 0 otherwise.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.sor_bit = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
@@ -2125,6 +2148,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result, the final result is 1 if this >= o, and 0 otherwise.
      * @memberof SecretShare
+     * @instance
      */
     self.sgteq = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
@@ -2153,6 +2177,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result, the final result is 1 if this > o, and 0 otherwise.
      * @memberof SecretShare
+     * @instance
      */
     self.sgt = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
@@ -2181,6 +2206,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result, the final result is 1 if this &lt;= o, and 0 otherwise.
      * @memberof SecretShare
+     * @instance
      */
     self.slteq = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
@@ -2209,6 +2235,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result, the final result is 1 if this &lt; o, and 0 otherwise.
      * @memberof SecretShare
+     * @instance
      */
     self.slt = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
@@ -2261,6 +2288,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result, the final result is 1 if this >= cst, and 0 otherwise.
      * @memberof SecretShare
+     * @instance
      */
     self.cgteq = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
@@ -2284,6 +2312,7 @@
      *                         instructions in the same order.
      * @return {SecretShare} this party's share of the result, the final result is 1 if this > cst, and 0 otherwise.
      * @memberof SecretShare
+     * @instance
      */
     self.cgt = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
@@ -2328,6 +2357,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result, the final result is 1 if this &lt;= cst, and 0 otherwise.
      * @memberof SecretShare
+     * @instance
      */
     self.clteq = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
@@ -2350,6 +2380,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result, the final result is 1 if this &lt; cst, and 0 otherwise.
      * @memberof SecretShare
+     * @instance
      */
     self.clt = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
@@ -2369,7 +2400,6 @@
         var x = share_helpers['&lt;'](cst, share_helpers['/'](self.Zp, 2)) ? 1 : 0;
         var y = self.icsub(cst).ilt_halfprime(op_id + ':halfprime:2');
         Promise.all([y.promise]).then(function () {
-
           var xy = y.icmult(x);
           var answer = y.icmult(-1).icadd(1 - x).isadd(xy).isadd(w.ismult(y.icadd(x).issub(xy.icmult(2)), op_id + ':smult1'));
 
@@ -2395,6 +2425,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result, the final result is 1 if this = o, and 0 otherwise.
      * @memberof SecretShare
+     * @instance
      */
     self.seq = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
@@ -2411,9 +2442,7 @@
         op_id = self.jiff.counters.gen_op_id('=', self.holders);
       }
 
-      var one_direction = self.islt(o, op_id + ':&lt;=');
-      var other_direction = self.isgt(o, op_id + ':>=');
-      return one_direction.isadd(other_direction).inot();
+      return self.issub(o).iclteq(0, op_id);
     };
 
     /**
@@ -2425,6 +2454,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
      * @memberof SecretShare
+     * @instance
      */
     self.sneq = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
@@ -2448,6 +2478,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
      * @memberof SecretShare
+     * @instance
      */
     self.ceq = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
@@ -2458,9 +2489,7 @@
         op_id = self.jiff.counters.gen_op_id('c=', self.holders);
       }
 
-      var one_direction = self.iclt(cst, op_id + ':&lt;=');
-      var other_direction = self.icgt(cst, op_id + ':>=');
-      return one_direction.isadd(other_direction).inot();
+      return self.icsub(cst).iclteq(0, op_id);
     };
 
     /**
@@ -2472,6 +2501,7 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
      * @memberof SecretShare
+     * @instance
      */
     self.cneq = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
@@ -2486,6 +2516,7 @@
      * @method not
      * @return {SecretShare} this party's share of the result (negated bit).
      * @memberof SecretShare
+     * @instance
      */
     self.not = function () {
       return self.icmult(-1).icadd(1);
@@ -2495,12 +2526,13 @@
      * Integer divison with two shares (self / o)
      * @method sdiv
      * @param {SecretShare} o - the share to divide by.
-     * @param {number} l - the maximum bit length of the answer.
+     * @param {number} [l=log_2(self.Zp)] - the maximum bit length of the answer.
      * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
      *                         This id must be unique, and must be passed by all parties to the same instruction, to
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.sdiv = function (o, l, op_id) {
       if (!(o.jiff === self.jiff)) {
@@ -2573,10 +2605,19 @@
      *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
     self.cdiv = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
         throw 'parameter should be a number (/)';
+      }
+
+      if (share_helpers['&lt;='](cst, 0)) {
+        throw 'divisor must be > 0 (cst/): ' + cst;
+      }
+
+      if (share_helpers['&lt;='](self.Zp, cst)) {
+        throw 'divisor must be &lt; share.Zp (' + self.Zp + ') in (cst/): ' + cst;
       }
 
       if (op_id == null) {
@@ -2639,8 +2680,9 @@
      *                         ensure that corresponding instructions accross different parties are matched correctly.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
+     * @instance
      */
-    self.smod= function (o, l, op_id) {
+    self.smod = function (o, l, op_id) {
       if (!(o.jiff === self.jiff)) {
         throw 'shares do not belong to the same instance (!=)';
       }
@@ -2655,14 +2697,15 @@
         op_id = self.jiff.counters.gen_op_id('/', self.holders);
       }
 
-      var r = self.sdiv(o, l, op_id + ':sdiv');
-      return self.ssub(r.smult(o, op_id + ':smult'));
+      var r = self.isdiv(o, l, op_id + ':sdiv');
+      return self.issub(r.ismult(o, op_id + ':smult'));
     };
 
     /**
      * Checks whether the share is less than half the field size.
      * @method lt_halfprime
-     * @memberOf SecretShare
+     * @memberof SecretShare
+     * @instance
      * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
      *                         This id must be unique, and must be passed by all parties to the same instruction, to
      *                         ensure that corresponding instructions across different parties are matched correctly.
@@ -2710,6 +2753,32 @@
       return result;
     };
 
+    /**
+     * Simulate an oblivious If-else statement with a single return value.
+     * Should be called on a secret share of a bit: 0 representing false, and 1 representing true
+     * If this is a share of 1, a new sharing of the element represented by the first parameter is returned,
+     * otherwise, a new sharing of the second is returned.
+     * @method if_else
+     * @memeberof SecretShare
+     * @instance
+     * @param {SecretShare|constant} trueVal - the value/share to return if this is a sharing of 1.
+     * @param {SecretShare|constant} falseVal - the value/share to return if this is a sharing of 0.
+     * @return {SecretShare} a new sharing of the result of the if.
+     */
+    self.if_else = function (trueVal, falseVal) {
+      var const1 = self.isConstant(trueVal);
+      var const2 = self.isConstant(falseVal);
+      if (const1 &amp;&amp; const2) {
+        return self.icmult(trueVal).isadd(self.inot().icmult(falseVal));
+      } else if (const1) {
+        return self.inot().ismult(falseVal.icsub(trueVal)).icadd(trueVal);
+      } else if (const2) {
+        return self.ismult(trueVal.icsub(falseVal)).icadd(falseVal);
+      } else {
+        return self.ismult(trueVal.issub(falseVal)).isadd(falseVal);
+      }
+    }
+
     // when the promise is resolved, acquire the value of the share and set ready to true
     if (!ready) {
       self.promise.then(self.receive_share, self.error);
@@ -2743,7 +2812,6 @@
    * Create a new jiff instance.
    * @memberof jiff
    * @function make_jiff
-   * @instance
    * @param {string} hostname - server hostname/ip and port.
    * @param {string} computation_id - the id of the computation of this instance.
    * @param {object} [options={}] - javascript object with additional options.
@@ -2781,11 +2849,69 @@
     /**
      * An array containing the names (jiff-client-[name].js) of extensions
      * applied to this instance.
-     * @member {string[]} modules
+     * @member {string[]} extensions
      * @memberof jiff-instance
      * @instance
      */
-    jiff.modules = [];
+    jiff.extensions = [];
+
+    /**
+     * Checks if the given extension is applied.
+     * @method has_extension
+     * @memberof jiff-instance
+     * @instance
+     * @param {string} name - the extension name (found in the filename at jiff-client-[name].js).
+     * @return {boolean} true if the extension was applied, false otherwise.
+     */
+    jiff.has_extension = function (name) {
+      return jiff.extensions.indexOf(name) > -1;
+    };
+
+    /**
+     * Checks if a given extension can be safely applied to the instance
+     * @method can_apply_extension
+     * @memberof jiff-instance
+     * @instance
+     * @param {string} name - the extension name (found in the filename at jiff-client[name].js)
+     * @return {boolean|string} true if the extension can be safely applied, otherwise returns an error message.
+     */
+    jiff.can_apply_extension = function (name) {
+      return true;
+    };
+
+    /**
+     * Safely applies the given extension, if the extension is safe, it will be applied succesfully.
+     * If the extension is not safe to be applied, an exception will be thrown with an appropriate error message.
+     * @method apply_extension
+     * @memberof jiff-instance
+     * @instance
+     * @param {object} ext - the namespace of the extension acquired when the extension is imported, should contain a make_jiff function.
+     * @param {object} [options={}] - optional options to be passed to the extension.
+     */
+    jiff.apply_extension = function (ext, options) {
+      if (options == null) {
+        options = {};
+      }
+
+      var name = ext.name;
+      var status = jiff.can_apply_extension(name);
+
+      if (status === true) {
+        ext.make_jiff(jiff, options);
+
+        jiff.extensions.push(name);
+        jiff.extension_applied(name, options);
+      } else {
+        throw status;
+      }
+    };
+
+    /**
+     * Called when an extension was applied successfully. Override to change behavior based on future extensions.
+     * @param {string} name - the name of the applied extension.
+     * @param {object} [options={}] - the options passed by the user to the newly applied extension.
+     */
+    jiff.extension_applied = function (name, options) {};
 
     /**
      * The id of this party. [Do not modify]
@@ -2846,6 +2972,9 @@
           socket.emit(label, msg, function (status) {
             if (status) {
               socket.mailbox.remove(mailbox_pointer);
+              if (socket.mailbox.head == null &amp;&amp; socket.empty_deferred != null) {
+                socket.empty_deferred.resolve();
+              }
             }
           });
         }
@@ -2869,6 +2998,30 @@
           current_node = current_node.next;
         }
       };
+
+      // Safe disconnect: only after all messages were acknowledged
+      socket.safe_disconnect = function (callback) {
+        if (socket.mailbox.head == null &amp;&amp; jiff.counters.pending_opens === 0) {
+          socket.disconnect();
+          if (callback != null) {
+            callback();
+          }
+        } else {
+          socket.empty_deferred = $.Deferred();
+          socket.empty_deferred.promise().then(function deferred_safe_disconnect() {
+            if (jiff.counters.pending_opens === 0) {
+              socket.empty_deferred = null;
+              socket.disconnect();
+              if (callback != null) {
+                callback();
+              }
+            } else {
+              socket.empty_deferred = $.Deferred();
+              socket.empty_deferred.promise().then(deferred_safe_disconnect);
+            }
+          });
+        }
+      }
 
       return socket;
     };
@@ -3139,8 +3292,8 @@
      * @instance
      */
     jiff.resolve_messages_waiting_for_keys = function () {
-      for (var party_id in jiff.keymmap) {
-        if (!jiff.keymmap.hasOwnProperty(party_id)) {
+      for (var party_id in jiff.keymap) {
+        if (!jiff.keymap.hasOwnProperty(party_id)) {
           continue;
         }
 
@@ -3175,6 +3328,7 @@
      * Connect to the server and starts listening.
      * @method connect
      * @memberof jiff-instance
+     * @instance
      */
     jiff.connect = function () {
       // Send the computation id to the server to receive proper
@@ -3462,13 +3616,14 @@
     };
 
     /**
-     * The function used by JIFF to create a new share. This can be used by modules to create custom shares.
+     * The function used by JIFF to create a new share. This can be used by extensions to create custom shares.
      * Modifying this will modify how shares are generated in the BASE JIFF implementation.
      * A share is a value wrapper with a share object, it has a unique id
      * (per computation instance), and a pointer to the instance it belongs to.
      * A share also has methods for performing operations.
      * @memberof jiff-instance
      * @method secret_share
+     * @instance
      * @param {jiff-instance} jiff - the jiff instance.
      * @param {boolean} ready - whether the value of the share is ready or deferred.
      * @param {promise} promise - a promise to the value of the share.
@@ -3505,10 +3660,10 @@
     jiff.share = function (secret, threshold, receivers_list, senders_list, Zp, share_id) {
       // type check to confirm the secret to be shared is a number
       // for fixed-point extension it should allow non-ints
-      if (typeof(secret) !== 'number' || Math.floor(secret) !== secret || secret &lt; 0) {
+      if (secret != null &amp;&amp; (typeof(secret) !== 'number' || Math.floor(secret) !== secret || secret &lt; 0)) {
         throw 'secret must be a non-negative whole number';
       }
-      if (secret >= (Zp == null ? jiff.Zp : Zp)) {
+      if (secret != null &amp;&amp; (secret >= (Zp == null ? jiff.Zp : Zp))) {
         throw 'secret must fit inside Zp';
       }
       return jiff.internal_share(secret, threshold, receivers_list, senders_list, Zp, share_id);
@@ -3615,7 +3770,7 @@
      *                                        and depends on the order of arriving messages. In this case, use this parameter
      *                                        with every nested_open, to ensure ids are unique and define a total ordering on
      *                                        the execution of the opens (check implementation of slt for an example).
-     * @returns {promise} a (JQuery) promise to the open value of the secret.
+     * @returns {promise|null} a (JQuery) promise to the open value of the secret, null if the party is not specified in the parties array as a receiver.
      * @throws error if share does not belong to the passed jiff instance.
      */
     jiff.open = function (share, parties, op_ids) {
@@ -3938,6 +4093,7 @@
      * generates a random bit under MPC by xoring all bits sent by participating parties
      * @method generate_random_bit
      * @memberof jiff-instance.protocols
+     * @instance
      * @param {number} [compute_threshold=compute_list.length] - the threshold used during bit generation.
      * @param {Array} [compute_list=all_parties] - array of party ids that will perform this protocol, by default, this includes all parties.
      * @param {number} [receiving_threshold=receivers_list.length] - the threshold of the bit when stored by receivers after generation.
@@ -4119,11 +4275,38 @@
      * @method disconnect
      * @memberof jiff-instance
      * @instance
+     * @param {boolean} [safe=false] - if true, jiff will disconnect safely (i.e. after ensuring all
+     *                                 outgoing pending messages were delivered).
+     * @param {boolean} [free=false] - if set to true, it means this party's disconnection is final, and all resources
+     *                                 associated with this party must be freed.
+     *                                 If all parties in a computation are freed, then all resources associated with the
+     *                                 computation are freed, and any subsequent reconnection to the computation is as
+     *                                 if a the connection is for a fresh new computation.
+     * @param {function()} [callback] - executed after the instance safely disconnects, if safe is set to false, this
+     *                                  parameter is ignored.
      */
-    jiff.disconnect = function () {
-      jiff.socket.disconnect();
-      jiff.triplets_socket.disconnect();
-      jiff.numbers_socket.disconnect();
+    jiff.disconnect = function (safe, free, callback) {
+      if (free === true) {
+        jiff.socket.safe_emit('free', '');
+      }
+
+      if (safe) {
+        jiff.socket.safe_disconnect(callback);
+        if (jiff.triplets_socket !== jiff.socket) {
+          jiff.triplets_socket.safe_disconnect();
+        }
+        if (jiff.numbers_socket !== jiff.socket) {
+          jiff.numbers_socket.safe_disconnect();
+        }
+      } else {
+        jiff.socket.disconnect();
+        if (jiff.triplets_socket !== jiff.socket) {
+          jiff.triplets_socket.disconnect();
+        }
+        if (jiff.numbers_socket !== jiff.socket) {
+          jiff.numbers_socket.disconnect();
+        }
+      }
     };
 
     // Store the id when server sends it back
@@ -4203,6 +4386,7 @@
     jiff.counters.number_op_count = {};
     jiff.counters.op_count = {};
     jiff.counters.share_obj_count = 0;
+    jiff.counters.pending_opens = 0; // Keeps track of pending opens to disconnect safely.
 
     /**
      * Generate an op_id for an open operation between the holders of a share and a receiver.
@@ -4443,13 +4627,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.sharing_schemes.html">sharing_schemes</a></li><li><a href="jiff.utils.html">utils</a></li><li><a href="jiff-instance.html">jiff-instance</a></li><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="jiff-instance.protocols.html">protocols</a></li><li><a href="SecretShare.html">SecretShare</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.sharing_schemes.html">sharing_schemes</a></li><li><a href="jiff.utils.html">utils</a></li><li><a href="jiff-instance.html">jiff-instance</a></li><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="jiff-instance.protocols.html">protocols</a></li><li><a href="SecretShare.html">SecretShare</a></li></ul><h3>Global</h3><ul><li><a href="global.html">if_else</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Aug 02 2018 12:03:59 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Oct 11 2018 14:05:37 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

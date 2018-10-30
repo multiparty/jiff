@@ -1,3 +1,4 @@
+jiffclient.vim
 *.DS_Store
 .AppleDouble
 .LSOverride
@@ -176,3 +177,5 @@ typings/
 
 # dotenv environment variables file
 .env
+
+logs/

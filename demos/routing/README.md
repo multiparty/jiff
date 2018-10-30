@@ -7,7 +7,7 @@ A privacy preserving route recommendation demo.
 The service consists of three important kind of parties:
 * _Server_: serves client side html and javascript, routes messages between different components.
 * _Backend-Server_: stores the data for the different route recommendations, and serves requests from frontend servers obliviously.
-* _Frontend-Servers: the interface between clients and backend server. 
+* _Frontend-Servers_: the interface between clients and backend server. 
  Perform preprocessing with the backend server to obfuscate the recommendation data.
  Jointly obfuscate client queries and serve them to and from the backend server. There should be at least 2 front servers.
  
