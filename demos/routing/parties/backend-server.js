@@ -88,7 +88,7 @@ function mpc_preprocess(table) {
   var recompute_number = recompute_count++;
 
   // Announce to frontends the start of the preprocessing.
-  jiff_instance.emit('preprocess', [ frontends[0] ], JSON.stringify( { recompute_number: recompute_number, table: table } ));
+  jiff_instance.emit('preprocess', [ frontends[0] ], JSON.stringify( { recompute_number: recompute_number, table: table } ), false);
 
   jiff_instance.listen('preprocess', function (_, message) {
     var encrypted_result = JSON.parse(message).table;
@@ -111,7 +111,7 @@ function mpc_preprocess(table) {
     encrypted_tables[recompute_number] = encrypted_table;
 
     // Tell frontends to use this table from now on.
-    jiff_instance.emit('update', frontends, JSON.stringify( { recompute_number: recompute_number } ));
+    jiff_instance.emit('update', frontends, JSON.stringify( { recompute_number: recompute_number } ), false);
 
     // Delete old tables
     if (recompute_number - 3 >= 0) {
@@ -178,7 +178,7 @@ function finish_query(query_number) {
   // Error: no table matching set of keys
   if (encrypted_table == null) {
     console.log('QUERY ERROR 1: compute: ' + recompute_number + '. #: ' + query_number);
-    jiff_instance.emit('finish_query', frontends, JSON.stringify( { query_number: query_number, error: 'recompute number not available' }));
+    jiff_instance.emit('finish_query', frontends, JSON.stringify( { query_number: query_number, error: 'recompute number not available' }), false);
     return;
   }
 
@@ -197,7 +197,7 @@ function finish_query(query_number) {
   if (encrypted_table[source] == null || encrypted_table[source][dest] == null) {
     console.log('QUERY ERROR 2: compute: ' + recompute_number + '. #: ' + query_number);
 
-    jiff_instance.emit('finish_query', frontends, JSON.stringify( { query_number: query_number, error: 'invalid source or destination' }));
+    jiff_instance.emit('finish_query', frontends, JSON.stringify( { query_number: query_number, error: 'invalid source or destination' }), false);
     query[0].response.send(JSON.stringify( { error: 'invalid source or destination' } ));
     return;
   }
@@ -208,7 +208,7 @@ function finish_query(query_number) {
   // Share jump and send shares to user and frontends
   jump = multiplicative_share(jump);
   for (var k = 0; k < frontends.length; k++) {
-    jiff_instance.emit('finish_query', [frontends[k]], JSON.stringify( { query_number: query_number, jump: jump[k+1] }));
+    jiff_instance.emit('finish_query', [frontends[k]], JSON.stringify( { query_number: query_number, jump: jump[k+1] }), false);
   }
 
   query[0].response.send(JSON.stringify( { point: jump[0] } ));

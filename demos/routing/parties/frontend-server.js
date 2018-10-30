@@ -131,7 +131,7 @@ function handle_preprocess(_, message) {
   // Forward table to next party
   var index = frontends.indexOf(jiff_instance.id);
   var next_party = (index + 1 < frontends.length) ? [ frontends[index + 1] ] : backends;
-  jiff_instance.emit('preprocess', next_party, JSON.stringify(message));
+  jiff_instance.emit('preprocess', next_party, JSON.stringify(message), false);
 }
 
 // Handles user query
@@ -156,7 +156,7 @@ function handle_query(req, res) {
   sourceMask = sourceMask.mul(key).mod(prime);
   destinationMask = destinationMask.mul(key).mod(prime);
 
-  jiff_instance.emit('query', backends, JSON.stringify( { query_number: query_number, recompute_number: recompute_number, source: sourceMask.toString(), destination: destinationMask.toString() }));
+  jiff_instance.emit('query', backends, JSON.stringify( { query_number: query_number, recompute_number: recompute_number, source: sourceMask.toString(), destination: destinationMask.toString() }), false);
 }
 
 // Receives the query result from the backend server, de-garble it, and send it back to client.
