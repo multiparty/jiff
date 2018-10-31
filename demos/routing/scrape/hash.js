@@ -1,8 +1,7 @@
-CLIENT_INPUT_PATH = './output/client-unhashed-data.json';
-SERVER_INPUT_PATH = './output/server-unhashed-data.json';
-CLIENT_OUTPUT_PATH = './output/client-hashed-data.js';
-SERVER_OUTPUT_PATH = './output/server-hashed-data.json';
-
+var CLIENT_INPUT_PATH = './output/client-unhashed-data.json';
+var SERVER_INPUT_PATH = './output/server-unhashed-data.json';
+var CLIENT_OUTPUT_PATH = './output/client-hashed-data.js';
+var SERVER_OUTPUT_PATH = './output/server-hashed-data.json';
 
 var fs = require('fs');
 
