@@ -27,8 +27,8 @@ deactivate
 # Hash and move outputs
 echo "Hashing..."
 node hash.js
-mv output/client-hashed-data.js ../static/map-data.js
-mv output/server-hashed-data.json ../data/server.json
+mv output/client-hashed-data.js ../data/client-map.js
+mv output/server-hashed-data.json ../data/server-map.json
 
 # cleanup
 echo "Clean up..."

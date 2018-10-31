@@ -3,7 +3,7 @@
     {
       "target_name": "native",
       "sources": [
-        "parties/libsodium-port/binding.cpp"
+        "lib/libsodium-port/binding.cpp"
       ],
       "include_dirs": [
         "<!@(node -p \"require('node-addon-api').include\")",

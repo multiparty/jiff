@@ -1,3 +1,0 @@
-[submodule "demos/routing/parties/libsodium-noclamp"]
-	path = demos/routing/parties/libsodium-noclamp
-	url = git@github.com:KinanBab/libsodium.git

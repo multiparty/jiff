@@ -63,9 +63,9 @@ To stop the servers running in the background:
 ```
 
 # File/Directory Structure
-1. _data/_ contains the JSON files for the routing tables. Includes boston.json, the default routing table.
+1. _data/_ contains the JSON file for the routing tables, and the js file for the map data to be displayed in the browser.
 2. _parties/_ contains the source code for backend and frontend servers, as well as a configuration file for them.
-3. _scripts/_ contains scripts for running and killing the service.
+3. _scripts/_ contains scripts for running and killing the service, performing precomputation, and scraping map data online using geojson.
 4. _scrape/_ contains the python script used to create the map of boston, and scrape the routes and locations used in this demo by default.
 5. _server.js_ used for serving the client HTML and routing messages.
 6. _index.html_/_client.js_ the client UI and code for querying the service.
@@ -77,19 +77,17 @@ Initially, the demo is configured to use two frontend servers. To change the num
 2. scripts/run.json: add or remove instructions to run the exact number of frontend servers.
 3. client.js and test.js: add or remove the urls of the frontend servers from the urls array at the top of both files.
 
-## Scraping Geojson Location Information and Modifying the UI
-Use the scrape/get_data.py script to scrape the geojson information.
-The script will scrape a map of boston by default, and then generate an HTML map file corresponding to it.
+## Dependencies
+All dependencies will be install using npm install. package.json contains a preinstall hook to ensure that non-JS dependencies are also installed.
+npm install may require SUDO to install these non-JS dependencies. If you do not have sudo, remove the preinstall hook from package.json, and
+install these libraries locally while modifying the correct enviroment variables to ensure this code can see them.
 
-To use this script, you will need to install its dependencies:
-```shell
-cd scrape
-./dependencies.sh # installs spatialindex c library
-pip install -r requirements.txt # install python dependencies (virtualenv is recommended)
-```
+These non-JS dependencies include:
+1. libsodium: in particular, an experimental fork of it available at https://github.com/KinanBab/libsodium that allows scalarMultiplication without clamping
+2. spatialindex-src-1.8.5: for scraping and handling the geojson information
 
-## Providing Routing Data
-To run this demo on your own routing data, you need to create a json file under data/ that contains your routing information in the form:
-[ 'source', 'destination', 'jump (first step in the path from source to destination)']
+Both libraries will be downloaded as source, compiled, and installed by lib/dependencies.sh and scrape/dependencies.sh respectively, both of which
+run when npm install is called.
 
-You will need to run the demo using test.js instead of the html client, since that one has the map of boston hardcoded in it.
+
+

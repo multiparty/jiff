@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node-gyp rebuild",
-    "clean": "node-gyp clean"
+    "clean": "node-gyp clean",
+    "preinstall": "./lib/dependencies.sh && ./scrape/dependencies.sh"
   },
   "author": "Kinan Dak Albab <babman@bu.edu>, Rawane Issa <ra1issa@bu.edu",
   "license": "MIT",
