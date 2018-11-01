@@ -1,3 +1,5 @@
+cd scrape
+
 wget http://download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz
 tar -xzf spatialindex-src-1.8.5.tar.gz
 
@@ -10,5 +12,5 @@ sudo ldconfig
 
 cd ..
 
-rm spatialindex-src-1.8.5.tar.gz
-rm -rf spatialindex-src-1.8.5
+rm -rf spatialindex-src-1.8.5.tar.gz*
+

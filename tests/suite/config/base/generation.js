@@ -32,7 +32,7 @@ exports.generateShareInputs = function (test, count, options) {
   // 3) array of senders
   // 4) array of receivers
   for (var t = 0; t < count; t++) {
-    var oneTest = { 'numbers': {} };
+    var oneTest = { numbers: {} };
     // Generate numbers
     for (var p = 1; p <= options.party_count; p++) {
       oneTest['numbers'][p] = exports.generateUniform(test, options);

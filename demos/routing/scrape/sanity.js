@@ -1,5 +1,5 @@
-var table = require('./server.json');
-var client = require('./client.js');
+var table = require('../data/test2.json'); // server table
+var client = require('../static/client2.js'); // client data
 
 // parse client
 var points = client.obj.features;
