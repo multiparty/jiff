@@ -4,7 +4,7 @@ var BENCHCOUNT = 100000;
 var wrapper = require('../wrapper.js');
 var BN = require('bn.js');
 
-wrapper.ready.then(function() {
+wrapper.ready.then(function () {
   // Find and hash some Point
   var point = wrapper.hashToPoint('hello');
 

@@ -87,6 +87,7 @@ function submit() {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 function reconnect() {
   jiff_instance.connect();
 }
