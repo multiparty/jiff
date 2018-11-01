@@ -1,4 +1,4 @@
-#define BENCHCOUNT 25000
+#define BENCHCOUNT 100000
 
 #include <sodium.h>
 #include <stdio.h>
