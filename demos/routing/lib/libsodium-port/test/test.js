@@ -1,9 +1,8 @@
 // require c++ binding module
 var wrapper = require('../wrapper.js');
-var BN = require('bn.js');
-var sodium = require('libsodium-wrappers-sumo');
+var BN = require('../../../node_modules/bn.js/lib/bn');
 
-sodium.ready.then(function() {
+wrapper.ready.then(function () {
   // Find and hash some Point
   var point = wrapper.hashToPoint('hello');
   var pointStr = point.join(',');

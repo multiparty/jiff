@@ -14,19 +14,19 @@ void main() {
   unsigned char scalar[crypto_scalarmult_ed25519_SCALARBYTES];
 
   // Hash
-  crypto_generichash(hash, sizeof hash, "Hell1", 5, NULL, 0);
+  crypto_generichash(hash, sizeof hash, "hello", 5, NULL, 0);
   crypto_core_ed25519_from_uniform(point, hash);
 
   // Benchmarks
   for(int i = 0; i < BENCHCOUNT; i++) {
     randombytes_buf(scalar, sizeof scalar);
     if (crypto_scalarmult_ed25519_noclamp(result, scalar, point) != 0) {
-      printf("Could not mult\n");
+      printf("FAIL\n");
       return;
     }
   }
-  
-  printf("DONE\n");
+
+  printf("successE\n");
 }
 
 

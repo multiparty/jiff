@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  </head>
+
+  <body style="font-size: 10pt;">
+  <div id="output"> </div>
+
+  <script src="../../../node_modules/bn.js/lib/bn.js"></script>
+  <script src="../../../static/sodium-wrappers-sumo.js"></script>
+  <script src="../../../static/elliptic.js"></script>
+  <script src="../../../lib/libsodium-port/wrapper.js"></script>
+
+  <script type="text/javascript">
+    // Code
+    mySodiumWrapper.ready.then(function () {
+      var point = mySodiumWrapper.hashToPoint('hello');
+      document.getElementById('output').innerHTML += 'hash: ' + point.join(',') + '<br>';
+
+      var scalar = new BN(2032);
+      scalar = mySodiumWrapper.BNToBytes(scalar);
+
+      point = mySodiumWrapper.scalarMult(point, scalar);
+      document.getElementById('output').innerHTML += 'mult: ' + point.join(',') + '<br>';
+    });
+  </script>
+  </body>
+</html>

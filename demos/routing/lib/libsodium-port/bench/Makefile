@@ -5,12 +5,7 @@ bench.o: bench.c
 
 bench: bench.o
 	bash -c "time ./bench.o"
-
-test.o: test.c
-	gcc test.c -o test.o -lsodium
-
-test: test.o
-	bash -c "./test.o"
+	bash -c "time node bench.js"
 
 clean:
 	rm -rf *.o
