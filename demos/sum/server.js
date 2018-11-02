@@ -7,20 +7,20 @@ var http = require('http').Server(app);
 //Configure App
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use("/demos", express.static("demos"));
-app.use("/lib", express.static("lib"));
-app.use("/lib/ext", express.static("lib/ext"));
+app.use('/demos', express.static('demos'));
+app.use('/lib', express.static('lib'));
+app.use('/lib/ext', express.static('lib/ext'));
 
 
-var jiff_instance = require('../../lib/jiff-server').make_jiff(http, { logs:true }, app);
+require('../../lib/jiff-server').make_jiff(http, { logs:true }, app);
 
 //for future production release
-
-const port = process.env.port || 8080;
-http.listen(8080, function () {
+var port = process.env.port || 8080;
+// Serve static files.
+http.listen(port, function () {
   console.log('listening on *:8080');
 });
 
-console.log("Direct your browser to *:8080/demos/sum/client.html.");
-console.log("To run a node.js based party: node demos/sum/party <input>");
+console.log('Direct your browser to *:8080/demos/sum/client.html.');
+console.log('To run a node.js based party: node demos/sum/party <input>');
 console.log();

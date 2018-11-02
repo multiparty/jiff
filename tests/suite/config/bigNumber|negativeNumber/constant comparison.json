@@ -5,7 +5,7 @@
     "extensions": [ "bigNumber", "negativeNumber" ],
     "generation": {
       "file": "config/bigNumber|negativeNumber/generation.js",
-      "function": "generateArithmeticInputs"
+      "function": "generateConstantComparisonInputs"
     },
     "computation": {
       "file": "config/bigNumber|negativeNumber/computations.js",
@@ -23,7 +23,7 @@
       }
     },
     "==": {
-      "count": 5,
+      "count": 15,
       "parallel": 5,
       "options": {
         "Zp": 2039,
@@ -31,7 +31,7 @@
       }
     },
     "!=": {
-      "count": 5,
+      "count": 15,
       "parallel": 5,
       "options": {
         "Zp": 2039,

@@ -1,4 +1,4 @@
-(function(exports, node) {
+(function (exports, node) {
   var saved_instance;
 
   /**
@@ -9,11 +9,12 @@
     // Added options goes here
     opt.Zp = 13;
 
-    if(node) {
+    if (node) {
+      // eslint-disable-next-line no-undef
       jiff = require('../../lib/jiff-client');
-      $ = require('jquery-deferred');
     }
 
+    // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     // if you need any extensions, put them here
 
@@ -24,24 +25,27 @@
    * The MPC computation
    */
   exports.compute = function (inputs, jiff_instance) {
-    if(jiff_instance == null) jiff_instance = saved_instance;
+    if (jiff_instance == null) {
+      jiff_instance = saved_instance;
+    }
 
     var deferred = $.Deferred();
 
     // This array holds the shares for each option in the voting
-    jiff_instance.share_array(inputs).then(function(option_shares) {
+    jiff_instance.share_array(inputs).then(function (option_shares) {
       var results = option_shares[1];
       //Get a partial tally for each option in the vote by adding the shares across parties together.
-      for(var j = 2; j <= jiff_instance.party_count; j++) {
-        for(var i = 0; i < option_shares[j].length; i++)
+      for (var j = 2; j <= jiff_instance.party_count; j++) {
+        for (var i = 0; i < option_shares[j].length; i++) {
           results[i] = results[i].sadd(option_shares[j][i]);
+        }
       }
-      
-      jiff_instance.open_array(results).then(function(results) {
+
+      jiff_instance.open_array(results).then(function (results) {
         deferred.resolve(results);
       });
     });
 
     return deferred.promise();
   };
-}((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
+}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
