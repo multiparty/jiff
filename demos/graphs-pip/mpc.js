@@ -23,6 +23,8 @@
       // eslint-disable-next-line no-undef
       jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber');
       // eslint-disable-next-line no-undef
+      jiff_performance = require('../../lib/ext/jiff-client-performance');
+      // eslint-disable-next-line no-undef
       geometry = require('./geometry.js');
       // eslint-disable-next-line no-undef
       BigNumber = require('bignumber.js');
@@ -39,6 +41,8 @@
     saved_instance.apply_extension(jiff_fixedpoint, opt);
     // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_negativenumber, opt);
+    // eslint-disable-next-line no-undef
+    saved_instance.apply_extension(jiff_performance, { elementId: 'perfDiv' });
 
     saved_instance.connect();
     return saved_instance;
