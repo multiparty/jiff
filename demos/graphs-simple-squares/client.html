@@ -16,31 +16,38 @@
     <script src="/lib/jiff-client.js"></script>
     <script src="/lib/ext/jiff-client-bignumber.js"></script>
     <script src="/lib/ext/jiff-client-fixedpoint.js"></script>
-
-    <!-- Contains UI Handlers and Input Checks -->
-    <script type="text/javascript" src="./client.js"></script>
+    <script src="/lib/ext/jiff-client-negativenumber.js"></script>
+    <script src="/lib/ext/jiff-client-performance.js"></script>
 
     <!-- Contains the MPC implementation -->
     <script type="text/javascript" src="./mpc.js"></script>
+
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="./client.js"></script>
   </head>
   <body>
     <div style="width:300px; height:300px;">
       <canvas id="myChart" width="400" height="400"></canvas>
     </div>
     <h1>Connect JIFF</h1>
-    <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
-    <button id="connectButton" onclick="connect();">Connect</button>
+    <label for="computation_id">Computation ID</label>
+    <input id="computation_id" value="test"/> <br/><br/>
+
+    <label for="count">Party Count</label> <input id="count" pattern="[0-9]*" value="2"/>
+    &nbsp; <button id="connectButton" onclick="connect();">Connect</button> <br/><br/>
+
+    <hr/>
+
+    <h1>Simple Least Squares</h1>
+    <p>Enter pairs (x,y) one at at time, each value must be between -10 and 10 (exclusive) and must have no more than 2 digits of accuracy.</p>
+    <div>X Value: <input id="xVal" type="text" placeholder="X" disabled="disabled"/><br/></div>
+    <div>Y Value: <input id="yVal" type="text" placeholder="Y" disabled="disabled"/><br/></div>
+    <button onclick="pushCoordinate();" id="addButton" disabled="disabled">Add Point!</button> <br/>
+    <button onclick="clearCoordinates();" id="clearButton"  disabled="disabled">Clear</button>
     <br/><br/>
-    <hr>
-    <h4>Please connect to server and follow the prompts to add points. An axis will be chosen automatically.</h4>
-    <input type="radio" id="c1" name="choice" value="x">
-    <label for="c1">X</label>
-    <input type="radio" id="c2" name="choice" value="y">
-    <label for="c2">Y</label>
-    <div>Value:</div><input id="val" type="text" placeholder="value"/><br/><br/>
-    <button onclick="pushCoordinate(val.value)">Add Coordinate!</button>
-    <br/><br/>
-    <button onclick="submit(coordinates)" id="calculate">Calculate Least Squares!</button>
+
+    <button onclick="submit();" id="submitButton"  disabled="disabled">Calculate Least Squares!</button>
     <div id="output"></div>
+    <div id="perfDiv"></div>
   </body>
 </html>

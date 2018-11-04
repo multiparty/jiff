@@ -7,10 +7,11 @@ var mpc = require('./mpc.js');
 var showProgress = true;
 
 // Generic Testing Parameters
-var party_count = 2;
+var party_count = 3;
 var parallelismDegree = 5; // Max number of test cases running in parallel
 var n = 1; // Number of test cases in total
-var maximumNumberOfInputs = 10;
+var minimumNumberOfTuples = 5;
+var maximumNumberOfTuples = 10;
 var Zp = null;
 
 // The limits of the graph.
@@ -21,6 +22,15 @@ var maxY = 100;
 
 var randomInRange = function (min, max) {
   Math.floor(Math.random()*(max - min + 1) + min);
+};
+
+var mapTuplesToTwoArrays = function (tuples) {
+  var r = { x:[], y:[] };
+  tuples.forEach(function (tuple) {
+    r.x.push(tuple.x);
+    r.y.push(tuple.y);
+  });
+  return r;
 };
 
 function leastSquaresCalculator(values_x, values_y) {
@@ -67,6 +77,9 @@ function leastSquaresCalculator(values_x, values_y) {
   return {m:m, b:b};
 }
 
+// Parameters specific to this demo
+/* PUT PARAMETERS HERE */
+
 /**
  * CHANGE THIS: Generate inputs for your tests
  * Should return an object with this format:
@@ -74,30 +87,44 @@ function leastSquaresCalculator(values_x, values_y) {
  *   'party_id': [ 'test1_input', 'test2_input', ...]
  * }
  */
-function generateInputs() {
-  var inputs = {1:[], 2:[]};
+function generateInputs(party_count) {
+  var inputs = {};
 
-  var numberOfInputs = randomInRange(2, maximumNumberOfInputs);
+  var i;
+  for (i = 1; i <= party_count; i++) {
+    inputs[i] = [];
+  }
 
   // Generate test cases one at a time
   for (var t = 0; t < n; t++) {
-    var arr1;
-    var arr2;
-
+    var numberOfTuples = randomInRange(minimumNumberOfTuples, maximumNumberOfTuples);
+    var testCase = {};
+    for (i = 1; i <= party_count; i++) {
+      testCase[i] = [];
+    }
+    var tuples;
     do { //restrict generated test cases to positive m and b. Should be removed after adding the -ve numbers ext.
-      arr1 = [];
-      arr2 = [];
-      for (var i = 0; i < numberOfInputs; i++) {
-        arr1.push(randomInRange(minX, maxX));
-        arr2.push(randomInRange(minY, maxY));
+      tuples = [];
+      for (i = 0; i < numberOfTuples; i++) {
+        tuples.push({x:randomInRange(minX, maxX),y:randomInRange(minY, maxY)});
       }
-      var tmp = leastSquaresCalculator(arr1, arr2);
+      var twoArrays = mapTuplesToTwoArrays(tuples);
+      var tmp = leastSquaresCalculator(twoArrays.x, twoArrays.y);
       var m = tmp.m;
       var b = tmp.b;
     } while (m < 0 || b < 0);
-    inputs[1].push(arr1);
-    inputs[2].push(arr2);
+    for (i = 1; i <= party_count; i++) {
+      testCase[i].push(tuples.splice(-1,1)[0]);
+    }
+    while (tuples.length !== 0) {
+      var randomParty = randomInRange(1, party_count);
+      testCase[randomParty].push(tuples.splice(-1,1)[0]);
+    }
+    for (i = 1; i <= party_count; i++) {
+      inputs[i].push(testCase[i]);
+    }
   }
+  console.log(inputs);
   return inputs;
 }
 
@@ -109,9 +136,18 @@ function generateInputs() {
  */
 function computeResults(inputs) {
   var results = [];
+
   for (var j = 0; j < n; j++) {
-    results.push(leastSquaresCalculator(inputs[1][j], inputs[2][j]));
+    var tuples = [];
+    for (var i = 1; i <= party_count; i++) {
+      console.log(inputs[i][j]);
+      tuples = tuples.concat(inputs[i][j]);
+    }
+    console.log(tuples);
+    var twoArrays = mapTuplesToTwoArrays(tuples);
+    results.push(leastSquaresCalculator(twoArrays.x, twoArrays.y));
   }
+  console.log(results);
   return results;
 }
 
@@ -126,7 +162,7 @@ describe('Test', function () {
   it('Exhaustive', function (done) {
     var count = 0;
 
-    var inputs = generateInputs();
+    var inputs = generateInputs(party_count);
     var realResults = computeResults(inputs);
 
     var onConnect = function (jiff_instance) {
