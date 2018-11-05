@@ -6,7 +6,7 @@
 
 console.log('Command line arguments: <input> [<party_count> [<computation_id> [<party_id>]]]');
 console.log('<<>> input must look like: [x1,y1,x2,y3,...]');
-console.log('<<>> all points coordinates must be between -10 and 10 (exclusive), with at most 2 digits of accuracy.');
+console.log('<<>> all points coordinates must be between -5 and 5 (exclusive), with at most 2 digits of accuracy.');
 
 var mpc = require('./mpc');
 
@@ -18,7 +18,7 @@ for (var i = 0; i < input.length; i += 2) {
     console.log('all coordinates must be numbers');
     return;
   }
-  if (input[i] <= -10 || input[i] >= 10 || input[i+1] <= -10 || input[i+1] >= 10) {
+  if (input[i] <= -5 || input[i] >= 5 || input[i+1] <= -5 || input[i+1] >= 5) {
     console.log('all coordinates must be between -10 and 10 exclusive.');
     return;
   }
@@ -58,9 +58,13 @@ var options = {
   Zp: '2147483647',
   integer_digits: 5,
   decimal_digits: 2
-}; */
+};
   Zp: '33554393',
-  integer_digis: 3,
+  integer_digits: 3,
+  decimal_digits: 2
+}; */
+  Zp: '268435399',
+  Integer_digits: 4,
   decimal_digits: 2
 };
 

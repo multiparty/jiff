@@ -1,8 +1,8 @@
 // The limits of the graph. The minimum and maximum X and Y values.
-var minX = -10;
-var maxX = 10;
-var minY = -10;
-var maxY = 10;
+var minX = -5;
+var maxX = 5;
+var minY = -5;
+var maxY = 5;
 var maxAccuracy = 2;
 
 // Stores the coordinates of the vertices
@@ -95,9 +95,13 @@ function connect() {
     Zp: '2147483647',
     integer_digits: 5,
     decimal_digits: 2
-  }; */
+  };
     Zp: '33554393',
-    integer_digis: 3,
+    integer_digits: 3,
+    decimal_digits: 2
+  }; */
+    Zp: '268435399',
+    Integer_digits: 4,
     decimal_digits: 2
   };
   options.onError = function (error) {

@@ -58,6 +58,9 @@
 
     var deferred = $.Deferred();
     var zero = jiff_instance.share(0, null, null, [1])[1];
+    var precision = jiff_instance.helpers.magnitude(jiff_instance.decimal_digits);
+
+    zero = zero.cmult(precision); // increase precision
 
     // share input with all parties
     jiff_instance.share_array(values).then(function (inputs) {
@@ -74,18 +77,21 @@
         for (j = 0; j < inputs[i].length; j += 2) {
           xAvg = xAvg.sadd(inputs[i][j]);
           yAvg = yAvg.sadd(inputs[i][j+1]);
-          xSqAvg = xSqAvg.sadd(inputs[i][j].smult(inputs[i][j]));
-          ySqAvg = ySqAvg.sadd(inputs[i][j+1].smult(inputs[i][j+1]));
-          xyAvg = xyAvg.sadd(inputs[i][j].smult(inputs[i][j+1]));
+          // do not divide in smult, we can handle the increase precision since no two multiplications
+          // are performed in sequence
+          xSqAvg = xSqAvg.sadd(inputs[i][j].smult(inputs[i][j], null, false));
+          ySqAvg = ySqAvg.sadd(inputs[i][j+1].smult(inputs[i][j+1], null, false));
+          xyAvg = xyAvg.sadd(inputs[i][j].smult(inputs[i][j+1], null, false));
           length++;
         }
       }
 
+      var factor = precision.times(length);
       xAvg = xAvg.cdiv(length);
       yAvg = yAvg.cdiv(length);
-      xSqAvg = xSqAvg.cdiv(length);
-      ySqAvg = ySqAvg.cdiv(length);
-      xyAvg = xyAvg.cdiv(length);
+      xSqAvg = xSqAvg.cdiv(factor);
+      ySqAvg = ySqAvg.cdiv(factor);
+      xyAvg = xyAvg.cdiv(factor);
 
       // Compute standard deviations
       var xDevSq = zero;
@@ -94,25 +100,32 @@
         for (j = 0; j < inputs[i].length; j += 2) {
           var xDiff = inputs[i][j].ssub(xAvg);
           var yDiff = inputs[i][j+1].ssub(yAvg);
-          xDevSq = xDevSq.sadd(xDiff.smult(xDiff));
-          yDevSq = yDevSq.sadd(yDiff.smult(yDiff));
+          // Same reasoning, do not divide individual values to reduce precision, delay division till the end
+          xDevSq = xDevSq.sadd(xDiff.smult(xDiff, null, false));
+          yDevSq = yDevSq.sadd(yDiff.smult(yDiff, null, false));
         }
       }
-      xDevSq = xDevSq.cdiv(length);
-      yDevSq = yDevSq.cdiv(length);
+      xDevSq = xDevSq.cdiv(factor);
+      yDevSq = yDevSq.cdiv(factor);
 
       // Finally, compute slope (squared)
       var numerator = xyAvg.ssub(xAvg.smult(yAvg));
       numerator = numerator.smult(numerator);
+      numerator = numerator.smult(yDevSq);
+
       var denumerator = xSqAvg.ssub(xAvg.smult(xAvg));
       denumerator = denumerator.smult(ySqAvg.ssub(yAvg.smult(yAvg)));
-      var rSq = numerator.sdiv(denumerator); // Gonna be SLOW!
+      denumerator = denumerator.smult(xDevSq);
 
-      var mSq = rSq.smult(xDevSq).sdiv(yDevSq);
+      var mSq = numerator.sdiv(denumerator);
       mSq.open().then(function (mSq) {
         var m = mSq.sqrt();
-        var p = yAvg.ssub(xAvg.cmult(m));
+        m = jiff_instance.helpers.to_fixed(m);
+
+        var p = yAvg.cmult(precision).ssub(xAvg.cmult(m, null, false));
         p.open().then(function (p) {
+          console.log(p.toString());
+          p = jiff_instance.helpers.to_fixed(p.div(precision));
           deferred.resolve({ m: m, p: p});
         });
       });
