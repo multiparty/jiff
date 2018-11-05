@@ -64,7 +64,7 @@ var options = {
   decimal_digits: 2
 }; */
   Zp: '268435399',
-  Integer_digits: 4,
+  integer_digits: 4,
   decimal_digits: 2
 };
 

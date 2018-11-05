@@ -124,7 +124,6 @@
 
         var p = yAvg.cmult(precision).ssub(xAvg.cmult(m, null, false));
         p.open().then(function (p) {
-          console.log(p.toString());
           p = jiff_instance.helpers.to_fixed(p.div(precision));
           deferred.resolve({ m: m, p: p});
         });
