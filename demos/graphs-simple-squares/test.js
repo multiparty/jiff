@@ -1,71 +1,40 @@
 // Chai
-// var expect = require('chai').expect;
 var assert = require('chai').assert;
 
+var BigNumber = require('bignumber.js');
 var mpc = require('./mpc.js');
 
 var showProgress = true;
 
-// Generic Testing Parameters
-var party_count = 2;
-var parallelismDegree = 5; // Max number of test cases running in parallel
-var n = 1; // Number of test cases in total
-var maximumNumberOfInputs = 10;
-var Zp = null;
+// Zp and accuracies
+var Zp = '268435399';
+var integer_digits = 4;
+var decimal_digits = 2;
 
-// The limits of the graph.
-var minX = 0;
-var maxX = 100;
-var minY = 0;
-var maxY = 100;
-
-var randomInRange = function (min, max) {
-  Math.floor(Math.random()*(max - min + 1) + min);
-};
-
-function leastSquaresCalculator(values_x, values_y) {
-  var sum_x = 0;
-  var sum_y = 0;
-  var sum_xy = 0;
-  var sum_xx = 0;
-  var count = 0;
-
-  /*
-  * We'll use those variables for faster read/write access.
-  */
-  var x = 0;
-  var y = 0;
-  var values_length = values_x.length;
-
-  if (values_length !== values_y.length) {
-    throw new Error('The parameters values_x and values_y need to have same size!');
+var magnitude = new BigNumber(10).pow(decimal_digits);
+function toFixed(num) {
+  var str = num.toFixed(decimal_digits, BigNumber.ROUND_FLOOR);
+  num = new BigNumber(str);
+  if (num.gte(new BigNumber(10).pow(integer_digits))) {
+    console.log('Warning: test: increase integer digits!, ', num.toString());
   }
-  if (values_length === 0) {
-    return [ [], [] ];
-  }
-
-  /*
-  * Calculate the sum for each of the parts necessary.
-  */
-  for (var v = 0; v < values_length; v++) {
-    x = values_x[v];
-    y = values_y[v];
-    sum_x += x;
-    sum_y += y;
-    sum_xx += x*x;
-    sum_xy += x*y;
-    count++;
-  }
-
-  /*
-  * Calculate m and b for the formular:
-  * y = x * m + b
-  */
-  var m = (count*sum_xy - sum_x*sum_y) / (count*sum_xx - sum_x*sum_x);
-  var b = (sum_y/count) - (m*sum_x)/count;
-
-  return {m:m, b:b};
+  return num;
 }
+
+// counts
+var tests = 3;
+var party_count = 2;
+var parallelismDegree = 1;
+
+// min and max points per parties
+var minPoints = 3;
+var maxPoints = 6; // excluded
+
+// graph limits
+var minX = -5;
+var maxX = 5;
+var minY = -5;
+var maxY = 5;
 
 /**
  * CHANGE THIS: Generate inputs for your tests
@@ -77,28 +46,70 @@ function leastSquaresCalculator(values_x, values_y) {
 function generateInputs() {
   var inputs = {1:[], 2:[]};
 
-  var numberOfInputs = randomInRange(2, maximumNumberOfInputs);
+  for (var t = 0; t < tests; t++) {
+    for (var p = 1; p <= party_count; p++) {
+      inputs[p][t] = [];
+      var count = Math.random() * (maxPoints - minPoints) + minPoints;
+      for (var k = 0; k < count; k++) {
+        var x = BigNumber.random().times(maxX - minX).plus(minX);
+        var y = BigNumber.random().times(maxY - minY).plus(minY);
 
-  // Generate test cases one at a time
-  for (var t = 0; t < n; t++) {
-    var arr1;
-    var arr2;
+        x = x.times(magnitude).floor().div(magnitude);
+        y = y.times(magnitude).floor().div(magnitude);
 
-    do { //restrict generated test cases to positive m and b. Should be removed after adding the -ve numbers ext.
-      arr1 = [];
-      arr2 = [];
-      for (var i = 0; i < numberOfInputs; i++) {
-        arr1.push(randomInRange(minX, maxX));
-        arr2.push(randomInRange(minY, maxY));
+        if (x.eq(minX) || y.eq(minY)) {
+          k--;
+          continue;
+        }
+
+        inputs[p][t].push({x: x, y: y});
       }
-      var tmp = leastSquaresCalculator(arr1, arr2);
-      var m = tmp.m;
-      var b = tmp.b;
-    } while (m < 0 || b < 0);
-    inputs[1].push(arr1);
-    inputs[2].push(arr2);
+    }
   }
+
   return inputs;
+}
+
+function leastSquares(points) {
+  var i, point;
+  var N = points.length;
+
+  // Compute averages
+  var Z0 = new BigNumber(0);
+  var avgX = Z0; var avgY = Z0; var avgSqX = Z0; var avgSqY = Z0; var avgXY = Z0;
+  for (i = 0; i < N; i++) {
+    // no errors here, since least significant decimal digit is zero on all inputs.
+    point = points[i];
+    avgX = avgX.plus(point.x);
+    avgY = avgY.plus(point.y);
+    avgSqX = avgSqX.plus(point.x.pow(2));
+    avgSqY = avgSqY.plus(point.y.pow(2));
+    avgXY = avgXY.plus(point.x.times(point.y));
+  }
+  avgX = avgX.div(N); avgY = avgY.div(N); avgSqX = avgSqX.div(N); avgSqY = avgSqY.div(N); avgXY = avgXY.div(N);
+  avgX = toFixed(avgX); avgY = toFixed(avgY); avgSqX = toFixed(avgSqX); avgSqY = toFixed(avgSqY); avgXY = toFixed(avgXY);
+
+  // Compute uncorrected sample standard deviations.
+  var xStdDev = Z0; var yStdDev = Z0;
+  for (i = 0; i < N; i++) {
+    point = points[i];
+    xStdDev = xStdDev.plus(point.x.minus(avgX).pow(2));
+    yStdDev = yStdDev.plus(point.y.minus(avgY).pow(2));
+  }
+  xStdDev = toFixed(xStdDev.div(N)); yStdDev = toFixed(yStdDev.div(N));
+
+  var num = toFixed(avgXY.minus(toFixed(avgX.times(avgY))).pow(2));
+  num = toFixed(num.times(yStdDev));
+
+  var denum = avgSqX.minus(toFixed(avgX.times(avgX)));
+  denum = denum.times(avgSqY.minus(toFixed(avgY.times(avgY))));
+  denum = toFixed(toFixed(denum).times(xStdDev));
+
+  var m = toFixed(num.div(denum));
+  m = toFixed(m.sqrt());
+  var p = avgY.minus(m.times(avgX));
+  p = toFixed(p);
+  return {m: m, p: p};
 }
 
 /**
@@ -109,9 +120,16 @@ function generateInputs() {
  */
 function computeResults(inputs) {
   var results = [];
-  for (var j = 0; j < n; j++) {
-    results.push(leastSquaresCalculator(inputs[1][j], inputs[2][j]));
+
+  for (var i = 0; i < inputs[1].length; i++) {
+    var points = inputs[1][i];
+    for (var p = 2; p <= party_count; p++) {
+      points = points.concat(inputs[p][i]);
+    }
+
+    results.push(leastSquares(points));
   }
+
   return results;
 }
 
@@ -158,16 +176,17 @@ describe('Test', function () {
         // If we reached here, it means we are done
         count++;
         for (var i = 0; i < testResults.length; i++) {
-          // construct debugging message
-          var ithInputs = inputs[1][i] + '';
+          // debugging message
+          var ithInputs = JSON.stringify(inputs[1][i]) + '';
           for (var p = 2; p <= party_count; p++) {
-            ithInputs += ',' + inputs[p][i];
+            ithInputs += ',' + JSON.stringify(inputs[p][i]);
           }
-          var msg = 'Party: ' + jiff_instance.id + '. inputs: [' + ithInputs + ']';
+          var msg = '#' + i + 'Party: ' + jiff_instance.id + '. inputs: [' + ithInputs + ']';
 
           // assert results are accurate
           try {
-            assert.deepEqual(testResults[i].toString(), realResults[i].toString(), msg);
+            assert.deepEqual(testResults[i].m.toString(), realResults[i].m.toString(), msg + ' SLOPE!');
+            assert.deepEqual(testResults[i].p.toString(), realResults[i].p.toString(), msg + ' yINTERCEPT!');
           } catch (assertionError) {
             done(assertionError);
             done = function () { };
@@ -181,7 +200,7 @@ describe('Test', function () {
       })(0);
     };
 
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp };
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp, integer_digits: integer_digits, decimal_digits: decimal_digits };
     for (var i = 0; i < party_count; i++) {
       mpc.connect('http://localhost:8080', 'mocha-test', options);
     }
