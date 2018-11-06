@@ -75,10 +75,12 @@ All the JIFF library test cases can be run in the following way:
 npm test
 ```
 
-Demos are accompanied by test cases, to run a demo test case, use:
+Demos are accompanied by test cases. The following command can be used to run the demos servers and test cases:
 ```shell
-npm run-script test-demo -- demo/<demo-name>/test.js
+npm run-script test-demo -- demo/<demo-name>
 ```
+The command assumes that the server is located at demos/<demo-name>/server.js and the test cases are located at demos/<demo-name>/test.js
+See demos/run-test.sh for instructions for running test cases located in different directories or with different names.
 
 See the [testing suite framework documentation](tests/suite/README.md) for more details on running and creating tests for the JIFF library.
 

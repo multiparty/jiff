@@ -1,7 +1,17 @@
 language: node_js
+# https://stackoverflow.com/questions/15674064/how-to-fix-a-permission-denied-publickey-error-for-a-git-submodule-update-in-t
+# Handle git submodules yourself
+git:
+    submodules: false
+# Use sed to replace the SSH URL with the public URL, then initialize submodules
+before_install:
+    - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+    - git submodule update --init --recursive
+# End submodules fix
 node_js:
 - '10'
 env:
+- DEMOS="TRUE"
 - TEST_NAME='base' TEST_SUITE='-parallel'
 - TEST_NAME='bigNumber' TEST_SUITE='-parallel'
 - TEST_NAME='negativeNumber' TEST_SUITE='-parallel'
@@ -18,7 +28,7 @@ env:
 - TEST_NAME='fixedpoint|negativeNumber' TEST_SUITE='comparison'
 script:
 - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
-- npm run test -- "$TEST_NAME" "$TEST_SUITE"
+- if [ "$DEMOS" == "TRUE" ]; then npm run-script test-demo -- \*; else npm run test -- "$TEST_NAME" "$TEST_SUITE"; fi
 - kill %1
 cache:
   directories:

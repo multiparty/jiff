@@ -1,251 +1,172 @@
-/**
- * Do not modify this file unless you have too
- * This file has UI handlers.
- */
+// The limits of the graph. The minimum and maximum X and Y values.
+var minX = -5;
+var maxX = 5;
+var minY = -5;
+var maxY = 5;
+var maxAccuracy = 2;
 
+// Stores the coordinates of the vertices
+var coordinates = [];
+var line = [];
+
+// Chart for drawing
+var myChart;
+window.onload = function () {
+  var ctx = document.getElementById('myChart').getContext('2d');
+
+  var scales = {
+    yAxes: [{ ticks: { min: minY,  max: maxY, maxTicksLimit: 5 } }],
+    xAxes: [{ type: 'linear', position: 'bottom', ticks: { min: minX, max: maxX, maxTicksLimit: 20 } }]
+  };
+
+  // eslint-disable-next-line no-undef
+  myChart = new Chart(ctx, {
+    type: 'line',
+    data: { datasets: [
+      { id: 'data-points', label: 'input', data: coordinates, fill: false, showLine: false, borderColor: '#000000', pointBackgroundColor: 'rgb(0,0,0)', pointRadius: 5 },
+      { id: 'least-line', label: 'output', data: line, fill: false, pointBackgroundColor: '#000099', borderColor: '#000099', pointRadius: 0 }
+    ]},
+    options: {
+      elements: { line: { tension: 1 } },
+      scales: scales
+    }
+  });
+};
+
+
+// eslint-disable-next-line no-unused-vars
+function pushCoordinate() {
+  var xInput = Number($('#xVal').val());
+  var yInput = Number($('#yVal').val());
+
+  if (isNaN(xInput) || isNaN(yInput)) {
+    alert('Coordinates must be a number');
+    return;
+  }
+
+  if (xInput <= minX || xInput >= maxX) {
+    alert('X Values must be within range ('+minX+', '+maxX+')');
+    return;
+  }
+  if (yInput <= minX || yInput >= maxY) {
+    alert('Y Values must be within range ('+minY+', '+maxY+')');
+    return;
+  }
+
+  var xAcc = xInput * Math.pow(10, maxAccuracy);
+  var yAcc = yInput * Math.pow(10, maxAccuracy);
+  if (xAcc !== Math.floor(xAcc) || yAcc !== Math.floor(yAcc)) {
+    alert('Coordinates must have at most ' + maxAccuracy + ' digits of accuracy');
+    return;
+  }
+
+  $('#output').append('<p>'+xInput+'<br/>'+yInput+'</p>');
+
+  // push coordinate to the 'coordinates' array
+  coordinates.push( { x: xInput, y: yInput } );
+  myChart.update();
+  $('#xVal').val('');
+  $('#yVal').val('');
+}
+
+// eslint-disable-next-line no-unused-vars
+function clearCoordinates() {
+  while (coordinates.length > 0) {
+    coordinates.pop();
+  }
+  myChart.update();
+  $('#output').innerHTML = '';
+}
+
+// eslint-disable-next-line no-unused-vars
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
+  var party_count = $('#count').val();
 
-  var options = { party_count:2, Zp: new BigNumber(32416190071), autoConnect: false };
-  options.onError = function(error) { $("#output").append("<p class='error'>"+error+"</p>"); };
-  options.onConnect = function(jiff_instance) {
-    $("#button").attr("disabled", false);
-    $("#output").append("<p>All parties Connected!</p>");
-
-    if(jiff_instance.id === 1) {
-      $('input:radio[name=choice]').val(['x']).attr("disabled", true);
-      $("#output").append(`Please input x coordinates.<br/>`);
-    } else {
-      $('input:radio[name=choice]').val(['y']).attr("disabled", true);
-      $("#output").append(`Please input y coordinates.<br/>`);
-    }
+  var options = {
+    party_count: party_count,
+    /*
+    Zp: '2199023255531',
+    integer_digits: 6,
+    decimal_digits: 3
   };
-  
+    Zp: '2147483647',
+    integer_digits: 5,
+    decimal_digits: 2
+  };
+    Zp: '33554393',
+    integer_digits: 3,
+    decimal_digits: 2
+  }; */
+    Zp: '268435399',
+    integer_digits: 4,
+    decimal_digits: 2
+  };
+  options.onError = function (error) {
+    $('#output').append("<p class='error'>"+error+'</p>');
+  };
+  options.onConnect = function () {
+    $('#connectButton').prop('disabled', true);
+    $('#output').append('<p>All parties Connected!</p>');
+    $('#submitButton').prop('disabled', false);
+    $('#addButton').prop('disabled', false);
+    $('#clearButton').prop('disabled', false);
+    $('#xVal').prop('disabled', false);
+    $('#yVal').prop('disabled', false);
+  };
+
   var hostname = window.location.hostname.trim();
   var port = window.location.port;
-  if(port == null || port == '') 
-    port = "80";
-  if(!(hostname.startsWith("http://") || hostname.startsWith("https://")))
-    hostname = "http://" + hostname;
-  if(hostname.endsWith("/"))
+  if (port == null || port === '') {
+    port = '80';
+  }
+  if (!(hostname.startsWith('http://') || hostname.startsWith('https://'))) {
+    hostname = 'http://' + hostname;
+  }
+  if (hostname.endsWith('/')) {
     hostname = hostname.substring(0, hostname.length-1);
-  if(hostname.indexOf(":") > -1 && hostname.lastIndexOf(":") > hostname.indexOf(":"))
-    hostname = hostname.substring(0, hostname.lastIndexOf(":"));
+  }
+  if (hostname.indexOf(':') > -1 && hostname.lastIndexOf(':') > hostname.indexOf(':')) {
+    hostname = hostname.substring(0, hostname.lastIndexOf(':'));
+  }
 
-  hostname = hostname + ":" + port;
-  mpc.connect(hostname, computation_id, options);
+  hostname = hostname + ':' + port;
+  // eslint-disable-next-line no-undef
+  jiff_instance = mpc.connect(hostname, computation_id, options);
 }
 
-// The limits of the graph. The minimum and maximum X and Y values.
-const minX = 0;
-const maxX = 100;
-const minY = 0;
-const maxY = 100;
-
-/**
- * Array of numbers. It holds the coordinates input by the user.
- */
-let coordinates = [];
-
-/** 
- * Array holding data point objects. This is populated automatically when the user inputs a point.
- * It has this format: [{x:number,y:number}]
- */
-let input_data_points = [];
-
-/**
- * The Chart.js object.
- */
-let myChart;
-
-/**
- * Function instantiates the chart.js object when the document loads.
- */
-window.onload = () => {
-  const ctx = document.getElementById("myChart").getContext('2d');
-  myChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-          datasets: [
-              // The specifications for the points input by the user.
-              {
-                  id:"data-points",
-                  label:"",
-                  data: input_data_points,
-                  fill:false,
-                  showLine:false,
-                  pointBackgroundColor:"rgb(0,0,0)",
-                  pointRadius:5
-              },
-              // The specifications for the best fit line.
-              {
-                  id:"line",
-                  label:"",
-                  data: [],
-                  fill:false,
-                  pointBackgroundColor:"rgb(0,0,0)",
-                  borderColor:"rgb(0,0,0)",
-                  pointRadius:0.1
-              }
-          ]
-      },
-      options: {
-          scales: {
-              // The axes specifications
-              yAxes: [{
-                  ticks: {
-                      min: minY,
-                      max: maxY
-                  }
-              }],
-              xAxes: [{
-                  type: 'linear',
-                  position: 'bottom',
-                  ticks: {
-                      min: minX,
-                      max: maxX,
-                      maxTicksLimit: 20
-                  }
-              }]
-          }
-      }
-  });
-}
-
-
-/**
- * The button onclick event to add a data point to the set of points.
- * 
- * @param {number/string} value - The numerical value input by the user.
- */
-const pushCoordinate = function(value) {
-  // check that jiff_instance is connected
-  // if(!jiff_instance) {
-  //     alert("Please connect to jiff server first =)");
-  //     return;
-  // }
-
-  // check that the input is a numerical value
-  let input = parseInt(value);
-  if(isNaN(input))
-      return;
-
-  // check that the value conforms to the restrictions.
-  // if(restrict(input, $('input[name=choice]:checked').val(), coordinates) == 1) return;
-
-  $("#output").append("<p>"+input+"</p>");
-
-  // push coordinate to the 'coordinates' array
-  coordinates.push(input);
-
-  // create a data point object depending on the axis, then push it to the array.
-  let p;
-  if($('input[name=choice]:checked').val() == 'x')
-    p = {x:input,y:0};
-  else
-    p = {y:input,x:0};
-  input_data_points.push(p);
-
-  myChart.update();
-  document.getElementById("val").value = "";
-}
-
-
-const submit = (values) => {
-  // if(!jiff_instance) {
-  //   alert("Please connect to jiff server first =)");
-  //   return;
-  // }
-  if(values.length < 2) {
-    alert("2 points or more are needed to make a straight line.");
+// eslint-disable-next-line no-unused-vars
+function submit() {
+  if (coordinates.length < 1) {
+    alert('Please input at least one point.');
     return;
   }
-  $('#calculate').attr("disabled", true);
-  $("#output").append("<p>Working...</p>");
+  $('#submitButton').prop('disabled', true);
 
-  let promise;
-  if($('input[name=choice]:checked').val() === 'x')
-    promise = mpc.computeRoleX(values);
-  else
-    promise = mpc.computeRoleY(values);
-  promise.then(handleResult)
+  // eslint-disable-next-line no-undef
+  var promise = mpc.compute(coordinates);
+  promise.then(handleResult);
 }
 
+// eslint-disable-next-line no-unused-vars
+function handleResult(result) {
+  $('#submitButton').prop('disabled', false);
+  var m = result.m; // slope
+  var p = result.p; // yIntercept
 
-/**
- * Function displays the line of best fit on the graph after the computation finishes.
- * It computes the two points at the minimum X and maximum X of the graph, puts them in an
- * array and passes it to the printLineToGraph function.
- * 
- * @param {number} m - The slope.
- * @param {number} b - The y intercept.
- */
-const handleResult = (m, b) => printLineToGraph( [{x:minX,y:m*minX+b}, {x:maxX,y:m*maxX+b}] );
+  var points = [];
+  for (var i = minX; i <= maxX; i++) {
+    var y = m.times(i).plus(p).toNumber();
+    points.push({x: i, y: y});
+  }
 
+  while (line.length > points.length) {
+    line.pop();
+  }
 
-/**
- * Function displays an array of points as a curve on the graph.
- * It's used to display the best fit line after the computation is complete.
- * 
- * @param {Array} points - The array of points to display. It has this format: [{x:number,y:number}]
- */
-const printLineToGraph = function(points) {
-  // Fetch the dataset of the best fit line.
-  let lineDataset = myChart.data.datasets.filter(dataset => dataset.id == "line");
-  points.forEach(point => lineDataset[0].data.push(point));
+  for (var k = 0; k < points.length; k++) {
+    line[k] = points[k];
+  }
   myChart.update();
-}
-
-
-/**
- * Function takes the input value from the user and checks if it
- * conforms to the restriction or not.
- * This function should be removed when the fixed point extension is complete.
- * 
- * @param {number} input - The number entered by the user.
- * @param {string} this_axis - 'x' or 'y'. The axis assigned to this user.
- * @param {Array} coordinates - The array of previously entered coordinates.
- * @returns {number} - 0 if the number conforms to the restrictions, and 1 if it doesn't.
- */
-const restrict = function(input, this_axis, coordinates) {
-  if(this_axis == 'x') { // The checks if this user has the x axis.
-    if(input < -100 || input > -50) {
-      alert("Please input a value between -100 and -50!");
-      return 1;
-    }
-    if(input != Math.floor(input)) {
-      alert("Please input a whole number.");
-      return 1;
-    }
-    let diff = input - coordinates[coordinates.length -1];
-    if(diff > 5) {
-      alert("The difference between this number and the last number entered must not be greater than 5");
-      return 1;
-    }
-    if(diff < 1) {
-      alert("This number must be greater than the last number");
-      return 1;
-    }
-  }
-  else { // The checks if this user has the y axis.
-    if(input < 50 || input > 100) {
-      alert("Please input a value between fifty and one hundred!");
-      return 1;
-    }
-    if(input != Math.floor(input)) {
-      alert("Please input a whole number.");
-      return 1;
-    }
-    let diff = input - coordinates[coordinates.length -1];
-    if(diff < 5 || diff > 10) {
-      alert("The difference between this number and the last number entered must not be less than 5 nor greater than 10");
-      return 1;
-    }
-    if(diff < 1) {
-      alert("This number must be greater than the last number");
-      return 1;
-    }
-  }
-  return 0;
 }

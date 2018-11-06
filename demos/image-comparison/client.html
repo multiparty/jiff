@@ -1,0 +1,45 @@
+<!-- Basic UI for running the demo in the browser -->
+
+<html>
+  <head>
+    <title>MPC Template</title>
+    <style>
+      .error {
+        color: #FF0000;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="./client.js"></script>
+
+    <!-- Contains the MPC implementation -->
+    <script type="text/javascript" src="./mpc.js"></script>
+  </head>
+<body>
+  <div class="container">
+    <div class="row">
+        <h1>Image Comparison</h1>
+    </div>
+    <div class="row">
+        <input class="form-control-file" type='file' id='fileUpload'>
+    </div>
+    <br/><br/>
+    <div id="btns" class="row">
+      <button class="btn btn-secondary" id="connectButton" onclick="connect();">connect</button>
+      <button class="btn btn-secondary" id="compareBtn"  onclick="submit();"> compare</button>
+    </div>
+    <br/>
+    <div class="row">
+        <h4>Result</h4>
+    </div>
+    <div id="result"></div>
+    <div id="output"></div>
+    <canvas id="canvas" style="border:1px solid #d3d3d3;background:#ffffff;">
+        Your browser does not support the HTML5 canvas tag.</canvas>
+  </div>
+</body>
+</html>
