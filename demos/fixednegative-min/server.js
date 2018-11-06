@@ -2,7 +2,9 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var base_instance = require('../../lib/jiff-server').make_jiff(http, { logs:true });
-require('../../lib/ext/jiff-server-bignumber').make_jiff(base_instance);
+
+var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
+base_instance.apply_extension(jiffBigNumberServer);
 
 // Serve static files.
 app.use('/demos', express.static('demos'));

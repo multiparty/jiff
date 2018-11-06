@@ -3,15 +3,14 @@ var extensions = process.env['JIFF_TEST_NAME'];
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
+
 var jiffServer = require('../../lib/jiff-server');
+var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
 
 var jiff_instance = jiffServer.make_jiff(http, { logs: true });
 if (extensions != null && (extensions.indexOf('bigNumber') > -1 || extensions.indexOf('fixedpoint') > -1)) {
-  var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
-  console.log('bigNumber');
-  jiffBigNumberServer.make_jiff(jiff_instance);
+  jiff_instance.apply_extension(jiffBigNumberServer);
 }
-
 
 // Serve static files.
 app.use('/demos', express.static('demos'));

@@ -57,7 +57,7 @@ exports.init = function (p, serverOptions) {
 
   var instance = jiffServer.make_jiff(http, serverOptions);
   for (var i = 0; i < serverExtensions.length; i++) {
-    instance = serverExtensions[i].make_jiff(instance, serverOptions);
+    instance.apply_extension(serverExtensions[i], serverOptions);
   }
 
   http.listen(port, function () {
