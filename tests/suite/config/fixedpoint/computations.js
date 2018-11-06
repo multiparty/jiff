@@ -4,7 +4,6 @@ var baseComputations = require('../../computations.js');
 var BigNumber = require('bignumber.js');
 BigNumber.config({ DECIMAL_PLACES: 131 });
 
-var decimal_digits;
 var fix;
 
 // How to interpret non-MPC operations
@@ -65,7 +64,6 @@ baseComputations.mpcInterpreter['floor'] = function (operand1, _) {
 
 // Default Computation Scheme
 exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done) {
-  decimal_digits = jiff_instance.decimal_digits;
   fix = jiff_instance.helpers.to_fixed;
   return baseComputations.compute(jiff_instance, _test, _inputs, _testParallel, _done);
 };
