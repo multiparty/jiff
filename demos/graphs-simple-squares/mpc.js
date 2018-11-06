@@ -6,6 +6,7 @@
    */
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
+    opt.autoConnect = false;
     // Added options goes here
 
     if (node) {
@@ -15,110 +16,121 @@
       jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
       // eslint-disable-next-line no-undef
       jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
+      // eslint-disable-next-line no-undef
+      jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber');
+      // eslint-disable-next-line no-undef
+      jiff_performance = require('../../lib/ext/jiff-client-performance');
+      // eslint-disable-next-line no-undef
+      BigNumber = require('bignumber.js');
+      // eslint-disable-next-line no-undef,no-global-assign
+      $ = require('jquery-deferred');
     }
 
     opt.autoConnect = false;
     // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     // eslint-disable-next-line no-undef
-    saved_instance = jiff_bignumber.make_jiff(saved_instance, options);
+    saved_instance.apply_extension(jiff_bignumber, opt);
     // eslint-disable-next-line no-undef
-    saved_instance = jiff_fixedpoint.make_jiff(saved_instance, { decimal_digits: 5, integral_digits: 5}); // Max bits after decimal allowed
-    saved_instance.connect();
+    saved_instance.apply_extension(jiff_fixedpoint, opt);
+    // eslint-disable-next-line no-undef
+    saved_instance.apply_extension(jiff_negativenumber, opt);
+    // eslint-disable-next-line no-undef
+    saved_instance.apply_extension(jiff_performance, { elementId: 'perfDiv' });
 
+    saved_instance.connect();
     return saved_instance;
   };
 
-  exports.computeRoleX = (values, jiff_instance) => {
+  /**
+   * The MPC computation
+   */
+  exports.compute = function (coordinates, jiff_instance) {
     if (jiff_instance == null) {
       jiff_instance = saved_instance;
     }
-    var final_deferred = $.Deferred();
-    var final_promise = final_deferred.promise();
 
-    var sum_x = values.reduce((a,c) => a + c);
-    var sum_xx = values.reduce((a,c) => a+c*c, 0);
-
-    var sum_xy = shareAndCalculateSumXY(values, jiff_instance);
-    var c__sum_xy = sum_xy.mult(values.length);
-
-    var sum_x__sum_y = jiff_instance.share(sum_x);
-    sum_x__sum_y = sum_x__sum_y[1].mult(sum_x__sum_y[2]);
-
-    var mNumerator = c__sum_xy.sub(sum_x__sum_y);
-
-    var denom = values.length*sum_xx-sum_x*sum_x;
-    denom = jiff_instance.share(denom);
-    denom = denom[1].add(denom[2]);
-    var m = mNumerator.div(denom);
-
-    m.open(function (m_opened) {
-      m_opened = m_opened.toNumber();
-      console.info('Slope:', m_opened);
-      var m_sum_x_d_count = (-1*(m_opened*sum_x)/values.length).toFixed(5);
-      console.info('-1*(m*sum_x/count)=', m_sum_x_d_count);
-      m_sum_x_d_count = jiff_instance.share(m_sum_x_d_count);
-      var b = m_sum_x_d_count[1].add(m_sum_x_d_count[2]);
-      b.open(function (b_opened) {
-        b_opened = b_opened.toNumber();
-        console.info('Y intercept:', b_opened);
-        final_deferred.resolve({m:m_opened, b:b_opened});
-      });
-    });
-
-    return final_promise;
-  }
-
-  exports.computeRoleY = (values, jiff_instance) => {
-    if (jiff_instance == null) {
-      jiff_instance = saved_instance;
+    var values = [];
+    for (var i = 0; i < coordinates.length; i++) {
+      values.push(coordinates[i].x);
+      values.push(coordinates[i].y)
     }
-    var final_deferred = $.Deferred();
-    var final_promise = final_deferred.promise();
 
-    var sum_y = values.reduce((a,c) => a + c);
+    var deferred = $.Deferred();
+    var zero = jiff_instance.share(0, null, null, [1])[1];
+    var precision = jiff_instance.helpers.magnitude(jiff_instance.decimal_digits);
 
-    var sum_xy = shareAndCalculateSumXY(values, jiff_instance);
-    var c__sum_xy = sum_xy.mult(values.length);
+    zero = zero.cmult(precision); // increase precision
 
-    var sum_x__sum_y = jiff_instance.share(sum_y);
-    sum_x__sum_y = sum_x__sum_y[1].mult(sum_x__sum_y[2]);
+    // share input with all parties
+    jiff_instance.share_array(values).then(function (inputs) {
+      var xAvg = zero;
+      var yAvg = zero;
+      var xSqAvg = zero;
+      var ySqAvg = zero;
+      var xyAvg = zero;
+      var length = 0;
 
-    var mNumerator = c__sum_xy.sub(sum_x__sum_y);
-
-    var denom = jiff_instance.share(0);
-    denom = denom[1].add(denom[2]);
-    var m = mNumerator.div(denom);
-
-    m.open(function (m_opened) {
-      m_opened = m_opened.toNumber();
-      console.info('Slope:', m_opened);
-      var sum_y_d_count = (sum_y/values.length).toFixed(5);
-      console.info('sum_y/count=', sum_y_d_count);
-      sum_y_d_count = jiff_instance.share(sum_y_d_count);
-      var b = sum_y_d_count[1].add(sum_y_d_count[2]);
-      b.open(function (b_opened) {
-        b_opened = b_opened.toNumber();
-        console.info('Y intercept:', b_opened);
-        final_deferred.resolve({m:m_opened, b:b_opened});
-      });
-    });
-
-    return final_promise;
-  }
-
-  var shareAndCalculateSumXY = (values, jiff_instance) => {
-    var sum_xy_res;
-    for (var i = 0; i < values.length; i++) {
-      var t = jiff_instance.share(values[i]);
-      t = t[1].smult(t[2]);
-      if (sum_xy_res) {
-        sum_xy_res = sum_xy_res.add(t);
-      } else {
-        sum_xy_res = t;
+      // Computer Avgs
+      var i, j;
+      for (i = 1; i <= jiff_instance.party_count; i++) {
+        for (j = 0; j < inputs[i].length; j += 2) {
+          xAvg = xAvg.sadd(inputs[i][j]);
+          yAvg = yAvg.sadd(inputs[i][j+1]);
+          // do not divide in smult, we can handle the increase precision since no two multiplications
+          // are performed in sequence
+          xSqAvg = xSqAvg.sadd(inputs[i][j].smult(inputs[i][j], null, false));
+          ySqAvg = ySqAvg.sadd(inputs[i][j+1].smult(inputs[i][j+1], null, false));
+          xyAvg = xyAvg.sadd(inputs[i][j].smult(inputs[i][j+1], null, false));
+          length++;
+        }
       }
-    }
-    return sum_xy_res;
-  }
 
+      var factor = precision.times(length);
+      xAvg = xAvg.cdiv(length);
+      yAvg = yAvg.cdiv(length);
+      xSqAvg = xSqAvg.cdiv(factor);
+      ySqAvg = ySqAvg.cdiv(factor);
+      xyAvg = xyAvg.cdiv(factor);
+
+      // Compute standard deviations
+      var xDevSq = zero;
+      var yDevSq = zero;
+      for (i = 1; i <= jiff_instance.party_count; i++) {
+        for (j = 0; j < inputs[i].length; j += 2) {
+          var xDiff = inputs[i][j].ssub(xAvg);
+          var yDiff = inputs[i][j+1].ssub(yAvg);
+          // Same reasoning, do not divide individual values to reduce precision, delay division till the end
+          xDevSq = xDevSq.sadd(xDiff.smult(xDiff, null, false));
+          yDevSq = yDevSq.sadd(yDiff.smult(yDiff, null, false));
+        }
+      }
+      xDevSq = xDevSq.cdiv(factor);
+      yDevSq = yDevSq.cdiv(factor);
+
+      // Finally, compute slope (squared)
+      var numerator = xyAvg.ssub(xAvg.smult(yAvg));
+      numerator = numerator.smult(numerator);
+      numerator = numerator.smult(yDevSq);
+
+      var denumerator = xSqAvg.ssub(xAvg.smult(xAvg));
+      denumerator = denumerator.smult(ySqAvg.ssub(yAvg.smult(yAvg)));
+      denumerator = denumerator.smult(xDevSq);
+
+      var mSq = numerator.sdiv(denumerator);
+      mSq.open().then(function (mSq) {
+        var m = mSq.sqrt();
+        m = jiff_instance.helpers.to_fixed(m);
+
+        var p = yAvg.cmult(precision).ssub(xAvg.cmult(m, null, false));
+        p.open().then(function (p) {
+          p = jiff_instance.helpers.to_fixed(p.div(precision));
+          deferred.resolve({ m: m, p: p});
+        });
+      });
+    });
+
+
+    return deferred.promise();
+  };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));

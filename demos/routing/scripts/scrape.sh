@@ -8,31 +8,26 @@ rm -rf output
 mkdir output
 
 # activate python virtual env
-if [ ! -d env ]; then
-  echo "Virtual Env does not exists: Creating..."
-  virtualenv env
+if [ -d env ]; then
   . env/bin/activate
-  
-  echo "Installing Dependencies..."
-  pip install -r requirements.txt
+
+  # Run scrape script
+  echo "Scraping..."
+  python get_data.py
+  deactivate
+
+  # Hash and move outputs
+  echo "Hashing..."
+  node hash.js
+  mv output/client-hashed-data.js ../data/client-map.js
+  mv output/server-hashed-data.json ../data/server-map.json
+
+  # cleanup
+  echo "Clean up..."
+  rm -rf output
 else
-  . env/bin/activate
+  echo "Please run npm install for dependencies"
 fi
-
-# Run scrape script
-echo "Scraping..."
-python get_data.py
-deactivate
-
-# Hash and move outputs
-echo "Hashing..."
-node hash.js
-mv output/client-hashed-data.js ../data/client-map.js
-mv output/server-hashed-data.json ../data/server-map.json
-
-# cleanup
-echo "Clean up..."
-rm -rf output
 
 
 
