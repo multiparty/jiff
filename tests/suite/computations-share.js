@@ -54,6 +54,22 @@ function singleTest(jiff_instance, t) {
     // Share
     var shares = jiff_instance.share(input, threshold, rs, ss);
 
+    // Is this a re-share variant?
+    if (test.startsWith('reshare')) {
+      var old_rs = rs;
+      rs = testCase['reshare_holders'];
+      threshold = testCase['reshare_threshold'];
+      // re-share all shares according to new holders and threshold
+      for (var si = 0; si < ss.length; si++) {
+        var sender = ss[si];
+        shares[sender] = jiff_instance.protocols.reshare(shares[sender], threshold, rs, old_rs)
+      }
+    }
+    // re-share variant is done
+    // if reshare is correct then the effect should be the same as having senders share the secrets
+    // to the reshare_holders (now in rs) with the reshare_threshold (now in threshold) without
+    // having gone through the intermediaries and re-share.
+
     if (ss.indexOf(id) === -1 && rs.indexOf(id) === -1) {
       // Nothing to do.
       return null;

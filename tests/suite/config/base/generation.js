@@ -27,12 +27,17 @@ exports.generateShareInputs = function (test, count, options) {
   var inputs = [];
   // Generate test cases one at a time
   // A test case consists of
-  // 1) input numbers
-  // 2) sharing threshold
-  // 3) array of senders
-  // 4) array of receivers
+  // 1) numbers: input numbers
+  // 2) threshold: initial sharing threshold
+  // 3) senders: array of senders (people that initially share secrets)
+  // 4) receivers: array of receivers (people that will receive the initial secrets)
+
+  // Variants of this are reshare tests that test the resharing of an existing share with a different set of parties
+  // and threshold. For this variant, the tests will additionally generate:
+  // 5) reshare_threshold: new/reshare threshold
+  // 6) reshare_holders: new/reshare holder parties
   for (var t = 0; t < count; t++) {
-    var oneTest = { 'numbers': {} };
+    var oneTest = { numbers: {} };
     // Generate numbers
     for (var p = 1; p <= options.party_count; p++) {
       oneTest['numbers'][p] = exports.generateUniform(test, options);
@@ -57,6 +62,23 @@ exports.generateShareInputs = function (test, count, options) {
     }
     oneTest['senders'] = senders;
     oneTest['receivers'] = receivers;
+
+    // reshare variant: only different threshold
+    if (test.startsWith('reshare-threshold')) {
+      oneTest['reshare_holders'] = receivers.slice();
+      oneTest['reshare_threshold'] = Math.floor(Math.random() * receivers.length) + 1; // 1 <= reshare_threshold <= length of receivers
+    }
+    // reshare variant: both different threshold and parties
+    if (test.startsWith('reshare-parties')) {
+      var hn = Math.floor(Math.random() * (all_parties.length - 1)) + 1; // 1 <= hn <= party_count
+      var reshare_holders = all_parties.slice();
+      while (reshare_holders.length > hn) {
+        reshare_holders.splice(Math.floor(Math.random() * reshare_holders.length), 1);
+      }
+
+      oneTest['reshare_holders'] = reshare_holders;
+      oneTest['reshare_threshold'] = Math.floor(Math.random() * reshare_holders.length) + 1; // 1 <= reshare_threshold <= length of holders
+    }
 
     inputs.push(oneTest);
   }
