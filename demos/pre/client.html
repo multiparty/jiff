@@ -21,12 +21,13 @@
   </head>
   <body>
     <h1>Connect JIFF</h1>
-    <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
-    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*" value="2"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
+    <label for="preprocess_count">Number of * to pre-process</label><input id="preprocess_count" value="5"/><br/><br/>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test"/><br/><br/>
+    <label for="count">Party Count</label> <input id="count" pattern="[0-9]*" value="2"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
-    <h1>Sum Numbers under MPC</h1>
-    <label for="number">Input Number (between 0 and 100)</label> <input id="number" pattern="[0-9]+"> &nbsp; <button onclick="submit();" disabled="disabled" id="button">Sum</button><br/>
+    <h1>Multiply Numbers under MPC with Preprocessing</h1>
+    <label for="number">Input Number (between 0 and 100)</label> <input id="number" pattern="[0-9]+"/> &nbsp; <button onclick="submit();" disabled="disabled" id="button">Multiply</button><br/>
     <div id="output"></div>
   </body>
 </html>

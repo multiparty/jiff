@@ -8,11 +8,28 @@
     var opt = Object.assign({}, options);
 
     if (node) {
+      // eslint-disable-next-line no-undef
       jiff = require('../../lib/jiff-client');
     }
 
+    // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     return saved_instance;
+  };
+
+  /**
+   * MPC Preprocessing
+   */
+  exports.preprocess = function (multiplication_count, jiff_instance) {
+    if (jiff_instance == null) {
+      jiff_instance = saved_instance;
+    }
+
+    var promise = jiff_instance.preprocessing('*', jiff_instance.protocols.generate_beaver_bgw, multiplication_count);
+    promise.then(function () {
+      jiff_instance.finish_preprocessing();
+    });
+    return promise;
   };
 
   /**
@@ -22,45 +39,15 @@
     if (jiff_instance == null) {
       jiff_instance = saved_instance;
     }
-    /*var my_input = jiff_instance.id;
-    var shares = jiff_instance.share(my_input, 3);
-    console.log(my_input);
 
-    var more_secure_share = shares[1].change_threshold(4);
-    console.log(more_secure_share);
-
-    return jiff_instance.open(more_secure_share);*/
-    try {
-      //  TODO build generate_bit_sequences (mpdify to actually work) instead of using server_generate_and_share.
-      for (var i = 0; i < 100; i++) {
-        jiff_instance.preprocessing('bit_sequences', 'lt_hp', jiff_instance.protocols.generate_random_bit_sequence, 100);
-      }
-    } catch (e) {
-      console.log(e);
+    // The MPC implementation should go *HERE*
+    var shares = jiff_instance.share(input);
+    var sum = shares[1];
+    for (var i = 2; i <= jiff_instance.party_count; i++) {
+      sum = sum.smult(shares[i]);
     }
 
-    jiff_instance.counters.op_count['lt_hp'] = 0;
-
-    try {
-      jiff_instance.counters.op_count['1,2,3'] = 0;
-
-      var values = [];
-      //    generate values to multiply
-      for (var j = 0; j < 100; j++) {
-        values.push(jiff_instance.share(j));
-      }
-
-      var results = [];
-      for (var k = 1; k < values.length - 2; k++) {
-        //console.log("comparing values:", k, k+1);
-        var result = values[k][1].slt(values[k+1][1]);
-        results.push(result);
-      }
-
-      // Return a promise to the final output(s)
-      return jiff_instance.open_array(results);
-    } catch (e) {
-      console.log(e);
-    }
+    // Return a promise to the final output(s)
+    return jiff_instance.open(sum);
   };
-}((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
+}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
