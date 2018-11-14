@@ -5,11 +5,18 @@ var app = express();
 var http = require('http').Server(app);
 
 var jiffServer = require('../../lib/jiff-server');
+var jiffRestAPIServer =  require('../../lib/ext/jiff-server-restful');
 var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
 
-var jiff_instance = jiffServer.make_jiff(http, { logs: true });
+var options = {
+  logs: true,
+  app: app
+};
+
+var jiff_instance = jiffServer.make_jiff(http, options);
+jiff_instance.apply_extension(jiffRestAPIServer, options);
 if (extensions != null && (extensions.indexOf('bigNumber') > -1 || extensions.indexOf('fixedpoint') > -1)) {
-  jiff_instance.apply_extension(jiffBigNumberServer);
+  jiff_instance.apply_extension(jiffBigNumberServer, options);
 }
 
 // Serve static files.
