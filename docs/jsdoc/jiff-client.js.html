@@ -34,7 +34,6 @@
  */
 (function (exports, node) {
   var crypto;
-  var sodium_promise;
   if (node) {
     // eslint-disable-next-line no-undef
     io = require('socket.io-client');
@@ -42,15 +41,10 @@
     $ = require('jquery-deferred');
     // eslint-disable-next-line no-undef
     sodium = require('libsodium-wrappers');
-    // eslint-disable-next-line no-undef
-    sodium_promise = sodium.ready;
 
     crypto = require('crypto');
     crypto.__randomBytesWrapper = crypto.randomBytes;
   } else { // Browser: sodium (and other dependencies) should be available in global scope from including sodium.js
-    // eslint-disable-next-line no-undef
-    sodium_promise = sodium.ready;
-
     crypto = window.crypto || window.msCrypto;
     crypto.__randomBytesWrapper = function (bytesNeeded) {
       var randomBytes = new Uint8Array(bytesNeeded);
@@ -156,7 +150,7 @@
       }
       return decryption;
     } catch (_) {
-      throw 'Bad signature or Bad nonce';
+      throw new Error('Bad signature or Bad nonce: Cipher: ' + cipher_text + '.  DecSKey: ' + decryption_secret_key + '.  SignPKey: ' + signing_public_key);
     }
   }
 
@@ -389,6 +383,8 @@
       for (i = 1; i &lt;= jiff.party_count; i++) {
         parties.push(i);
       }
+    } else {
+      parties.sort();
     }
 
     // If not a receiver nor holder, do nothing
@@ -828,7 +824,7 @@
 
     // Check format of lengths
     if (lengths != null &amp;&amp; typeof(lengths) !== 'number' &amp;&amp; typeof(lengths) !== 'object') {
-      throw 'share_array: unrecognized lengths'
+      throw new Error('share_array: unrecognized lengths');
     }
 
     // Default values
@@ -893,7 +889,7 @@
       // Lengths of the different arrays are all provided
       for (i = 0; i &lt; senders_list.length; i++) {
         if (lengths[senders_list[i]] == null) {
-          throw 'share_array: missing length'
+          throw new Error('share_array: missing length');
         }
       }
 
@@ -982,7 +978,7 @@
 
     // Check format of lengths
     if (lengths != null &amp;&amp; typeof(lengths) !== 'object') {
-      throw 'share_array: unrecognized lengths'
+      throw new Error('share_array: unrecognized lengths');
     }
 
     // Default values
@@ -1048,7 +1044,7 @@
       // Lengths of the different arrays are all provided
       for (i = 0; i &lt; senders_list.length; i++) {
         if (lengths[senders_list[i]] == null || lengths[senders_list[i]].rows == null) {
-          throw 'share_2D_array: missing rows length'
+          throw new Error('share_2D_array: missing rows length');
         }
       }
 
@@ -1292,7 +1288,7 @@
         return Math.abs(v);
       },
       '==': function (v1, v2) {
-        return v1 == v2;
+        return v1 === v2;
       }
     };
 
@@ -1392,7 +1388,31 @@
      * @instance
      */
     self.error = function () {
-      console.log('Error receiving ' + self.toString());
+      throw new Error('Error receiving share ' + self.toString());
+    };
+
+    /**
+     * Logs the value represented by this share to the console.
+     * WARNING: THIS LEAKS INFORMATION AND MUST BE USED ONLY TO DEBUG ON FAKE DATA.
+     * @method logLEAK
+     * @memberof SecretShare
+     * @instance
+     * @param {string} tag - accompanying tag to display in the console.
+     * @param {Array&lt;number|string>} [parties=[holders[0]] - the parties which will display the log.
+     * @return {promise} a promise to the value represented by this share after logging it, null if party is not in parties.
+     */
+    self.logLEAK = function (tag, parties) {
+      if (parties == null) {
+        parties = [self.holders[0]];
+      }
+      var promise = self.open(parties);
+      if (promise != null) {
+        promise = promise.then(function (result) {
+          console.log(tag, result.toString());
+          return result;
+        });
+      }
+      return promise;
     };
 
     /**
@@ -1718,7 +1738,7 @@
      */
     self.cadd = function (cst) {
       if (!(self.isConstant(cst))) {
-        throw 'parameter should be a number (+)';
+        throw new Error('parameter should be a number (+)');
       }
 
       if (self.ready) {
@@ -1742,7 +1762,7 @@
      */
     self.csub = function (cst) {
       if (!(self.isConstant(cst))) {
-        throw 'parameter should be a number (-)';
+        throw new Error('parameter should be a number (-)');
       }
 
       if (self.ready) {
@@ -1766,7 +1786,7 @@
      */
     self.cmult = function (cst) {
       if (!(self.isConstant(cst))) {
-        throw 'parameter should be a number (*)';
+        throw new Error('parameter should be a number (*)');
       }
 
       if (self.ready) {
@@ -1790,7 +1810,7 @@
      */
     self.cdivfac = function (cst) {
       if (!(self.isConstant(cst))) {
-        throw 'Parameter should be a number (cdivfac)';
+        throw new Error('Parameter should be a number (cdivfac)');
       }
 
       var inv = self.jiff.helpers.extended_gcd(cst, self.Zp)[0];
@@ -1816,13 +1836,13 @@
      */
     self.sadd = function (o) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (+)';
+        throw new Error('shares do not belong to the same instance (+)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (+)';
+        throw new Error('shares must belong to the same field (+)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (+)';
+        throw new Error('shares must be held by the same parties (+)');
       }
 
       // add the two shares when ready locally
@@ -1850,13 +1870,13 @@
      */
     self.ssub = function (o) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (-)';
+        throw new Error('shares do not belong to the same instance (-)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (-)';
+        throw new Error('shares must belong to the same field (-)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (-)';
+        throw new Error('shares must be held by the same parties (-)');
       }
 
       // add the two shares when ready locally
@@ -1889,13 +1909,13 @@
      */
     self.smult = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (*)';
+        throw new Error('shares do not belong to the same instance (*)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (*)';
+        throw new Error('shares must belong to the same field (*)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (*)';
+        throw new Error('shares must be held by the same parties (*)');
       }
 
       if (op_id == null) {
@@ -1964,16 +1984,16 @@
 
     self.smult_bgw = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (bgw*)';
+        throw new Error('shares do not belong to the same instance (bgw*)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (bgw*)';
+        throw new Error('shares must belong to the same field (bgw*)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (bgw*)';
+        throw new Error('shares must be held by the same parties (bgw*)');
       }
       if ((self.threshold - 1) + (o.threshold - 1) > self.holders.length - 1) {
-        throw 'threshold too high for BGW (*)';
+        throw new Error('threshold too high for BGW (*)');
       }
 
       if (op_id == null) {
@@ -2059,10 +2079,10 @@
      */
     self.cxor_bit = function (cst) {
       if (!(self.isConstant(cst))) {
-        throw 'parameter should be a number (^)';
+        throw new Error('parameter should be a number (^)');
       }
       if (!share_helpers['binary'](cst)) {
-        throw 'parameter should be binary (^)';
+        throw new Error('parameter should be binary (^)');
       }
 
       return self.icadd(cst).issub(self.icmult(cst).icmult(2));
@@ -2078,10 +2098,10 @@
      */
     self.cor_bit = function (cst) {
       if (!(self.isConstant(cst))) {
-        throw 'parameter should be a number (|)';
+        throw new Error('parameter should be a number (|)');
       }
       if (!share_helpers['binary'](cst)) {
-        throw 'parameter should be binary (|)';
+        throw new Error('parameter should be binary (|)');
       }
 
       return self.icadd(cst).issub(self.icmult(cst));
@@ -2101,13 +2121,13 @@
      */
     self.sxor_bit = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (^)';
+        throw new Error('shares do not belong to the same instance (^)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (^)';
+        throw new Error('shares must belong to the same field (^)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (^)';
+        throw new Error('shares must be held by the same parties (^)');
       }
 
       return self.isadd(o).issub(self.ismult(o, op_id).icmult(2));
@@ -2127,13 +2147,13 @@
      */
     self.sor_bit = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (|)';
+        throw new Error('shares do not belong to the same instance (|)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (|)';
+        throw new Error('shares must belong to the same field (|)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (|)';
+        throw new Error('shares must be held by the same parties (|)');
       }
 
       return self.isadd(o).issub(self.ismult(o, op_id));
@@ -2152,13 +2172,13 @@
      */
     self.sgteq = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (>=)';
+        throw new Error('shares do not belong to the same instance (>=)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (>=)';
+        throw new Error('shares must belong to the same field (>=)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (>=)';
+        throw new Error('shares must be held by the same parties (>=)');
       }
 
       if (op_id == null) {
@@ -2181,13 +2201,13 @@
      */
     self.sgt = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (>)';
+        throw new Error('shares do not belong to the same instance (>)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (>)';
+        throw new Error('shares must belong to the same field (>)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (>)';
+        throw new Error('shares must be held by the same parties (>)');
       }
 
       if (op_id == null) {
@@ -2210,13 +2230,13 @@
      */
     self.slteq = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (&lt;=)';
+        throw new Error('shares do not belong to the same instance (&lt;=)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (&lt;=)';
+        throw new Error('shares must belong to the same field (&lt;=)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (&lt;=)';
+        throw new Error('shares must be held by the same parties (&lt;=)');
       }
 
       if (op_id == null) {
@@ -2239,13 +2259,13 @@
      */
     self.slt = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (&lt;)';
+        throw new Error('shares do not belong to the same instance (&lt;)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (&lt;)';
+        throw new Error('shares must belong to the same field (&lt;)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (&lt;)';
+        throw new Error('shares must be held by the same parties (&lt;)');
       }
 
       if (op_id == null) {
@@ -2292,7 +2312,7 @@
      */
     self.cgteq = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
-        throw 'parameter should be a number (>=)';
+        throw new Error('parameter should be a number (>=)');
       }
 
       if (op_id == null) {
@@ -2316,7 +2336,7 @@
      */
     self.cgt = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
-        throw 'parameter should be a number (>)';
+        throw new Error('parameter should be a number (>)');
       }
 
       if (op_id == null) {
@@ -2361,7 +2381,7 @@
      */
     self.clteq = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
-        throw 'parameter should be a number (&lt;=)';
+        throw new Error('parameter should be a number (&lt;=)');
       }
 
       if (op_id == null) {
@@ -2384,7 +2404,7 @@
      */
     self.clt = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
-        throw 'parameter should be a number (&lt;)';
+        throw new Error('parameter should be a number (&lt;)');
       }
 
       if (op_id == null) {
@@ -2429,13 +2449,13 @@
      */
     self.seq = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (==)';
+        throw new Error('shares do not belong to the same instance (==)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (==)';
+        throw new Error('shares must belong to the same field (==)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (==)';
+        throw new Error('shares must be held by the same parties (==)');
       }
 
       if (op_id == null) {
@@ -2458,13 +2478,13 @@
      */
     self.sneq = function (o, op_id) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (!=)';
+        throw new Error('shares do not belong to the same instance (!=)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (!=)';
+        throw new Error('shares must belong to the same field (!=)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (!=)';
+        throw new Error('shares must be held by the same parties (!=)');
       }
       return self.iseq(o, op_id).inot();
     };
@@ -2482,7 +2502,7 @@
      */
     self.ceq = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
-        throw 'parameter should be a number (==)';
+        throw new Error('parameter should be a number (==)');
       }
 
       if (op_id == null) {
@@ -2505,7 +2525,7 @@
      */
     self.cneq = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
-        throw 'parameter should be a number (!=)';
+        throw new Error('parameter should be a number (!=)');
       }
       return self.iceq(cst, op_id).inot();
     };
@@ -2536,13 +2556,13 @@
      */
     self.sdiv = function (o, l, op_id) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (!=)';
+        throw new Error('shares do not belong to the same instance (!=)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (!=)';
+        throw new Error('shares must belong to the same field (!=)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (!=)';
+        throw new Error('shares must be held by the same parties (!=)');
       }
 
       if (op_id == null) {
@@ -2609,15 +2629,15 @@
      */
     self.cdiv = function (cst, op_id) {
       if (!(self.isConstant(cst))) {
-        throw 'parameter should be a number (/)';
+        throw new Error('parameter should be a number (/)');
       }
 
       if (share_helpers['&lt;='](cst, 0)) {
-        throw 'divisor must be > 0 (cst/): ' + cst;
+        throw new Error('divisor must be > 0 (cst/): ' + cst);
       }
 
       if (share_helpers['&lt;='](self.Zp, cst)) {
-        throw 'divisor must be &lt; share.Zp (' + self.Zp + ') in (cst/): ' + cst;
+        throw new Error('divisor must be &lt; share.Zp (' + self.Zp + ') in (cst/): ' + cst);
       }
 
       if (op_id == null) {
@@ -2677,20 +2697,20 @@
      * @param {number} [l=log_2(self.Zp)] - the maximum bit length of the answer.
      * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
      *                         This id must be unique, and must be passed by all parties to the same instruction, to
-     *                         ensure that corresponding instructions accross different parties are matched correctly.
+     *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} this party's share of the result.
      * @memberof SecretShare
      * @instance
      */
     self.smod = function (o, l, op_id) {
       if (!(o.jiff === self.jiff)) {
-        throw 'shares do not belong to the same instance (!=)';
+        throw new Error('shares do not belong to the same instance (!=)');
       }
       if (!self.jiff.helpers.Zp_equals(self, o)) {
-        throw 'shares must belong to the same field (!=)';
+        throw new Error('shares must belong to the same field (!=)');
       }
       if (!self.jiff.helpers.array_equals(self.holders, o.holders)) {
-        throw 'shares must be held by the same parties (!=)';
+        throw new Error('shares must be held by the same parties (!=)');
       }
 
       if (op_id == null) {
@@ -2728,7 +2748,7 @@
       var bits = self.jiff.server_generate_and_share({
         bit: true,
         count: bitLength
-      }, share.holders, share.threshold, share.Zp, op_id + ':number:' + i);
+      }, share.holders, share.threshold, share.Zp, op_id + ':number:bits');
       bits[bitLength] = self.jiff.server_generate_and_share({number: 0}, share.holders, share.threshold, share.Zp, op_id + ':number:' + bitLength)[0]; // remove this line when fixing TODO
 
       // bit composition: r = (rl ... r1 r0)_10
@@ -2759,25 +2779,32 @@
      * If this is a share of 1, a new sharing of the element represented by the first parameter is returned,
      * otherwise, a new sharing of the second is returned.
      * @method if_else
-     * @memeberof SecretShare
+     * @memberof SecretShare
      * @instance
      * @param {SecretShare|constant} trueVal - the value/share to return if this is a sharing of 1.
      * @param {SecretShare|constant} falseVal - the value/share to return if this is a sharing of 0.
+     * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
+     *                         This id must be unique, and must be passed by all parties to the same instruction, to
+     *                         ensure that corresponding instructions across different parties are matched correctly.
      * @return {SecretShare} a new sharing of the result of the if.
      */
-    self.if_else = function (trueVal, falseVal) {
+    self.if_else = function (trueVal, falseVal, op_id) {
+      if (op_id == null) {
+        op_id = self.jiff.counters.gen_op_id('ifelse', self.holders);
+      }
+
       var const1 = self.isConstant(trueVal);
       var const2 = self.isConstant(falseVal);
       if (const1 &amp;&amp; const2) {
         return self.icmult(trueVal).isadd(self.inot().icmult(falseVal));
       } else if (const1) {
-        return self.inot().ismult(falseVal.icsub(trueVal)).icadd(trueVal);
+        return self.inot().ismult(falseVal.icsub(trueVal), op_id).icadd(trueVal);
       } else if (const2) {
-        return self.ismult(trueVal.icsub(falseVal)).icadd(falseVal);
+        return self.ismult(trueVal.icsub(falseVal), op_id).icadd(falseVal);
       } else {
-        return self.ismult(trueVal.issub(falseVal)).isadd(falseVal);
+        return self.ismult(trueVal.issub(falseVal), op_id).isadd(falseVal);
       }
-    }
+    };
 
     // when the promise is resolved, acquire the value of the share and set ready to true
     if (!ready) {
@@ -2790,7 +2817,7 @@
       'cxor_bit', 'sxor_bit', 'cor_bit', 'sor_bit',
       'slt', 'slteq', 'sgt', 'sgteq', 'seq', 'sneq',
       'clt', 'clteq', 'cgt', 'cgteq', 'ceq', 'cneq',
-      'sdiv', 'cdiv', 'not', 'lt_halfprime'];
+      'sdiv', 'cdiv', 'not', 'lt_halfprime', 'if_else'];
     for (var i = 0; i &lt; internals.length; i++) {
       var key = internals[i];
       self['i' + key] = self[key];
@@ -2826,6 +2853,7 @@
      "secret_key": Uint8Array to be used with libsodium-wrappers [(check Library Specs)]{@link https://download.libsodium.org/doc/public-key_cryptography/authenticated_encryption.html},
      "public_key": Uint8Array to be used with libsodium-wrappers [(check Library Specs)]{@link https://download.libsodium.org/doc/public-key_cryptography/authenticated_encryption.html},
      "public_keys": { 1: "Uint8Array PublicKey", 2: "Uint8Array PublicKey", ... },
+     "sodium": boolean (indicates whether to use libsodium wrappers or not),
      "Zp": default mod to use (prime number),
      "autoConnect": true/false,
      "hooks": { 'check out &lt;a href="hooks.html">hooks documentation&lt;/a>' },
@@ -3000,8 +3028,12 @@
       };
 
       // Safe disconnect: only after all messages were acknowledged
-      socket.safe_disconnect = function (callback) {
+      socket.safe_disconnect = function (free, callback) {
         if (socket.mailbox.head == null &amp;&amp; jiff.counters.pending_opens === 0) {
+          if (free) {
+            socket.safe_emit('free', '');
+          }
+
           socket.disconnect();
           if (callback != null) {
             callback();
@@ -3011,6 +3043,9 @@
           socket.empty_deferred.promise().then(function deferred_safe_disconnect() {
             if (jiff.counters.pending_opens === 0) {
               socket.empty_deferred = null;
+              if (free) {
+                socket.safe_emit('free', '');
+              }
               socket.disconnect();
               if (callback != null) {
                 callback();
@@ -3021,7 +3056,7 @@
             }
           });
         }
-      }
+      };
 
       return socket;
     };
@@ -3161,10 +3196,57 @@
       jiff.hooks.reconstructShare = jiff_lagrange;
     }
     if (jiff.hooks.encryptSign == null) {
-      jiff.hooks.encryptSign = encrypt_and_sign;
+      if (options.sodium !== false) {
+        jiff.hooks.encryptSign = encrypt_and_sign;
+      } else {
+        jiff.hooks.encryptSign = function encrypt_and_sign(message, encryption_public_key, signing_private_key, operation_type) {
+          return message;
+        }
+      }
     }
     if (jiff.hooks.decryptSign == null) {
-      jiff.hooks.decryptSign = decrypt_and_sign;
+      if (options.sodium !== false) {
+        jiff.hooks.decryptSign = decrypt_and_sign;
+      } else {
+        jiff.hooks.decryptSign = function decrypt_and_sign(cipher_text, decryption_secret_key, signing_public_key, operation_type) {
+          return cipher_text;
+        }
+      }
+    }
+    if (jiff.hooks.generateKeyPair == null) {
+      if (options.sodium !== false) {
+        jiff.hooks.generateKeyPair = function () {
+          // eslint-disable-next-line no-undef
+          var key = sodium.crypto_box_keypair(); // this party's public and secret key
+          return {public_key: key.publicKey, secret_key: key.privateKey}
+        };
+      } else {
+        jiff.hooks.generateKeyPair = function () {
+          return {};
+        }
+      }
+    }
+    if (jiff.hooks.parseKey == null) {
+      if (options.sodium !== false) {
+        jiff.hooks.parseKey = function (keyString) {
+          return new Uint8Array(JSON.parse(keyString));
+        };
+      } else {
+        jiff.hooks.parseKey = function (keyString) {
+          return null;
+        }
+      }
+    }
+    if (jiff.hooks.dumpKey == null) {
+      if (options.sodium !== false) {
+        jiff.hooks.dumpKey = function (key) {
+          return '[' + key.toString() + ']';
+        };
+      } else {
+        jiff.hooks.dumpKey = function (key) {
+          return '';
+        }
+      }
     }
 
     // Array hooks should have empty array by default
@@ -3307,8 +3389,10 @@
             receive_share(jiff, party_id, msg.share, msg.op_id);
           } else if (msg.label === 'open') {
             receive_open(jiff, party_id, msg.share, msg.op_id, msg.Zp);
+          } else if (msg.label === 'custom') {
+            receive_custom(jiff, msg.tag, party_id, msg.message, true);
           } else {
-            throw 'Error resolving pending message: unknown label ' + msg.label;
+            throw new Error('Error resolving pending message: unknown label ' + msg.label);
           }
         }
 
@@ -3331,23 +3415,32 @@
      * @instance
      */
     jiff.connect = function () {
-      // Send the computation id to the server to receive proper
-      // identification
-      if (options.__internal_socket == null) {
-        jiff.socket.on('connect', function () {
+      var ready_connect = function () {
+        // Send the computation id to the server to receive proper
+        // identification
+        if (options.__internal_socket == null) {
+          jiff.socket.on('connect', function () {
+            jiff.socket.emit('computation_id', JSON.stringify({
+              computation_id: computation_id,
+              party_id: jiff.id,
+              party_count: jiff.party_count
+            }));
+          });
+          jiff.socket.connect();
+        } else {
           jiff.socket.emit('computation_id', JSON.stringify({
             computation_id: computation_id,
             party_id: jiff.id,
             party_count: jiff.party_count
           }));
-        });
-        jiff.socket.connect();
+        }
+      };
+
+      if (options.sodium === false) {
+        ready_connect();
       } else {
-        jiff.socket.emit('computation_id', JSON.stringify({
-          computation_id: computation_id,
-          party_id: jiff.id,
-          party_count: jiff.party_count
-        }));
+        // eslint-disable-next-line no-undef
+        sodium.ready.then(ready_connect);
       }
     };
 
@@ -3363,7 +3456,7 @@
      */
     jiff.emit = function (tag, receivers, message, encrypt) {
       if (typeof(message) !== 'string') {
-        throw 'Emit: message must be a string';
+        throw new Error('Emit: message must be a string');
       }
 
       if (receivers == null) {
@@ -3564,7 +3657,7 @@
      * @return {number} the random number.
      */
     jiff.helpers.random = function (max) {
-      // Use rejection sampling to get random value with normal distribution
+      // Use rejection sampling to get random value within bounds
       // Generate random Uint8 values of 1 byte larger than the max parameter
       // Reject if random is larger than quotient * max (remainder would cause biased distribution), then try again
       if (max == null) {
@@ -3661,10 +3754,10 @@
       // type check to confirm the secret to be shared is a number
       // for fixed-point extension it should allow non-ints
       if (secret != null &amp;&amp; (typeof(secret) !== 'number' || Math.floor(secret) !== secret || secret &lt; 0)) {
-        throw 'secret must be a non-negative whole number';
+        throw new Error('secret must be a non-negative whole number');
       }
       if (secret != null &amp;&amp; (secret >= (Zp == null ? jiff.Zp : Zp))) {
-        throw 'secret must fit inside Zp';
+        throw new Error('secret must fit inside Zp');
       }
       return jiff.internal_share(secret, threshold, receivers_list, senders_list, Zp, share_id);
     };
@@ -3934,7 +4027,7 @@
      * @param {Array} [parties=all_parties] - an array with party ids (1 to n) specifying the parties sending the shares.
      * @param {number} [threshold=parties.length] - the min number of parties needed to reconstruct the secret, defaults to all the senders.
      * @param {number} [Zp=jiff_instance.Zp] - the mod (if null then the default Zp for the instance is used).
-     * @param {string|number|object} op_ids - same as jiff-instance.open(..)
+     * @param {string|number|object} [op_ids=auto_Gen()] - same as jiff-instance.open(..)
      * @returns {promise} a (JQuery) promise to the open value of the secret.
      */
     jiff.receive_open = function (parties, threshold, Zp, op_ids) {
@@ -4078,7 +4171,7 @@
         compute_threshold = Math.floor((compute_list.length + 1) / 2);
       }
       if (compute_threshold > (compute_list.length + 1) / 2) {
-        throw 'generate_beaver_bgw: compute threshold too high for bgw';
+        throw new Error('generate_beaver_bgw: compute threshold too high for bgw');
       }
 
       var a = jiff.protocols.generate_and_share_random(compute_threshold, compute_list, compute_list, Zp, op_id+':share_a');
@@ -4286,24 +4379,29 @@
      *                                  parameter is ignored.
      */
     jiff.disconnect = function (safe, free, callback) {
-      if (free === true) {
-        jiff.socket.safe_emit('free', '');
-      }
-
       if (safe) {
-        jiff.socket.safe_disconnect(callback);
+        jiff.socket.safe_disconnect(free, callback);
         if (jiff.triplets_socket !== jiff.socket) {
-          jiff.triplets_socket.safe_disconnect();
+          jiff.triplets_socket.safe_disconnect(free);
         }
         if (jiff.numbers_socket !== jiff.socket) {
-          jiff.numbers_socket.safe_disconnect();
+          jiff.numbers_socket.safe_disconnect(free);
         }
       } else {
+        if (free) {
+          jiff.socket.emit('free', '');
+        }
         jiff.socket.disconnect();
         if (jiff.triplets_socket !== jiff.socket) {
+          if (free) {
+            jiff.triplets_socket.emit('free', '');
+          }
           jiff.triplets_socket.disconnect();
         }
         if (jiff.numbers_socket !== jiff.socket) {
+          if (free) {
+            jiff.numbers_socket.emit('free', '');
+          }
           jiff.numbers_socket.disconnect();
         }
       }
@@ -4311,68 +4409,63 @@
 
     // Store the id when server sends it back
     jiff.socket.on('init', function (msg) {
-      sodium_promise.then(function () {
-        msg = JSON.parse(msg);
-        if (jiff.id == null) {
-          jiff.id = msg.party_id;
-        }
+      msg = JSON.parse(msg);
+      if (jiff.id == null) {
+        jiff.id = msg.party_id;
+      }
 
-        if (jiff.party_count == null) {
-          jiff.party_count = msg.party_count;
-        }
+      if (jiff.party_count == null) {
+        jiff.party_count = msg.party_count;
+      }
 
-        if (jiff.secret_key == null || jiff.public_key == null) {
-          // eslint-disable-next-line no-undef
-          var genkey = sodium.crypto_box_keypair(); // this party's public and secret key
-          jiff.secret_key = genkey.privateKey;
-          jiff.public_key = genkey.publicKey;
-        }
+      if (jiff.secret_key == null || jiff.public_key == null) {
+        var key = jiff.hooks.generateKeyPair();
+        jiff.secret_key = key.secret_key;
+        jiff.public_key = key.public_key;
+      }
 
 
-        jiff.socket.emit('public_key', '[' + jiff.public_key.toString() + ']');
-        // Now: (1) this party is connect (2) server (and other parties) know this public key
-        // Resend all pending messages
-        jiff.socket.resend_mailbox();
+      jiff.socket.emit('public_key', jiff.hooks.dumpKey(jiff.public_key));
+      // Now: (1) this party is connect (2) server (and other parties) know this public key
+      // Resend all pending messages
+      jiff.socket.resend_mailbox();
 
-        jiff.execute_wait_callbacks();
-      });
+      jiff.execute_wait_callbacks();
     });
 
     jiff.socket.on('public_key', function (msg) {
-      sodium_promise.then(function () {
-        jiff.keymap = JSON.parse(msg);
+      jiff.keymap = JSON.parse(msg);
 
-        var i;
-        for (i in jiff.keymap) {
-          if (jiff.keymap.hasOwnProperty(i)) {
-            jiff.keymap[i] = new Uint8Array(JSON.parse(jiff.keymap[i]));
-          }
+      var i;
+      for (i in jiff.keymap) {
+        if (jiff.keymap.hasOwnProperty(i)) {
+          jiff.keymap[i] = jiff.hooks.parseKey(jiff.keymap[i]);
         }
+      }
 
-        // Resolve any pending messages that were received before the sender's public key was known
-        jiff.resolve_messages_waiting_for_keys();
+      // Resolve any pending messages that were received before the sender's public key was known
+      jiff.resolve_messages_waiting_for_keys();
 
-        // Resolve any pending waits that have satisfied conditions
-        jiff.execute_wait_callbacks();
+      // Resolve any pending waits that have satisfied conditions
+      jiff.execute_wait_callbacks();
 
-        // Check if all keys have been received
-        if (jiff.keymap['s1'] == null) {
+      // Check if all keys have been received
+      if (jiff.keymap['s1'] == null) {
+        return;
+      }
+      for (i = 1; i &lt;= jiff.party_count; i++) {
+        if (jiff.keymap[i] == null) {
           return;
         }
-        for (i = 1; i &lt;= jiff.party_count; i++) {
-          if (jiff.keymap[i] == null) {
-            return;
-          }
-        }
+      }
 
-        // check if all parties are connected
-        if (jiff.__ready !== true) {
-          jiff.__ready = true;
-          if (options.onConnect != null) {
-            options.onConnect(jiff);
-          }
+      // check if all parties are connected
+      if (jiff.__ready !== true) {
+        jiff.__ready = true;
+        if (options.onConnect != null) {
+          options.onConnect(jiff);
         }
-      });
+      }
     });
 
     // Store sharing and shares counter which keeps track of the count of
@@ -4387,6 +4480,27 @@
     jiff.counters.op_count = {};
     jiff.counters.share_obj_count = 0;
     jiff.counters.pending_opens = 0; // Keeps track of pending opens to disconnect safely.
+
+    //stores a seed for generating unique op_ids.
+    jiff.op_id_seed = '';
+
+    /**
+     * Shorthand for generating unique operation ids.
+     * All primitives called after this seed will use their usual default ids prefixed by the seed.
+     * Helpful when we have nested callbacks/functions (e.g. share_arrays) that may be executed in arbitrary order,
+     * using this function as a the first call inside such callbacks with an appropriate deterministic unique base_op_id
+     * ensures that regardless of the order of execution, operations in the same callback are matched correctly across
+     * all parties.
+     * Check out demos/graph-pip/mpc.js for an example on using this.
+     * @param {string|number} base_op_id - the base seed to use as a prefix for all future op_ids.
+     */
+    jiff.seed_ids = function (base_op_id) {
+      if (base_op_id == null || base_op_id === '') {
+        jiff.op_id_seed = '';
+      } else {
+        jiff.op_id_seed = base_op_id.toString() + ':';
+      }
+    };
 
     /**
      * Generate an op_id for an open operation between the holders of a share and a receiver.
@@ -4403,7 +4517,7 @@
       if (jiff.counters.share_op_count[label] == null) {
         jiff.counters.share_op_count[label] = 0;
       }
-      return 'share:' + label + ':' + (jiff.counters.share_op_count[label]++);
+      return jiff.op_id_seed + 'share:' + label + ':' + (jiff.counters.share_op_count[label]++);
     };
 
     /**
@@ -4419,7 +4533,7 @@
       if (jiff.counters.open_op_count[label] == null) {
         jiff.counters.open_op_count[label] = 0;
       }
-      return 'open:' + label + ':' + (jiff.counters.open_op_count[label]++);
+      return jiff.op_id_seed + 'open:' + label + ':' + (jiff.counters.open_op_count[label]++);
     };
 
     /**
@@ -4434,7 +4548,7 @@
       if (jiff.counters.triplet_op_count[label] == null) {
         jiff.counters.triplet_op_count[label] = 0;
       }
-      return 'triplet:' + label + ':' + (jiff.counters.triplet_op_count[label]++);
+      return jiff.op_id_seed + 'triplet:' + label + ':' + (jiff.counters.triplet_op_count[label]++);
     };
 
     /**
@@ -4449,7 +4563,7 @@
       if (jiff.counters.number_op_count[label] == null) {
         jiff.counters.number_op_count[label] = 0;
       }
-      return 'number:' + label + ':' + (jiff.counters.number_op_count[label]++);
+      return jiff.op_id_seed + 'number:' + label + ':' + (jiff.counters.number_op_count[label]++);
     };
 
     /**
@@ -4460,7 +4574,7 @@
      * @return {string} - a unique (per party) id for a new secret share object.
      */
     jiff.counters.gen_share_obj_id = function () {
-      return 'share' + (jiff.counters.share_obj_count++);
+      return jiff.op_id_seed + 'share' + (jiff.counters.share_obj_count++);
     };
 
     /**
@@ -4476,7 +4590,7 @@
       if (jiff.counters.op_count[label] == null) {
         jiff.counters.op_count[label] = 0;
       }
-      return op + ':' + label + ':' + (jiff.counters.op_count[label]++);
+      return jiff.op_id_seed + op + ':' + label + ':' + (jiff.counters.op_count[label]++);
     };
 
     // For logging / debugging
@@ -4539,7 +4653,15 @@
       var message = json_msg['message'];
       var encrypted = json_msg['encrypted'];
 
-      receive_custom(jiff, tag, sender_id, message, encrypted);
+      if (jiff.keymap[sender_id] != null || encrypted !== true) {
+        receive_custom(jiff, tag, sender_id, message, encrypted);
+      } else {
+        // key must not exist yet for sender_id, and encrypted must be true
+        if (jiff.messagesWaitingKeys[sender_id] == null) {
+          jiff.messagesWaitingKeys[sender_id] = [];
+        }
+        jiff.messagesWaitingKeys[sender_id].push({label: 'custom', tag: tag, message: message });
+      }
     });
 
     jiff.triplets_socket.on('triplet', function (msg, callback) {
@@ -4627,13 +4749,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.sharing_schemes.html">sharing_schemes</a></li><li><a href="jiff.utils.html">utils</a></li><li><a href="jiff-instance.html">jiff-instance</a></li><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="jiff-instance.protocols.html">protocols</a></li><li><a href="SecretShare.html">SecretShare</a></li></ul><h3>Global</h3><ul><li><a href="global.html">if_else</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.sharing_schemes.html">sharing_schemes</a></li><li><a href="jiff.utils.html">utils</a></li><li><a href="jiff-instance.html">jiff-instance</a></li><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="jiff-instance.protocols.html">protocols</a></li><li><a href="SecretShare.html">SecretShare</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Oct 11 2018 14:05:37 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Nov 13 2018 23:06:10 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>
