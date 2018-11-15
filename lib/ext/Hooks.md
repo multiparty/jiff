@@ -95,7 +95,7 @@
     * `instance`: the JIFF instance
     * `secret_share`: the secret_share object as created by JIFF
   * Return: the `secret_share` object to be used by JIFF, possibly modified (this is used for the subsequent hooks in the array).
-Must add docs for beforeOperation/afterOperation
+Must add docs for beforeOperation/afterOperation, beforeOperation is called right before encrypting and sending, afterOperation is called right after receiving and decrypting.
 
 ## Example
 
