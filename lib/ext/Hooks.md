@@ -1,4 +1,4 @@
-# Hooks
+# Client Library Hooks
 
 ## Supported Hooks
 
@@ -95,6 +95,7 @@
     * `instance`: the JIFF instance
     * `secret_share`: the secret_share object as created by JIFF
   * Return: the `secret_share` object to be used by JIFF, possibly modified (this is used for the subsequent hooks in the array).
+Must add docs for beforeOperation/afterOperation
 
 ## Example
 
@@ -209,3 +210,53 @@ This flow is particularly useful when developing extensions for JIFF. This allow
 3. the default `secret_share` object is created
 4. hook: `createSecretShare`
 5. returned `secret_share` object is used by JIFF
+
+# Server-Library Hooks
+The server library hooks work similarly to the client library. They are passed
+in the hooks attribute of the options object similarly. Note that these hooks
+are applied at the granularity of the entire server app, which includes all
+computations, and all parties in them. If you have special roles or computations
+that require specific hooks, you will either need to use a dedicated jiff-server instance
+for them, or provide high level hooks which check the computation and party ids,
+and execute the appropriate code for them.
+
+## Supported Hooks
+
+### Crypto Hooks
+Exact match of the client library crypto hooks.
+
+### Initialization Hooks
+* `beforeInitialize`
+* `onInitializeUsedId` if party requests id that is already reserved.
+* `afterInitialize`
+
+### Free Party Ids tracking
+For tracking which ids are free and which are used
+* `trackFreeIds` initialize mailbox object
+* `is_free` check if party id is free
+* `create_free` return (but do not reserve) a free party id
+* `reserve` reserve a party id as not free
+
+### Public Key Hooks
+* `beforePublicKey`
+* `afterPublicKey`
+
+### Disconnect/Free Hooks
+* `onDisconnect`
+* `beforeFree`
+* `afterFree`
+
+### Mailbox Hooks
+For storing messages in mailboxes
+* `put_in_mailbox` put a message in mailbox
+* `get_mailbox` get an array containing all messages in mailbox in order
+* `remove_from_mailbox` remove message from mailbox by id returned by put_in_mailbox or get_mailbox
+* `slice_mailbox` remove all messages up to and including given id
+
+### Miscellaneous Hooks
+* `log`
+* `beforeOperation` after receiving but before servicing messages from share, open, custom, triplet, and number.
+* `afterOperation` after servicing but before sending responses for share, open, custom, triplet, and number.
+* `computeShares`
+* `generateTriplet`
+* `generateNumber`
