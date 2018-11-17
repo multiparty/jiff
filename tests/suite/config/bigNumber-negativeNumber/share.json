@@ -4,7 +4,7 @@
     "port": 3001,
     "extensions": [ "bigNumber", "negativeNumber" ],
     "generation": {
-      "file": "config/bigNumber|negativeNumber/generation.js",
+      "file": "config/bigNumber-negativeNumber/generation.js",
       "function": "generateShareInputs"
     },
     "computation": {
