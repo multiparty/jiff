@@ -1,5 +1,5 @@
 var mySodiumWrapper = require('../wrapper.js');
-var BN = require('../../../node_modules/bn.js/lib/bn');
+var BN = require('bn.js');
 
 mySodiumWrapper.ready.then(function () {
   // Hash
@@ -14,7 +14,7 @@ mySodiumWrapper.ready.then(function () {
   console.log('add:', pointAdd.join(','));
 
   // Sub
-  var pointSub = mySodiumWrapper.pointAdd(pointAdd, point2);
+  var pointSub = mySodiumWrapper.pointSub(pointAdd, point2);
   console.log('sub:', pointSub.join(','));
 
   // Scalar Mult

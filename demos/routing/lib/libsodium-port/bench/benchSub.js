@@ -8,7 +8,6 @@ wrapper.ready.then(function () {
   var point1 = wrapper.hashToPoint('hello');
   var point2 = wrapper.hashToPoint('world!');
 
-
   // Run several tests
   for (var t = 0; t < BENCHCOUNT; t++) {
     point1 = wrapper.pointSub(point1, point2);

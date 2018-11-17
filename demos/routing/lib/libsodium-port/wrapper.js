@@ -73,7 +73,8 @@
     } else {
       point1 = lib.decodePoint(Array.from(point1));
       point2 = lib.decodePoint(Array.from(point2));
-      point1 = point1.sub(point2);
+      point2 = point2.neg();
+      point1 = point1.add(point2);
       return new Uint8Array(lib.encodePoint(point1));
     }
   };
