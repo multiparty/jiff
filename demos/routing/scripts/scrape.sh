@@ -19,6 +19,8 @@ if [ -d env ]; then
   # Hash and move outputs
   echo "Hashing..."
   node hash.js
+  
+  mkdir -p ../data
   mv output/client-hashed-data.js ../data/client-map.js
   mv output/server-hashed-data.json ../data/server-map.json
 

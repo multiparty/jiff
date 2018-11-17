@@ -17,5 +17,5 @@ wrapper.ready.then(function () {
     point = wrapper.scalarMult(point, scalar);
   }
 
-  console.log('success');
+  console.log('success mult');
 });

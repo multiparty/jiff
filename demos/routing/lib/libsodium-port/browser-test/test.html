@@ -13,17 +13,109 @@
   <script src="../../../lib/libsodium-port/wrapper.js"></script>
 
   <script type="text/javascript">
+    var result = '';
     // Code
     mySodiumWrapper.ready.then(function () {
-      var point = mySodiumWrapper.hashToPoint('hello');
-      document.getElementById('output').innerHTML += 'hash: ' + point.join(',') + '<br>';
+      // Hash
+      var point1 = mySodiumWrapper.hashToPoint('hello1');
+      result += 'hash1: ' + point1.join(',') + '<br>';
 
+      var point2 = mySodiumWrapper.hashToPoint('hello2');
+      result += 'hash2: ' + point2.join(',') + '<br>';
+
+      // Add
+      var pointAdd = mySodiumWrapper.pointAdd(point1, point2);
+      result += 'add: ' + pointAdd.join(',') + '<br>';
+
+      // Sub
+      var pointSub = mySodiumWrapper.pointSub(pointAdd, point2);
+      result += 'sub: ' + pointSub.join(',') + '<br>';
+
+      // Scalar Mult
       var scalar = new BN(2032);
       scalar = mySodiumWrapper.BNToBytes(scalar);
 
-      point = mySodiumWrapper.scalarMult(point, scalar);
-      document.getElementById('output').innerHTML += 'mult: ' + point.join(',') + '<br>';
+      var pointMult = mySodiumWrapper.scalarMult(point1, scalar);
+      result += 'mult: ' + pointMult.join(',');
+
+      document.getElementById('output').innerHTML += result;
     });
+
+
+    function verify() {
+      var ver = document.getElementById('textArea').value.trim();
+      document.getElementById('textArea').value = ver;
+
+      var vers = ver.split('\n');
+      var ress = result.split('<br>');
+
+      if (vers.length !== ress.length) {
+        alert('Number of rows mismatch!');
+        return;
+      }
+
+      var mismatches = [];
+      for (var i = 0; i < vers.length; i++) {
+        if (vers[i].trim() !== ress[i].trim()) {
+          mismatches.push(i+1);
+        }
+      }
+
+      if (mismatches.length === 0) {
+        alert('OK!');
+      } else {
+        alert('Mismatches in ' + mismatches.toString());
+      }
+    }
+
+    // trick for benchmarking
+    var waitingBenchs = [];
+    require = function (name) {
+      if (name === 'bn.js') {
+        return BN;
+      }
+
+      // simulate requiring the wrapper
+      var myWrapper = mySodiumWrapper;
+      myWrapper.ready.then = function (f) {
+        waitingBenchs.push(f);
+      };
+      return myWrapper;
+    };
+
+    var start, finish;
+    function benchmark() {
+      BENCHCOUNT = 1000;
+      var benchs = '<br><br>BENCHCOUNT: ' + BENCHCOUNT + ' In each category!<br>';
+
+      start = new Date();
+      waitingBenchs[0](); // Add
+      finish = new Date();
+      benchs += 'Point Addition: ' + (finish.getTime() - start.getTime()) / 1000 + '<br>';
+
+      start = new Date();
+      waitingBenchs[1](); // Sub
+      finish = new Date();
+      benchs += 'Point Subtraction: ' + (finish.getTime() - start.getTime()) / 1000 + '<br>';
+
+      start = new Date();
+      waitingBenchs[2](); // Mult
+      finish = new Date();
+      benchs += 'Scalar Mult: ' + (finish.getTime() - start.getTime()) / 1000;
+
+      document.getElementById('output').innerHTML += benchs;
+    }
   </script>
+
+  <!-- these are node.js files but with out require trick we can run them! -->
+  <script src="../../../lib/libsodium-port/bench/benchAdd.js"></script>
+  <script src="../../../lib/libsodium-port/bench/benchSub.js"></script>
+  <script src="../../../lib/libsodium-port/bench/benchMult.js"></script>
+
+
+  <br><br>
+  <textarea id="textArea" rows="7" cols="150" placeholder="Copy result from terminal"></textarea>
+  <br>
+  <input type="button" value="Verify!" onclick="verify();"> &nbsp; &nbsp; <input type="button" value="Bench!" onclick="benchmark();">
   </body>
 </html>
