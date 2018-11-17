@@ -1,11 +1,21 @@
 .PHONY: clean
 
-bench.o: bench.c
-	gcc bench.c -o bench.o -lsodium
+%.o: %.c
+	gcc $< -o $@ -lsodium
 
-bench: bench.o
-	bash -c "time ./bench.o"
-	bash -c "time node bench.js"
+bench: benchAdd.o benchSub.o benchMult.o
+	bash -c "time ./benchAdd.o"
+	bash -c "time node benchAdd.js"
+	@echo ""
+	@echo ""
+	@echo ""
+	bash -c "time ./benchSub.o"
+	bash -c "time node benchSub.js"
+	@echo ""
+	@echo ""
+	@echo ""
+	bash -c "time ./benchMult.o"
+	bash -c "time node benchMult.js"
 
 clean:
 	rm -rf *.o
