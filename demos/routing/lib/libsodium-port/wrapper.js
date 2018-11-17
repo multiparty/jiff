@@ -53,10 +53,36 @@
     return result;
   };
 
+  // Point Addition / Subtraction
+  exports.pointAdd = function (point1, point2) { // both 32 bytes arrays
+    if (node) {
+      var result = lib.pointAdd(point1.buffer, point2.buffer).slice(0);
+      return new Uint8Array(result);
+    } else {
+      point1 = lib.decodePoint(Array.from(point1));
+      point2 = lib.decodePoint(Array.from(point2));
+      point1 = point1.add(point2);
+      return new Uint8Array(lib.encodePoint(point1));
+    }
+  };
+
+  exports.pointSub = function (point1, point2) { // both 32 bytes arrays
+    if (node) {
+      var result = lib.pointSub(point1.buffer, point2.buffer).slice(0);
+      return new Uint8Array(result);
+    } else {
+      point1 = lib.decodePoint(Array.from(point1));
+      point2 = lib.decodePoint(Array.from(point2));
+      point2 = point2.neg();
+      point1 = point1.add(point2);
+      return new Uint8Array(lib.encodePoint(point1));
+    }
+  };
+
   // Scalar Multiplication
   exports.scalarMult = function (point, scalar) { // both 32 bytes arrays
     if (node) {
-      var result = lib.applyPRF(scalar.buffer, point.buffer).slice(0);
+      var result = lib.scalarMult(scalar.buffer, point.buffer).slice(0);
       return new Uint8Array(result);
     } else {
       scalar = exports.bytesToBN(scalar);

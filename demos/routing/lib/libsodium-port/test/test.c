@@ -30,12 +30,24 @@ void main() {
   int status2 = crypto_scalarmult_ed25519_noclamp(point3, scalar2, point2);
   for(int i = 0; i < 32; i++) {
     if(point3[i] != point[i]) {
-      printf("FAIL\n");
+      printf("FAIL SCALAR\n");
       return;
     }
   }
 
-  printf("success\n");
+  printf("success scalar\n");
+
+  // addition and subtraction
+  status1 = crypto_core_ed25519_add(point3, point, point2); // point3 = point + point2
+  status2 = crypto_core_ed25519_sub(point3, point3, point2); // point3 = point3 - point2 = point
+  for(int i = 0; i < 32; i++) {
+    if(point3[i] != point[i]) {
+      printf("FAIL ADD/SUB\n");
+      return;
+    }
+  }
+
+  printf("success add/sub\n");
 }
 
 

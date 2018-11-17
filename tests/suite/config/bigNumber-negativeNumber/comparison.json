@@ -4,11 +4,11 @@
     "port": 3001,
     "extensions": [ "bigNumber", "negativeNumber" ],
     "generation": {
-      "file": "config/bigNumber|negativeNumber/generation.js",
-      "function": "generateConstantComparisonInputs"
+      "file": "config/bigNumber-negativeNumber/generation.js",
+      "function": "generateComparisonInputs"
     },
     "computation": {
-      "file": "config/bigNumber|negativeNumber/computations.js",
+      "file": "config/bigNumber-negativeNumber/computations.js",
       "function": "compute"
     }
   },
