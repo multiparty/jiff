@@ -1,0 +1,128 @@
+{
+  "tests": [ "share2", "share3", "share4", "share5", "share10", "reshare-threshold4", "reshare-threshold5", "reshare-parties4", "reshare-parties5", "reshare-parties7" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "bigNumber", "fixedpoint", "negativeNumber" ],
+    "generation": {
+      "file": "config/fixedpoint-negativeNumber/generation.js",
+      "function": "generateShareInputs"
+    },
+    "computation": {
+      "file": "./computations-share.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "share2": {
+      "count": 100,
+      "parallel": 25,
+      "options": {
+        "Zp": "2097143",
+        "party_count": 2,
+        "integer_digits": 3,
+        "decimal_digits": 3,
+        "warn": false
+      }
+    },
+    "share3": {
+      "count": 100,
+      "parallel": 25,
+      "options": {
+        "Zp": "2097143",
+        "party_count": 3,
+        "integer_digits": 3,
+        "decimal_digits": 3,
+        "warn": false
+      }
+    },
+    "share4": {
+      "count": 80,
+      "parallel": 20,
+      "options": {
+        "Zp": "2097143",
+        "party_count": 4,
+        "integer_digits": 3,
+        "decimal_digits": 3,
+        "warn": false
+      }
+    },
+    "share5": {
+      "count": 50,
+      "parallel": 20,
+      "options": {
+        "Zp": "2097143",
+        "party_count": 5,
+        "integer_digits": 3,
+        "decimal_digits": 3,
+        "warn": false
+      }
+    },
+    "share10": {
+      "count": 40,
+      "parallel": 15,
+      "options": {
+        "Zp": "2097143",
+        "party_count": 10,
+        "integer_digits": 3,
+        "decimal_digits": 3,
+        "warn": false
+      }
+    },
+    "reshare-threshold4": {
+      "count": 100,
+      "parallel": 25,
+      "options": {
+        "Zp": "2097143",
+        "party_count": 4,
+        "integer_digits": 3,
+        "decimal_digits": 3,
+        "warn": false
+      }
+    },
+    "reshare-threshold5": {
+      "count": 50,
+      "parallel": 20,
+      "options": {
+        "Zp": "2097143",
+        "party_count": 5,
+        "integer_digits": 3,
+        "decimal_digits": 3,
+        "warn": false
+      }
+    },
+    "reshare-parties4": {
+      "count": 100,
+      "parallel": 20,
+      "options": {
+        "Zp": "2097143",
+        "party_count": 4,
+        "integer_digits": 3,
+        "decimal_digits": 3,
+        "warn": false
+      }
+    },
+    "reshare-parties5": {
+      "count": 100,
+      "parallel": 20,
+      "options": {
+        "Zp": "2097143",
+        "party_count": 5,
+        "integer_digits": 3,
+        "decimal_digits": 3,
+        "warn": false
+      }
+    },
+    "reshare-parties7": {
+      "count": 20,
+      "parallel": 10,
+      "options": {
+        "Zp": "2097143",
+        "party_count": 7,
+        "integer_digits": 3,
+        "decimal_digits": 3,
+        "warn": false
+      }
+    }
+  }
+}

@@ -7,6 +7,13 @@ from geoql import geoql
 import requests
 from Queue import Queue
 
+############################ CONFIGURATIONS
+RADIUS = 0.4
+RAW_OUTPUT_PATH = './output/raw.geojson';
+CLIENT_OUTPUT_PATH = './output/client-unhashed-data.json';
+SERVER_OUTPUT_PATH = './output/server-unhashed-data.json';
+
+
 ############################ SCRAPE MAP
 
 url = 'https://raw.githubusercontent.com/Data-Mechanics/geoql/master/examples/'
@@ -23,12 +30,12 @@ g = geoql.loads(requests.get(url + 'example_extract.geojson').text, encoding="la
 g = g.properties_null_remove()\
      .tags_parse_str_to_dict()\
      .keep_by_property({"highway": {"$in": ["residential", "secondary", "tertiary"]}})
-g = g.keep_within_radius((42.344936, -71.086976), 0.4, 'miles') # 0.6 miles from Boston Common.
+g = g.keep_within_radius((42.344936, -71.086976), RADIUS, 'miles') # 0.6 miles from Boston Common.
 
 
 g = g.keep_that_intersect(z) # Only those entries found in a Boston ZIP Code regions.
 g = g.node_edge_graph() # Converted into a graph with nodes and edges.
-g.dump(open('boston_0.6.geojson', 'w'))
+g.dump(open(RAW_OUTPUT_PATH, 'w'))
 
 ########################### FORMAT MAP AS A GRAPH
 
@@ -53,8 +60,8 @@ for i in range(len(points)):
 
 # Print out JSON object for client  
 client = { 'features': points }
-clientFile = open('client.js', 'w')
-clientFile.write('exports.obj = ' + json.dumps(client) + ';')
+clientFile = open(CLIENT_OUTPUT_PATH, 'w')
+clientFile.write(json.dumps(client))
 clientFile.close()
 
 # format edges
@@ -97,10 +104,11 @@ for src in nodes:
 # Check unreachables""
 for t in table:
   if t[2] == 0:
+    #t[2] = t[1]
     print "unreachable: ", (t[0], t[1])
 
 # write out JSON object for server
-clientFile = open('server.json', 'w')
+clientFile = open(SERVER_OUTPUT_PATH, 'w')
 clientFile.write(json.dumps(table))
 clientFile.close()
 

@@ -5,8 +5,7 @@ geojson==2.4.0
 geopy==1.14.0
 geoql==0.0.8.0
 idna==2.6
-pkg-resources==0.0.0
-requests==2.18.4
+requests==2.20.0
 Rtree==0.8.3
 Shapely==1.6.4.post1
 tqdm==4.23.4

@@ -1,0 +1,42 @@
+{
+  "tests": [ "<", "<=", ">", ">=", "==", "!=" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "bigNumber", "negativeNumber" ],
+    "generation": {
+      "file": "config/bigNumber-negativeNumber/generation.js",
+      "function": "generateComparisonInputs"
+    },
+    "computation": {
+      "file": "config/bigNumber-negativeNumber/computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 15,
+      "parallel": 5,
+      "options": {
+        "Zp": 2039,
+        "party_count": 3
+      }
+    },
+    "==": {
+      "count": 15,
+      "parallel": 5,
+      "options": {
+        "Zp": 2039,
+        "party_count": 3
+      }
+    },
+    "!=": {
+      "count": 15,
+      "parallel": 5,
+      "options": {
+        "Zp": 2039,
+        "party_count": 3
+      }
+    }
+  }
+}
