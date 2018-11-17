@@ -21,12 +21,12 @@ void main() {
   for(int i = 0; i < BENCHCOUNT; i++) {
     randombytes_buf(scalar, sizeof scalar);
     if (crypto_scalarmult_ed25519_noclamp(result, scalar, point) != 0) {
-      printf("FAIL\n");
+      printf("FAIL SCALAR MULT\n");
       return;
     }
   }
 
-  printf("successE\n");
+  printf("success scalarMult\n");
 }
 
 
