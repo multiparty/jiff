@@ -4,14 +4,14 @@ var assert = require('chai').assert;
 var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
-var showProgress = false;
-var party_count = 3;
-var parallelismDegree = 100; // Max number of test cases running in parallel
-var n = 1000;
-var Zp = null;
+var showProgress = true;
+var party_count = 4;
+var parallelismDegree = 20; // Max number of test cases running in parallel
+var n = 50;
+var Zp = 15485867;
 
 // Parameters specific to this demo
-var maxValue = 1000;
+var maxValue = 500;
 
 
 /**
@@ -47,11 +47,11 @@ function computeResults(inputs) {
   var results = [];
 
   for (var j = 0; j < n; j++) {
-    var sum = 0;
+    var product = 1;
     for (var i = 1; i <= party_count; i++) {
-      sum += inputs[i][j];
+      product = (product * inputs[i][j]) % Zp;
     }
-    results.push(sum);
+    results.push(product);
   }
   return results;
 }
@@ -70,13 +70,14 @@ describe('Test', function () {
     var inputs = generateInputs(party_count);
     var realResults = computeResults(inputs);
 
-    var onConnect = function (jiff_instance) {
+    // Computation
+    var compute = function (jiff_instance) {
       var partyInputs = inputs[jiff_instance.id];
 
       var testResults = [];
       (function one_test_case(j) {
         if (jiff_instance.id === 1 && showProgress) {
-          console.log('\tStart ', j > partyInputs.length ? partyInputs.length : j, '/', partyInputs.length);
+          console.log('\tCompute ', j > partyInputs.length ? partyInputs.length : j, '/', partyInputs.length);
         }
 
         if (j < partyInputs.length) {
@@ -123,7 +124,32 @@ describe('Test', function () {
       })(0);
     };
 
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp };
+    // Pre-processing
+    var preprocess = function (jiff_instance) {
+      (function preprocess_batch(j) {
+        if (jiff_instance.id === 1 && showProgress) {
+          console.log('\tPreprocess ', j, '/', n);
+        }
+
+        if (j >= n) {
+          // done
+          mpc.done_preprocess(jiff_instance);
+          compute(jiff_instance);
+          return;
+        }
+        var batch_size = parallelismDegree;
+        if (j + batch_size > n) {
+          batch_size = n - j;
+        }
+        // we have party_count - 1 multiplication per input!
+        var promise = mpc.preprocess(batch_size * (party_count - 1), jiff_instance);
+        promise.then(function () {
+          preprocess_batch(j + batch_size);
+        });
+      })(0);
+    }
+
+    var options = { party_count: party_count, onError: console.log, onConnect: preprocess, Zp: Zp };
     for (var i = 0; i < party_count; i++) {
       mpc.connect('http://localhost:8080', 'mocha-test', options);
     }

@@ -34,9 +34,9 @@ var options = {party_count: party_count, party_id: party_id};
 options.onConnect = function (jiff_instance) {
   // Pre-process
   var promise = mpc.preprocess(party_count-1);
-  console.log('being preprocess')
   promise.then(function () {
     // Compute
+    mpc.done_preprocess();
     promise = mpc.compute(input);
     promise.then(function (v) {
       console.log(v);

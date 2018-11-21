@@ -24,6 +24,8 @@ function connect() {
 
       // eslint-disable-next-line no-undef
       mpc.preprocess(preprocess_count).then(function () {
+        // eslint-disable-next-line no-undef
+        mpc.done_preprocess();
         $('#output').append('<p>Preprocessing Done!</p>');
         $('#button').attr('disabled', false);
       });

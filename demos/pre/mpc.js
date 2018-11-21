@@ -26,10 +26,17 @@
     }
 
     var promise = jiff_instance.preprocessing('*', jiff_instance.protocols.generate_beaver_bgw, multiplication_count);
-    promise.then(function () {
-      jiff_instance.finish_preprocessing();
-    });
     return promise;
+  };
+
+  /**
+   * Call when preprocessing is done and you are ready to begin computing
+   */
+  exports.done_preprocess = function (jiff_instance) {
+    if (jiff_instance == null) {
+      jiff_instance = saved_instance;
+    }
+    jiff_instance.finish_preprocessing();
   };
 
   /**
