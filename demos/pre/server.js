@@ -1,7 +1,10 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-require('../../lib/jiff-server').make_jiff(http, { logs:true });
+var jiff_instance = require('../../lib/jiff-server').make_jiff(http, { logs:true });
+jiff_instance.request_triplet_share = function () {
+  throw new Error('Unsupported action: request triplet share!');
+}
 
 // Serve static files.
 app.use('/demos', express.static('demos'));

@@ -33,6 +33,16 @@
   };
 
   /**
+   * Call when preprocessing is done and you are ready to begin computing
+   */
+  exports.done_preprocess = function (jiff_instance) {
+    if (jiff_instance == null) {
+      jiff_instance = saved_instance;
+    }
+    jiff_instance.finish_preprocessing();
+  };
+
+  /**
    * The MPC computation
    */
   exports.compute = function (input, jiff_instance) {
