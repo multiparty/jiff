@@ -25,7 +25,7 @@
       jiff_instance = saved_instance;
     }
 
-    var promise = jiff_instance.preprocessing('*', jiff_instance.protocols.generate_beaver_bgw, multiplication_count);
+    var promise = jiff_instance.preprocessing('*', null, 10, null, null, null, null, null, null);
     promise.then(function () {
       jiff_instance.finish_preprocessing();
     });
