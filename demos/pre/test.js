@@ -6,8 +6,8 @@ var mpc = require('./mpc.js');
 // Generic Testing Parameters
 var showProgress = true;
 var party_count = 4;
-var parallelismDegree = 20; // Max number of test cases running in parallel
-var n = 50;
+var parallelismDegree = 5; // Max number of test cases running in parallel
+var n = 10;
 var Zp = 15485867;
 
 // Parameters specific to this demo
@@ -147,7 +147,7 @@ describe('Test', function () {
           preprocess_batch(j + batch_size);
         });
       })(0);
-    }
+    };
 
     var options = { party_count: party_count, onError: console.log, onConnect: preprocess, Zp: Zp };
     for (var i = 0; i < party_count; i++) {

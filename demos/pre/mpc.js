@@ -25,10 +25,8 @@
       jiff_instance = saved_instance;
     }
 
-    var promise = jiff_instance.preprocessing('*', null, 10, null, null, null, null, null, null);
-    promise.then(function () {
-      jiff_instance.finish_preprocessing();
-    });
+    var total_count = multiplication_count * (jiff_instance.party_count - 1);
+    var promise = jiff_instance.preprocessing('smult', total_count /* 10 */, null, null, null, null, null, null, null);
     return promise;
   };
 
@@ -39,6 +37,7 @@
     if (jiff_instance == null) {
       jiff_instance = saved_instance;
     }
+
     jiff_instance.finish_preprocessing();
   };
 
@@ -53,11 +52,11 @@
     // The MPC implementation should go *HERE*
     var shares = jiff_instance.share(input);
     var sum = shares[1];
-    for (var k = 0; k < 10; k++) {
-      for (var i = 2; i <= jiff_instance.party_count; i++) {
-        sum = sum.smult(shares[i]);
-      }
+    // for (var k = 0; k < 10; k++) {
+    for (var i = 2; i <= jiff_instance.party_count; i++) {
+      sum = sum.smult(shares[i]);
     }
+    // }
 
     // Return a promise to the final output(s)
     return jiff_instance.open(sum);
