@@ -96,7 +96,10 @@
   * Return: the `secret_share` object to be used by JIFF, possibly modified (this is used for the subsequent hooks in the array).
 
 
-Must add docs for beforeOperation/afterOperation, beforeOperation is called right before encrypting and sending, afterOperation is called right after receiving and decrypting.
+Must add docs for beforeOperation/afterOperation:
+beforeOperation is called right before encrypting and sending,
+afterOperation is called right after receiving and decrypting.
+public_keys only has an afterOperation, but no beforeOperation.
 
 ## Example
 
@@ -227,20 +230,16 @@ and execute the appropriate code for them.
 Exact match of the client library crypto hooks.
 
 ### Initialization Hooks
-* `beforeInitialize`
-* `onInitializeUsedId` if party requests id that is already reserved.
-* `afterInitialize`
+* `beforeInitialization`
+* `onInitializeUsedId` if party requests id that is already reserved: single hook.
+* `afterInitialization`
 
 ### Free Party Ids tracking
 For tracking which ids are free and which are used
-* `trackFreeIds` initialize mailbox object
-* `is_free` check if party id is free
-* `create_free` return (but do not reserve) a free party id
-* `reserve` reserve a party id as not free
-
-### Public Key Hooks
-* `beforePublicKey`
-* `afterPublicKey`
+* `trackFreeIds` initialize mailbox object, contains these functions:
+    + `is_free` check if party id is free
+    + `create_free` return (but do not reserve) a free party id
+    + `reserve` reserve a party id as not free
 
 ### Disconnect/Free Hooks
 * `onDisconnect`
