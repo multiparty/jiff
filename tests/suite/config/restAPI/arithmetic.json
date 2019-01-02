@@ -40,7 +40,7 @@
       }
     },
     "%": {
-      "count": 4,
+      "count": 2,
       "parallel": 2,
       "options": {
         "Zp": 127,

@@ -15,7 +15,7 @@
 
   "testConf": {
     "default": {
-      "count": 15,
+      "count": 10,
       "parallel": 5,
       "options": {
         "Zp": 127,
@@ -24,7 +24,7 @@
       }
     },
     "==": {
-      "count": 15,
+      "count": 10,
       "parallel": 5,
       "options": {
         "Zp": 127,
@@ -33,7 +33,7 @@
       }
     },
     "!=": {
-      "count": 15,
+      "count": 10,
       "parallel": 5,
       "options": {
         "Zp": 127,
