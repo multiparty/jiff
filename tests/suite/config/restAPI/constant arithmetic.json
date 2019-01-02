@@ -1,0 +1,46 @@
+{
+  "tests": [ "+", "-", "*", "|", "^", "cdivfac", "/Zp127", "/Zp2039" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "restAPI" ],
+    "generation": {
+      "file": "config/base/generation.js",
+      "function": "generateConstantArithmeticInputs"
+    },
+    "computation": {
+      "file": "computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 20,
+      "parallel": 10,
+      "options": {
+        "Zp": 15485867,
+        "party_count": 3
+      }
+    },
+    "/Zp127": {
+      "alias": "/",
+      "count": 4,
+      "parallel": 2,
+      "options": {
+        "Zp": 127,
+        "party_count": 3,
+        "flushInterval": 50
+      }
+    },
+    "/Zp2039": {
+      "alias": "/",
+      "count": 2,
+      "parallel": 2,
+      "options": {
+        "Zp": 2039,
+        "party_count": 3,
+        "flushInterval": 50
+      }
+    }
+  }
+}

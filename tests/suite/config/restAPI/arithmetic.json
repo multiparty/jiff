@@ -1,0 +1,52 @@
+{
+  "tests": [ "+", "-", "*", "*bgw", "|", "^", "!", "/", "%" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "restAPI" ],
+    "generation": {
+      "file": "config/base/generation.js",
+      "function": "generateArithmeticInputs"
+    },
+    "computation": {
+      "file": "computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 20,
+      "parallel": 10,
+      "options": {
+        "Zp": 15485867,
+        "party_count": 3
+      }
+    },
+    "*bgw": {
+      "count": 20,
+      "parallel": 10,
+      "options": {
+        "Zp": 15485867,
+        "party_count": 4
+      }
+    },
+    "/": {
+      "count": 4,
+      "parallel": 2,
+      "options": {
+        "Zp": 127,
+        "party_count": 3,
+        "flushInterval": 50
+      }
+    },
+    "%": {
+      "count": 4,
+      "parallel": 2,
+      "options": {
+        "Zp": 127,
+        "party_count": 3,
+        "flushInterval": 50
+      }
+    }
+  }
+}
