@@ -14,9 +14,14 @@ var options = {
 };
 
 var jiff_instance = jiffServer.make_jiff(http, options);
-jiff_instance.apply_extension(jiffRestAPIServer, options);
 if (extensions != null && (extensions.indexOf('bigNumber') > -1 || extensions.indexOf('fixedpoint') > -1)) {
   jiff_instance.apply_extension(jiffBigNumberServer, options);
+}
+if (extensions != null && extensions.indexOf('restAPI') > -1) {
+  var bodyParser  = require('body-parser');
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
+  jiff_instance.apply_extension(jiffRestAPIServer, options);
 }
 
 // Serve static files.
