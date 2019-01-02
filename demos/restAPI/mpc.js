@@ -6,14 +6,20 @@
    */
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
+    opt['autoConnect'] = false;
 
     if (node) {
       // eslint-disable-next-line no-undef
       jiff = require('../../lib/jiff-client');
+      // eslint-disable-next-line no-undef
+      jiffRestAPI = require('../../lib/ext/jiff-client-restful');
     }
 
     // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
+    // eslint-disable-next-line no-undef
+    saved_instance.apply_extension(jiffRestAPI, opt);
+    saved_instance.connect();
     return saved_instance;
   };
 
