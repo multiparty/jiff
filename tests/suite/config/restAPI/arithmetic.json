@@ -15,16 +15,16 @@
 
   "testConf": {
     "default": {
-      "count": 20,
-      "parallel": 10,
+      "count": 100,
+      "parallel": 50,
       "options": {
         "Zp": 15485867,
         "party_count": 3
       }
     },
     "*bgw": {
-      "count": 20,
-      "parallel": 10,
+      "count": 100,
+      "parallel": 50,
       "options": {
         "Zp": 15485867,
         "party_count": 4
