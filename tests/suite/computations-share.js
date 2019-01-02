@@ -110,7 +110,7 @@ function batchTest(jiff_instance, startIndex) {
 
   // Reached the end
   if (startIndex >= end) {
-    jiff_instance.disconnect(true, false);
+    jiff_instance.disconnect(true, true);
 
     if (jiff_instance.id === 1) {
       var exception;
