@@ -49,10 +49,9 @@ The instance object provides methods for sharing, opening, and performing operat
 
 Run a sample server from one of the demos under `demos` in the following way:
 ```shell
-node index.js demos/<demo-name>/server
+node demos/<demo-name>/server.js
 ```
-The output from the example server will direct you to open `localhost:8080/demos/<demo-name>/client.html` in a browser (you must open 
-an instance in a separate window/tab for every distinct party participating in the protocol).
+The output from the example server will direct you to open `localhost:8080/demos/<demo-name>/client.html` in a browser (you must open an instance in a separate window/tab for every distinct party participating in the protocol).
 You can then proceed with the protocol using the client interfaces. 
 
 Note that you can run node.js parties that can also participate in the protocol by executing (e.g., a separate terminal for each party):
