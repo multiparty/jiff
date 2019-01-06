@@ -1,0 +1,45 @@
+<!-- Basic UI for running the demo in the browser -->
+
+<html>
+  <head>
+    <title>Sum integers under MPC</title>
+    <style>
+      .error {
+        color: #FF0000;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="./client.js"></script>
+
+    <!-- Contains the MPC implementation -->
+    <script type="text/javascript" src="./mpc.js"></script>
+  </head>
+  <body>
+    <h1>Connect JIFF</h1>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
+    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*" value="2" disabled="disabled"><br/><br/>
+    <label for="role">Party Role<label>
+    <select id="role">
+      <option value="1">Provide Gender</option>
+      <option value="2">Provide Income</option>
+    </select>
+    &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
+    <br/><br/>
+    <hr/>
+    <h1>Join / Filter / Group By under MPC</h1>
+    <label for="size">Enter your table's size</label> <input id="size" pattern="[0-9]+">
+    &nbsp; <button id="submit" onclick="generateTable(document.getElementById('size').value)" disabled="disabled">Input</button>
+    
+    <br>
+    <div id="input_area">
+    
+    </div>    
+    <button onclick="submit();" disabled="disabled" id="button">Submit</button><br/>
+    <div id="output"></div>
+  </body>
+</html>

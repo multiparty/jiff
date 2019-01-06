@@ -1,0 +1,31 @@
+1. Implement MPC algorithm:
+  * Data = [];
+  * // JOIN
+  * Loop over (SSN, Gender) in party 1 input:
+    + secret(flag), secret(INCOME) = modified binary search for SSN in party 2 input
+    + if i != -1
+      - Data.add(Gender, Income)
+    + else
+      - Data.add(2, -1) // 2 in gender means invalid entry
+  * // JOIN COMPLETE --- n log n comparison, n^2 multiplications
+  * // FILTER
+  * Loop over (Gender, Income) in Data:
+    + if Income > SOME CONSTANT
+      - Data unchanged
+    + else
+      - Replace with (2, 0)
+  * // FILTER COMPLETE --- n comparison, n multiplication
+  * // COUNT
+  * Result = [ { gender: 'M', count: share(0) }, { gender: 'F', count: share(0) } ]
+  * Loop over (Gender, Income) in Data:
+    + cmp1 = Gender == 0
+    + cmp2 = Gender == 1
+    + Result[0].count += cmp1
+    + Result[1].count += cmp2
+  * // COUNT COMPLETE --- 2n equality checks, 2n multiplications
+
+
+
+2. party.js: parse input as CSV.
+
+3. test.js: parallel = 1, run for small random tables.
