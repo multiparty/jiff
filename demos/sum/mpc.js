@@ -7,6 +7,7 @@
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
     opt['sodium'] = false;
+    opt['error'] = console.log;
 
     if (node) {
       // eslint-disable-next-line no-undef
