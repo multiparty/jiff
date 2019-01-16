@@ -76,7 +76,7 @@ npm test
 
 Demos are accompanied by test cases. The following command can be used to run the demos servers and test cases:
 ```shell
-npm run-script test-demo -- demo/<demo-name>
+npm run-script test-demo -- demos/<demo-name>
 ```
 The command assumes that the server is located at demos/<demo-name>/server.js and the test cases are located at demos/<demo-name>/test.js
 See demos/run-test.sh for instructions for running test cases located in different directories or with different names.
