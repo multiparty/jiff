@@ -1,5 +1,6 @@
+
 /**
- * Do not modify this file unless you have too
+ * Do not modify this file unless you have to.
  * This file has UI handlers.
  */
 // eslint-disable-next-line no-unused-vars
@@ -9,16 +10,16 @@ function connect() {
   var party_count = parseInt($('#count').val());
 
   if (isNaN(party_count)) {
-    $('#output').append('<p class="error">Party count must be a valid number!</p>');
+    $('#output').append("<p class='error'>Party count must be a valid number!</p>");
     $('#connectButton').prop('disabled', false);
   } else {
     var options = { party_count: party_count, decimal_digits: 5, integer_digits: 5, Zp: '32416190071' };
+    //var options = { party_count: party_count};
     options.onError = function (error) {
-      $('#output').append('<p class="error">'+error+'</p>');
+      $('#output').append("<p class='error'>"+error+'</p>');
     };
     options.onConnect = function () {
-      $('#button').attr('disabled', false);
-      $('#output').append('<p>All parties Connected!</p>');
+      $('#button').attr('disabled', false); $('#output').append('<p>All parties Connected!</p>');
     };
 
     var hostname = window.location.hostname.trim();
@@ -37,7 +38,6 @@ function connect() {
     }
 
     hostname = hostname + ':' + port;
-
     // eslint-disable-next-line no-undef
     mpc.connect(hostname, computation_id, options);
   }
@@ -46,11 +46,14 @@ function connect() {
 // eslint-disable-next-line no-unused-vars
 function submit() {
   var input = parseFloat($('#number').val());
+  //var input = parseInt($('#number').val());
 
   if (isNaN(input)) {
-    $('#output').append('<p class="error">Input a valid number!</p>');
+    $('#output').append("<p class='error'>Input a valid number!</p>");
   } else if (100 < input || input < 0) {
-    $('#output').append('<p class="error">Input a number between 0 and 100!</p>');
+    $('#output').append("<p class='error'>Input a number between 0 and 100!</p>");
+  // else if (100 < input || input < 0 || input !== Math.floor(input)) {
+  //   $('#output').append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
   } else {
     $('#button').attr('disabled', true);
     $('#output').append('<p>Starting...</p>');
@@ -62,5 +65,6 @@ function submit() {
 
 function handleResult(result) {
   $('#output').append('<p>Result is: ' + result.toString(10) + '</p>');
+  //$('#output').append('<p>Result is: ' + result + '</p>');
   $('#button').attr('disabled', false);
 }

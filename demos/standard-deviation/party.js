@@ -9,7 +9,13 @@ console.log('Command line arguments: <input> [<party count> [<computation_id> [<
 var mpc = require('./mpc');
 
 // Read Command line arguments
-var input = parseInt(process.argv[2]);
+var input = Number(process.argv[2]);
+if (input < 0 || input > 100) {
+  console.log('input must be between 0 and 100 inclusive');
+  return;
+}
+
+//var input = parseInt(process.argv[2], 10);
 
 var party_count = process.argv[3];
 if (party_count == null) {
@@ -20,7 +26,8 @@ if (party_count == null) {
 
 var computation_id = process.argv[4];
 if (computation_id == null) {
-  computation_id = 'test';
+  computation_id = 'test-fixed';
+  //computation_id = 'test';
 }
 
 var party_id = process.argv[5];
@@ -31,11 +38,13 @@ if (party_id != null) {
 var BigNumber = require('bignumber.js');
 
 // JIFF options
-var options = { party_count: party_count, party_id: party_id, decimal_digits: 5, integer_digits: 5, Zp: new BigNumber(32416190071) };
+//var options = {party_count: party_count, party_id: party_id};
+var options = { party_count: party_count, party_id: party_id, decimal_digits: 3, integer_digits: 3, Zp: new BigNumber(32416190071) };
 options.onConnect = function (jiff_instance) {
   var promise = mpc.compute(input);
 
   promise.then(function (v) {
+    //console.log(v);
     console.log(v.toString(10));
     jiff_instance.disconnect(true);
   });
