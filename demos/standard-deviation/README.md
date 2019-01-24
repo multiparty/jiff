@@ -4,7 +4,7 @@ Internal template for use when creating templates.
 
 ## File structure
 Demos should consist of the following parts:
-1. Server script: the defaul server script should be enough unless (1) additional extensions are applied. (2) server side computation is needed.
+1. Server script: the default server script should be enough unless (1) additional extensions are applied. (2) server side computation is needed.
 2. Web Based Party: Made from the following files:
 ..* client.html: UI for the browser.
 ..* client.js: Handlers for UI buttons, and input validations.
