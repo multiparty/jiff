@@ -41,6 +41,7 @@
      *           = 1/(n-1) * Sum_(1 to n) [input_i^2 - 2*input_i*mean + mean^2]
      *           = 1/(n-1) * [Sum_(1 to n) [input_i^2] + Sum_(1 to n) [mean^2] - 2 * Sum_(1 to n) [input_i * mean]]
      *           = 1/(n-1) * [n * mean^2 + Sum_(1 to n) [input_i^2] - 2 * Sum_(1 to n) [input_i * mean]]
+     *           = 1/(n-1) * [n * mean^2 + Sum_(1 to n) [input_i^2] - (2/n) * (Sum_(1 to n) input_i)^2]
      */
 
     var shares = jiff_instance.share(input);
@@ -56,26 +57,21 @@
 
     var one_over_n = Number.parseFloat((1/jiff_instance.party_count).toPrecision(4)); // convert 1/n to fixed point number
     var mean = in_sum.cmult(one_over_n);                        // mean = sum of inputs times 1/n
-    var mean_squared = mean.smult(mean);
+    var mean_squared = mean.smult(mean);                        // mean^2
+    var in_sum_squared = in_sum.smult(in_sum);                  // (sum of inputs)^2
+    var to_subtract = in_sum_squared.cmult(2*one_over_n);           // (2/n)(sum of inputs)^2
+
 
     var out = mean_squared.cmult(jiff_instance.party_count);   // out = n * mean^2
     out = out.sadd(in_squared_sum);                            // out = n * mean^2 + Sum_(1 to n) [input_i^2]
-
-    var to_subtract = mean.smult(shares[1]);
-    for (var k = 2; k <= jiff_instance.party_count; k++) {    // to_subtract = Sum_(1 to n) [input_i * mean]
-      var x = mean.smult(shares[k]);
-      to_subtract = to_subtract.sadd(x);
-    }
-
-    to_subtract = to_subtract.cmult(2);                       // to_subtract = 2 * Sum_(1 to n) [input_i * mean]
-    out = out.ssub(to_subtract);                              // out = n * mean^2 + Sum_(1 to n) [input_i^2] - 2 * Sum_(1 to n) [input_i * mean]
+    out = out.ssub(to_subtract);                               // out = n * mean^2 + Sum_(1 to n) [input_i^2] - (2/n) * (Sum_(1 to n) input_i)^2
 
     // Create a promise of output
     var promise = jiff_instance.open(out);
 
     var promise2 = promise.then(function(v){
-       var variance = v/(jiff_instance.party_count - 1);
-       return Math.sqrt(variance);       // Return standard deviation.
+      var variance = v/(jiff_instance.party_count - 1);
+      return Math.sqrt(variance);       // Return standard deviation.
     });
 
     return promise2;

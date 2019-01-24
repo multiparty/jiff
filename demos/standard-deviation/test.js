@@ -7,7 +7,7 @@ var showProgress = true;
 // Generic Testing Parameters
 var party_count = 3;
 var parallelismDegree = 5; // Max number of test cases running in parallel
-var n = 3; // Number of test cases in total
+var n = 5; // Number of test cases in total
 var Zp = null;
 
 // Parameters specific to this demo
