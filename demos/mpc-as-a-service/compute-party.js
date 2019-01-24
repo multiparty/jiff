@@ -52,4 +52,4 @@ options.onConnect = function (jiff_instance) {
   });
 };
 
-var jiff_instance = jiff.make_jiff('http://localhost:8080', computation_id, options);
+jiff.make_jiff('http://localhost:8080', computation_id, options);
