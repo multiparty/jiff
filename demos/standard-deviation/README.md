@@ -30,8 +30,8 @@ The demo consists of the following parts:
 5. test.js: mocha unit tests.
 6. Documentation:
     * This *README.md* file.
-    * 
+    * stddevprotocol.pdf: Description of standard deviation algorithm that is implemented.
 
 ## MPC Protocol Design 
 
-See stddevprotocol.tex 
+See stddevprotocol.pdf for description.
