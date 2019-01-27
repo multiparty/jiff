@@ -1,0 +1,66 @@
+<!-- Basic UI for running the demo in the browser -->
+
+<html>
+  <head>
+    <title>MPC Template</title>
+    <style>
+      .error {
+        color: #FF0000;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="./client.js"></script>
+
+    <!-- Contains the MPC implementation -->
+    <script type="text/javascript" src="./mpc.js"></script>
+  </head>
+<body>
+  <div class="container">
+    <div class="row">
+        <h1>Preference Comparison</h1>
+    </div>
+    <div class="row" style="border-width:1px; border-style:solid; width:307px; padding:10px;">
+    <form id="form">
+        <span><u>Fuel Data Collection:</u></span><br>
+        <input id="input_item1" type="radio" name="1" value="1-1">Send data<br>
+        <input id="input_item2" type="radio" name="1" value="1-2" checked="checked">Send anonymous data<br>
+        <input id="input_item3" type="radio" name="1" value="1-3">Don't send<br>
+        <br><span><u>Third-Party Sharing Presets:</u></span><br>
+        <input id="input_item4" type="radio" name="2" value="2-1">None<br>
+        <input id="input_item5" type="radio" name="2" value="2-2">Low<br>
+        <input id="input_item6" type="radio" name="2" value="2-3" checked="checked">Moderate<br>
+        <input id="input_item7" type="radio" name="2" value="2-4">High<br>
+        <br><span><u>Allow personalized notifications:</u></span><br>
+        <input id="input_item8" type="radio" name="3" value="3-1" checked="checked">Yes&nbsp;
+        <input id="input_item9" type="radio" name="3" value="3-2">No<br>
+        <br><span><u>Data transfer limit:</u></span><br>
+        <span>0</span><input onchange="och()" id="input_item10" type="range" style="width: 140px;" name="4" step="1" min="0" max="12" value="10"><span>12&nbsp;&nbsp;&nbsp;&nbsp;</span><span id="rv">10</span>mb<br>
+        <br><span id="input_itema" style="margin-top:5px;"><u>Allow location for:</u></span><br>
+        <input id="input_item11" type="checkbox" name="5" value="route" checked="checked">Route recommendations<br>
+        <input id="input_item12" type="checkbox" name="6" value="system" checked="checked">System applications<br>
+        <input id="input_item13" type="checkbox" name="7" value="third-party">Third-party applications<br>
+        <input id="input_item14" type="checkbox" name="8" value="timezone" checked="checked">Setting timezone<br>
+        <br><span id="input_itema" style="margin-top:5px;"><u>Allow data collection when</u></span><br>
+        <input id="input_item11" type="checkbox" name="9" value="drive" checked="checked">Driving&nbsp;
+        <input id="input_item12" type="checkbox" name="10" value="park" checked="checked">Parked<br>
+    </form>
+    </div>
+    <br><br>
+    <div id="btns" class="row">
+      <button class="btn btn-secondary" id="connectButton" onclick="connect();">connect</button>
+      <button class="btn btn-secondary" id="compareBtn"  onclick="submit();"> compare</button>
+    </div>
+    <br/>
+    <div class="row">
+        <b>Result</b>
+    </div>
+    <div id="result"></div>
+    <div id="output"></div>
+  </div>
+</body>
+</html>
