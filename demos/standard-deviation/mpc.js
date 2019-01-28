@@ -36,7 +36,7 @@
 
     var shares = jiff_instance.share(input);
     var in_sum = shares[1];
-    var in_squared_fixed = Number.parseFloat((Math.pow(input, 2)).toPrecision(5)); //convert input^2 to fixed point number
+    var in_squared_fixed = Number.parseFloat((Math.pow(input, 2)).toFixed(3)); //convert input^2 to fixed point number
     var in_squared = jiff_instance.share(in_squared_fixed);
     var in_squared_sum = in_squared[1];
 
@@ -45,7 +45,7 @@
       in_squared_sum = in_squared_sum.sadd(in_squared[i]);
     }
 
-    var one_over_n = Number.parseFloat((1/jiff_instance.party_count).toPrecision(5)); // convert 1/n to fixed point number
+    var one_over_n = Number.parseFloat((1/jiff_instance.party_count).toFixed(3)); // convert 1/n to fixed point number
     var in_sum_squared = in_sum.smult(in_sum);
     var intermediary = in_sum_squared.cmult(one_over_n);
     var out = in_squared_sum.ssub(intermediary);

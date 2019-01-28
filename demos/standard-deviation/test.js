@@ -7,12 +7,12 @@ var showProgress = true;
 // Generic Testing Parameters
 var party_count = 3;
 var parallelismDegree = 5; // Max number of test cases running in parallel
-var n = 5; // Number of test cases in total
+var n = 500; // Number of test cases in total
 var Zp = null;
 
 // Parameters specific to this demo
 var magnitude = 3; // 3 digits of magnitude
-var accuracy = 3; // 3 digits of accuracy after decimal point
+var accuracy = 3; // 3 digits of accuracy
 var maxValue = 10;
 var Zp = new BigNumber(32416190071);
 
@@ -51,19 +51,19 @@ function computeResults(inputs) {
   var results = [];
 
   for (var j = 0; j < n; j++) {
-    var sum = 0;
-    for (var i = 1; i <= party_count; i++) {
-      sum = inputs[i][j].plus(sum);
+    var in_sum = 0;
+    var in_squared_sum = 0;
+    for (var i = 1; i<= party_count; i++){
+      var in_squared = inputs[i][j].toPower(2);
+      in_sum = inputs[i][j].plus(in_sum);
+      in_squared_sum = in_squared.plus(in_squared_sum);
     }
-    var mean = sum.dividedBy(party_count);
-    var residual_sum = 0;
-    for (i = 1; i <= party_count; i++) {
-      var residual_inside = inputs[i][j].minus(mean);
-      var residual = residual_inside.pow(2);
-      residual_sum = residual.plus(residual_sum);
-    }
-    var variance = residual_sum.dividedBy(party_count-1);
-    results.push(variance.sqrt());
+    var intermediary = in_sum.toPower(2);                   // intermediary = in_sum^2
+    intermediary = intermediary.dividedBy(party_count);     // intermediary = in_sum^2/n
+    intermediary = in_squared_sum.minus(intermediary);      // intermediary = in_squared_sum - in_sum^2/n
+
+    var variance = intermediary.dividedBy(party_count - 1);
+    results.push(variance.sqrt())
   }
   return results;
 }
@@ -120,11 +120,11 @@ describe('Test', function () {
 
           // assert results are accurate
           try {
-            var teststring = testResults[i].toString();
-            var realstring = realResults[i].toString();
-            var test = Number.parseFloat(teststring).toPrecision(accuracy);
-            var real = Number.parseFloat(realstring).toPrecision(accuracy);
-            assert.deepEqual(test, real, msg);
+            var test = testResults[i].toString();
+            var real = realResults[i].toString();
+            var truncated_test = test.substr(0,test.indexOf(".")) + test.substr(test.indexOf("."), accuracy);
+            var truncated_real = real.substr(0, test.indexOf(".")) + test.substr(test.indexOf("."), accuracy);
+            assert.deepEqual(truncated_test, truncated_real, msg);
           } catch (assertionError) {
             done(assertionError);
             done = function () { };
