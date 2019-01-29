@@ -8,7 +8,6 @@ var showProgress = true;
 var party_count = 3;
 var parallelismDegree = 5; // Max number of test cases running in parallel
 var n = 500; // Number of test cases in total
-var Zp = null;
 
 // Parameters specific to this demo
 var magnitude = 3; // 3 digits of magnitude
@@ -53,7 +52,7 @@ function computeResults(inputs) {
   for (var j = 0; j < n; j++) {
     var in_sum = 0;
     var in_squared_sum = 0;
-    for (var i = 1; i<= party_count; i++){
+    for (var i = 1; i<= party_count; i++) {
       var in_squared = inputs[i][j].toPower(2);
       in_sum = inputs[i][j].plus(in_sum);
       in_squared_sum = in_squared.plus(in_squared_sum);
@@ -119,11 +118,13 @@ describe('Test', function () {
           var msg = 'Party: ' + jiff_instance.id + '. inputs: [' + ithInputs + ']';
 
           // assert results are accurate
+          // note this is different than template because of bignumbers framework and needing precision only up to certain
+          // number of decimal points
           try {
             var test = testResults[i].toString();
             var real = realResults[i].toString();
-            var truncated_test = test.substr(0,test.indexOf(".")) + test.substr(test.indexOf("."), accuracy);
-            var truncated_real = real.substr(0, test.indexOf(".")) + test.substr(test.indexOf("."), accuracy);
+            var truncated_test = test.substr(0,test.indexOf('.')) + test.substr(test.indexOf('.'), accuracy);
+            var truncated_real = real.substr(0, test.indexOf('.')) + test.substr(test.indexOf('.'), accuracy);
             assert.deepEqual(truncated_test, truncated_real, msg);
           } catch (assertionError) {
             done(assertionError);

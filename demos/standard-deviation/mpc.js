@@ -10,9 +10,9 @@
 
     if (node) {
       // eslint-disable-next-line no-undef
-      jiff = require('../../lib/jiff-client');
-      jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
-      jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
+      var jiff = require('../../lib/jiff-client');
+      var jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
+      var jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
     }
 
     opt.autoConnect = false;
@@ -53,7 +53,7 @@
     //Create a promise of output
     var promise = jiff_instance.open(out);
 
-    var promise2 = promise.then(function(v){
+    var promise2 = promise.then(function (v) {
       var variance = v/(jiff_instance.party_count - 1);
       return Math.sqrt(variance);       // Return standard deviation.
     });

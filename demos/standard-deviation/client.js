@@ -43,17 +43,13 @@ function connect() {
   }
 }
 
-// eslint-disable-next-line no-unused-vars
 function submit() {
   var input = parseFloat($('#number').val());
-  //var input = parseInt($('#number').val());
 
   if (isNaN(input)) {
     $('#output').append("<p class='error'>Input a valid number!</p>");
   } else if (100 < input || input < 0) {
     $('#output').append("<p class='error'>Input a number between 0 and 100!</p>");
-  // else if (100 < input || input < 0 || input !== Math.floor(input)) {
-  //   $('#output').append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
   } else {
     $('#button').attr('disabled', true);
     $('#output').append('<p>Starting...</p>');
@@ -65,6 +61,5 @@ function submit() {
 
 function handleResult(result) {
   $('#output').append('<p>Result is: ' + result.toString(10) + '</p>');
-  //$('#output').append('<p>Result is: ' + result + '</p>');
   $('#button').attr('disabled', false);
 }

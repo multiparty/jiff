@@ -15,8 +15,6 @@ if (input < 0 || input > 100) {
   return;
 }
 
-//var input = parseInt(process.argv[2], 10);
-
 var party_count = process.argv[3];
 if (party_count == null) {
   party_count = 2;
@@ -27,7 +25,6 @@ if (party_count == null) {
 var computation_id = process.argv[4];
 if (computation_id == null) {
   computation_id = 'test-fixed';
-  //computation_id = 'test';
 }
 
 var party_id = process.argv[5];
@@ -38,13 +35,11 @@ if (party_id != null) {
 var BigNumber = require('bignumber.js');
 
 // JIFF options
-//var options = {party_count: party_count, party_id: party_id};
 var options = { party_count: party_count, party_id: party_id, decimal_digits: 3, integer_digits: 3, Zp: new BigNumber(32416190071) };
 options.onConnect = function (jiff_instance) {
   var promise = mpc.compute(input);
 
   promise.then(function (v) {
-    //console.log(v);
     console.log(v.toString(10));
     jiff_instance.disconnect(true);
   });
