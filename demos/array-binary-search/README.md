@@ -1,4 +1,4 @@
-# Voting Demo
+# Binary Search Demo
 
 Description and guide for binary search with secure MPC. 
 
@@ -17,7 +17,7 @@ If player 1 inputs the search integer and player 2 inputs the array, the protoco
 
 ## Running Demo
 
-Note: to succesfully run demo, you may need to install jquery-deferred. You can do this by running
+Note: to successfully run demo, you may need to install jquery-deferred. You can do this by running
 
 ```shell
     npm install jquery-deferred
@@ -26,7 +26,7 @@ in the command line.
 
 1. Running a server:
     ```shell
-    node demos/sum/server.js
+    node demos/array-binary-search/server.js
     ```
 
 2. Either open browser based parties by going to *http://localhost:8080/demos/array-binary-search/client.html* in the browser, or a node.js party by running 
@@ -46,7 +46,6 @@ The demo consists of the following parts:
 2. Web Based Party: Made from the following files:
     * *client.html*: UI for the browser.
     * *client.js*: Handlers for UI buttons and input validations.
-    * photos folder: for images on voting buttons
 3. Node.js-Based Party: 
     * *party.js*: Main entry point. Parses input from the command line and initializes the computation.
 4. The MPC protocol: Implemented in *mpc.js*. This file is used in both the browser and node.js versions of the demo.

@@ -1,11 +1,11 @@
-# Voting Demo
+# Vote-Check Demo
 
-Description and guide for computing votes with secure MPC.
+Description and guide for computing votes with secure MPC, checking for cheating behavior. 
 
 ## Running Demo
 1. Running a server:
     ```shell
-    node demos/sum/server.js
+    node demos/vote-check/server.js
     ```
 
 2. Either open browser based parties by going to *http://localhost:8080/demos/sum/client.html* in the browser, or a node.js party by running 
@@ -20,9 +20,9 @@ Description and guide for computing votes with secure MPC.
     npm run-script test-demo -- demos/sum/test.js
     ```
 
-## Secure summation protocol 
+## Secure voting protocol with checks
 
-The implementation of the following protocol may be found in jiff/demos/sum/mpc.js lines 32 through 92. It is in essence the
+The implementation of the following protocol may be found in jiff/demos/vote-check/mpc.js lines 32 through 92. It is in essence the
 same protocol as in the vote demo, but here there are additional checks implemented to ensure that no player has multiple
 votes. Note that the implemented checks are probably excessive: it checks that the sum over all of player's input array
 is less than or equal to 1 and that each vote option has 1 or 0. This second case will already be covered by the first one

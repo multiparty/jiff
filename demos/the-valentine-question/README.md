@@ -14,7 +14,7 @@ The toy example of the "Valentine Question" protocol is that you have two partie
 ## Running Demo
 1. Running a server:
     ```shell
-    node demos/standard-deviation/server.js
+    node demos/the-valentine-question/server.js
     ```
 
 2. Either open browser based parties by going to *http://localhost:8080/demos/the-valentine-question/client.html* in the browser, or a node.js party by running 

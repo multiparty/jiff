@@ -5,7 +5,7 @@ Description and guide for computing votes with secure MPC.
 ## Running Demo
 1. Running a server:
     ```shell
-    node demos/sum/server.js
+    node demos/voting/server.js
     ```
 
 2. Either open browser based parties by going to *http://localhost:8080/demos/sum/client.html* in the browser, or a node.js party by running 
