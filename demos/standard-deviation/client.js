@@ -1,6 +1,6 @@
 
 /**
- * Do not modify this file unless you have to.
+ * Do not modify this file unless you have too
  * This file has UI handlers.
  */
 // eslint-disable-next-line no-unused-vars
@@ -13,7 +13,7 @@ function connect() {
     $('#output').append("<p class='error'>Party count must be a valid number!</p>");
     $('#connectButton').prop('disabled', false);
   } else {
-    var options = { party_count: party_count, decimal_digits: 5, integer_digits: 5, Zp: '32416190071' };
+    var options = { party_count: party_count, decimal_digits: 3, integer_digits: 3, Zp: '32416190071' };
     options.onError = function (error) {
       $('#output').append("<p class='error'>"+error+'</p>');
     };
@@ -26,7 +26,6 @@ function connect() {
     if (port == null || port === '') {
       port = '80';
     }
-    //wouldn't this make beginning eg http://https://etc.?
     if (!(hostname.startsWith('http://') || hostname.startsWith('https://'))) {
       hostname = 'http://' + hostname;
     }

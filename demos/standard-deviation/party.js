@@ -24,7 +24,7 @@ if (party_count == null) {
 
 var computation_id = process.argv[4];
 if (computation_id == null) {
-  computation_id = 'test-fixed';
+  computation_id = 'test';
 }
 
 var party_id = process.argv[5];

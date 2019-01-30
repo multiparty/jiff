@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>Standard Deviation</title>
+  <title>Standard Deviation Fixedpoint</title>
   <style>
     .error {
       color: #FF0000;
@@ -10,11 +10,11 @@
   </style>
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
   <script src="/socket.io/socket.io.js"></script>
+  <script src="/bignumber.js/bignumber.min.js"></script>
   <script src="/lib/sodium.js"></script>
   <script src="/lib/jiff-client.js"></script>
   <script src="/lib/ext/jiff-client-bignumber.js"></script>
   <script src="/lib/ext/jiff-client-fixedpoint.js"></script>
-  <script src="/bignumber.js/bignumber.min.js"></script>
 
   <!-- Contains UI Handlers and Input Checks -->
   <script type="text/javascript" src="./client.js"></script>
@@ -24,12 +24,12 @@
 </head>
 <body>
 <h1>Connect JIFF</h1>
-<label for="computation_id">Computation ID</label><input id="computation_id" value="test-fixed"></input><br/><br/>
+<label for="computation_id">Computation ID</label><input id="computation_id" value='test'></input><br/><br/>
 <label for="count">Party Count<label> <input id="count" pattern="[0-9]*" value="2"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
   <br/><br/>
   <hr/>
-  <h1>Find standard deviation under MPC</h1>
-  <label for="number">Enter your fixedpoint number (between 0 and 100 with 3 digits of accuracy)</label> <input id="number" pattern="[0-9]+(.[0-9]+|)"> &nbsp; <button onclick="submit();" disabled="disabled" id="button">Standard Deviation</button><br/>
+  <h1>Standard deviation of fixed point rational numbers under MPC</h1>
+  <label for="number">Enter your fixedpoint number (between 0 and 100 with 3 digits of accuracy)</label> <input id="number" pattern="[0-9]+(.[0-9]+|)"> &nbsp; <button onclick="submit();" disabled="disabled" id="button">Sum</button><br/>
   <div id="output"></div>
 </body>
 </html>

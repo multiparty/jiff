@@ -6,20 +6,24 @@
    */
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
-    //opt.warn = false;
+    opt.warn = false;
 
+    // Added options goes here
     if (node) {
       // eslint-disable-next-line no-undef
-      var jiff = require('../../lib/jiff-client');
-      var jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
-      var jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
+      jiff = require('../../lib/jiff-client');
+      // eslint-disable-next-line no-undef
+      jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
+      // eslint-disable-next-line no-undef
+      jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
     }
 
     opt.autoConnect = false;
     // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
-    // if you need any extensions, put them here
-    saved_instance.apply_extension(jiff_bignumber, opt);
+    // eslint-disable-next-line no-undef
+    saved_instance.apply_extension(jiff_bignumber, opt)
+    // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_fixedpoint, opt); // Max bits after decimal allowed
     saved_instance.connect();
 
