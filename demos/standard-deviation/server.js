@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var base_instance = require('../../lib/jiff-server').make_jiff(http, { logs:false });
+var base_instance = require('../../lib/jiff-server').make_jiff(http, { logs:true });
 var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
 base_instance.apply_extension(jiffBigNumberServer);
 
