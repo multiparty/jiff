@@ -1,10 +1,16 @@
-# Bubble Sort Demo
+# Concatenation Demo
 
-Description and guide for binary search with secure MPC. 
+Description and guide for array concatenation with secure MPC. 
 
 ## Protocol
-Each party inputs an array of length n. The protocol sums these arrays element-wise, and outputs that summed list, sorted
-via bubblesort. 
+Each party inputs a string, and the protocol outputs the concatenation of these strings.
+
+## Security
+Note that inputs are not hidden. Who submitted which input may be somewhat hidden, in the sense that it may not be clear
+which substring belonged to which party. This will only be true for parties larger than three people, since in the three-
+party case if P1 inputs "abc", P2 inputs "def", and P3 inputs "ghi", then given output "abcdefghi", P2 will be able to 
+successfully determine the inputs of P1 and P2. In general, any participant will be able to make some estimate about 
+which inputs came from which parties due to the location of their input string in the final concatenated output string.
 
 ## Running Demo
 
@@ -17,17 +23,17 @@ in the command line.
 
 1. Running a server:
     ```shell
-    node demos/array-bubble-sort/server.js
+    node demos/array-concat/server.js
     ```
 
-2. Either open browser based parties by going to *http://localhost:8080/demos/array-bubble-sortclient.html* in the browser, or a node.js party by running 
+2. Either open browser based parties by going to *http://localhost:8080/demos/array-concat.html* in the browser, or a node.js party by running 
     ```shell
-    node demos/array-bubble-sort/server.js <input> [<party count> [<computation_id> [<party id>]]]]'
+    node demos/array-concat/server.js <input> [<party count> [<computation_id> [<party id>]]]]'
     ``` 
 
 3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.
     ```shell
-    npm run-script test-demo -- demos/array-bubble-sort/test.js
+    npm run-script test-demo -- demos/array-concat/test.js
     ```
 
 ## File structure

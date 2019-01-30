@@ -1,10 +1,10 @@
-# Bubble Sort Demo
+# Merge Sort Demo
 
-Description and guide for bubble sort on element-wise sum of input lists with secure MPC. 
+Description and guide for merge sort on element-wise summation of input lists with secure MPC.
 
 ## Protocol
 Each party inputs an array of length n. The protocol sums these arrays element-wise, and outputs that summed list, sorted
-via bubblesort. 
+via mergesort. 
 
 ## Running Demo
 
