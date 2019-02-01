@@ -28,7 +28,7 @@ in the command line.
 
 2. Either open browser based parties by going to *http://localhost:8080/demos/array-concat.html* in the browser, or a node.js party by running 
     ```shell
-    node demos/array-concat/server.js <input> [<party count> [<computation_id> [<party id>]]]]'
+    node demos/array-concat/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
     ``` 
 
 3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.

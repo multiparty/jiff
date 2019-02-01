@@ -18,7 +18,7 @@ points in R^2 and the functionality returns the least-squares linear fit run on 
     node demos/graphs-simple-squares/server.js
     ```
 
-2. Either open browser based parties by going to *http://localhost:8080/demos/sum/client.html* in the browser, or a node.js party by running 
+2. Either open browser based parties by going to *http://localhost:8080/demos/graphs-simple-squares/client.html* in the browser, or a node.js party by running 
     ```shell
     node demos/graphs-simple-squares/party.js
     
@@ -30,6 +30,15 @@ points in R^2 and the functionality returns the least-squares linear fit run on 
 ## Valid Inputs
 For this demo, each input point (x,y), x and y must be between -5 and 5 (exclusive) and have no more than 2 digits of 
 precision. 
+
+## Note on running in the browser 
+If you run the demo in Google Chrome, you may notice that the browser thinks music is playing on the tab you have opened
+for your computation. Normally, Chrome allocates computational resources differently to tabs that are currently in use
+on your browser versus in the background, with less allocated to the background tabs. Thus, ordinarily, if the MPC
+computation you are running is in a background tab, it will run much slower than if it was in the foreground. Since MPC 
+protocols are very computationally intensive, this can dramatically effect performance. However, if music is playing in
+a background tab, Chrome will not throttle the processes running on that tab, thus avoiding this issue. This is
+implemented in lib/ext/jiff-client-performance.js, which is included as a script in line 20 of client.html.
 
 ## File structure
 The demo consists of the following parts:

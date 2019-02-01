@@ -5,24 +5,24 @@ Description and guide for computing votes with secure MPC.
 ## Running Demo
 1. Running a server:
     ```shell
-    node demos/voting/server.js
+    node demos/vote/server.js
     ```
 
-2. Either open browser based parties by going to *http://localhost:8080/demos/sum/client.html* in the browser, or a node.js party by running 
+2. Either open browser based parties by going to *http://localhost:8080/demos/vote/client.html* in the browser, or a node.js party by running 
     ```shell
-    node demos/sum/server.js <input> [<party count> [<computation_id> [<party id>]]]]'
+    node demos/vote/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
     ```
     Inputs should be an array of 0s and 1s. I.e. if you are picking between candidates A, B, and C, using [1,0,0] as
     input would correspond to a vote for candidate A, while [0,0,1] would correspond to a vote for candidate C. 
 
 3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.
     ```shell
-    npm run-script test-demo -- demos/sum/test.js
+    npm run-script test-demo -- demos/vote/test.js
     ```
 
 ## Secure summation protocol 
 
-The implementation of the following protocol may be found in jiff/demos/sum/mpc.js lines 27 through 49. Essentially it 
+The implementation of the following protocol may be found in jiff/demos/vote/mpc.js lines 27 through 49. Essentially it 
 implements a secure addition protocol as in the sum demo for each of the vote options, then opens the tally array. 
 
 ## Security Note

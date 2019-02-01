@@ -8,16 +8,16 @@ Description and guide for computing votes with secure MPC, checking for cheating
     node demos/vote-check/server.js
     ```
 
-2. Either open browser based parties by going to *http://localhost:8080/demos/sum/client.html* in the browser, or a node.js party by running 
+2. Either open browser based parties by going to *http://localhost:8080/demos/vote-check/client.html* in the browser, or a node.js party by running 
     ```shell
-    node demos/sum/server.js <input> [<party count> [<computation_id> [<party id>]]]]'
+    node demos/vote-check/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
     ```
     Inputs should be an array of 0s and 1s. I.e. if you are picking between candidates A, B, and C, using [1,0,0] as
     input would correspond to a vote for candidate A, while [0,0,1] would correspond to a vote for candidate C. 
 
 3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.
     ```shell
-    npm run-script test-demo -- demos/sum/test.js
+    npm run-script test-demo -- demos/vote-check/test.js
     ```
 
 ## Secure voting protocol with checks

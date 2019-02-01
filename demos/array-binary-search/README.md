@@ -31,7 +31,7 @@ in the command line.
 
 2. Either open browser based parties by going to *http://localhost:8080/demos/array-binary-search/client.html* in the browser, or a node.js party by running 
     ```shell
-    node demos/array-binary-search/server.js <input> [<party count> [<computation_id> [<party id>]]]]'
+    node demos/array-binary-search/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
     ```
     Party 1's input should be an array of integers with no spaces. Party 2's input should be a single integer value.  
 

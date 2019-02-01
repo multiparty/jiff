@@ -45,7 +45,7 @@ numbers, see the fixedpoint-sum demo.
 
 2. Either open browser based parties by going to *http://localhost:8080/demos/sum/client.html* in the browser, or a node.js party by running 
     ```shell
-    node demos/sum/server.js <input> [<party count> [<computation_id> [<party id>]]]]'
+    node demos/sum/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
     ```
 
 3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.

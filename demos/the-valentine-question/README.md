@@ -19,7 +19,7 @@ The toy example of the "Valentine Question" protocol is that you have two partie
 
 2. Either open browser based parties by going to *http://localhost:8080/demos/the-valentine-question/client.html* in the browser, or a node.js party by running 
     ```shell
-    node demos/the-valentine-question/server.js <input> [<party count> [<computation_id> [<party id>]]]]'
+    node demos/the-valentine-question/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
     ```
     If not defined, the party count is automatically set to 2 parties. While you may input more than 2 parties, the
     protocol as it stands is set to only multiply the first two parties' inputs, so any subsequent parties' input will be

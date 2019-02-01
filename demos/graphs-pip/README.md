@@ -28,7 +28,7 @@ If (x,y) is contained within *P* or lies on the boundary of *P*, **return True**
     node demos/sum/server.js
     ```
 
-2. Either open browser based parties by going to *http://localhost:8080/demos/sum/client.html* in the browser, or a node.js party by running 
+2. Either open browser based parties by going to *http://localhost:8080/demos/graphs-pip/client.html* in the browser, or a node.js party by running 
     ```shell
     node demos/sum/party.js <party number> <input>
     ```
