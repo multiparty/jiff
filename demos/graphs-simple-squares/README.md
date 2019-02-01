@@ -1,53 +1,35 @@
-# Point in Polygon Demo
+#Least-Squares Regression Demo
 
-Overview and instructions for executing the point-in-polygon (PIP) protocol
+Overview and instructions for executing a (linear) least-squares regression. 
 
-## Point in Polygon Protocol
-The goal of the PIP algorithm is to answer whether or not a queried point on the Cartesian plane lies within the convex
-hull of a polygon.
-The protocol answers "yes" if the point in question is in the convex hull of that polygon or on the boundary of that 
-convex hull.
+## Least-Squares Linear Regression
 
-**Protocol** 
+A detailed description of the least-squares linear regression algorithm is outside of the scope of this documentation.
+In brief, the algorithm takes as input a collection of points in R^2 and returns a linear fit to those data points. This
+fit is calculated by minimizing the sum of the square of the residuals (the difference between observed and predicted 
+variables), hence the name "least squares". 
 
-**Input:**
-- Player 1: [x_1,y_1,x_2,y_2,...,x_n,y_n] 
-- Player 2: [x,y], representing a point (x,y) in Z^2.
-
-Let *P* be the convex hull of  polygon defined by Player 1's input, where each (x_i,y_i) represents a vertex of a 
-polygon in Z^2, where edges are drawn between each (x_i,y_i) and (x_(i+1), y_(i+1)) and there is an edge between 
-(x_1, y_1) and (x_n, y_n). 
-
-If (x,y) is contained within *P* or lies on the boundary of *P*, **return True**. Otherwise, **return False**.
-
-**Note:** No edge of *P* may have infinite or near-infinite slope. 
+In the context of this secure MPC protocol, each party inputs a set of 
+points in R^2 and the functionality returns the least-squares linear fit run on the union of all points submitted.  
 
 ## Running Demo
 1. Running a server:
     ```shell
-    node demos/sum/server.js
+    node demos/graphs-simple-squares/server.js
     ```
 
 2. Either open browser based parties by going to *http://localhost:8080/demos/sum/client.html* in the browser, or a node.js party by running 
     ```shell
-    node demos/sum/party.js <party number> <input>
-    ```
-    If you are running party 1, your input should be an array of integers [x_1,y_1,x_2,y_2,...,x_n,y_n] representing the
-    vertices of the polygon. If you are running as party 2, your input should be an array [x,y] representing the single
-    point whose presence in the polygon is being queries. 
+    node demos/graphs-simple-squares/party.js
+    
 3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.
     ```shell
-    npm run-script test-demo -- demos/sum/test.js
+    npm run-script test-demo -- demos/graphs-simple-squares/test.js
     ```
 
-## Note on running in the browser 
-If you run the demo in Google Chrome, you may notice that the browser thinks music is playing on the tab you have opened
-for your computation. Normally, Chrome allocates computational resources differently to tabs that are currently in use
-on your browser versus in the background, with less allocated to the background tabs. Thus, ordinarily, if the MPC
-computation you are running is in a background tab, it will run much slower than if it was in the foreground. Since MPC 
-protocols are very computationally intensive, this can dramatically effect performance. However, if music is playing in
-a background tab, Chrome will not throttle the processes running on that tab, thus avoiding this issue. This is
-implemented in lib/ext/jiff-client-performance.js, which is included as a script in line 24 of client.html.
+## Valid Inputs
+For this demo, each input point (x,y), x and y must be between -5 and 5 (exclusive) and have no more than 2 digits of 
+precision. 
 
 ## File structure
 The demo consists of the following parts:
@@ -58,10 +40,6 @@ The demo consists of the following parts:
 3. Node.js-Based Party: 
     * *party.js*: Main entry point. Parses input from the command line and initializes the computation.
 4. The MPC protocol: Implemented in *mpc.js*. This file is used in both the browser and node.js versions of the demo.
-5. Helper functions: *geometry.js*. Used to interpret convex hull of polygon from the input.  
-    * *client.js*
-    * *mpc.js*
-    * *party.js*
 5. test.js: mocha unit tests.
 6. Documentation:
     * This *README.md* file.
