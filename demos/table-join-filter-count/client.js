@@ -70,24 +70,11 @@ function submit() {
 
       value = value === 'F' ? 1 : 0;
     }
-    
+
     data.push({ SSN: SSN, value: value });
   }
 
-  // Sort by SSN
-  data.sort(function (x, y) {
-    return x.SSN - y.SSN;
-  });
-
-  // Split Array
-  var SSNs = [];
-  var vals = [];
-  for (var d = 0; d < data.length; d++) {
-    SSNs.push(data[d].SSN);
-    vals.push(data[d].value);
-  }
-
-  _submit(SSNS, vals);
+  _submit(data);
 }
 
 function _submit(SSNs, vals) {
@@ -112,7 +99,7 @@ function handleResult(result) {
 
   // Generate Body
   for (var j = 0; j < result.length; j++) {
-    table += '<tr>';  
+    table += '<tr>';
     table += '<td>' + result[j].gender + '</td>';
     table += '<td>' + result[j].count + '</td>';
     table += '</tr>';
@@ -139,7 +126,7 @@ function generateTable(size) {
 
   // Generate Body
   for (var j = 0; j < size; j++) {
-    table += '<tr>';  
+    table += '<tr>';
     for (var k = 0; k < HEADERS.length; k++) {
       var input = '<input type="text">';
       table += '<td>' + input + '</td>';

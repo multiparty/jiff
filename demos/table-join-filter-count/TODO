@@ -8,6 +8,10 @@
     + else
       - Data.add(2, -1) // 2 in gender means invalid entry
   * // JOIN COMPLETE --- n log n comparison, n^2 multiplications
+
+
+  /// GOT HERE
+
   * // FILTER
   * Loop over (Gender, Income) in Data:
     + if Income > SOME CONSTANT
