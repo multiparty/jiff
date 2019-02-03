@@ -17,18 +17,18 @@
       // eslint-disable-next-line no-undef
       jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
       // eslint-disable-next-line no-undef
-      jiff_negativeNumber = require('../../lib/ext/jiff-client-negativenumber');
+      jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber');
     }
 
     opt.autoConnect = false;
     // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     // eslint-disable-next-line no-undef
-    saved_instance.apply_extension(jiff_bignumber, opt)
+    saved_instance.apply_extension(jiff_bignumber, opt);
     // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_fixedpoint, opt); // Max bits after decimal allowed
     // eslint-disable-next-line no-undef
-    saved_instance.apply_extension(jiff_negativeNumber, opt); // Max bits after decimal allowed
+    saved_instance.apply_extension(jiff_negativenumber, opt); // Max bits after decimal allowed
     saved_instance.connect();
 
     return saved_instance;
