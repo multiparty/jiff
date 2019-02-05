@@ -38,17 +38,17 @@ computation and so will be less computationally efficient than the base implemen
 ## Running Demo
 1. Running a server:
     ```shell
-    node demos/sum/server.js
+    node demos/fixedpoint-sum/server.js
     ```
 
 2. Either open browser based parties by going to *http://localhost:8080/demos/fixedpoint-sum/client.html* in the browser, or a node.js party by running 
     ```shell
-    node demos/sum/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
+    node demos/fixedpoint-sum/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
     ```
 
 3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.
     ```shell
-    npm run-script test-demo -- demos/sum/test.js
+    npm run-script test-demo -- demos/fixedpoint-sum/test.js
     ```
 ## File structure
 The demo consists of the following parts:

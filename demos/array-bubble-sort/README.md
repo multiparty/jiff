@@ -8,19 +8,12 @@ via bubblesort.
 
 ## Running Demo
 
-Note: to successfully run demo, you may need to install jquery-deferred. You can do this by running
-
-```shell
-    npm install jquery-deferred
-```
-in the command line. 
-
 1. Running a server:
     ```shell
     node demos/array-bubble-sort/server.js
     ```
 
-2. Either open browser based parties by going to *http://localhost:8080/demos/array-bubble-sortclient.html* in the browser, or a node.js party by running 
+2. Either open browser based parties by going to *http://localhost:8080/demos/array-bubble-sort/client.html* in the browser, or a node.js party by running 
     ```shell
     node demos/array-bubble-sort/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
     ``` 

@@ -8,26 +8,19 @@ via mergesort.
 
 ## Running Demo
 
-Note: to successfully run demo, you may need to install jquery-deferred. You can do this by running
-
-```shell
-    npm install jquery-deferred
-```
-in the command line. 
-
 1. Running a server:
     ```shell
     node demos/array-bubble-sort/server.js
     ```
 
-2. Either open browser based parties by going to *http://localhost:8080/demos/array-bubble-sortclient.html* in the browser, or a node.js party by running 
+2. Either open browser based parties by going to *http://localhost:8080/demos/array-merge-sort/client.html* in the browser, or a node.js party by running 
     ```shell
-    node demos/array-bubble-sort/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
+    node demos/array-merge-sort/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
     ``` 
 
 3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.
     ```shell
-    npm run-script test-demo -- demos/array-bubble-sort/test.js
+    npm run-script test-demo -- demos/array-merge-sort/test.js
     ```
 
 ## File structure

@@ -25,19 +25,19 @@ If (x,y) is contained within *P* or lies on the boundary of *P*, **return True**
 ## Running Demo
 1. Running a server:
     ```shell
-    node demos/sum/server.js
+    node demos/graphs-pip/server.js
     ```
 
 2. Either open browser based parties by going to *http://localhost:8080/demos/graphs-pip/client.html* in the browser, or a node.js party by running 
     ```shell
-    node demos/sum/party.js <party number> <input>
+    node demos/graphs-pip/party.js <party number> <input>
     ```
     If you are running party 1, your input should be an array of integers [x_1,y_1,x_2,y_2,...,x_n,y_n] representing the
     vertices of the polygon. If you are running as party 2, your input should be an array [x,y] representing the single
-    point whose presence in the polygon is being queries. 
+    point whose presence in the polygon is being queried. 
 3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.
     ```shell
-    npm run-script test-demo -- demos/sum/test.js
+    npm run-script test-demo -- demos/graphs-pip/test.js
     ```
 
 ## Note on running in the browser 

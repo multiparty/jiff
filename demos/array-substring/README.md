@@ -8,19 +8,12 @@ found in s1. If the substring is not found, there is no output.
 
 ## Running Demo
 
-Note: to successfully run demo, you may need to install jquery-deferred. You can do this by running
-
-```shell
-    npm install jquery-deferred
-```
-in the command line. 
-
 1. Running a server:
     ```shell
     node demos/array-substring/server.js
     ```
 
-2. Either open browser based parties by going to *http://localhost:8080/demos/array-substring.html* in the browser, or a node.js party by running 
+2. Either open browser based parties by going to *http://localhost:8080/demos/array-substring/client.html* in the browser, or a node.js party by running 
     ```shell
     node demos/array-substring/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
     ``` 

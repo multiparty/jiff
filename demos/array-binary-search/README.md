@@ -17,13 +17,6 @@ If player 1 inputs the search integer and player 2 inputs the array, the protoco
 
 ## Running Demo
 
-Note: to successfully run demo, you may need to install jquery-deferred. You can do this by running
-
-```shell
-    npm install jquery-deferred
-```
-in the command line. 
-
 1. Running a server:
     ```shell
     node demos/array-binary-search/server.js

@@ -27,7 +27,7 @@ The toy example of the "Valentine Question" protocol is that you have two partie
 
 3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.
     ```shell
-    npm run-script test-demo -- demos/<demo-name>/test.js
+    npm run-script test-demo -- demos/the-valentine-question/test.js
     ```
 ## File structure
 The demo consists of the following parts:
