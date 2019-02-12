@@ -67,7 +67,7 @@ exports.compute = function (jiff_instance) {
     var input_id = inputs[i];
     var party_promises = [];
     for (var c = 0; c < schemas[input_id].length; c++) {
-      party_promises.push(jiff_instance.share_array([], null, null, computes, [ input_id ]));
+      party_promises.push(jiff_instance.share_array([], null, computes.length, computes, [ input_id ]));
     }
 
     (function scope(input_id) {

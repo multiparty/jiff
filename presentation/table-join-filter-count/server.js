@@ -17,6 +17,7 @@ nunjucks.configure(__dirname, {
 var config = require('./config.json');
 
 //Serve static files
+app.use('/bignumber.js', express.static(__dirname + '/../../node_modules/bignumber.js'));
 app.use('/lib', express.static(__dirname + '/../../lib'));
 
 // Server input and analyst files

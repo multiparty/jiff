@@ -47,7 +47,7 @@ var GROUP_BY_DOMAIN = [1, 2, 3];
       (function scope(g) {
         promises.push(Promise.all([promise1, promise2]).then(function (res) {
           var obj = {};
-          obj[output_schema[0] = GROUP_BY_DOMAIN[g];
+          obj[output_schema[0]] = GROUP_BY_DOMAIN[g];
           obj[output_schema[1]] = res[1] > 0 ? res[0] / res[1] : '-';
           return obj;
         }));
