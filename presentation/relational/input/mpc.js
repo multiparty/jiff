@@ -9,8 +9,17 @@
     computes = _computes;
     var opt = Object.assign({}, options);
 
+    opt.Zp = '16381';
+    opt.integer_digits = 2;
+    opt.decimal_digits = 2;
+
     // eslint-disable-next-line no-undef
     jiff_instance = jiff.make_jiff(hostname, computation_id, opt);
+    // eslint-disable-next-line no-undef
+    jiff_instance.apply_extension(jiff_bignumber, opt);
+    // eslint-disable-next-line no-undef
+    jiff_instance.apply_extension(jiff_fixedpoint, opt);
+
     return jiff_instance;
   };
 
@@ -21,6 +30,29 @@
     var scoped_cols = [];
     for (var i = 0; i < cols.length; i++) {
       scoped_cols[i] = (jiff_instance.id - computes.length - 1) + '.' + cols[i];
+    }
+
+    // Parsing
+    var l;
+    for (l = 0; l < data.length; l++) {
+      data[l][cols[0]] = data[l][cols[0]].toUpperCase().trim();
+      data[l][cols[0]] = data[l][cols[0]].charCodeAt(0) - 'A'.charCodeAt(0) + 1;
+    }
+
+    if (jiff_instance.id === 5 || jiff_instance.id === 6) {
+      for (l = 0; l < data.length; l++) {
+        data[l][cols[1]] = Number(data[l][cols[1]]);
+      }
+    } else if (jiff_instance.id === 7) {
+      for (l = 0; l < data.length; l++) {
+        data[l][cols[1]] = data[l][cols[1]].toLowerCase() === 'true' ? 1 : 2;
+      }
+    } else if (jiff_instance.id === 8) {
+      for (l = 0; l < data.length; l++) {
+        data[l][cols[1]] = data[l][cols[1]].toUpperCase().trim();
+        var ln = data[l][cols[1]].length;
+        data[l][cols[1]] = data[l][cols[1]].charCodeAt(ln-1) - 'A'.charCodeAt(0) + 1;
+      }
     }
 
     // Compute party and analyst ids.

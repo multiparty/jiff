@@ -15,19 +15,42 @@ for (var i = config.compute + 2; i <= config.total; i++) {
 
 // Schemas
 var schemas = {};
+var total = 0;
 
 /**
  * Connect to the server and initialize the jiff instance
  */
 exports.connect = function (hostname, computation_id, options) {
   var opt = Object.assign({}, options);
+
+  // eslint-disable-next-line no-undef
+  opt.Zp = '16381';
+  opt.integer_digits = 2;
+  opt.decimal_digits = 2;
+
   var jiff = require('../../../lib/jiff-client');
+  var jiff_bignumber = require('../../../lib/ext/jiff-client-bignumber');
+  var jiff_fixedpoint = require('../../../lib/ext/jiff-client-fixedpoint');
 
   // eslint-disable-next-line no-undef
   var jiff_instance = jiff.make_jiff(hostname, computation_id, opt);
+  // eslint-disable-next-line no-undef
+  jiff_instance.apply_extension(jiff_bignumber, opt);
+  // eslint-disable-next-line no-undef
+  jiff_instance.apply_extension(jiff_fixedpoint, opt);
+
   jiff_instance.listen('headers', function (id, cols) {
     cols = JSON.parse(cols);
     schemas[id] = cols;
+
+    total++;
+    if (total === inputs.length) {
+      compute(jiff_instance);
+    }
+  });
+
+  jiff_instance.wait_for(['s1'], function () {
+    console.log('This is compute party ', jiff_instance.id);
   });
 };
 
@@ -52,7 +75,7 @@ function transform(table) {
 /**
  * The MPC computation
  */
-exports.compute = function (jiff_instance) {
+function compute(jiff_instance) {
   var join = require('./join.js');
 
   // ids
@@ -168,14 +191,14 @@ exports.compute = function (jiff_instance) {
 
     return { avg: avg_col, count: count_col };
   }).then(function (results) {
-    var output_schema = ['avg', 'count'];
-    // All is done, open the result.
-    for (var gi = 0; gi < GROUP_BY_DOMAIN.length; gi++) {
-      for (var si = 0; si < output_schema.length; si++) {
-        jiff_instance.open(results[output_schema[si]][gi], [analyst]);
+    jiff_instance.wait_for([analyst], function () {
+      var output_schema = ['avg', 'count'];
+      // All is done, open the result.
+      for (var gi = 0; gi < GROUP_BY_DOMAIN.length; gi++) {
+        for (var si = 0; si < output_schema.length; si++) {
+          jiff_instance.open(results[output_schema[si]][gi], [analyst]);
+        }
       }
-    }
-  }).catch(function (err) {
-    console.log(err);
+    });
   });
-};
+}

@@ -8,9 +8,9 @@ var config = require('../config.json');
 
 // JIFF options
 var options = {
-  onConnect: mpc.compute,
   initialization: {role: 'compute'},
-  party_count: config.total
+  party_count: config.total,
+  warn: false
 };
 
 // Connect

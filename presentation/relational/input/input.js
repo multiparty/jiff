@@ -7,6 +7,8 @@
 var computes = [];
 function connect(party_id, party_count, compute_count, computation_id) {
   def = defaults[party_id];
+  hed = headers[party_id];
+  document.getElementById('rows').value = def.length / 2;
 
   // Compute parties ids
   for (var c = 1; c <= compute_count; c++) {
@@ -53,7 +55,7 @@ function submit() {
 
   var parsed = parseInput();
   // eslint-disable-next-line no-undef
-  mpc.compute(parsed);
+  mpc.compute(parsed['cols'], parsed['data']);
 
   $('#output').append('<p>Shared data successfully!</p>');
 }
@@ -61,43 +63,77 @@ function submit() {
 /**
  * Helpers for HTML data generation and parsing
  */
-function generateTable(points, id) {
+function generateTable(cols, rows) {
   $('#generate').attr('disabled', true);
   $('#submit').attr('disabled', false);
 
   var table = '<br/><table id="input_table">';
   // Header
   table += '<tr>';
-  table += '<th><input type="text" value="' + (id === 4 ? 'X' : 'Y') +'"></th>';
-  table += '</tr>';
+  for (var i = 0; i < cols; i++) {
+    table += '<th><input type="text" value="'+hed[i]+'"></th>';
+  }
+  table += '</tr><tr><td colspan="10"></td></tr>';
 
   // Generate Body
-  for (var j = 0; j < points; j++) {
+  for (var j = 0; j < rows; j++) {
     table += '<tr>';
-    var input = '<input type="text" value="'+def[j]+'">';
-    table += '<td>' + input + '</td>';
+    for (var k = 0; k < cols; k++) {
+      var input = '<input type="text" value="'+def[j*cols+k]+'">';
+      table += '<td>' + input + '</td>';
+    }
     table += '</tr>';
   }
 
-  table += '</table>';
+  table += '</table><br/><br/>';
   $('#input_area').html(table);
 }
 function parseInput() {
+  var cols = [];
   var data = [];
 
   var table = document.getElementById('input_table');
 
-  // body
-  for (var i = 1; i < table.rows.length; i++) {
-    var row = table.rows[i];
-    data.push(parseInt(row.getElementsByTagName('input')[0].value));
+  // headers
+  for (var c = 0; c < table.rows[0].cells.length; c++) {
+    var col = table.rows[0].cells[c].getElementsByTagName('input')[0].value;
+    cols.push(col);
   }
 
-  return data;
+  // body
+  for (var i = 2; i < table.rows.length; i++) {
+    var row = table.rows[i];
+    var obj = {};
+    for (var j = 0; j < cols.length; j++) {
+      var cell = row.cells[j];
+      obj[cols[j]] = cell.getElementsByTagName('input')[0].value;
+    }
+    data.push(obj);
+  }
+
+  return { cols: cols, data: data};
 }
 
+/* var defaults = {
+  5: ['A', 10, 'B', 5, 'C', 2],
+  6: ['Z', 5],
+  7: ['A', 'True', 'B', 'True', 'Z', 'True'],
+  8: ['A', 'Group A', 'B', 'Group B', 'Z', 'Group C']
+}; */
+
 var defaults = {
-  4: [ 1, 2, 3 ],
-  5: [ 2, 4, 6 ]
+  5: [ 'Alice', 10.23, 'Lora', 20.30, 'Bob', 0.12 ],
+  6: [ 'Kinan', 30, 'Caroline', 5.99 ],
+  7: [ 'Alice', 'False', 'Kinan', 'True', 'John', 'True', 'Lora', 'True', 'Caroline', 'True' ],
+  8: [ 'Alice', 'Group A', 'John', 'Group A', 'Kinan', 'Group B', 'Caroline', 'Group B', 'Lora', 'Group C', 'Sam', 'Group B' ]
 };
+
+var headers = {
+  5: ['ID', 'VALUE'],
+  6: ['ID', 'VALUE'],
+  7: ['ID', 'FILTER'],
+  8: ['ID', 'GROUP']
+};
+
 var def;
+var hed;

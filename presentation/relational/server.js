@@ -55,7 +55,8 @@ var initialize = function (jiff, computation_id, msg, params) {
   throw new Error('Unrecognized role and party id options');
 };
 
-require('../../lib/jiff-server').make_jiff(http, {logs: true, hooks: { beforeInitialization: [initialize] }});
+var jiff_instance = require('../../lib/jiff-server').make_jiff(http, {logs: true, hooks: { beforeInitialization: [initialize] }});
+jiff_instance.apply_extension(require('../../lib/ext/jiff-server-bignumber.js'));
 
 
 // Instructions

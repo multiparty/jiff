@@ -53,7 +53,7 @@ function submit() {
 
   var parsed = parseInput();
   // eslint-disable-next-line no-undef
-  mpc.compute(parsed['cols'], parsed['data']);
+  mpc.compute(parsed);
 
   $('#output').append('<p>Shared data successfully!</p>');
 }
@@ -61,61 +61,43 @@ function submit() {
 /**
  * Helpers for HTML data generation and parsing
  */
-function generateTable(cols, rows) {
+function generateTable(points, id) {
   $('#generate').attr('disabled', true);
   $('#submit').attr('disabled', false);
 
   var table = '<br/><table id="input_table">';
   // Header
   table += '<tr>';
-  for (var i = 0; i < cols; i++) {
-    table += '<th><input type="text" value="'+i+'"></th>';
-  }
-  table += '</tr>';
+  table += '<th><input type="text" value="' + (id === 4 ? 'X' : 'Y') +'"></th>';
+  table += '</tr><tr><td class="break"></td></tr>';
 
   // Generate Body
-  for (var j = 0; j < rows; j++) {
+  for (var j = 0; j < points; j++) {
     table += '<tr>';
-    for (var k = 0; k < cols; k++) {
-      var input = '<input type="text" value="'+def[j*cols+k]+'">';
-      table += '<td>' + input + '</td>';
-    }
+    var input = '<input type="text" value="'+def[j]+'">';
+    table += '<td>' + input + '</td>';
     table += '</tr>';
   }
 
-  table += '</table>';
+  table += '</table><br/><br/>';
   $('#input_area').html(table);
 }
 function parseInput() {
-  var cols = [];
   var data = [];
 
   var table = document.getElementById('input_table');
 
-  // headers
-  for (var c = 0; c < table.rows[0].cells.length; c++) {
-    var col = table.rows[0].cells[c].getElementsByTagName('input')[0].value;
-    cols.push(col);
-  }
-
   // body
-  for (var i = 1; i < table.rows.length; i++) {
+  for (var i = 2; i < table.rows.length; i++) {
     var row = table.rows[i];
-    var obj = {};
-    for (var j = 0; j < cols.length; j++) {
-      var cell = row.cells[j];
-      obj[cols[j]] = parseInt(cell.getElementsByTagName('input')[0].value);
-    }
-    data.push(obj);
+    data.push(Number(row.getElementsByTagName('input')[0].value));
   }
 
-  return { cols: cols, data: data};
+  return data;
 }
 
 var defaults = {
-  5: [ 1, 10, 2, 20 ],
-  6: [ 3, 30 ],
-  7: [ 1, 1, 2, 2, 3, 1 ],
-  8: [ 1, 1, 2, 2, 3, 1 ]
+  4: [ 1, 10, -5.3, -30.3 ],
+  5: [ 2, 22.1, -9.813, -45.2 ]
 };
 var def;

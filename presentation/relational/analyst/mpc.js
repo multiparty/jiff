@@ -1,4 +1,4 @@
-var GROUP_BY_DOMAIN = [1, 2, 3];
+var GROUP_BY_DOMAIN = ['Group A', 'Group B', 'Group C'];
 
 (function (exports) {
   var jiff_instance;
@@ -12,8 +12,17 @@ var GROUP_BY_DOMAIN = [1, 2, 3];
     computes = _computes;
     var opt = Object.assign({}, options);
 
+    opt.Zp = '16381';
+    opt.integer_digits = 2;
+    opt.decimal_digits = 2;
+
     // eslint-disable-next-line no-undef
     jiff_instance = jiff.make_jiff(hostname, computation_id, opt);
+    // eslint-disable-next-line no-undef
+    jiff_instance.apply_extension(jiff_bignumber, opt);
+    // eslint-disable-next-line no-undef
+    jiff_instance.apply_extension(jiff_fixedpoint, opt);
+
     jiff_instance.listen('headers', function (id, cols) {
       cols = JSON.parse(cols);
       schemas[id] = cols;
@@ -27,9 +36,7 @@ var GROUP_BY_DOMAIN = [1, 2, 3];
   /**
    * The MPC computation
    */
-  exports.compute = function (cols, data) {
-    jiff_instance.emit('compute', computes, '', false);
-
+  exports.compute = function () {
     var inputs = [];
     for (var i = computes.length + 2; i <= jiff_instance.party_count; i++) {
       inputs.push(i);

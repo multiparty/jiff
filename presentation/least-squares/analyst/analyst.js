@@ -58,10 +58,10 @@ function submit() {
  * Helpers for drawing lines in a chart
  */
 // The limits of the graph. The minimum and maximum X and Y values.
-var minX = -5;
-var maxX = 5;
-var minY = -5;
-var maxY = 5;
+var minX = -60;
+var maxX = 60;
+var minY = -60;
+var maxY = 60;
 
 // Chart for drawing
 function initChart(line) {
@@ -77,7 +77,7 @@ function initChart(line) {
     type: 'line',
     data: {
       datasets: [
-        { id: 'least-line', label: 'output', data: line, fill: false, pointBackgroundColor: '#000099', borderColor: '#000099', pointRadius: 0 }
+        { id: 'least-line', label: '', data: line, fill: false, pointBackgroundColor: '#000099', borderColor: '#000099', pointRadius: 0 }
       ]
     },
     options: {
@@ -89,14 +89,13 @@ function initChart(line) {
 }
 
 function plot(data) {
-  console.log(data);
+  console.log(data.slope.toString(), data.yIntercept.toString());
   var m = data.slope;
   var p = data.yIntercept;
 
   var points = [];
-  for (var i = minX; i <= maxX; i++) {
-    var y = m.times(i).plus(p).toNumber();
-    points.push({x: i, y: y});
+  for (var i = minX; i <= maxX; i+=1) {
+    points.push({x: i, y: m.times(i).plus(p).toNumber()});
   }
 
   $('#output').show();

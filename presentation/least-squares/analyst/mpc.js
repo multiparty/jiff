@@ -8,9 +8,9 @@
   exports.connect = function (hostname, computation_id, options, _computes, schema_callback) {
     computes = _computes;
     var opt = Object.assign({}, options);
-    opt.Zp = '33554393';
-    opt.integer_digits = 3;
-    opt.decimal_digits = 2;
+    opt.Zp = '4503599627370449';
+    opt.integer_digits = 9;
+    opt.decimal_digits = 3;
 
     // eslint-disable-next-line no-undef
     jiff_instance = jiff.make_jiff(hostname, computation_id, opt);

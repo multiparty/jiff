@@ -1,0 +1,128 @@
+<!-- Basic UI for running the demo in the browser -->
+
+<html>
+  <head>
+    <title>Relational MPC Workflow</title>
+    <style>
+      .error {
+        color: #FF0000;
+      }
+
+      table {
+        margin-left: -4px;
+      }
+
+      .party5 tr th {
+        border-top: dashed 4px #FFFFFF;
+        border-bottom: dashed 4px #FFFFFF;
+      }
+
+      .party6 tr th {
+        border-top: dashed 4px #FFFFFF;
+        border-bottom: dashed 4px #FFFFFF;
+      }
+
+      .party7 tr th {
+        border-top: dashed 4px #000000;
+        border-bottom: dashed 4px #000000;
+      }
+
+      .party8 tr th {
+        border-top: dashed 4px #FFFFFF;
+        border-bottom: dashed 4px #FFFFFF;
+      }
+
+
+      .party5 tr th:first-child {
+        border-left: dashed 4px #FFFFFF;
+      }
+      .party5 tr th:last-child {
+        border-right: dashed 4px #FFFFFF;
+      }
+
+      .party6 tr th:first-child {
+        border-left: dashed 4px #FFFFFF;
+      }
+      .party6 tr th:last-child {
+        border-right: dashed 4px #FFFFFF;
+      }
+
+      .party7 tr th:first-child {
+        border-left: dashed 4px #000000;
+      }
+      .party7 tr th:last-child {
+        border-right: dashed 4px #000000;
+      }
+
+      .party8 tr th:first-child {
+        border-left: dashed 4px #FFFFFF;
+      }
+      .party8 tr th:last-child {
+        border-right: dashed 4px #FFFFFF;
+      }
+
+      td {
+        padding: 4px;
+      }
+
+      th input, td input {
+        width: 70px;
+      }
+
+      .break {
+        border: none;
+        height: 5px;
+      }
+
+      .party5 {
+        background-color: #1e499f;
+        color: #FFFFFF;
+      }
+      .party6 {
+        background-color: #710B02;
+        color: #FFFFFF;
+      }
+      .party7 {
+        background-color: #bec4bc;
+        color: #000000;
+      }
+      .party8 {
+        background-color: darkolivegreen;
+        color: #FFFFFF;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/bignumber.js/bignumber.min.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+    <script src="/lib/ext/jiff-client-bignumber.js"></script>
+    <script src="/lib/ext/jiff-client-fixedpoint.js"></script>
+
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="/static/input/input.js"></script>
+
+    <!-- Contains the MPC implementation -->
+    <script type="text/javascript" src="/static/input/mpc.js"></script>
+  </head>
+  <body class="party{{id}}">
+    <h1>Input party {{ id - config.compute - 1}}</h1>
+    <h3>Join / Filter / Group / Average under MPC</h3>
+
+    <label for="cols">Enter the number of columns</label> <input id="cols" pattern="[0-9]+" value="2"> <br/>
+    <label for="rows">Enter the number of rows&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> <input id="rows" pattern="[0-9]+"> <br/>
+    <button id="generate" onclick="generateTable(document.getElementById('cols').value, document.getElementById('rows').value)">Input</button>
+    <br/><br/>
+
+
+    <div id="input_area">
+
+    </div>
+    <button onclick="submit();" disabled="disabled" id="submit">Submit</button><br/>
+    <div id="output"></div>
+  </body>
+
+  <script type="text/javascript">
+    connect({{id}}, {{config.total}}, {{config.compute}}, '{{ config.computation_id }}');
+  </script>
+</html>
