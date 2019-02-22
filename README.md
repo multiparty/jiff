@@ -65,12 +65,13 @@ node demos/<demo-name>/party.js <input-value>
     ├─ demos/           Example of common jiff use-cases and functionality
     ├─ docs/            JSDoc config and generated docs
     ├─ lib/             Libraries for both client and server-side jiff instances
-       ├─ ext/          Extended functionality for use cases (e.g. negative numbers)
+    │  ├─ ext/          Extended functionality for use cases (e.g. negative numbers)
     │  └─ server/       server-side specific helpers
-    └─ test/            Unit testing for base Jiff, demos, and extensions
-       ├─ dev/
-       ├─ live/
-       └─ suite/        Base Jiff and extension tests (See test/suite/README.md)
+    ├─ test/            Unit testing for base Jiff, demos, and extensions
+    │  ├─ dev/
+    │  ├─ live/
+    │  └─ suite/        Base Jiff and extension tests (See test/suite/README.md)
+
 
 
 
