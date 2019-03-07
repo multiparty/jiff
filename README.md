@@ -45,6 +45,18 @@ var instance = jiff.make_jiff("http://localhost:8080", "<computation_id>", parti
 ```
 The instance object provides methods for sharing, opening, and performing operations on shares.
 
+## Project Layout
+
+    ├─ demos/           Example of common jiff use-cases and functionality
+    ├─ docs/            JSDoc config and generated docs
+    ├─ lib/             Libraries for both client and server-side jiff instances
+    │  ├─ ext/          Extended functionality for use cases (e.g. negative numbers)
+    │  └─ server/       server-side specific helpers
+    ├─ test/            Unit testing for base Jiff, demos, and extensions
+    │  ├─ dev/          Limited tests for testing some features under development
+    │  ├─ live/         Template and setup for live coding with JIFF with nodejs's command line shell (REPL)
+    │  └─ suite/        Base Jiff and extension tests (See test/suite/README.md)
+
 ## Running Demos and Examples
 
 Run a sample server from one of the demos under `demos` in the following way:
@@ -58,22 +70,6 @@ Note that you can run node.js parties that can also participate in the protocol 
 ```shell
 node demos/<demo-name>/party.js <input-value>
 ```
-
-## Project Layout
---------------
-
-    ├─ demos/           Example of common jiff use-cases and functionality
-    ├─ docs/            JSDoc config and generated docs
-    ├─ lib/             Libraries for both client and server-side jiff instances
-    │  ├─ ext/          Extended functionality for use cases (e.g. negative numbers)
-    │  └─ server/       server-side specific helpers
-    ├─ test/            Unit testing for base Jiff, demos, and extensions
-    │  ├─ dev/          Limited tests for testing some features under development
-    │  ├─ live/         Template and setup for live coding with JIFF with nodejs's command line shell (REPL)
-    │  └─ suite/        Base Jiff and extension tests (See test/suite/README.md)
-
-
-
 
 ## Documentation
 
