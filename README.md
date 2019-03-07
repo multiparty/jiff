@@ -68,8 +68,8 @@ node demos/<demo-name>/party.js <input-value>
     │  ├─ ext/          Extended functionality for use cases (e.g. negative numbers)
     │  └─ server/       server-side specific helpers
     ├─ test/            Unit testing for base Jiff, demos, and extensions
-    │  ├─ dev/
-    │  ├─ live/
+    │  ├─ dev/          Limited tests for testing some features under development
+    │  ├─ live/         Template and setup for live coding with JIFF with nodejs's command line shell (REPL)
     │  └─ suite/        Base Jiff and extension tests (See test/suite/README.md)
 
 
