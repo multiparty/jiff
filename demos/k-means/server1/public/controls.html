@@ -1,0 +1,49 @@
+<!-- Basic UI for running the demo in the browser -->
+
+<html>
+<head>
+    <title>Recommendation Control Panel</title>
+    <style>
+    .error {
+        color: #FF0000;
+    }
+    h3 { margin-bottom: 0.5em; }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
+    <script src="/lib/jquery-1.11.1.js"></script>
+
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="./controls.js"></script>
+
+    <!-- Contains the MPC implementation -->
+    <script type="text/javascript" src="./mpc.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <h1>Recommendation Control Panel</h1>
+        </div>
+        <div id="btns" class="row">
+            <h3>K-Means Controls</h3>
+            <span>Clustering servers: </span>
+            <button class="btn btn-secondary" id="connectButton" onclick="connect();">Connect</button>
+            <button class="btn btn-secondary" id="compareBtn1"  onclick="submit();" disabled="true">Cluster</button>
+            <!-- <button class="btn btn-secondary" id="compareBtn1"  onclick="submit1();">Cluster 1</button>
+            <button class="btn btn-secondary" id="compareBtn2"  onclick="submit2();">Cluster 2</button> -->
+            <button class="btn btn-secondary" id="resetButton"  onclick="reset();" disabled="true">Disconnect</button>
+        </div>
+        <br/>
+        <div id="btns" class="row">
+            <h3>Data Controls</h3>
+            <span>Database: </span>
+            <button class="btn btn-secondary" id="printButton" onclick="printProfiles();">Print Profiles</button>
+        </div>
+        <br/>
+        <div id="result"></div>
+        <div id="output"></div>
+    </div>
+</body>
+</html>

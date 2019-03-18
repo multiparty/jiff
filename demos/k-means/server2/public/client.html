@@ -1,0 +1,71 @@
+<!-- Basic UI for running the demo in the browser -->
+
+<html>
+  <head>
+    <title>Privacy Preferences</title>
+    <style>
+      .error {
+        color: #FF0000;
+      }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
+    <script src="/lib/jquery-1.11.1.js"></script><!-- isolated/offline support -->
+
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="./client.js"></script>
+
+    <!-- Contains the MPC implementation -->
+    <script type="text/javascript" src="./mpc.js"></script>
+  </head>
+<body>
+  <div class="container">
+    <div class="row">
+        <h1>Privacy Preferences</h1>
+    </div>
+    <div class="row" style="border-width:1px; border-style:solid; width:330px; padding:10px;">
+    <form id="form">
+        <span><u>Fuel Data Collection:</u></span><span id="set1">&nbsp;&nbsp;&nbsp;&nbsp;(not set)</span><br>
+        <span id="1">
+            <input id="input_item1" type="radio" name="1" onclick="set(1)" value="0">Send data<br>
+            <input id="input_item2" type="radio" name="1" onclick="set(1)" value="1">Send anonymous data<br>
+            <input id="input_item3" type="radio" name="1" onclick="set(1)" value="2">Don't send<br>
+        </span>
+        <br><span><u>Third-Party Sharing Presets:</u></span><span id="set2">&nbsp;&nbsp;&nbsp;&nbsp;(not set)</span><br>
+        <span id="2">
+            <input id="input_item4" type="radio" name="2" onclick="set(2)" value="0">None<br>
+            <input id="input_item5" type="radio" name="2" onclick="set(2)" value="1">Low<br>
+            <input id="input_item6" type="radio" name="2" onclick="set(2)" value="2">Moderate<br>
+            <input id="input_item7" type="radio" name="2" onclick="set(2)" value="3">High<br>
+        </span>
+        <br><span><u>Allow personalized notifications:</u></span><span id="set3">&nbsp;&nbsp;&nbsp;&nbsp;(not set)</span><br>
+        <span id="3">
+            <input id="input_item8" type="radio" name="3" onclick="set(3)" value="0">Yes&nbsp;
+            <input id="input_item9" type="radio" name="3" onclick="set(3)" value="1">No<br>
+        </span>
+        <br><span><u>Data transfer limit:</u></span><br>
+        <span id="4"><span>0</span><input onchange="och()" onclick="och()" id="input_item10" type="range" style="width: 140px;" name="4" step="1" min="0" max="12" value="0"><span>12&nbsp;&nbsp;&nbsp;&nbsp;</span><span id="set4">(not set)</span></span><br>
+        <br><span id="input_itema" style="margin-top:5px;"><u>Allow location for:</u></span><br>
+        <span id="5"><input id="input_item11" type="checkbox" name="5" onclick="set(5)" value="route">Route recommendations</span><span id="set5">&nbsp;&nbsp;&nbsp;&nbsp;(not set)</span><br>
+        <span id="6"><input id="input_item12" type="checkbox" name="6" onclick="set(6)" value="system">System applications</span><span id="set6">&nbsp;&nbsp;&nbsp;&nbsp;(not set)</span><br>
+        <span id="7"><input id="input_item13" type="checkbox" name="7" onclick="set(7)" value="third-party">Third-party applications</span><span id="set7">&nbsp;&nbsp;&nbsp;&nbsp;(not set)</span><br>
+        <span id="8"><input id="input_item14" type="checkbox" name="8" onclick="set(8)" value="timezone">Setting timezone</span><span id="set8">&nbsp;&nbsp;&nbsp;&nbsp;(not set)</span><br>
+        <br><span id="input_itema" style="margin-top:5px;"><u>Allow data collection when</u></span></span><br>
+        <span id="9"><input id="input_item11" type="checkbox" name="9" onclick="set(9)" value="drive">Driving&nbsp;</span><span id="set9">(not set)&nbsp;</span>
+        <span id="10"><input id="input_item12" type="checkbox" name="10" onclick="set(10)" value="park">Parked</span><span id="set10">&nbsp;(not set)</span><br>
+    </form>
+    </div>
+    <br><br>
+    <div id="btns" class="row">
+      <button class="btn btn-secondary" id="compareBtn"  onclick="compare();">Recommendation</button>
+      &nbsp;&nbsp;or&nbsp;&nbsp;
+      <button class="btn btn-secondary" id="submitBtn"  onclick="submit();">Submit</button>
+    </div>
+    <br/>
+    <div id="result"></div>
+    <div id="output"></div>
+  </div>
+</body>
+</html>
