@@ -12,6 +12,8 @@
     if (node) {
       // eslint-disable-next-line no-undef
       jiff = require('../../lib/jiff-client');
+      $ = require('jquery-deferred');
+    } else {
     }
 
     // eslint-disable-next-line no-undef
