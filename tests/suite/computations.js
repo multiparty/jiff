@@ -16,6 +16,7 @@ const function_map = {
   '*': 'smult',
   '|': 'sor_bit',
   '<': 'slt',
+  '^': 'sxor_bit',
   '<=': 'slteq',
   '>': 'sgt',
   '>=': 'sgteq',
