@@ -251,6 +251,19 @@ exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done)
   testParallel = _testParallel;
 
   Zp = jiff_instance.Zp;
+  var op = function_map[test];
+  var promise;
+  if (op == null) {
+    promise = new Promise(function (resolve, reject) {
+      setTimeout(() => resolve('done!'), 1);
+    });
+  } else {
+    promise = jiff_instance.preprocessing(op, inputs.length * jiff_instance.party_count);
+  }
 
-  batchTest(jiff_instance, 0);
+  promise.then(function () {
+    jiff_instance.finish_preprocessing();
+    batchTest(jiff_instance, 0);
+  });
+
 };
