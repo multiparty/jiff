@@ -12,6 +12,17 @@ var Zp;
 // Flags success/failure
 var errors = [];
 
+const function_map = {
+  '*': 'smult',
+  '|': 'sor_bit',
+  '<': 'slt',
+  '<=': 'slteq',
+  '>': 'sgt',
+  '>=': 'sgteq',
+  '==': 'seq',
+  '!=': 'sneq',
+}
+
 // For logging purposes
 function myJoin(indices, values, sep) {
   var str = '';
