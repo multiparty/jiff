@@ -266,10 +266,12 @@ exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done)
   var op = function_map[test];
   var promise;
   if (op == null) {
+    console.log('op is null for: ', test);
     promise = new Promise(function (resolve, reject) {
       setTimeout(() => resolve('done!'), 1);
     });
   } else {
+    console.log('preprocessing for ', test, op);
     promise = jiff_instance.preprocessing(op, inputs.length * jiff_instance.party_count);
   }
 
