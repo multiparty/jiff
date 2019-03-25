@@ -55,9 +55,6 @@ function generateInputs(party_count) {
       inputs[i].push(new BigNumber(numString));
     }
   }
-  // inputs[1].push(new BigNumber('9.03'));
-  // inputs[2].push(new BigNumber('5.75'));
-  // inputs[3].push(new BigNumber('6.56'));
   return inputs;
 
 }
@@ -76,24 +73,15 @@ function computeResults(inputs) {
     var in_sum = 0;
     var in_squared_sum = 0;
     for (var i = 1; i<= party_count; i++) {
-      //var in_squared = bigNumAccuracy(inputs[i][j].toPower(2), accuracy);
-      // NOTE: do not have to truncate in_squared because in mpc is calculated with pre-processing.
       var in_squared = bigNumRound(inputs[i][j].toPower(2), 2);
-      //console.log('test.js in_squared', in_squared.toString());
       in_sum = inputs[i][j].plus(in_sum);
       in_squared_sum = in_squared.plus(in_squared_sum);
     }
-    /*console.log('test.js in_sum', in_sum.toString());
-    console.log('test.js in_squared_sum', in_squared_sum.toString());*/
 
     var in_sum_squared = bigNumAccuracy(in_sum.toPower(2), accuracy);
-    //console.log('test.js in_sum_squared', in_sum_squared.toString());
     var one_over_party = new BigNumber(Number.parseFloat((1/party_count).toFixed(accuracy)));
-    //console.log('test.js one_over_n', one_over_party.toString());
     var intermediary = bigNumAccuracy(in_sum_squared.times(one_over_party), accuracy);     // intermediary = in_sum^2/n
-    //console.log('test.js intermediary', intermediary.toString());
     intermediary = in_squared_sum.minus(intermediary);      // intermediary = in_squared_sum - in_sum^2/n
-    //console.log('test.js pre-postprocessing output', intermediary.toString());
     var variance = intermediary.dividedBy(party_count - 1);
     results.push(variance.sqrt())
 
@@ -157,7 +145,6 @@ describe('Test', function () {
           // note this is different than template because of bignumbers framework and needing precision only up to certain
           // number of decimal points
           try {
-            // NOTE: due to rounding differences between the two, last decimal point may differ by 1.
             var test = bigNumAccuracy(testResults[i], accuracy).toString();
             var real = bigNumAccuracy(realResults[i], accuracy).toString();
             assert.deepEqual(test, real, msg);

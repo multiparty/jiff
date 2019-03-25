@@ -54,6 +54,7 @@
     var intermediary = in_sum_squared.cmult(one_over_n);
     var out = in_squared_sum.ssub(intermediary);
 
+
     //Create a promise of output
     var promise = jiff_instance.open(out);
 
