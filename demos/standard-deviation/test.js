@@ -7,7 +7,7 @@ var showProgress = true;
 // Generic Testing Parameters
 var party_count = 3;
 var parallelismDegree =5; // Max number of test cases running in parallel
-var n = 30; // Number of test cases in total
+var n = 20; // Number of test cases in total
 
 // Parameters specific to this demo
 var magnitude = 3; // 3 digits of magnitude
@@ -22,7 +22,11 @@ var maxValue = 10;
 function bigNumAccuracy(num, accuracy) {
   var numStr = num.toString();
   var numParts = numStr.split('.');
-  var truncdNum = numParts[0] + '.' + numParts[1].substring(0,accuracy);
+  if (numParts.length > 1) {
+    var truncdNum = numParts[0] + '.' + numParts[1].substring(0,accuracy);
+  } else {
+    truncdNum = numParts[0]
+  }
   return new BigNumber(truncdNum);
 }
 
