@@ -40,8 +40,11 @@
 
     var shares = jiff_instance.share(input);
     var in_sum = shares[1];
-    var in_squared_fixed = Number.parseFloat((Math.pow(input, 2)).toFixed(3)); //convert input^2 to fixed point number
+    var in_squared_fixed = Number.parseFloat((Math.pow(input, 2)).toFixed(2)); //convert input^2 to fixed point number
     var in_squared = jiff_instance.share(in_squared_fixed);
+    //in_squared[1].logLEAK("in_squared1");
+    //in_squared[2].logLEAK("in_squared2");
+    //in_squared[3].logLEAK("in_squared3");
     var in_squared_sum = in_squared[1];
 
     for (var i = 2; i <= jiff_instance.party_count; i++) {    // sum all inputs and sum all inputs squared
@@ -49,10 +52,18 @@
       in_squared_sum = in_squared_sum.sadd(in_squared[i]);
     }
 
-    var one_over_n = Number.parseFloat((1/jiff_instance.party_count).toFixed(3)); // convert 1/n to fixed point number
+    var one_over_n = Number.parseFloat((1/jiff_instance.party_count).toFixed(2)); // convert 1/n to fixed point number
+    //console.log("one_over_n", one_over_n);
     var in_sum_squared = in_sum.smult(in_sum);
     var intermediary = in_sum_squared.cmult(one_over_n);
     var out = in_squared_sum.ssub(intermediary);
+
+    // TESTING
+    //in_sum.logLEAK("in_sum");
+    //in_squared_sum.logLEAK("in_squared_sum");
+    //in_sum_squared.logLEAK("in_sum_squared");
+    //intermediary.logLEAK("intermediary");
+    //out.logLEAK("pre-postprocessing output");
 
     //Create a promise of output
     var promise = jiff_instance.open(out);
