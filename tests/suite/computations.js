@@ -13,15 +13,15 @@ var Zp;
 var errors = [];
 
 const function_map = {
-  '*': 'smult',
-  '|': 'sor_bit',
-  '<': 'slt',
-  '^': 'sxor_bit',
-  '<=': 'slteq',
-  '>': 'sgt',
-  '>=': 'sgteq',
-  '==': 'seq',
-  '!=': 'sneq',
+  '*': 'mult',
+  '|': 'or_bit',
+  '<': 'lt',
+  '^': 'xor_bit',
+  '<=': 'lteq',
+  '>': 'gt',
+  '>=': 'gteq',
+  '==': 'eq',
+  '!=': 'neq',
 }
 
 // For logging purposes
@@ -263,14 +263,18 @@ exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done)
   testParallel = _testParallel;
 
   Zp = jiff_instance.Zp;
-  var op = function_map[test];
+  if (inputs[0]['constant'] == null) {
+    var op_name = 's' + function_map[test]
+  } else {
+    op_name = 'c' + function_map[test]
+  }
   var promise;
-  if (op == null) {
+  if (function_map[test] == null) {
     promise = new Promise(function (resolve, reject) {
       setTimeout(() => resolve('done!'), 1);
     });
   } else {
-    promise = jiff_instance.preprocessing(op, inputs.length * jiff_instance.party_count);
+    promise = jiff_instance.preprocessing(op_name, inputs.length * jiff_instance.party_count);
   }
 
   promise.then(function () {
