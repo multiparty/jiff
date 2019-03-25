@@ -30,12 +30,8 @@ function bigNumAccuracy(num, accuracy) {
  * Round any decimal points to accuracy.
 * */
 function bigNumRound(num, accuracy){
-  //var z = 81.5409;
-  //console.log(z.toFixed(2));
   var numFloat = parseFloat(num.toString());
-  //console.log('test.js in_squaredFloat', numFloat);
   var numRounded = numFloat.toFixed(accuracy);
-  //console.log('test.js in_squaredRounded', numRounded);
   return new BigNumber(numRounded);
 }
 
