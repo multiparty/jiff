@@ -6,8 +6,8 @@ var showProgress = true;
 
 // Generic Testing Parameters
 var party_count = 3;
-var parallelismDegree = 5; // Max number of test cases running in parallel
-var n = 50; // Number of test cases in total
+var parallelismDegree =5; // Max number of test cases running in parallel
+var n = 30; // Number of test cases in total
 
 // Parameters specific to this demo
 var magnitude = 3; // 3 digits of magnitude
@@ -16,12 +16,27 @@ var Zp = new BigNumber(32416190071);
 var maxValue = 10;
 
 /**
-  Round any decimal points beyond accuracy.
+  Truncate any decimal points beyond accuracy. (Can't use built in bignumber functions since none of built-in rounding
+ modes are correct.)
  */
 function bigNumAccuracy(num, accuracy) {
   var numStr = num.toString();
-  var rounded = Number.parseFloat(numStr).toFixed(accuracy);
-  return new BigNumber(rounded);
+  var numParts = numStr.split('.');
+  var truncdNum = numParts[0] + '.' + numParts[1].substring(0,accuracy);
+  return new BigNumber(truncdNum);
+}
+
+/**
+ * Round any decimal points to accuracy.
+* */
+function bigNumRound(num, accuracy){
+  //var z = 81.5409;
+  //console.log(z.toFixed(2));
+  var numFloat = parseFloat(num.toString());
+  //console.log('test.js in_squaredFloat', numFloat);
+  var numRounded = numFloat.toFixed(accuracy);
+  //console.log('test.js in_squaredRounded', numRounded);
+  return new BigNumber(numRounded);
 }
 
 /**
@@ -37,17 +52,16 @@ function generateInputs(party_count) {
     inputs[p] = [];
   }
 
-  // Generate test cases one at a time
+  //Generate test cases one at a time
   for (var t = 0; t < n; t++) {
     for (var i = 1; i <= party_count; i++) {
       var numString = (Math.random() * maxValue).toFixed(accuracy);
       inputs[i].push(new BigNumber(numString));
     }
-    // inputs[1].push(new BigNumber('6.45'));
-    // inputs[2].push(new BigNumber('6.9'));
-    // inputs[3].push(new BigNumber('3.34'));
   }
-
+  // inputs[1].push(new BigNumber('9.03'));
+  // inputs[2].push(new BigNumber('5.75'));
+  // inputs[3].push(new BigNumber('6.56'));
   return inputs;
 
 }
@@ -66,20 +80,28 @@ function computeResults(inputs) {
     var in_sum = 0;
     var in_squared_sum = 0;
     for (var i = 1; i<= party_count; i++) {
-      var in_squared = bigNumAccuracy(inputs[i][j].toPower(2), accuracy);
+      //var in_squared = bigNumAccuracy(inputs[i][j].toPower(2), accuracy);
+      // NOTE: do not have to truncate in_squared because in mpc is calculated with pre-processing.
+      var in_squared = bigNumRound(inputs[i][j].toPower(2), 2);
+      //console.log('test.js in_squared', in_squared.toString());
       in_sum = inputs[i][j].plus(in_sum);
       in_squared_sum = in_squared.plus(in_squared_sum);
     }
+    /*console.log('test.js in_sum', in_sum.toString());
+    console.log('test.js in_squared_sum', in_squared_sum.toString());*/
 
     var in_sum_squared = bigNumAccuracy(in_sum.toPower(2), accuracy);
-    // console.log(in_sum_squared.toString());
+    //console.log('test.js in_sum_squared', in_sum_squared.toString());
     var one_over_party = new BigNumber(Number.parseFloat((1/party_count).toFixed(accuracy)));
+    //console.log('test.js one_over_n', one_over_party.toString());
     var intermediary = bigNumAccuracy(in_sum_squared.times(one_over_party), accuracy);     // intermediary = in_sum^2/n
-    // console.log(intermediary.toString());
+    //console.log('test.js intermediary', intermediary.toString());
     intermediary = in_squared_sum.minus(intermediary);      // intermediary = in_squared_sum - in_sum^2/n
-
+    //console.log('test.js pre-postprocessing output', intermediary.toString());
     var variance = intermediary.dividedBy(party_count - 1);
     results.push(variance.sqrt())
+
+
   }
   return results;
 }
@@ -127,10 +149,6 @@ describe('Test', function () {
         // If we reached here, it means we are done
         count++;
 
-        //var foo = new BigNumber(1.99);
-        //var foobar = bigNumAccuracy(foo, accuracy).toString();
-        //console.log("foobar", foobar);
-
         for (var i = 0; i < testResults.length; i++) {
           // construct debugging message
           var ithInputs = inputs[1][i] + '';
@@ -143,12 +161,9 @@ describe('Test', function () {
           // note this is different than template because of bignumbers framework and needing precision only up to certain
           // number of decimal points
           try {
-            // var testfoo = testResults[i].toString();
-            // var realfoo = realResults[i].toString();
-            // console.log(testfoo, realfoo);
             // NOTE: due to rounding differences between the two, last decimal point may differ by 1.
-            var test = bigNumAccuracy(testResults[i], accuracy-1).toString();
-            var real = bigNumAccuracy(realResults[i], accuracy-1).toString();
+            var test = bigNumAccuracy(testResults[i], accuracy).toString();
+            var real = bigNumAccuracy(realResults[i], accuracy).toString();
             assert.deepEqual(test, real, msg);
           } catch (assertionError) {
             done(assertionError);
