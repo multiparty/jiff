@@ -14,7 +14,7 @@
 
   "testConf": {
     "default": {
-      "count": 100,
+      "count": 1,
       "parallel": 50,
       "options": {
         "Zp": 15485867,
@@ -23,7 +23,7 @@
     },
     "/Zp127": {
       "alias": "/",
-      "count": 8,
+      "count": 1,
       "parallel": 3,
       "options": {
         "Zp": 127,
@@ -32,7 +32,7 @@
     },
     "/Zp2039": {
       "alias": "/",
-      "count": 5,
+      "count": 1,
       "parallel": 3,
       "options": {
         "Zp": 2039,
