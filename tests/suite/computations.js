@@ -22,6 +22,7 @@ const function_map = {
   '>=': 'gteq',
   '==': 'eq',
   '!=': 'neq',
+  '/': 'div',
 }
 
 // For logging purposes
