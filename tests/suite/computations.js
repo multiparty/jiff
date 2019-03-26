@@ -270,7 +270,7 @@ exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done)
     op_name = 'c' + function_map[test]
   }
   var promise;
-  if (function_map[test] == null) {
+  if (function_map[test] == null || op_name === 'cmult' || op_name === 'cor_bit' || op_name === 'cxor_bit' || op_name === 'sdiv') {
     promise = new Promise(function (resolve, reject) {
       setTimeout(() => resolve('done!'), 1);
     });
