@@ -1,5 +1,7 @@
 # JIFF
 
+[![Build Status](https://travis-ci.org/multiparty/jiff.svg?branch=master)](https://travis-ci.org/multiparty/jiff)
+
 Server- and client-side library for building JavaScript applications that have secure multi-party computation features. Parties running the server-side application can handle the relaying of shares between parties. Both client and server parties can act as input data contributors and as compute parties.
 
 ## Requirements
