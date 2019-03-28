@@ -32,6 +32,8 @@
     if (jiff_instance.id === 1) {
       array = input;
       array.sort(function (a, b) {
+        // sorts array: note that the sort function without comparison function inside it will interpret numbers as strings
+        // (e.g. 100 smaller than 25)
         return a - b;
       });
     } else {
@@ -43,7 +45,7 @@
 
     element = jiff_instance.share(element, 2, [1, 2], [ 2 ])[2];
     jiff_instance.share_array(array, null, 2, [1, 2], [ 1 ]).then(function (array) {
-      array = array[1];
+      array = array[1];         // Note that array[2] is a null array shared by player 2 so should be discarded.
       var result = binary_search(array, element);
       result.open().then(function (result) {
         deferred.resolve(result);
