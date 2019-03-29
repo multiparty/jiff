@@ -1,5 +1,5 @@
 {
-  "tests": [ "+", "-", "*", "*bgw", "|", "^", "!", "/", "%", "floor" ],
+  "tests": [ "+", "-", "*", "*bgw", "|", "^", "!", "floor" ],
   "suiteConf": {
     "port": 3001,
     "extensions": [ "bigNumber", "fixedpoint" ],
