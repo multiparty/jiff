@@ -19,19 +19,47 @@
     <!-- Contains the MPC implementation -->
     <script type="text/javascript" src="./mpc.js"></script>
   </head>
-  <body>
+  <body style="background-color: rgb(255, 226, 240);">
     <h1>Connect JIFF</h1>
     <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*" value="2"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
-    <h1>Vote for the best beer.</h1>
-    <label><input type="radio" name="beer"/><img src="https://drizly-products3.imgix.net/ci-harpoon-ipa-25ec827c10057591.jpeg?auto=format%2Ccompress&fm=jpeg&q=20" height="150" alt="harpoon IPA"></label> &nbsp; <span id="res0"></span><br/>
-    <label><input type="radio" name="beer"/><img src="https://drizly-products0.imgix.net/ci-guinness-draught-39d3541fc7e182f2.png?auto=format%2Ccompress&fm=jpeg&q=20" height="150" alt="guiness"></label> &nbsp; <span id="res1"></span><br/>
-    <label><input type="radio" name="beer"/><img src="https://drizly-products3.imgix.net/ci-goose-island-ipa-158e904177a3d9f0.jpeg?auto=format%2Ccompress&fm=jpeg&q=20" height="150" alt="guiness"></label> &nbsp; <span id="res2"></span><br/>
-    <label><input type="radio" name="beer"/><img src="https://drizly-products2.imgix.net/ci-cisco-grey-lady-9cd77580c467893a.png?auto=format%2Ccompress&fm=jpeg&q=20" height="150" alt="guiness"></label> &nbsp; <span id="res3"></span><br/>
-    <br/>
-    <button onclick="submit();" disabled="disabled" id="button">Vote</button><br/>
+    <h1>Vote for the best friend.</h1>
+      <label>
+        <input type="radio" name="animal"/>
+        <figure style="text-align: center; background-color: rgb(199, 160, 214); border: 20px solid rgb(199, 160, 214)">
+          <div style="text-align: center"> <img src="photos/echidna.jpg" height="150" alt="spikey boi"> </div>
+          <figcaption> Spikey Boi </figcaption>
+        </figure>
+        </label> &nbsp;
+        <span id="res0"></span><br/>
+      <label>
+        <input type="radio" name="animal"/>
+        <figure style="text-align: center; background-color: rgb(234, 147, 181); border: 20px solid rgb(234, 147, 181)">
+          <div style="text-align: center"> <img src="photos/flapjack.jpg" height="150" alt="water pancake"> </div>
+          <figcaption> Water Pancake </figcaption>
+        </figure>
+      </label> &nbsp;
+      <span id="res0"></span><br/>
+      <label>
+        <input type="radio" name="animal"/>
+        <figure style="text-align: center; background-color: rgb(217, 234, 175); border: 20px solid rgb(217, 234, 175)">
+          <div style="text-align: center"> <img src="photos/pangolin.jpeg" height="150" alt="concerned pinecone"> </div>
+          <figcaption> Concerned Pinecone </figcaption>
+        </figure>
+      </label> &nbsp;
+      <span id="res0"></span><br/>
+      <label>
+        <input type="radio" name="animal"/>
+        <figure style="text-align: center; background-color: rgb(175, 234, 230); border: 20px solid rgb(175, 234, 230)">
+          <div style="text-align: center"> <img src="photos/springbok.jpg" height="150" alt="bouncy mcfluffybum"> </div>
+          <figcaption> Bouncy Mcfluffybum </figcaption>
+        </figure>
+      </label> &nbsp;
+      <span id="res0"></span><br/>
+
+    <button onclick="submit();" disabled="disabled" id="button">Vote</button><label><input type="checkbox" id="cheat">Cheat</label>
     <div id="output"></div>
   </body>
 </html>

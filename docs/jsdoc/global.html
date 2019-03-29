@@ -94,30 +94,184 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
+
+    
+        <h3 class="subsection-title">Methods</h3>
 
         
             
-<h4 class="name" id="jiff"><span class="type-signature"></span>jiff<span class="type-signature"> :jiff-instance</span></h4>
 
+    
+
+    
+    <h4 class="name" id="if_else"><span class="type-signature"></span>if_else<span class="signature">(trueVal, falseVal, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="SecretShare.html">SecretShare</a>}</span></h4>
+    
+
+    
 
 
 
 <div class="description">
-    * @memberof jiff.secret_share
+    Simulate an oblivious If-else statement with a single return value.
+Should be called on a secret share of a bit: 0 representing false, and 1 representing true
+If this is a share of 1, a new sharing of the element represented by the first parameter is returned,
+otherwise, a new sharing of the second is returned.
 </div>
 
 
 
-    <h5>Type:</h5>
-    <ul>
-        <li>
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
             
-<span class="param-type">jiff-instance</span>
+                <td class="name"><code>trueVal</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SecretShare.html">SecretShare</a></span>
+|
+
+<span class="param-type">constant</span>
 
 
-        </li>
-    </ul>
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the value/share to return if this is a sharing of 1.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>falseVal</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SecretShare.html">SecretShare</a></span>
+|
+
+<span class="param-type">constant</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the value/share to return if this is a sharing of 0.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    auto_gen()
+                
+                </td>
+            
+
+            <td class="description last">the operation id which is used to identify this operation.
+                        This id must be unique, and must be passed by all parties to the same instruction, to
+                        ensure that corresponding instructions across different parties are matched correctly.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
 
 
 
@@ -152,7 +306,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line656">line 656</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2748">line 2748</a>
     </li></ul></dd>
     
 
@@ -168,9 +322,41 @@
 
 
 
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
         
+<div class="param-desc">
+    a new sharing of the result of the if.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="SecretShare.html">SecretShare</a></span>
+
+
+    </dd>
+</dl>
+
     
 
+
+
+
+
+        
     
 
     
@@ -186,13 +372,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="jiff.secret_share.html">secret_share</a></li></ul><h3>Namespaces</h3><ul><li><a href="global.html#jiff">jiff</a></li><li><a href="jiff.jiff-instance.html">jiff-instance</a></li><li><a href="jiff.jiff-instance.helpers.html">helpers</a></li></ul><h3><a href="global.html">Global</a></h3>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.sharing_schemes.html">sharing_schemes</a></li><li><a href="jiff.utils.html">utils</a></li><li><a href="jiff-instance.html">jiff-instance</a></li><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="jiff-instance.protocols.html">protocols</a></li><li><a href="SecretShare.html">SecretShare</a></li></ul><h3>Global</h3><ul><li><a href="global.html">if_else</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Dec 26 2017 18:25:57 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Nov 13 2018 23:03:15 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>

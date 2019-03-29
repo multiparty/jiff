@@ -1,4 +1,4 @@
-(function(exports, node) {
+(function (exports, node) {
   var saved_instance;
 
   /**
@@ -6,19 +6,25 @@
    */
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
+    opt.warn = false;
 
     // Added options goes here
-    if(node) {
+    if (node) {
+      // eslint-disable-next-line no-undef
       jiff = require('../../lib/jiff-client');
+      // eslint-disable-next-line no-undef
       jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
+      // eslint-disable-next-line no-undef
       jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
-      BigNumber = require('bignumber.js');    
     }
-    
+
     opt.autoConnect = false;
+    // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
-    saved_instance = jiff_bignumber.make_jiff(saved_instance, opt)
-    saved_instance = jiff_fixedpoint.make_jiff(saved_instance, opt); // Max bits after decimal allowed
+    // eslint-disable-next-line no-undef
+    saved_instance.apply_extension(jiff_bignumber, opt);
+    // eslint-disable-next-line no-undef
+    saved_instance.apply_extension(jiff_fixedpoint, opt); // Max bits after decimal allowed
     saved_instance.connect();
 
     return saved_instance;
@@ -28,14 +34,17 @@
    * The MPC computation
    */
   exports.compute = function (input, jiff_instance) {
-    if(jiff_instance == null) jiff_instance = saved_instance;
+    if (jiff_instance == null) {
+      jiff_instance = saved_instance;
+    }
 
     var shares = jiff_instance.share(input);
 
     var sum = shares[1];
-    for(var i = 2; i <= jiff_instance.party_count; i++)
+    for (var i = 2; i <= jiff_instance.party_count; i++) {
       sum = sum.sadd(shares[i]);
+    }
 
     return sum.open();
   };
-}((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
+}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));

@@ -1,17 +1,17 @@
 // Chai
-var expect = require('chai').expect;
 var assert = require('chai').assert;
 
 var mpc = require('./mpc.js');
 
+var showProgress = false;
+
 // Generic Testing Parameters
 var party_count = 2;
 var parallelismDegree = 5; // Max number of test cases running in parallel
-var n = 10; // Number of test cases in total
+var n = 20; // Number of test cases in total
 
 // Parameters specific to this demo
-
-var maxValue = 1000;
+var Zp = 2039;
 
 /**
  * CHANGE THIS: Generate inputs for your tests
@@ -20,7 +20,6 @@ var maxValue = 1000;
  *   'party_id': [ 'test1_input', 'test2_input', ...]
  * } */
 function generateInputs(party_count) {
-  console.log('in generate inputs');
   var inputs = {};
 
   for (var i = 0; i < party_count; i++) {
@@ -29,7 +28,7 @@ function generateInputs(party_count) {
 
   for (i = 0; i < party_count; i++) {
     for (var j = 0; j < n; j++) {
-      inputs[i+1].push(Math.floor((Math.random() * maxValue)));
+      inputs[i+1].push(Math.floor((Math.random() * Zp)));
     }
   }
   return inputs;
@@ -42,17 +41,15 @@ function generateInputs(party_count) {
  *   [ 'test1_output', 'test2_output', ... ]
  */
 function computeResults(inputs) {
-  console.log('in compute results');
   var results = [];
 
   for (var j = 0; j < n; j++) {
     var eq = 0;
     for (var i = 1; i <= party_count; i++) {
-      eq = (eq == inputs[i][j] ? 1: 0);
+      eq = (eq === inputs[i][j] ? 1: 0);
     }
     results.push(eq);
   }
-  console.log('in compute results, returning');
 
   return results;
 }
@@ -60,9 +57,11 @@ function computeResults(inputs) {
 /**
  * Do not change unless you have to.
  */
+// eslint-disable-next-line no-undef
 describe('Test', function () {
   this.timeout(0); // Remove timeout
 
+  // eslint-disable-next-line no-undef
   it('Exhaustive', function (done) {
     var count = 0;
 
@@ -70,16 +69,18 @@ describe('Test', function () {
     var realResults = computeResults(inputs);
 
     var onConnect = function (jiff_instance) {
-      console.log('Onconnect');
       var partyInputs = inputs[jiff_instance.id];
 
       var testResults = [];
       (function one_test_case(j) {
-        console.log('one test case: ', j);
+        if (jiff_instance.id === 1 && showProgress) {
+          console.log('\tStart ', j > partyInputs.length ? partyInputs.length : j, '/', partyInputs.length);
+        }
+
         if (j < partyInputs.length) {
           var promises = [];
           for (var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++) {
-            promises.push(mpc.compute(partyInputs[j+t], jiff_instance));
+            promises.push(mpc.compute(partyInputs[j + t], jiff_instance));
           }
 
           Promise.all(promises).then(function (parallelResults) {
@@ -98,30 +99,29 @@ describe('Test', function () {
         for (var i = 0; i < testResults.length; i++) {
           // construct debugging message
           var ithInputs = inputs[1][i] + '';
-          for (var j = 2; j <= party_count; j++) {
-            ithInputs += ',' + inputs[j][i];
+          for (var p = 2; p <= party_count; p++) {
+            ithInputs += ',' + inputs[p][i];
           }
           var msg = 'Party: ' + jiff_instance.id + '. inputs: [' + ithInputs + ']';
 
           // assert results are accurate
           try {
-            assert.deepEqual(testResults[i], realResults[i], msg);
+            assert.deepEqual(testResults[i].toString(), realResults[i].toString(), msg);
           } catch (assertionError) {
             done(assertionError);
-            done = function () {}
+            done = function () { };
           }
         }
 
-        jiff_instance.disconnect();
-        if (count == party_count) {
+        jiff_instance.disconnect(true);
+        if (count === party_count) {
           done();
         }
       })(0);
     };
 
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect };
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp };
     for (var i = 0; i < party_count; i++) {
-      console.log('trying to connect');
       mpc.connect('http://localhost:8080', 'mocha-test', options);
     }
   });

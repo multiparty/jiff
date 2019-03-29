@@ -43,7 +43,7 @@
 
 
     <section>
-        <article><p>Server- and client-side library for building JavaScript application that have secure multi-party computation features. Parties running the server-side application can handle the relaying of shares between parties. Both client and server parties can act as input data contributors and as compute parties.</p>
+        <article><p>Server- and client-side library for building JavaScript applications that have secure multi-party computation features. Parties running the server-side application can handle the relaying of shares between parties. Both client and server parties can act as input data contributors and as compute parties.</p>
 <h2>Requirements</h2><h3>Server</h3><p>Running the server requires <a href="https://nodejs.org/en/">Node</a> and <a href="https://www.npmjs.com/">npm</a>.</p>
 <h3>Client</h3><p>Make sure to use the <code>sockets.io.js</code> script file that <strong>matches exactly</strong> the version <strong>used in the server</strong>.</p>
 <p>If the client code is to be served by the server, use:  </p>
@@ -61,9 +61,12 @@ You can then proceed with the protocol using the client interfaces. </p>
 <p>Note that you can run node.js parties that can also participate in the protocol by executing (e.g., a separate terminal for each party):</p>
 <pre class="prettyprint source lang-shell"><code>node demos/&lt;demo-name>/party.js &lt;input-value></code></pre><h2>Documentation</h2><p>The latest documentation can be viewed at on the <a href="https://multiparty.org/jiff/">project page</a>. The documentation can be generated using <a href="http://usejsdoc.org/">JSDoc</a>; you will find these docs in <code>docs/jsdocs/</code>: </p>
 <pre class="prettyprint source lang-shell"><code>./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json
-npm run-script gen-docs # shortcut</code></pre><h2>Running Tests</h2><p>The test cases can be run in the following way:</p>
-<pre class="prettyprint source lang-shell"><code>npm test</code></pre><p>Demos are accompanied by test cases, to run a demo test case, use:</p>
-<pre class="prettyprint source lang-shell"><code>npm run-script test-demo -- demo/&lt;demo-name>/test.js</code></pre><h2>Development</h2><p>The JIFF libraries allow developers to customize or extend their functionality by introducing new <em>hooks</em>. Multiple hooks can be combined to form a library <em>extension</em>.</p>
+npm run-script gen-docs # shortcut</code></pre><h2>Running Tests</h2><p>All the JIFF library test cases can be run in the following way:</p>
+<pre class="prettyprint source lang-shell"><code>npm test</code></pre><p>Demos are accompanied by test cases. The following command can be used to run the demos servers and test cases:</p>
+<pre class="prettyprint source lang-shell"><code>npm run-script test-demo -- demo/&lt;demo-name></code></pre><p>The command assumes that the server is located at demos/<demo-name>/server.js and the test cases are located at demos/<demo-name>/test.js
+See demos/run-test.sh for instructions for running test cases located in different directories or with different names.</p>
+<p>See the <a href="tests/suite/README.md">testing suite framework documentation</a> for more details on running and creating tests for the JIFF library.</p>
+<h2>Development</h2><p>The JIFF libraries allow developers to customize or extend their functionality by introducing new <em>hooks</em>. Multiple hooks can be combined to form a library <em>extension</em>.</p>
 <h3>Hooks</h3><p>The JIFF client and server libraries support hooks. Hooks can be provided in the options parameter during instantiation or afterwards. Hooks allow the introduction of custom functionality to be executed at critical times during the computation, or the introduction of different implementations of specified primitives and operations (e.g. using a different sharing scheme).</p>
 <p>The client-side <a href="hooks.html">hooks documentation</a> provides more details. If hooks are used to provide important reusable functionality, then it is recommended to bundle these hooks within a JIFF extension.</p>
 <h3>Extensions</h3><p>JIFF supports implementing extensions on top of the base implementations that can provide additional extended functionality. Some extensions can be found under <code>lib/ext</code>. Two important modules are implemented and provided in this repository: bignumbers and fixed point arithmetic.</p>
@@ -73,10 +76,114 @@ npm run-script gen-docs # shortcut</code></pre><h2>Running Tests</h2><p>The test
 <ol>
 <li><code>demos/sum-fixed/server.js</code>: using the server with the Node bignumber.js module.</li>
 <li><code>demos/sum-fixed/client.html</code>: using fixed point arithmetic extension in the browser.</li>
-<li><code>tests/mocha-bignumber</code>: test suite of usage with the Node bignumber.js module.</li>
 </ol>
 <p>Run the bignumber test suite in the following way:</p>
-<pre class="prettyprint source lang-shell"><code>npm run-script test-bignumber</code></pre><h2>Information and Collaborators</h2><p>More information about this project, including collaborators and publications, can be found at <a href="https://multiparty.org/">multiparty.org</a>.</p></article>
+<pre class="prettyprint source lang-shell"><code>npm run-script test-bignumber</code></pre><h3>Costs of Operations:</h3><p>Below is a table of the current costs of operations in the <em>base</em> jiff with no extensions:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Rounds</th>
+<th>Total Messages</th>
+<th>Preprocessing Rounds</th>
+<th>Preprocessing Total Messages</th>
+<th>Dependenices</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Share</td>
+<td>1</td>
+<td>senders * receivers</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Open</td>
+<td>2</td>
+<td>sender + sender * receivers</td>
+<td>1</td>
+<td>senders * senders</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>+, -, c+, c-, c*</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>*</td>
+<td>2</td>
+<td>2*parties + parties*(parties-1)</td>
+<td>2</td>
+<td>2 * (parties * parties - 1)</td>
+<td>triplet,open</td>
+</tr>
+<tr>
+<td>&lt;, &lt;=, &gt;, &gt;=</td>
+<td>2*(bits+3)</td>
+<td>O( bits * parties^2 )</td>
+<td>3</td>
+<td>bits * (2*parties + parties^2)</td>
+<td>*, open</td>
+</tr>
+<tr>
+<td>c&lt;, c&lt;=, c&gt;, c&gt;=</td>
+<td>2*(bits+3)</td>
+<td>O( bits * parties^2 )</td>
+<td>3</td>
+<td>bits * (2*parties + parties^2)</td>
+<td>*, open</td>
+</tr>
+<tr>
+<td>=, c=, !=, c!=</td>
+<td>2*(bits+4)</td>
+<td>O( bits * parties^2 )</td>
+<td>3</td>
+<td>2*bits * (2*parties + parties^2)</td>
+<td>c&lt;, c&gt;, *</td>
+</tr>
+<tr>
+<td>/</td>
+<td>bits^2 + 5*bits</td>
+<td>O( bits^2 * parties^2 )</td>
+<td>3</td>
+<td>bits*(2*bits * (2*parties + parties^2))</td>
+<td>&lt;, c&lt;, *</td>
+</tr>
+<tr>
+<td>c/</td>
+<td>2*(bits+3) + 5</td>
+<td>O( bits * parties^2 )</td>
+<td>3</td>
+<td>4 * bits * (2*parties + parties^2)</td>
+<td>open, *, c&lt;</td>
+</tr>
+</tbody>
+</table>
+<p>Some exact costs not shown in the table:</p>
+<ol>
+<li>Exact total number of messages for secret inequalities is: 3*(parties + parties^2 + (bits+1) * (2*parties + parties*(parties-1))) + 2*parties + parties*(parties-1) </li>
+<li>Exact total number of messages for constant inequalities is: 2*(parties + parties^2 + (bits+1) * (2*parties + parties*(parties-1))) + 2*parties + parties*(parties-1) </li>
+<li>Exact total number of messages for equality checks: 2*(*(parties + parties^2 + (bits+1) * (2*parties + parties*(parties-1))) + 2*parties + parties*(parties-1)) + 2*parties + parties*(parties-1)</li>
+<li>Exact total number of messages for division is: bits * ( 5*(parties + parties^2 + (bits+1) * (2*parties + parties*(parties-1))) + 2*parties + parties*(parties-1) + 2*parties + parties*(parties-1) )</li>
+<li>Exact total number of messages for constant division is: 1 + 7*parties + 4*parties^2 + 8*(parties + parties^2 + (bits+1) * (2*parties + parties*(parties-1)))</li>
+</ol>
+<p>Dependenices:</p>
+<ol>
+<li>Multiplication has one message to synchronize beaver triplets and one open in sequence.</li>
+<li>inequality tests has 3 less than half primes in parallel, each has an open and as many multiplication in sequence as bits.</li>
+<li>constant inequality test has 2 less than half primes in parallel.</li>
+<li>equality and constant equality tests have 2 inequalities in parallel, sequenced with a multiplication.</li>
+<li>division has as many sequential iterations as bits, each iteration contains a constant inequality, secret inequality, and multiplication.</li>
+<li>constant division has one open sequenced with 4 parallel constant inequality checks and two multiplications.</li>
+<li>Secret XORs and ORs are equivalent to a single multiplication, constant XORs and ORs are free.</li>
+</ol>
+<h2>Information and Collaborators</h2><p>More information about this project, including collaborators and publications, can be found at <a href="https://multiparty.org/">multiparty.org</a>.</p></article>
     </section>
 
 
@@ -87,13 +194,13 @@ npm run-script gen-docs # shortcut</code></pre><h2>Running Tests</h2><p>The test
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.sharing_schemes.html">sharing_schemes</a></li><li><a href="jiff.utils.html">utils</a></li><li><a href="jiff-instance.html">jiff-instance</a></li><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="jiff-instance.protocols.html">protocols</a></li><li><a href="secret-share.html">secret-share</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.sharing_schemes.html">sharing_schemes</a></li><li><a href="jiff.utils.html">utils</a></li><li><a href="jiff-instance.html">jiff-instance</a></li><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="jiff-instance.protocols.html">protocols</a></li><li><a href="SecretShare.html">SecretShare</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jun 25 2018 12:19:40 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Nov 13 2018 23:06:10 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>
