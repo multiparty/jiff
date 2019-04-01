@@ -23,6 +23,7 @@ const function_map = {
   '==': 'eq',
   '!=': 'neq',
   '/': 'div',
+  //'abs': 'abs',
 }
 
 // For logging purposes
