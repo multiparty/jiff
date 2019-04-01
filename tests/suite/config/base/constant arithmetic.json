@@ -14,7 +14,7 @@
 
   "testConf": {
     "default": {
-      "count": 1,
+      "count": 10,
       "parallel": 50,
       "options": {
         "Zp": 15485867,
