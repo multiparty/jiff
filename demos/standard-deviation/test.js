@@ -33,7 +33,7 @@ function bigNumAccuracy(num, accuracy) {
 /**
  * Round any decimal points to accuracy.
 * */
-function bigNumRound(num, accuracy){
+function bigNumRound(num, accuracy) {
   var numFloat = parseFloat(num.toString());
   var numRounded = numFloat.toFixed(accuracy);
   return new BigNumber(numRounded);
