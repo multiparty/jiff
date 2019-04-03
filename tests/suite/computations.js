@@ -12,7 +12,7 @@ var Zp;
 // Flags success/failure
 var errors = [];
 
-const function_map = {
+var function_map = {
   '*': 'mult',
   '|': 'or_bit',
   '<': 'lt',
@@ -22,9 +22,9 @@ const function_map = {
   '>=': 'gteq',
   '==': 'eq',
   '!=': 'neq',
-  '/': 'div',
+  '/': 'div'
   //'abs': 'abs',
-}
+};
 
 // For logging purposes
 function myJoin(indices, values, sep) {
