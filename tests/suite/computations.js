@@ -22,8 +22,8 @@ var function_map = {
   '>=': 'gteq',
   '==': 'eq',
   '!=': 'neq',
-  '/': 'div'
-  //'abs': 'abs',
+  '/': 'div',
+  'abs': 'abs',
 };
 
 // For logging purposes
@@ -269,6 +269,9 @@ exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done)
     var op_name = 's' + function_map[test]
   } else {
     op_name = 'c' + function_map[test]
+  }
+  if (test === 'abs') {
+    op_name = 'abs';
   }
   var promise;
   if (function_map[test] == null || op_name === 'cmult' || op_name === 'cor_bit' || op_name === 'cxor_bit' || op_name === 'sdiv') {
