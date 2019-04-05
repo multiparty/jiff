@@ -1,8 +1,6 @@
 # JIFF
 
-[![Build Status](https://travis-ci.org/multiparty/jiff.svg?branch=master)](https://travis-ci.org/multiparty/jiff)
-
-Server- and client-side library for building JavaScript applications that have secure multi-party computation features. Parties running the server-side application can handle the relaying of shares between parties. Both client and server parties can act as input data contributors and as compute parties.
+JIFF is a JavaScript library for builing applications that rely on secure multi-party computation. JIFF is built to be highly flexible with a focus on usability, with the ability to be run in the browser, on mobile phones, or via node.js. JIFF is designed so that developers need not be familiar with MPC techniques or know the details of cryptographic protocols in order to build secure applications.
 
 ## Requirements
 
@@ -47,25 +45,14 @@ var instance = jiff.make_jiff("http://localhost:8080", "<computation_id>", parti
 ```
 The instance object provides methods for sharing, opening, and performing operations on shares.
 
-## Project Layout
-
-    ├─ demos/           Example of common jiff use-cases and functionality
-    ├─ docs/            JSDoc config and generated docs
-    ├─ lib/             Libraries for both client and server-side jiff instances
-    │  ├─ ext/          Extended functionality for use cases (e.g. negative numbers)
-    │  └─ server/       server-side specific helpers
-    ├─ test/            Unit testing for base Jiff, demos, and extensions
-    │  ├─ dev/          Limited tests for testing some features under development
-    │  ├─ live/         Template and setup for live coding with JIFF with nodejs's command line shell (REPL)
-    │  └─ suite/        Base Jiff and extension tests (See test/suite/README.md)
-
 ## Running Demos and Examples
 
 Run a sample server from one of the demos under `demos` in the following way:
 ```shell
-node demos/<demo-name>/server.js
+node index.js demos/<demo-name>/server
 ```
-The output from the example server will direct you to open `localhost:8080/demos/<demo-name>/client.html` in a browser (you must open an instance in a separate window/tab for every distinct party participating in the protocol).
+The output from the example server will direct you to open `localhost:8080/demos/<demo-name>/client.html` in a browser (you must open
+an instance in a separate window/tab for every distinct party participating in the protocol).
 You can then proceed with the protocol using the client interfaces.
 
 Note that you can run node.js parties that can also participate in the protocol by executing (e.g., a separate terminal for each party):
@@ -90,7 +77,7 @@ npm test
 
 Demos are accompanied by test cases. The following command can be used to run the demos servers and test cases:
 ```shell
-npm run-script test-demo -- demos/<demo-name>
+npm run-script test-demo -- demo/<demo-name>
 ```
 The command assumes that the server is located at demos/<demo-name>/server.js and the test cases are located at demos/<demo-name>/test.js
 See demos/run-test.sh for instructions for running test cases located in different directories or with different names.
@@ -158,6 +145,36 @@ Dependenices:
 7. Secret XORs and ORs are equivalent to a single multiplication, constant XORs and ORs are free.
 
 
+## How to Contribute
+### What do I need to know to help?
+If you are interested in making a code contribution to JIFF, the project is entirely written in JavaScript. If you would like to become more familiar with MPC protocols and the cryptographic tools underlying JIFF, there are a variety of resources to check out:
+
+* [A Pragmatic Introduction to Secure Multi-Pary Computation](https://securecomputation.org/)
+* [Example of a previous software deployment that uses JIFF](https://github.com/multiparty/web-mpc)
+* [JIFF Documentation](https://multiparty.org/jiff/docs/jsdoc/)
+
+Looking at the [/demos/](https://github.com/multiparty/jiff/tree/master/demos) folder is a good way to see how common, simple workflows can be implemented in JIFF.
+
+### How do I make a contribution?
+First, it's a good idea to look at the [issue tracker](https://github.com/multiparty/jiff/issues) to get some ideas, then:
+1. Find an issue that you are interested in addressing or a feature that you would like to add.
+2. Fork the repository associated with the issue to your local GitHub organization. This means that you will have a copy of the repository under your-GitHub-username/jiff.
+3. Clone the repository to your local machine using `git clone https://github.com/multiparty/jiff.git`
+4. Create a new branch for your fix using `git checkout -b branch-name-here`
+5. Make the appropriate changes for the issue you are trying to address or the feature that you want to add.
+6. Make sure to add appropriate tests to the test suite or the demo directory that you have worked on
+7. Use `git add insert-paths-of-changed-files-here` to add the file contents of the changed files
+8. Use `git commit -m "Insert a short message of the changes made here"` to store the contents of the commit with a descriptive message.
+9. Push the changes to the remote repository using `git push origin`
+10. Submit a pull request to the multiparty/jiff repository.
+11. Title the pull request with a short description of the changes made and the issue or bug number associated with your change. For example, you can title an issue like so "Added more log outputting to resolve #4352".
+12. In the description of the pull request, explain the changes that you made, any issues you think exist with the pull request you made, and any questions you have for the maintainer.
+13. Wait for the pull request to be reviewed by a maintainer.
+14. Make changes to the pull request if the reviewing maintainer recommends them.
+15. Celebrate your success after your pull request is merged!
+
+### Where can I go for help?
+If you have JIFF-specific questions or issues, you can contact info@multiparty.org
 
 ## Information and Collaborators
 
