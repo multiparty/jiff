@@ -1,6 +1,6 @@
 /**
  * Do not change this unless you have to.
- * This code parses input command line arguments, 
+ * This code parses input command line arguments,
  * and calls the appropriate initialization and MPC protocol from ./mpc.js
  */
 
@@ -23,9 +23,9 @@ if(party_id != null) party_id = parseInt(party_id, 10);
 
 // JIFF options
 var options = {party_count: party_count, party_id: party_id};
-options.onConnect = function(jiff_instance) {
+options.onConnect = function (jiff_instance) {
   var promise = mpc.compute(input);
-  promise.then(function(v) {
+  promise.then(function (v) {
     console.log(v);
     jiff_instance.disconnect();
   });
