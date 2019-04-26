@@ -152,6 +152,7 @@ If you are interested in making a code contribution to JIFF, the project is enti
 * [A Pragmatic Introduction to Secure Multi-Pary Computation](https://securecomputation.org/)
 * [Example of a previous software deployment that uses JIFF](https://github.com/multiparty/web-mpc)
 * [JIFF Documentation](https://multiparty.org/jiff/docs/jsdoc/)
+* [JIFF Presentation at DIMACS/MACS Workshop](https://www.youtube.com/watch?v=S-IkyOEgrfI)
 
 Looking at the [/demos/](https://github.com/multiparty/jiff/tree/master/demos) folder is a good way to see how common, simple workflows can be implemented in JIFF.
 
