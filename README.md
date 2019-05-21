@@ -146,36 +146,7 @@ Dependenices:
 
 
 ## How to Contribute
-### What do I need to know to help?
-If you are interested in making a code contribution to JIFF, the project is entirely written in JavaScript. If you would like to become more familiar with MPC protocols and the cryptographic tools underlying JIFF, there are a variety of resources to check out:
-
-* [A Pragmatic Introduction to Secure Multi-Pary Computation](https://securecomputation.org/)
-* [Example of a previous software deployment that uses JIFF](https://github.com/multiparty/web-mpc)
-* [JIFF Documentation](https://multiparty.org/jiff/docs/jsdoc/)
-* [JIFF Presentation at DIMACS/MACS Workshop](https://www.youtube.com/watch?v=S-IkyOEgrfI)
-
-Looking at the [/demos/](https://github.com/multiparty/jiff/tree/master/demos) folder is a good way to see how common, simple workflows can be implemented in JIFF.
-
-### How do I make a contribution?
-First, it's a good idea to look at the [issue tracker](https://github.com/multiparty/jiff/issues) to get some ideas, then:
-1. Find an issue that you are interested in addressing or a feature that you would like to add.
-2. Fork the repository associated with the issue to your local GitHub organization. This means that you will have a copy of the repository under your-GitHub-username/jiff.
-3. Clone the repository to your local machine using `git clone https://github.com/multiparty/jiff.git`
-4. Create a new branch for your fix using `git checkout -b branch-name-here`
-5. Make the appropriate changes for the issue you are trying to address or the feature that you want to add.
-6. Make sure to add appropriate tests to the test suite or the demo directory that you have worked on
-7. Use `git add insert-paths-of-changed-files-here` to add the file contents of the changed files
-8. Use `git commit -m "Insert a short message of the changes made here"` to store the contents of the commit with a descriptive message.
-9. Push the changes to the remote repository using `git push origin`
-10. Submit a pull request to the multiparty/jiff repository.
-11. Title the pull request with a short description of the changes made and the issue or bug number associated with your change. For example, you can title an issue like so "Added more log outputting to resolve #4352".
-12. In the description of the pull request, explain the changes that you made, any issues you think exist with the pull request you made, and any questions you have for the maintainer.
-13. Wait for the pull request to be reviewed by a maintainer.
-14. Make changes to the pull request if the reviewing maintainer recommends them.
-15. Celebrate your success after your pull request is merged!
-
-### Where can I go for help?
-If you have JIFF-specific questions or issues, you can contact info@multiparty.org
+Check out our contribution guidelines and resources @ [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Information and Collaborators
 
