@@ -13,17 +13,27 @@ var Zp;
 var errors = [];
 
 var function_map = {
-  '*': 'mult',
-  '|': 'or_bit',
-  '<': 'lt',
-  '^': 'xor_bit',
-  '<=': 'lteq',
-  '>': 'gt',
-  '>=': 'gteq',
-  '==': 'eq',
-  '!=': 'neq',
-  '/': 'div',
-  'abs': 'abs',
+  'constant': {
+    '<': 'clt',
+    '<=': 'clteq',
+    '>': 'cgt',
+    '>=': 'cgteq',
+    '==': 'ceq',
+    '!=': 'cneq',
+    '/': 'cdiv'
+  },
+  'secret': {
+    '*': 'smult',
+    '|': 'sor_bit',
+    '<': 'slt',
+    '^': 'sxor_bit',
+    '<=': 'slteq',
+    '>': 'sgt',
+    '>=': 'sgteq',
+    '==': 'seq',
+    '!=': 'sneq',
+    'abs': 'abs'
+  }
 };
 
 // For logging purposes
@@ -263,28 +273,16 @@ exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done)
   test = _test;
   inputs = _inputs;
   testParallel = _testParallel;
-
   Zp = jiff_instance.Zp;
-  if (inputs[0]['constant'] == null) {
-    var op_name = 's' + function_map[test]
-  } else {
-    op_name = 'c' + function_map[test]
-  }
-  if (test === 'abs') {
-    op_name = 'abs';
-  }
-  var promise;
-  if (function_map[test] == null || op_name === 'cmult' || op_name === 'cor_bit' || op_name === 'cxor_bit' || op_name === 'sdiv') {
-    promise = new Promise(function (resolve, reject) {
-      setTimeout(() => resolve('done!'), 1);
+
+  var isConstant = inputs[0]['constant'] == null ? 'secret' : 'constant';
+  if (function_map[isConstant][test] != null) {
+    var promise = jiff_instance.preprocessing(function_map[isConstant][test], inputs.length * (jiff_instance.party_count - 1), testParallel);
+    promise.then(function () {
+      jiff_instance.finish_preprocessing();
+      batchTest(jiff_instance, 0);
     });
   } else {
-    promise = jiff_instance.preprocessing(op_name, inputs.length * jiff_instance.party_count);
-  }
-
-  promise.then(function () {
-    jiff_instance.finish_preprocessing();
     batchTest(jiff_instance, 0);
-  });
-
+  }
 };
