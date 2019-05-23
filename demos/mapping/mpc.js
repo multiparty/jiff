@@ -114,8 +114,8 @@
         max = cmp.if_else(input[1], input[2]);
 
         // Convert inputs to vectors
-        var x = [];
-        var y = [];
+        var x = [];  // min input
+        var y = [];  // max input
         for (var i = 0; i < n; i++) {
             x[i] = min.ceq(d[i]).if_else(1, 0);
             y[i] = max.ceq(d[i]).if_else(1, 0);
@@ -136,12 +136,8 @@
         }
 
         // Decode output vectors back to scalar values
-        var x_mapped = jiff_instance.share(cd[0])[1].cadd(0);
-        var y_mapped = jiff_instance.share(cd[0])[1].cadd(0);
-        for (var i = 0; i < n; i++) {
-            x_mapped = output_x[i+n].if_else(cd[i], x_mapped);
-            y_mapped = output_y[i+n].if_else(cd[i], y_mapped);
-        }
+        var x_mapped = svector_cdot(output_x.splice(n), cd);
+        var y_mapped = svector_cdot(output_y.splice(n), cd);
 
         // Open the results
         Promise.all([jiff_instance.open(x_mapped), jiff_instance.open(y_mapped)]).then(function (results) {

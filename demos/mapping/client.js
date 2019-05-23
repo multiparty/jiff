@@ -58,7 +58,7 @@ function submit() {
 
     $('#button').attr('disabled', true);
     $('#output').append('<p>Starting...</p>');
-    console.log("Started at " + (+new Date()));
+    console.log("Started at " + + new Date());
 
     // eslint-disable-next-line no-undef
     var promise = mpc.compute(map, input, op);
