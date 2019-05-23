@@ -20,7 +20,8 @@ var function_map = {
     '>=': 'cgteq',
     '==': 'ceq',
     '!=': 'cneq',
-    '/': 'cdiv'
+    '/': 'cdiv',
+    'cdivfac': 'cdivfac'
   },
   'secret': {
     '*': 'smult',
@@ -276,7 +277,7 @@ exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done)
   Zp = jiff_instance.Zp;
 
   var isConstant = inputs[0]['constant'] == null ? 'secret' : 'constant';
-  if (function_map[isConstant][test] != null) {
+  if (function_map[isConstant][test] != null && jiff_instance.preprocessing_function_map[function_map[isConstant][test]] != null) {
     var promise = jiff_instance.preprocessing(function_map[isConstant][test], inputs.length * (jiff_instance.party_count - 1), testParallel);
     promise.then(function () {
       jiff_instance.finish_preprocessing();
