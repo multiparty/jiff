@@ -1,5 +1,7 @@
 # JIFF
 
+[![Build Status](https://travis-ci.org/multiparty/jiff.svg?branch=master)](https://travis-ci.org/multiparty/jiff)
+
 JIFF is a JavaScript library for builing applications that rely on secure multi-party computation. JIFF is built to be highly flexible with a focus on usability, with the ability to be run in the browser, on mobile phones, or via node.js. JIFF is designed so that developers need not be familiar with MPC techniques or know the details of cryptographic protocols in order to build secure applications.
 
 ## Requirements
@@ -45,11 +47,25 @@ var instance = jiff.make_jiff("http://localhost:8080", "<computation_id>", parti
 ```
 The instance object provides methods for sharing, opening, and performing operations on shares.
 
+## Project Layout
+
+    ├─ demos/           Example of common jiff use-cases and functionality
+    ├─ docs/            JSDoc config and generated docs
+    ├─ lib/             Libraries for both client and server-side jiff instances
+    │  ├─ ext/          Extended functionality for use cases (e.g. negative numbers)
+    │  └─ server/       server-side specific helpers
+    ├─ test/            Unit testing for base Jiff, demos, and extensions
+    │  ├─ dev/          Limited tests for testing some features under development
+    │  ├─ live/         Template and setup for live coding with JIFF with nodejs's command line shell (REPL)
+    │  └─ suite/        Base Jiff and extension tests (See test/suite/README.md)
+
+
 ## Running Demos and Examples
 
 Run a sample server from one of the demos under `demos` in the following way:
 ```shell
-node index.js demos/<demo-name>/server
+node index.js demos/<demo-name>/server  # alternative way 1
+node demos/<demo-name>/server.js  # alternative way 2
 ```
 The output from the example server will direct you to open `localhost:8080/demos/<demo-name>/client.html` in a browser (you must open
 an instance in a separate window/tab for every distinct party participating in the protocol).
@@ -77,7 +93,7 @@ npm test
 
 Demos are accompanied by test cases. The following command can be used to run the demos servers and test cases:
 ```shell
-npm run-script test-demo -- demo/<demo-name>
+npm run-script test-demo -- demos/<demo-name>
 ```
 The command assumes that the server is located at demos/<demo-name>/server.js and the test cases are located at demos/<demo-name>/test.js
 See demos/run-test.sh for instructions for running test cases located in different directories or with different names.
