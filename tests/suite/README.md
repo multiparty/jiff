@@ -90,8 +90,8 @@ the default computations file, and how it is customized inside /config/bigNumber
 To run a particular suite, you can use
 ```shell
 npm test # Run all suites in all NAMES sequentially
-npm test "TEST\_NAME" # Run all suites in given NAME sequentially
-npm test "TEST\_NAME" "SUITE\_NAME" # Run particular suite and NAME
+npm test -- "TEST\_NAME" # Run all suites in given NAME sequentially
+npm test -- "TEST\_NAME" "SUITE\_NAME" # Run particular suite and NAME
 ```
 
 Alternatively:
