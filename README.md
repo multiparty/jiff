@@ -12,10 +12,10 @@ Running the server requires [Node](https://nodejs.org/en/) and [npm](https://www
 
 Make sure to use the `sockets.io.js` script file that **matches exactly** the version **used in the server**.
 
-If the client code is to be served by the server, use:  
+If the client code is to be served by the server, use:
 ```html
 <script src="/socket.io/socket.io.js"></script>
-```  
+```
 If the client code is served independently, fetch the matching version of socket.io.js from a CDN, or use the file found in `<server_dir>/node_modules/socket.io-client/dist`.
 
 Additionally, The [libsodium-wrappers](https://www.npmjs.com/package/libsodium-wrappers) web-assembly library is used for fast crypto (encryption). You must include the appropriate sodium wrapper js file, if the client code is to be server by the server, use:
@@ -45,6 +45,18 @@ var instance = jiff.make_jiff("http://localhost:8080", "<computation_id>", parti
 ```
 The instance object provides methods for sharing, opening, and performing operations on shares.
 
+## Project Layout
+
+    ├─ demos/           Example of common jiff use-cases and functionality
+    ├─ docs/            JSDoc config and generated docs
+    ├─ lib/             Libraries for both client and server-side jiff instances
+    │  ├─ ext/          Extended functionality for use cases (e.g. negative numbers)
+    │  └─ server/       server-side specific helpers
+    ├─ test/            Unit testing for base Jiff, demos, and extensions
+    │  ├─ dev/          Limited tests for testing some features under development
+    │  ├─ live/         Template and setup for live coding with JIFF with nodejs's command line shell (REPL)
+    │  └─ suite/        Base Jiff and extension tests (See test/suite/README.md)
+
 ## Running Demos and Examples
 
 Run a sample server from one of the demos under `demos` in the following way:
@@ -52,7 +64,7 @@ Run a sample server from one of the demos under `demos` in the following way:
 node demos/<demo-name>/server.js
 ```
 The output from the example server will direct you to open `localhost:8080/demos/<demo-name>/client.html` in a browser (you must open an instance in a separate window/tab for every distinct party participating in the protocol).
-You can then proceed with the protocol using the client interfaces. 
+You can then proceed with the protocol using the client interfaces.
 
 Note that you can run node.js parties that can also participate in the protocol by executing (e.g., a separate terminal for each party):
 ```shell
@@ -61,7 +73,7 @@ node demos/<demo-name>/party.js <input-value>
 
 ## Documentation
 
-The latest documentation can be viewed at on the [project page](https://multiparty.org/jiff/). The documentation can be generated using [JSDoc](http://usejsdoc.org/); you will find these docs in `docs/jsdocs/`: 
+The latest documentation can be viewed at on the [project page](https://multiparty.org/jiff/). The documentation can be generated using [JSDoc](http://usejsdoc.org/); you will find these docs in `docs/jsdocs/`:
 ```shell
 ./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json
 npm run-script gen-docs # shortcut
@@ -76,7 +88,7 @@ npm test
 
 Demos are accompanied by test cases. The following command can be used to run the demos servers and test cases:
 ```shell
-npm run-script test-demo -- demo/<demo-name>
+npm run-script test-demo -- demos/<demo-name>
 ```
 The command assumes that the server is located at demos/<demo-name>/server.js and the test cases are located at demos/<demo-name>/test.js
 See demos/run-test.sh for instructions for running test cases located in different directories or with different names.
@@ -128,8 +140,8 @@ Below is a table of the current costs of operations in the *base* jiff with no e
 
 
 Some exact costs not shown in the table:
-1. Exact total number of messages for secret inequalities is: 3\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1))) + 2\*parties + parties\*(parties-1) 
-2. Exact total number of messages for constant inequalities is: 2\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1))) + 2\*parties + parties\*(parties-1) 
+1. Exact total number of messages for secret inequalities is: 3\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1))) + 2\*parties + parties\*(parties-1)
+2. Exact total number of messages for constant inequalities is: 2\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1))) + 2\*parties + parties\*(parties-1)
 3. Exact total number of messages for equality checks: 2\*(\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1))) + 2\*parties + parties\*(parties-1)) + 2\*parties + parties\*(parties-1)
 4. Exact total number of messages for division is: bits \* ( 5\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1))) + 2\*parties + parties\*(parties-1) + 2\*parties + parties\*(parties-1) )
 5. Exact total number of messages for constant division is: 1 + 7\*parties + 4\*parties^2 + 8\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1)))
