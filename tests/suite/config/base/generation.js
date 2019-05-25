@@ -167,7 +167,7 @@ exports.generateConstantArithmeticInputs = function (test, count, options) {
   return inputs;
 };
 
-// Constant Comparison inputs: two inputs for the first two parties only
+// Comparison inputs: two inputs for the first two parties only
 // if using random numbers and large Zp, inputs will be very unlikely to be equal
 // we must make it likely for the inputs to be equal manually for == and != checks
 exports.generateComparisonInputs = function (test, count, options) {

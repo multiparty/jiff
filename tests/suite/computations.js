@@ -279,8 +279,9 @@ exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done)
   Zp = jiff_instance.Zp;
 
   var isConstant = inputs[0]['constant'] == null ? 'secret' : 'constant';
-  if (function_map[isConstant][test] != null && jiff_instance.has_preprocessing(test) != null) {
-    var promise = jiff_instance.preprocessing(function_map[isConstant][test], inputs.length * (jiff_instance.party_count - 1), testParallel);
+  var operation = function_map[isConstant][test];
+  if (operation != null && jiff_instance.has_preprocessing(operation)) {
+    var promise = jiff_instance.preprocessing(operation, inputs.length * (Object.keys(inputs[0]).length - 1), testParallel);
     promise.then(function () {
       jiff_instance.finish_preprocessing();
       batchTest(jiff_instance, 0);
