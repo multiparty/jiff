@@ -1,4 +1,4 @@
-# Merge Sort Demo
+# Shell Sort Demo
 
 Description and guide for a randomized shell sort on element-wise summation of input lists with secure MPC.
 
@@ -13,7 +13,7 @@ via a randomized shell sort. See shellsortprotocol.pdf for a full description of
     node demos/array-shell-sort/server.js
     ```
 
-2. Either open browser based parties by going to *http://localhost:8080/demos/array-merge-sort/client.html* in the browser, or a node.js party by running 
+2. Either open browser based parties by going to *http://localhost:8080/demos/array-shell-sort/client.html* in the browser, or a node.js party by running 
     ```shell
     node demos/array-shell-sort/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
     ``` 

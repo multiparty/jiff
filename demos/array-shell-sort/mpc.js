@@ -145,8 +145,6 @@
       jiff_instance = saved_instance;
     }
     var deferred = $.Deferred();
-    var promise = deferred.promise();
-
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
 
@@ -168,12 +166,8 @@
       var received = JSON.parse(message);
       deferred.resolve(received);
       jiff_instance.remove_listener('preprocess');
-    });
-
-    // Once the random reference string is received, the computation may continue.
-    promise.then(function (v) {
-      offsets = v[0];
-      permutationsByOffset = v[1];
+      offsets = received[0];
+      permutationsByOffset = received[1];
       // Share the arrays
       jiff_instance.share_array(input, input.length).then(function (shares) {
         // sum all shared input arrays element wise
