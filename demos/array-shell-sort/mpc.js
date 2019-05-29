@@ -144,7 +144,7 @@
     if (jiff_instance == null) {
       jiff_instance = saved_instance;
     }
-    var deferred = $.Deferred();
+
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
 
@@ -153,21 +153,24 @@
     var permutationsByOffset = [];
 
     // Party 1 sends message with offsets and permutation values to all parties.
-    if (jiff_instance.id===1) {
+    if (jiff_instance.id === 1) {
       var n = input.length;
+
       offsets = generateOffsets(n);
       permutationsByOffset = permutations(offsets);
       var toSend = [offsets, permutationsByOffset];
+
       jiff_instance.emit('preprocess', null, JSON.stringify(toSend));
     }
 
     // All parties listen for the message with offsets and permutation values, and store the information in it.
     jiff_instance.listen('preprocess', function (sender_id, message) {
-      var received = JSON.parse(message);
-      deferred.resolve(received);
       jiff_instance.remove_listener('preprocess');
+
+      var received = JSON.parse(message);
       offsets = received[0];
       permutationsByOffset = received[1];
+
       // Share the arrays
       jiff_instance.share_array(input, input.length).then(function (shares) {
         // sum all shared input arrays element wise
@@ -177,6 +180,7 @@
             array[i] = array[i].sadd(shares[p][i]);
           }
         }
+
         // Sort new array
         randomizedShellSort(array, offsets, permutationsByOffset);
 
@@ -191,6 +195,7 @@
         });
       });
     });
+
     return final_promise;
   };
-}((typeof exports == 'undefined' ? this.mpc = {} : exports), typeof exports != 'undefined'));
+}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
