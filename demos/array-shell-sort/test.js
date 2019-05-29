@@ -6,8 +6,8 @@ var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
 var party_count = 3;
-var parallelismDegree = 1; // Note: as currently instantiated, testing will fail for parallelism due to event listeners.
-var n = 5;
+var parallelismDegree = 3;
+var n = 8;
 
 // Parameters specific to this demo
 var maxElement = 7;
@@ -30,7 +30,7 @@ function generateInputs(party_count) {
   }
 
   for (var t = 0; t < n; t++) {
-    var length = Math.floor(Math.random() * (maxLength - 2)) + 3;
+    var length = Math.floor(Math.random() * (maxLength - 1)) + 2;
     for (var p = 1; p <= party_count; p++) {
       var arr = [];
       while (arr.length < length) {

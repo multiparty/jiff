@@ -23,26 +23,10 @@
   /**
    * The MPC computation
    */
-
   var C = 4; // number of region compare-exchange repetitions
+  var count = {}; // counts how many test_cases, used to generate unique IDs.
 
-  /***********************************Content-dependent********************************************/
-
-  // Check if order of values in array at indexes i, j is correct using MPC, if not, swap.
-  function compareExchange(arr, i, j) {
-    var a = arr[i];
-    var b = arr[j];
-    var cmp = a.slt(b);
-    if (i<j) {
-      arr[i] = cmp.if_else(a,b);
-      arr[j] = cmp.if_else(b,a);
-    } else {
-      arr[i] = cmp.if_else(b,a);
-      arr[j] = cmp.if_else(a,b);
-    }
-  }
-
-  /**************************************Content-agnostic functions**************************************/
+  /*******************Pre-generation of randomness in the clean by party 1 for performance*********/
   // Swap elements at location i and j in array
   function exchange(arr, i, j) {
     var temp = arr[i];
@@ -96,6 +80,22 @@
     return offsets;
   }
 
+  /***********************************Content-dependent********************************************/
+  // Check if order of values in array at indexes i, j is correct using MPC, if not, swap.
+  function compareExchange(arr, i, j) {
+    var a = arr[i];
+    var b = arr[j];
+    var cmp = a.slt(b);
+    if (i < j) {
+      arr[i] = cmp.if_else(a, b);
+      arr[j] = cmp.if_else(b, a);
+    } else {
+      arr[i] = cmp.if_else(b, a);
+      arr[j] = cmp.if_else(a, b);
+    }
+  }
+
+  /**************************************Content-agnostic functions**************************************/
   // compare exchange two regions of length offset each
   function compareRegions(a, s, t, offset, mates) {
     for (var count = 0; count < C; count++) { // Do C amount of compare-exchanges
@@ -145,6 +145,15 @@
       jiff_instance = saved_instance;
     }
 
+    if (count[jiff_instance.id] == null) {
+      count[jiff_instance.id] = 1;
+    }
+
+    // determine which test case is this (which computation)
+    var this_count = count[jiff_instance.id];
+    count[jiff_instance.id]++;
+
+    // This will resolve to the final result
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
 
@@ -160,12 +169,13 @@
       permutationsByOffset = permutations(offsets);
       var toSend = [offsets, permutationsByOffset];
 
-      jiff_instance.emit('preprocess', null, JSON.stringify(toSend));
+      jiff_instance.emit('preprocess' + this_count, null, JSON.stringify(toSend));
     }
 
     // All parties listen for the message with offsets and permutation values, and store the information in it.
-    jiff_instance.listen('preprocess', function (sender_id, message) {
-      jiff_instance.remove_listener('preprocess');
+    jiff_instance.listen('preprocess' + this_count, function (sender_id, message) {
+      jiff_instance.remove_listener('preprocess' + this_count);
+      jiff_instance.op_id_seed = this_count + ':';
 
       var received = JSON.parse(message);
       offsets = received[0];
@@ -185,12 +195,8 @@
         randomizedShellSort(array, offsets, permutationsByOffset);
 
         // Open the array
-        var allPromises = [];
-        for (var k = 0; k < array.length; k++) {
-          allPromises.push(jiff_instance.open(array[k]));
-        }
-
-        Promise.all(allPromises).then(function (results) {
+        var promise = jiff_instance.open_array(array);
+        promise.then(function (results) {
           final_deferred.resolve(results);
         });
       });
