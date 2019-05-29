@@ -56,9 +56,9 @@
 
       i++;
       if (i < 3) {
-        jiff_instance.end_barrier(next);
+        jiff_instance.end_barrier().then(next);
       } else {
-        jiff_instance.end_barrier(function () {
+        jiff_instance.end_barrier().then(function () {
           var promise = jiff_instance.open(shares[1]);
           promise.then(console.log).then(jiff_instance.disconnect);
           promise.then(final_deferred.resolve);

@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/multiparty/jiff.svg?branch=master)](https://travis-ci.org/multiparty/jiff)
 
-Server- and client-side library for building JavaScript applications that have secure multi-party computation features. Parties running the server-side application can handle the relaying of shares between parties. Both client and server parties can act as input data contributors and as compute parties.
+JIFF is a JavaScript library for builing applications that rely on secure multi-party computation. JIFF is built to be highly flexible with a focus on usability, with the ability to be run in the browser, on mobile phones, or via node.js. JIFF is designed so that developers need not be familiar with MPC techniques or know the details of cryptographic protocols in order to build secure applications.
 
 ## Requirements
 
@@ -59,13 +59,16 @@ The instance object provides methods for sharing, opening, and performing operat
     │  ├─ live/         Template and setup for live coding with JIFF with nodejs's command line shell (REPL)
     │  └─ suite/        Base Jiff and extension tests (See test/suite/README.md)
 
+
 ## Running Demos and Examples
 
 Run a sample server from one of the demos under `demos` in the following way:
 ```shell
-node demos/<demo-name>/server.js
+node index.js demos/<demo-name>/server  # alternative way 1
+node demos/<demo-name>/server.js  # alternative way 2
 ```
-The output from the example server will direct you to open `localhost:8080/demos/<demo-name>/client.html` in a browser (you must open an instance in a separate window/tab for every distinct party participating in the protocol).
+The output from the example server will direct you to open `localhost:8080/demos/<demo-name>/client.html` in a browser (you must open
+an instance in a separate window/tab for every distinct party participating in the protocol).
 You can then proceed with the protocol using the client interfaces.
 
 Note that you can run node.js parties that can also participate in the protocol by executing (e.g., a separate terminal for each party):
@@ -158,6 +161,8 @@ Dependenices:
 7. Secret XORs and ORs are equivalent to a single multiplication, constant XORs and ORs are free.
 
 
+## How to Contribute
+Check out our contribution guidelines and resources @ [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Information and Collaborators
 

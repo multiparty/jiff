@@ -73,7 +73,7 @@
     //    object: stored object.
     var list = {head: null, tail: null};
     list.add = function (obj) {
-      var node = {object: obj, next: null};
+      var node = { object: obj, next: null, previous: null };
       if (list.head == null) {
         list.head = node;
         list.tail = node;
@@ -87,18 +87,26 @@
     list.remove = function (ptr) {
       var prev = ptr.previous;
       var next = ptr.next;
-      if (prev == null) {
+
+      if (prev == null &amp;&amp; list.head !== ptr) {
+        return;
+      } else if (next == null &amp;&amp; list.tail !== ptr) {
+        return;
+      }
+
+      if (prev == null) { // ptr is head (or both head and tail)
         list.head = next;
         if (list.head != null) {
           list.head.previous = null;
         } else {
           list.tail = null;
         }
-      } else {
+      } else if (next == null) { // ptr is tail (and not head)
+        list.tail = prev;
+        prev.next = null;
+      } else { // ptr is inside
         prev.next = next;
-        if (next != null) {
-          next.previous = prev;
-        }
+        next.previous = prev;
       }
     };
     return list;
@@ -110,45 +118,36 @@
    * @param {number/string} message - the message to encrypt.
    * @param {Uint8Array} encryption_public_key - ascii-armored public key to encrypt with.
    * @param {Uint8Array} signing_private_key - the private key of the encrypting party to sign with.
-   * @param {string} operation_type - the operation for which this encryption is performed, one of the following: 'share', 'open', 'triplet', 'number'
    * @returns {object} the signed cipher, includes two properties: 'cipher' and 'nonce'.
    */
-  function encrypt_and_sign(message, encryption_public_key, signing_private_key, operation_type) {
-    if (operation_type === 'share' || operation_type === 'open') {
-      message = message.toString(10);
-    }
-
+  function encrypt_and_sign(jiff, message, encryption_public_key, signing_private_key) {
     // eslint-disable-next-line no-undef
     var nonce = sodium.randombytes_buf(sodium.crypto_box_NONCEBYTES);
     // eslint-disable-next-line no-undef
     var cipher = sodium.crypto_box_easy(message, nonce, encryption_public_key, signing_private_key);
 
-    return {nonce: '[' + nonce.toString() + ']', cipher: '[' + cipher.toString() + ']'};
+    var result = { nonce: '[' + nonce.toString() + ']', cipher: '[' + cipher.toString() + ']' };
+    return result;
   }
 
   /**
-   * Decrypts and checks the signature of the given ciphertext.
+   * Decrypts and checks the signature of the given cipher text.
    * @memberof jiff.utils
-   * @param {object} cipher_text - the ciphertext to decrypt, includes two properties: 'cipher' and 'nonce'.
+   * @param {object} cipher_text - the cipher text to decrypt, includes two properties: 'cipher' and 'nonce'.
    * @param {Uint8Array} decryption_secret_key - the secret key to decrypt with.
    * @param {Uint8Array} signing_public_key - ascii-armored public key to verify against signature.
-   * @param {string} operation_type - the operation for which this decryption is performed, one of the following: 'share', 'open', 'triplet', 'number'
    * @returns {number/string} the decrypted message if the signature was correct, the decrypted message type should
    *                          the type of operation, such that the returned value has the appropriate type and does
    *                          not need any type modifications.
    * @throws error if signature or nonce was forged/incorrect.
    */
-  function decrypt_and_sign(cipher_text, decryption_secret_key, signing_public_key, operation_type) {
+  function decrypt_and_sign(jiff, cipher_text, decryption_secret_key, signing_public_key) {
     var nonce = new Uint8Array(JSON.parse(cipher_text.nonce));
     cipher_text = new Uint8Array(JSON.parse(cipher_text.cipher));
 
     try {
       // eslint-disable-next-line no-undef
-      var decryption = sodium.crypto_box_open_easy(cipher_text, nonce, signing_public_key, decryption_secret_key, 'text');
-      if (operation_type === 'share' || operation_type === 'open') {
-        return parseInt(decryption, 10);
-      }
-      return decryption;
+      return sodium.crypto_box_open_easy(cipher_text, nonce, signing_public_key, decryption_secret_key, 'text');
     } catch (_) {
       throw new Error('Bad signature or Bad nonce: Cipher: ' + cipher_text + '.  DecSKey: ' + decryption_secret_key + '.  SignPKey: ' + signing_public_key);
     }
@@ -234,8 +233,10 @@
         }
 
         // send encrypted and signed shares_id[p_id] to party p_id
-        var cipher_share = jiff.hooks.encryptSign(shares[p_id], jiff.keymap[p_id], jiff.secret_key, 'share');
-        var msg = {party_id: p_id, share: cipher_share, op_id: share_id};
+        var msg = { party_id: p_id, share: shares[p_id], op_id: share_id };
+        msg = jiff.execute_array_hooks('beforeOperation', [jiff, 'share', msg], 2);
+
+        msg['share'] = jiff.hooks.encryptSign(jiff, msg['share'].toString(10), jiff.keymap[msg['party_id']], jiff.secret_key);
         jiff.socket.safe_emit('share', JSON.stringify(msg));
       }
     }
@@ -259,10 +260,10 @@
         // check if a deferred is set up (maybe the message was previously received)
         if (jiff.deferreds[share_id][p_id] == null) {
           // not ready, setup a deferred
-          jiff.deferreds[share_id][p_id] = $.Deferred();
+          jiff.deferreds[share_id][p_id] = new Deferred();
         }
 
-        var promise = jiff.deferreds[share_id][p_id].promise();
+        var promise = jiff.deferreds[share_id][p_id].promise;
 
         // destroy deferred when done
         (function (promise, p_id) { // p_id is modified in a for loop, must do this to avoid scoping issues.
@@ -333,16 +334,17 @@
    * Store the received share and resolves the corresponding
    * deferred if needed.
    * @param {jiff-instance} jiff - the jiff instance.
-   * @param {number} sender_id - the id of the sender.
-   * @param {string} share - the encrypted share, unless sender
-   *                         is the same as receiver, then it is
-   *                         an unencrypted number.
-   * @param {number} op_id - the id of the share operation.
+   * @param {object} json_msg - the parsed json message as received.
    *
    */
-  function receive_share(jiff, sender_id, share, op_id) {
+  function receive_share(jiff, json_msg) {
     // Decrypt share
-    share = jiff.hooks.decryptSign(share, jiff.secret_key, jiff.keymap[sender_id], 'share');
+    json_msg['share'] = jiff.hooks.decryptSign(jiff, json_msg['share'], jiff.secret_key, jiff.keymap[json_msg['party_id']]);
+    json_msg = jiff.execute_array_hooks('afterOperation', [jiff, 'share', json_msg], 2);
+
+    var sender_id = json_msg['party_id'];
+    var op_id = json_msg['op_id'];
+    var share = json_msg['share'];
 
     // Call hook
     share = jiff.execute_array_hooks('receiveShare', [jiff, sender_id, share], 2);
@@ -353,7 +355,7 @@
     }
     if (jiff.deferreds[op_id][sender_id] == null) {
       // Share is received before deferred was setup, store it.
-      jiff.deferreds[op_id][sender_id] = $.Deferred();
+      jiff.deferreds[op_id][sender_id] = new Deferred();
     }
 
     // Deferred is already setup, resolve it.
@@ -437,8 +439,8 @@
     // Party is a receiver
     if (parties.indexOf(jiff.id) > -1) {
       var shares = []; // this will store received shares
-      var final_deferred = $.Deferred(); // will be resolved when the final value is reconstructed
-      var final_promise = final_deferred.promise();
+      var final_deferred = new Deferred(); // will be resolved when the final value is reconstructed
+      var final_promise = final_deferred.promise;
       for (i = 0; i &lt; share.holders.length; i++) {
         var p_id = share.holders[i];
 
@@ -447,11 +449,11 @@
           jiff.deferreds[op_ids[jiff.id]] = {};
         }
         if (jiff.deferreds[op_ids[jiff.id]][p_id] == null) {
-          jiff.deferreds[op_ids[jiff.id]][p_id] = $.Deferred();
+          jiff.deferreds[op_ids[jiff.id]][p_id] = new Deferred();
         }
 
         // Clean up deferred when fulfilled
-        var promise = jiff.deferreds[op_ids[jiff.id]][p_id].promise();
+        var promise = jiff.deferreds[op_ids[jiff.id]][p_id].promise;
 
         // destroy deferred when done
         (function (promise, p_id) { // p_id is modified in a for loop, must do this to avoid scoping issues.
@@ -492,7 +494,7 @@
   /**
    * Share the given share to all the parties in the jiff instance.
    * @param {jiff-instance} jiff - the jiff instance.
-   * @param {number} share - the share.
+   * @param {SecretShare} share - the share.
    * @param {Array} parties - the parties to broadcast the share to.
    * @param {map} op_ids - a map from party id to operation id, this allows different messages
    *                       to have different operation id, in case operation id contains
@@ -503,13 +505,15 @@
     for (var index = 0; index &lt; parties.length; index++) {
       var i = parties[index]; // Party id
       if (i === jiff.id) {
-        receive_open(jiff, i, share.value, op_ids[i], share.Zp);
+        receive_open(jiff, { party_id: i, share: share.value, op_id: op_ids[i], Zp: share.Zp });
         continue;
       }
 
       // encrypt, sign and send
-      var cipher_share = jiff.hooks.encryptSign(share.value, jiff.keymap[i], jiff.secret_key, 'open');
-      var msg = {party_id: i, share: cipher_share, op_id: op_ids[i], Zp: share.Zp};
+      var msg = {party_id: i, share: share.value, op_id: op_ids[i], Zp: share.Zp};
+      msg = jiff.execute_array_hooks('beforeOperation', [jiff, 'open', msg], 2);
+
+      msg['share'] = jiff.hooks.encryptSign(jiff, msg['share'].toString(), jiff.keymap[msg['party_id']], jiff.secret_key);
       jiff.socket.safe_emit('open', JSON.stringify(msg));
     }
   }
@@ -517,18 +521,20 @@
   /**
    * Resolves the deferred corresponding to operation_id and sender_id.
    * @param {jiff-instance} jiff - the jiff instance.
-   * @param {number} sender_id - the id of the sender.
-   * @param {string} share - the encrypted share, unless sender
-   *                         is the same as receiver, then it is
-   *                         an unencrypted number..
-   * @param {number} op_id - the id of the share operation.
-   * @param {number} Zp - the mod.
+   * @param {object} json_msg - the json message as received with the open event.
+   *
    */
-  function receive_open(jiff, sender_id, share, op_id, Zp) {
+  function receive_open(jiff, json_msg) {
     // Decrypt share
-    if (sender_id !== jiff.id) {
-      share = jiff.hooks.decryptSign(share, jiff.secret_key, jiff.keymap[sender_id], 'open');
+    if (json_msg['party_id'] !== jiff.id) {
+      json_msg['share'] = jiff.hooks.decryptSign(jiff, json_msg['share'], jiff.secret_key, jiff.keymap[json_msg['party_id']]);
+      json_msg = jiff.execute_array_hooks('afterOperation', [jiff, 'open', json_msg], 2);
     }
+
+    var sender_id = json_msg['party_id'];
+    var op_id = json_msg['op_id'];
+    var share = json_msg['share'];
+    var Zp = json_msg['Zp'];
 
     // call hook
     share = jiff.execute_array_hooks('receiveOpen', [jiff, sender_id, share, Zp], 2);
@@ -538,7 +544,7 @@
       jiff.deferreds[op_id] = {};
     }
     if (jiff.deferreds[op_id][sender_id] == null) {
-      jiff.deferreds[op_id][sender_id] = $.Deferred();
+      jiff.deferreds[op_id][sender_id] = new Deferred();
     }
 
     jiff.deferreds[op_id][sender_id].resolve({value: share, sender_id: sender_id, Zp: Zp});
@@ -617,35 +623,42 @@
     }
 
     // Send a request to the server.
-    var msg = JSON.stringify({triplet_id: triplet_id, receivers: receivers_list, threshold: threshold, Zp: Zp});
+    var msg = { triplet_id: triplet_id, receivers: receivers_list, threshold: threshold, Zp: Zp };
+    msg = jiff.execute_array_hooks('beforeOperation', [jiff, 'triplet', msg], 2);
+    msg = JSON.stringify(msg);
 
     // Setup deferred to handle receiving the triplets later.
-    var a_deferred = $.Deferred();
-    var b_deferred = $.Deferred();
-    var c_deferred = $.Deferred();
+    var a_deferred = new Deferred();
+    var b_deferred = new Deferred();
+    var c_deferred = new Deferred();
     jiff.deferreds[triplet_id] = {a: a_deferred, b: b_deferred, c: c_deferred};
 
     // send a request to the server.
     if (jiff.id === 's1') {
-      jiff.triplets_socket.safe_emit('triplet', msg);
+      jiff.socket.safe_emit('triplet', msg);
     } else {
-      jiff.triplets_socket.safe_emit('triplet', jiff.hooks.encryptSign(msg, jiff.keymap['s1'], jiff.secret_key, 'triplet'));
+      var cipher = jiff.hooks.encryptSign(jiff, msg, jiff.keymap['s1'], jiff.secret_key);
+      jiff.socket.safe_emit('triplet', JSON.stringify(cipher));
     }
 
-    var a_share = jiff.secret_share(jiff, false, a_deferred.promise(), undefined, receivers_list, threshold, Zp, triplet_id + ':a');
-    var b_share = jiff.secret_share(jiff, false, b_deferred.promise(), undefined, receivers_list, threshold, Zp, triplet_id + ':b');
-    var c_share = jiff.secret_share(jiff, false, c_deferred.promise(), undefined, receivers_list, threshold, Zp, triplet_id + ':c');
+    var a_share = jiff.secret_share(jiff, false, a_deferred.promise, undefined, receivers_list, threshold, Zp, triplet_id + ':a');
+    var b_share = jiff.secret_share(jiff, false, b_deferred.promise, undefined, receivers_list, threshold, Zp, triplet_id + ':b');
+    var c_share = jiff.secret_share(jiff, false, c_deferred.promise, undefined, receivers_list, threshold, Zp, triplet_id + ':c');
     return [a_share, b_share, c_share];
   }
 
   /**
    * Store the received beaver triplet and resolves the corresponding deferred.
    * @param {jiff-instance} jiff - the jiff instance.
-   * @param {number} triplet_id - the id of the triplet.
-   * @param {object} triplet - the triplet (on the form: { a: share_a, b: share_b, c: share_c }).
+   * @param {object} json_msg - the parsed json message as received by the triplet event.
    *
    */
-  function receive_triplet(jiff, triplet_id, triplet) {
+  function receive_triplet(jiff, json_msg) {
+    json_msg = jiff.execute_array_hooks('afterOperation', [jiff, 'triplet', json_msg], 2);
+
+    var triplet = json_msg['triplet'];
+    var triplet_id = json_msg['triplet_id'];
+
     if (jiff.deferreds[triplet_id] == null) {
       return;
     }
@@ -750,21 +763,24 @@
 
     var msg = {number_id: number_id, receivers: receivers_list, threshold: threshold, Zp: Zp};
     msg = Object.assign(msg, options);
+
+    msg = jiff.execute_array_hooks('beforeOperation', [jiff, 'number', msg], 2);
     msg = JSON.stringify(msg);
 
     // Setup deferreds to handle receiving the triplets later.
     var shares = [];
     for (i = 0; i &lt; options.count; i++) {
-      var deferred = $.Deferred();
+      var deferred = new Deferred();
       jiff.deferreds[number_id + ':' + i] = deferred;
-      shares[i] = jiff.secret_share(jiff, false, deferred.promise(), undefined, receivers_list, threshold, Zp, number_id + ':' + i);
+      shares[i] = jiff.secret_share(jiff, false, deferred.promise, undefined, receivers_list, threshold, Zp, number_id + ':' + i);
     }
 
     // Send a request to the server.
     if (jiff.id === 's1') {
-      jiff.numbers_socket.safe_emit('number', msg);
+      jiff.socket.safe_emit('number', msg);
     } else {
-      jiff.numbers_socket.safe_emit('number', jiff.hooks.encryptSign(msg, jiff.keymap['s1'], jiff.secret_key, 'number'));
+      var cipher = jiff.hooks.encryptSign(jiff, msg, jiff.keymap['s1'], jiff.secret_key);
+      jiff.socket.safe_emit('number', JSON.stringify(cipher));
     }
 
     return shares;
@@ -773,9 +789,12 @@
   /**
    * Store the received share of a previously requested number from the server.
    * @param {jiff-instance} jiff - the jiff instance.
-   * @param {Array&lt;{"number": {value}, "number_id": {string}}>} numbers - an array of number values and ids
+   * @param {object} json_msg - the parsed json message as received by the number event.
    */
-  function receive_server_share_number(jiff, numbers) {
+  function receive_server_share_number(jiff, json_msg) {
+    json_msg = jiff.execute_array_hooks('afterOperation', [jiff, 'number', json_msg], 2);
+    var numbers = json_msg['numbers'];
+
     if (jiff.deferreds[numbers[0]['number_id']] == null) {
       return;
     }
@@ -854,8 +873,8 @@
     }
 
     // wrap around result of share_array
-    var share_array_deferred = $.Deferred();
-    var share_array_promise = share_array_deferred.promise();
+    var share_array_deferred = new Deferred();
+    var share_array_promise = share_array_deferred.promise;
 
     // figure out lengths by having each party emit their length publicly
     if (lengths == null) {
@@ -1009,8 +1028,8 @@
     }
 
     // wrap around result of share_array
-    var lengths_deferred = $.Deferred();
-    var lengths_promise = lengths_deferred.promise();
+    var lengths_deferred = new Deferred();
+    var lengths_promise = lengths_deferred.promise;
 
     // figure out lengths by having each party emit their length publicly
     if (lengths == null) {
@@ -1052,8 +1071,8 @@
     }
 
     // Final results
-    var share_array_deferred = $.Deferred();
-    var share_array_promise = share_array_deferred.promise();
+    var share_array_deferred = new Deferred();
+    var share_array_promise = share_array_deferred.promise;
 
     // lengths are now set, start sharing
     lengths_promise.then(function (lengths) {
@@ -1198,15 +1217,21 @@
    * If a custom listener was setup to listen to the tag, the message is passed to the listener.
    * Otherwise, the message is stored until such a listener is provided.
    * @param {jiff-instance} jiff - the jiff instance.
-   * @param {string} tag - the tag attached to the message.
-   * @param {number} sender_id - the id of the sender.
-   * @param {string} message - the custom message, may be encrypted.
-   * @param {boolean} decrypt - if true, then the message needs to be decrypted first.
+   * @param {object} json_msg - the parsed json message as received by the custom event.
+   *
    */
-  function receive_custom(jiff, tag, sender_id, message, decrypt) {
-    if (decrypt === true) {
-      message = jiff.hooks.decryptSign(message, jiff.secret_key, jiff.keymap[sender_id], 'custom');
+  function receive_custom(jiff, json_msg) {
+    if (json_msg['encrypted'] === true) {
+      json_msg['message'] = jiff.hooks.decryptSign(jiff, json_msg['message'], jiff.secret_key, jiff.keymap[json_msg['party_id']]);
     }
+
+    if (json_msg['party_id'] !== jiff.id) {
+      json_msg = jiff.execute_array_hooks('afterOperation', [jiff, 'custom', json_msg], 2);
+    }
+
+    var sender_id = json_msg['party_id'];
+    var tag = json_msg['tag'];
+    var message = json_msg['message'];
 
     if (jiff.listeners[tag] != null) {
       jiff.listeners[tag](sender_id, message);
@@ -1219,6 +1244,30 @@
 
       stored_messages.push({sender_id: sender_id, message: message});
     }
+  }
+
+  function Deferred() {
+    // Polyfill for jQuery Deferred
+    // From https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Promise.jsm/Deferred
+    this.resolve = null;
+
+    /* A method to reject the assocaited Promise with the value passed.
+     * If the promise is already settled it does nothing.
+     *
+     * @param {anything} reason: The reason for the rejection of the Promise.
+     * Generally its an Error object. If however a Promise is passed, then the Promise
+     * itself will be the reason for rejection no matter the state of the Promise.
+     */
+    this.reject = null;
+
+    /* A newly created Promise object.
+     * Initially in pending state.
+     */
+    this.promise = new Promise(function (resolve, reject) {
+      this.resolve = resolve;
+      this.reject = reject;
+    }.bind(this));
+    Object.freeze(this);
   }
 
   /**
@@ -1291,7 +1340,6 @@
         return v1 === v2;
       }
     };
-
 
     var self = {};
 
@@ -1922,8 +1970,8 @@
         op_id = self.jiff.counters.gen_op_id('*', self.holders);
       }
 
-      var final_deferred = $.Deferred();
-      var final_promise = final_deferred.promise();
+      var final_deferred = new Deferred();
+      var final_promise = final_deferred.promise;
       var result = self.jiff.secret_share(self.jiff, false, final_promise, undefined, self.holders, max(self.threshold, o.threshold), self.Zp, 'share:' + op_id);
 
       // Get shares of triplets.
@@ -2000,8 +2048,8 @@
         op_id = self.jiff.counters.gen_op_id('bgw*', self.holders);
       }
 
-      var final_deferred = $.Deferred();
-      var final_promise = final_deferred.promise();
+      var final_deferred = new Deferred();
+      var final_promise = final_deferred.promise;
       var result = self.jiff.secret_share(self.jiff, false, final_promise, undefined, self.holders, max(self.threshold, o.threshold), self.Zp, 'share:' + op_id);
 
       Promise.all([self.promise, o.promise]).then(
@@ -2032,8 +2080,8 @@
         op_id = self.jiff.counters.gen_op_id('threshold:', self.holders);
       }
 
-      var final_deferred = $.Deferred();
-      var final_promise = final_deferred.promise();
+      var final_deferred = new Deferred();
+      var final_promise = final_deferred.promise;
       var result = self.jiff.secret_share(self.jiff, false, final_promise, undefined, self.holders, threshold, self.Zp, 'share:' + op_id);
 
       var ready_threshold = function () {
@@ -2272,8 +2320,8 @@
         op_id = self.jiff.counters.gen_op_id('&lt;', self.holders);
       }
 
-      var final_deferred = $.Deferred();
-      var final_promise = final_deferred.promise();
+      var final_deferred = new Deferred();
+      var final_promise = final_deferred.promise;
       var result = self.jiff.secret_share(self.jiff, false, final_promise, undefined, self.holders, max(self.threshold, o.threshold), self.Zp, 'share:' + op_id);
 
       var w = self.ilt_halfprime(op_id + ':halfprime:1');
@@ -2343,8 +2391,8 @@
         op_id = self.jiff.counters.gen_op_id('c>', self.holders);
       }
 
-      var final_deferred = $.Deferred();
-      var final_promise = final_deferred.promise();
+      var final_deferred = new Deferred();
+      var final_promise = final_deferred.promise;
       var result = self.jiff.secret_share(self.jiff, false, final_promise, undefined, self.holders, self.threshold, self.Zp, 'share:' + op_id);
 
       var w = share_helpers['&lt;'](cst, share_helpers['/'](self.Zp, 2)) ? 1 : 0;
@@ -2411,8 +2459,8 @@
         op_id = self.jiff.counters.gen_op_id('c&lt;', self.holders);
       }
 
-      var final_deferred = $.Deferred();
-      var final_promise = final_deferred.promise();
+      var final_deferred = new Deferred();
+      var final_promise = final_deferred.promise;
       var result = self.jiff.secret_share(self.jiff, false, final_promise, undefined, self.holders, self.threshold, self.Zp, 'share:' + op_id);
 
       var w = self.ilt_halfprime(op_id + ':halfprime:1');
@@ -2577,8 +2625,8 @@
       }
 
       // Store the result
-      var final_deferred = $.Deferred();
-      var final_promise = final_deferred.promise();
+      var final_deferred = new Deferred();
+      var final_promise = final_deferred.promise;
       var result = self.jiff.secret_share(self.jiff, false, final_promise, undefined, self.holders, max(self.threshold, o.threshold), self.Zp, 'share:' + op_id);
 
       var q = self.jiff.server_generate_and_share({number: 0}, self.holders, max(self.threshold, o.threshold), self.Zp, op_id + ':number')[0];
@@ -2645,8 +2693,8 @@
       }
 
       // Allocate share for result to which the answer will be resolved once available
-      var final_deferred = $.Deferred();
-      var final_promise = final_deferred.promise();
+      var final_deferred = new Deferred();
+      var final_promise = final_deferred.promise;
       var result = self.jiff.secret_share(self.jiff, false, final_promise, undefined, self.holders, self.threshold, self.Zp, 'share:' + op_id);
 
       var ZpOVERc = share_helpers['floor/'](self.Zp, cst);
@@ -2736,8 +2784,8 @@
         op_id = self.jiff.counters.gen_op_id('lt_hp', self.holders);
       }
 
-      var final_deferred = $.Deferred();
-      var final_promise = final_deferred.promise();
+      var final_deferred = new Deferred();
+      var final_promise = final_deferred.promise;
       var result = self.jiff.secret_share(self.jiff, false, final_promise, undefined, self.holders, self.threshold, self.Zp, 'share:' + op_id);
 
       // if 2*self is even, then self is less than half prime, otherwise self is greater or equal to half prime
@@ -2845,8 +2893,6 @@
    *                           all parameters are optional, However, private and public key must either be both provided or neither of them provided.
    &lt;pre>
    {
-     "triplets_server": "http://hostname:port",
-     "numbers_server": "http://hostname:port",
      "keys_server": "http://hostname:port",
      "party_id": number,
      "party_count": number,
@@ -2873,6 +2919,17 @@
     }
 
     var jiff = {};
+
+    /**
+     * The server hostname, ends with a slash, includes port and protocol (http/https).
+     * @member {string} hostname
+     * @memberof jiff-instance
+     * @instance
+     */
+    jiff.hostname = hostname.trim();
+    if (!jiff.hostname.endsWith('/')) {
+      jiff.hostname = jiff.hostname + '/';
+    }
 
     /**
      * An array containing the names (jiff-client-[name].js) of extensions
@@ -2960,12 +3017,20 @@
     /**
      * Flags whether this instance is capable of starting the computation.
      * In other words, the public keys for all parties and servers are known,
-     * and the server is connected. [Do not use; ufse isReady() instead]
+     * and the server is connected. [Do not use directly externally; use isReady() instead]
      * @member {boolean} __ready
      * @memberof jiff-instance
      * @instance
      */
     jiff.__ready = false;
+
+    /**
+     * Flags whether this instance has been initialized (the server responded successfully to the initialization message)
+     * @member {boolean} __initialized
+     * @memberof jiff-instance
+     * @instance
+     */
+    jiff.__initialized = false;
 
     /**
      * Checks whether this instance is connected and the server signaled the start of computation.
@@ -2977,6 +3042,17 @@
     jiff.isReady = function () {
       return jiff.__ready;
     };
+
+    if (options.sodium !== false) {
+      /**
+       * A promise for when the sodium wrappers are ready. This will be undefined if options.sodium is false.
+       * @method {Promise} sodium
+       * @memberof jiff-instance
+       * @instance
+       */
+      // eslint-disable-next-line no-undef
+      jiff.sodium_ready = sodium.ready;
+    }
 
     /**
      * The default Zp for this instance.
@@ -3003,6 +3079,10 @@
               if (socket.mailbox.head == null &amp;&amp; socket.empty_deferred != null) {
                 socket.empty_deferred.resolve();
               }
+
+              if (label === 'free' &amp;&amp; socket === jiff.socket) {
+                jiff.execute_array_hooks('afterOperation', [jiff, 'free', msg], 2);
+              }
             }
           });
         }
@@ -3027,35 +3107,29 @@
         }
       };
 
+      var old_disconnect = socket.disconnect;
+      socket.disconnect = function () {
+        jiff.execute_array_hooks('beforeOperation', [jiff, 'disconnect', {}], -1);
+        old_disconnect.apply(socket, arguments);
+      };
+
       // Safe disconnect: only after all messages were acknowledged
       socket.safe_disconnect = function (free, callback) {
-        if (socket.mailbox.head == null &amp;&amp; jiff.counters.pending_opens === 0) {
-          if (free) {
-            socket.safe_emit('free', '');
-          }
-
-          socket.disconnect();
-          if (callback != null) {
-            callback();
-          }
-        } else {
-          socket.empty_deferred = $.Deferred();
-          socket.empty_deferred.promise().then(function deferred_safe_disconnect() {
-            if (jiff.counters.pending_opens === 0) {
-              socket.empty_deferred = null;
-              if (free) {
-                socket.safe_emit('free', '');
-              }
-              socket.disconnect();
-              if (callback != null) {
-                callback();
-              }
-            } else {
-              socket.empty_deferred = $.Deferred();
-              socket.empty_deferred.promise().then(deferred_safe_disconnect);
+        (function ready() {
+          if (socket.mailbox.head == null &amp;&amp; jiff.counters.pending_opens === 0) {
+            if (free) {
+              jiff.free();
             }
-          });
-        }
+
+            socket.disconnect();
+            if (callback != null) {
+              callback();
+            }
+          } else {
+            socket.empty_deferred = new Deferred();
+            socket.empty_deferred.promise.then(ready);
+          }
+        }());
       };
 
       return socket;
@@ -3063,31 +3137,22 @@
 
     // setup main socket
     // eslint-disable-next-line no-undef
-    jiff.socket = (options.__internal_socket == null ? io(hostname, {autoConnect: false}) : options.__internal_socket);
+    jiff.socket = (options.__internal_socket == null ? io(hostname, { autoConnect: false }) : options.__internal_socket);
 
     if (options.__internal_socket == null) {
       guard_socket(jiff.socket);
     } else {
       jiff.socket.safe_emit = jiff.socket.emit;
-      jiff.socket.resend_mailbox = function () {
+      jiff.socket.resend_mailbox = function () {};
+
+      jiff.socket.disconnect = function () {
+        jiff.execute_array_hooks('beforeOperation', [jiff, 'disconnect', {}], -1);
       };
-    }
-
-    // setup aux sockets
-    if (options.triplets_server == null || options.triplets_server === hostname) {
-      jiff.triplets_socket = jiff.socket;
-    } else {
-      // eslint-disable-next-line no-undef
-      jiff.triplets_socket = guard_socket(io(options.triplets_server));
-      jiff.triplets_socket.on('connect', jiff.triplets_socket.resend_mailbox);
-    }
-
-    if (options.numbers_server == null || options.numbers_server === hostname) {
-      jiff.numbers_socket = jiff.socket;
-    } else {
-      // eslint-disable-next-line no-undef
-      jiff.numbers_socket = guard_socket(io(options.numbers_server));
-      jiff.numbers_socket.on('connect', jiff.numbers_socket.resend_mailbox);
+      jiff.socket.safe_disconnect = function (free, callback) {
+        jiff.free();
+        jiff.socket.disconnect();
+        callback();
+      };
     }
 
     // Parse options
@@ -3176,6 +3241,10 @@
      */
     jiff.barriers = [];
 
+    if (options.hooks == null) {
+      options.hooks = {};
+    }
+
     /**
      * The hooks for this instance.
      * Checkout the &lt;a href="hooks.html">hooks documentation&lt;/a>
@@ -3183,23 +3252,22 @@
      * @memberof jiff-instance
      * @instance
      */
-    jiff.hooks = options.hooks;
+    jiff.hooks = Object.assign({}, options.hooks);
 
     // Default hooks:
-    if (jiff.hooks == null) {
-      jiff.hooks = {};
-    }
     if (jiff.hooks.computeShares == null) {
       jiff.hooks.computeShares = jiff_compute_shares;
     }
     if (jiff.hooks.reconstructShare == null) {
       jiff.hooks.reconstructShare = jiff_lagrange;
     }
+
+    // Crypto hooks:
     if (jiff.hooks.encryptSign == null) {
       if (options.sodium !== false) {
         jiff.hooks.encryptSign = encrypt_and_sign;
       } else {
-        jiff.hooks.encryptSign = function encrypt_and_sign(message, encryption_public_key, signing_private_key, operation_type) {
+        jiff.hooks.encryptSign = function (jiff, message, encryption_public_key, signing_private_key) {
           return message;
         }
       }
@@ -3208,48 +3276,48 @@
       if (options.sodium !== false) {
         jiff.hooks.decryptSign = decrypt_and_sign;
       } else {
-        jiff.hooks.decryptSign = function decrypt_and_sign(cipher_text, decryption_secret_key, signing_public_key, operation_type) {
+        jiff.hooks.decryptSign = function (jiff, cipher_text, decryption_secret_key, signing_public_key) {
           return cipher_text;
         }
       }
     }
     if (jiff.hooks.generateKeyPair == null) {
       if (options.sodium !== false) {
-        jiff.hooks.generateKeyPair = function () {
+        jiff.hooks.generateKeyPair = function (jiff) {
           // eslint-disable-next-line no-undef
           var key = sodium.crypto_box_keypair(); // this party's public and secret key
-          return {public_key: key.publicKey, secret_key: key.privateKey}
+          return { public_key: key.publicKey, secret_key: key.privateKey }
         };
       } else {
-        jiff.hooks.generateKeyPair = function () {
-          return {};
+        jiff.hooks.generateKeyPair = function (jiff) {
+          return { public_key: '', secret_key: ''};
         }
       }
     }
     if (jiff.hooks.parseKey == null) {
       if (options.sodium !== false) {
-        jiff.hooks.parseKey = function (keyString) {
+        jiff.hooks.parseKey = function (jiff, keyString) {
           return new Uint8Array(JSON.parse(keyString));
         };
       } else {
-        jiff.hooks.parseKey = function (keyString) {
-          return null;
+        jiff.hooks.parseKey = function (jiff, keyString) {
+          return '';
         }
       }
     }
     if (jiff.hooks.dumpKey == null) {
       if (options.sodium !== false) {
-        jiff.hooks.dumpKey = function (key) {
+        jiff.hooks.dumpKey = function (jiff, key) {
           return '[' + key.toString() + ']';
         };
       } else {
-        jiff.hooks.dumpKey = function (key) {
+        jiff.hooks.dumpKey = function (jiff, key) {
           return '';
         }
       }
     }
 
-    // Array hooks should have empty array by default
+    // Array hooks should have empty array by default:
     if (jiff.hooks.beforeShare == null) {
       jiff.hooks.beforeShare = [];
     }
@@ -3277,6 +3345,20 @@
     if (jiff.hooks.createSecretShare == null) {
       jiff.hooks.createSecretShare = [];
     }
+    if (jiff.hooks.beforeOperation == null) {
+      jiff.hooks.beforeOperation = [];
+    }
+    if (jiff.hooks.afterOperation == null) {
+      jiff.hooks.afterOperation = [];
+    }
+
+    // parse content of share/open messages to be integers (instead of strings due to encryption/decryption)
+    jiff.hooks.afterOperation.unshift(function (jiff, label, msg) {
+      if (label === 'share' || label === 'open') {
+        msg['share'] = parseInt(msg['share'], 10);
+      }
+      return msg;
+    });
 
     /**
      * Execute all hooks attached to the given name in order.
@@ -3317,47 +3399,52 @@
      * to them when they connect.
      * @memberof jiff-instance
      * @instance
-     * @param {Array} parties - an array of party ids to wait for.
+     * @param {Array} parties - an array of party ids to wait for, must explicitly include 's1' if callback must wait for the server.
      * @param {function(jiff-instance)} callback - the function to execute when these parties are known.
+     * @param {boolean} [wait_for_initialization=true] - specifies whether to wait for initialization to be complete
+     *                                                   before executing the callback (even if parties are available).
+     *                                                   Set this to false if you do not need the party count and this
+     *                                                   party's id, or if you already have them, and you are certain
+     *                                                   they will be accepted by the server on initialization.
      */
-    jiff.wait_for = function (parties, callback) {
-      // server is always needed
-      if (parties.indexOf('s1') === -1) {
-        parties.push('s1');
+    jiff.wait_for = function (parties, callback, wait_for_initialization) {
+      if (wait_for_initialization == null) {
+        wait_for_initialization = true;
       }
 
-      jiff.wait_callbacks.push({parties: parties, callback: callback});
-      jiff.execute_wait_callbacks(); // See if the callback can be executed immediadtly
+      jiff.wait_callbacks.push({parties: parties, callback: callback, initialization: wait_for_initialization});
+      jiff.execute_wait_callbacks(); // See if the callback can be executed immediately
     };
 
     /**
-     * Executes all callbacks for which the wait condition has been satisified.
+     * Executes all callbacks for which the wait condition has been satisfied.
      * Remove all executed callbacks so that they would not be executed in the future.
      * @memberof jiff-instance
      * @instance
      */
     jiff.execute_wait_callbacks = function () {
-      if (jiff.secret_key == null || jiff.public_key == null) {
-        return;
-      }
-
       var new_waits = [];
       for (var i = 0; i &lt; jiff.wait_callbacks.length; i++) {
         var wait = jiff.wait_callbacks[i];
         var parties = wait.parties;
         var callback = wait.callback;
+        var initialization = wait.initialization;
 
         // Check if the parties to wait for are now known
-        var parties_satisified = true;
+        var parties_satisfied = true;
         for (var j = 0; j &lt; parties.length; j++) {
           var party_id = parties[j];
           if (jiff.keymap == null || jiff.keymap[party_id] == null) {
-            parties_satisified = false;
+            parties_satisfied = false;
             break;
           }
         }
 
-        if (parties_satisified) {
+        if (initialization) {
+          parties_satisfied = parties_satisfied &amp;&amp; jiff.__initialized;
+        }
+
+        if (parties_satisfied) {
           callback(jiff);
         } else {
           new_waits.push(wait);
@@ -3386,11 +3473,11 @@
         for (var i = 0; i &lt; messageQueue.length; i++) {
           var msg = messageQueue[i];
           if (msg.label === 'share') {
-            receive_share(jiff, party_id, msg.share, msg.op_id);
+            receive_share(jiff, msg.msg);
           } else if (msg.label === 'open') {
-            receive_open(jiff, party_id, msg.share, msg.op_id, msg.Zp);
+            receive_open(jiff, msg.msg);
           } else if (msg.label === 'custom') {
-            receive_custom(jiff, msg.tag, party_id, msg.message, true);
+            receive_custom(jiff, msg.msg);
           } else {
             throw new Error('Error resolving pending message: unknown label ' + msg.label);
           }
@@ -3416,31 +3503,76 @@
      */
     jiff.connect = function () {
       var ready_connect = function () {
+        if (jiff.secret_key == null || jiff.public_key == null) {
+          var key = jiff.hooks.generateKeyPair(jiff);
+          jiff.secret_key = key.secret_key;
+          jiff.public_key = key.public_key;
+        }
+
+        var msg = {
+          computation_id: computation_id,
+          party_id: jiff.id,
+          party_count: jiff.party_count,
+          public_key: jiff.hooks.dumpKey(jiff, jiff.public_key)
+        };
+
+        msg = Object.assign(msg, options.initialization);
+        msg = jiff.execute_array_hooks('beforeOperation', [jiff, 'initialization', msg], 2);
+        msg = JSON.stringify(msg);
+
         // Send the computation id to the server to receive proper
         // identification
         if (options.__internal_socket == null) {
           jiff.socket.on('connect', function () {
-            jiff.socket.emit('computation_id', JSON.stringify({
-              computation_id: computation_id,
-              party_id: jiff.id,
-              party_count: jiff.party_count
-            }));
+            jiff.socket.emit('initialization', msg);
           });
           jiff.socket.connect();
         } else {
-          jiff.socket.emit('computation_id', JSON.stringify({
-            computation_id: computation_id,
-            party_id: jiff.id,
-            party_count: jiff.party_count
-          }));
+          jiff.socket.emit('initialization', msg);
         }
       };
 
       if (options.sodium === false) {
         ready_connect();
       } else {
-        // eslint-disable-next-line no-undef
-        sodium.ready.then(ready_connect);
+        jiff.sodium_ready.then(ready_connect);
+      }
+    };
+
+    /**
+     * Store the public keys given in the keymap
+     * @param {object} keymap - map party id to public key.
+     */
+    jiff.store_public_keys = function (keymap) {
+      var i;
+      for (i in keymap) {
+        if (keymap.hasOwnProperty(i) &amp;&amp; jiff.keymap[i] == null) {
+          jiff.keymap[i] = jiff.hooks.parseKey(jiff, keymap[i]);
+        }
+      }
+
+      // Resolve any pending messages that were received before the sender's public key was known
+      jiff.resolve_messages_waiting_for_keys();
+
+      // Resolve any pending waits that have satisfied conditions
+      jiff.execute_wait_callbacks();
+
+      // Check if all keys have been received
+      if (jiff.keymap['s1'] == null) {
+        return;
+      }
+      for (i = 1; i &lt;= jiff.party_count; i++) {
+        if (jiff.keymap[i] == null) {
+          return;
+        }
+      }
+
+      // all parties are connected; execute callback
+      if (jiff.__ready !== true &amp;&amp; jiff.__initialized) {
+        jiff.__ready = true;
+        if (options.onConnect != null) {
+          options.onConnect(jiff);
+        }
       }
     };
 
@@ -3471,7 +3603,7 @@
       // Remove own index from receivers
       var index = receivers.indexOf(jiff.id);
       if (index > -1) {
-        receive_custom(jiff, tag, jiff.id, message, false);
+        receive_custom(jiff, { tag: tag, party_id: jiff.id, message: message, encrypted: false });
       }
 
       for (var p = 0; p &lt; receivers.length; p++) {
@@ -3479,13 +3611,15 @@
           continue;
         }
 
-        var message_to_send = message;
-        if (encrypt !== false) {
-          message_to_send = jiff.hooks.encryptSign(message, jiff.keymap[receivers[p]], jiff.secret_key, 'custom');
-          jiff.socket.safe_emit('custom', JSON.stringify({tag: tag, receiver: receivers[p], message: message_to_send, encrypted: true}));
-        } else {
-          jiff.socket.safe_emit('custom', JSON.stringify({tag: tag, receiver: receivers[p], message: message_to_send}));
+        var message_to_send = {tag: tag, party_id: receivers[p], message: message, encrypted: encrypt };
+        message_to_send = jiff.execute_array_hooks('beforeOperation', [jiff, 'custom', message_to_send], 2);
+
+        if (message_to_send['encrypted'] !== false) {
+          message_to_send['message'] = jiff.hooks.encryptSign(jiff, message_to_send['message'], jiff.keymap[message_to_send['party_id']], jiff.secret_key);
+          message_to_send['encrypted'] = true;
         }
+
+        jiff.socket.safe_emit('custom', JSON.stringify(message_to_send));
       }
     };
 
@@ -3703,7 +3837,7 @@
         return party_id;
       }
       if (party_id.startsWith('s')) {
-        return jiff.party_count + parseInt(party_id.substring(1), 10);
+        return -1 * parseInt(party_id.substring(1), 10);
       }
       return parseInt(party_id, 10);
     };
@@ -4016,7 +4150,7 @@
       }
 
       return Promise.all(promises);
-    }
+    };
 
     /**
      * Receive shares from the specified parties and reconstruct their secret.
@@ -4336,16 +4470,15 @@
       for (var i = 0; i &lt; jiff.barriers.length; i++) {
         jiff.barriers[i].push(promise);
       }
-    }
+    };
 
     /**
      * Executes the callback only after all promises / secret shares in the barrier were resolved.
-     * @param {function()} [callback] - the callback to execute.
      * @param {number} [barrier_id=jiff.barriers.length - 1] - identifies the barrier, should be returned by start_barrier.
      *                                                         by default, barrier_id will refer to the last barrier.
-     * @returns {promise} a promise that resolves after the secret shares are resolved and the callback is executed (if provided).
+     * @returns {promise} a promise that resolves after the secret shares are resolved.
      */
-    jiff.end_barrier = function (callback, barrier_id) {
+    jiff.end_barrier = function (barrier_id) {
       var barrier;
       if (barrier_id == null) {
         barrier = jiff.barriers.pop();
@@ -4354,12 +4487,8 @@
         jiff.barriers.splice(barrier_id, 1);
       }
 
-      var promise = Promise.all(barrier);
-      if (callback != null) {
-        promise = promise.then(callback);
-      }
-      return promise;
-    }
+      return Promise.all(barrier);
+    };
 
 
     /**
@@ -4381,35 +4510,36 @@
     jiff.disconnect = function (safe, free, callback) {
       if (safe) {
         jiff.socket.safe_disconnect(free, callback);
-        if (jiff.triplets_socket !== jiff.socket) {
-          jiff.triplets_socket.safe_disconnect(free);
-        }
-        if (jiff.numbers_socket !== jiff.socket) {
-          jiff.numbers_socket.safe_disconnect(free);
-        }
       } else {
         if (free) {
-          jiff.socket.emit('free', '');
+          jiff.free();
         }
         jiff.socket.disconnect();
-        if (jiff.triplets_socket !== jiff.socket) {
-          if (free) {
-            jiff.triplets_socket.emit('free', '');
-          }
-          jiff.triplets_socket.disconnect();
-        }
-        if (jiff.numbers_socket !== jiff.socket) {
-          if (free) {
-            jiff.numbers_socket.emit('free', '');
-          }
-          jiff.numbers_socket.disconnect();
-        }
+      }
+    };
+
+    /**
+     * Emits event to free up all the resources allocated for this party on the server.
+     * Best not to call this function directly, as it can break things if resources still need to be used.
+     * Instead, use jiff.disconnect(safe, free, callback) to free after safely disconnecting.
+     * @param {io.socket} socket - the socket through which to free.
+     */
+    jiff.free = function () {
+      var msg = jiff.execute_array_hooks('beforeOperation', [jiff, 'free', {}], 2);
+      if (options.__internal_socket == null) {
+        jiff.socket.safe_emit('free', JSON.stringify(msg));
+      } else {
+        jiff.execute_array_hooks('afterOperation', [jiff, 'free', msg], 2);
       }
     };
 
     // Store the id when server sends it back
-    jiff.socket.on('init', function (msg) {
+    jiff.socket.on('initialization', function (msg) {
+      jiff.__initialized = true;
+
       msg = JSON.parse(msg);
+      msg = jiff.execute_array_hooks('afterOperation', [jiff, 'initialization', msg], 2);
+
       if (jiff.id == null) {
         jiff.id = msg.party_id;
       }
@@ -4418,54 +4548,25 @@
         jiff.party_count = msg.party_count;
       }
 
-      if (jiff.secret_key == null || jiff.public_key == null) {
-        var key = jiff.hooks.generateKeyPair();
-        jiff.secret_key = key.secret_key;
-        jiff.public_key = key.public_key;
-      }
-
-
-      jiff.socket.emit('public_key', jiff.hooks.dumpKey(jiff.public_key));
       // Now: (1) this party is connect (2) server (and other parties) know this public key
       // Resend all pending messages
       jiff.socket.resend_mailbox();
 
-      jiff.execute_wait_callbacks();
+      jiff.store_public_keys(msg.public_keys);
     });
 
-    jiff.socket.on('public_key', function (msg) {
-      jiff.keymap = JSON.parse(msg);
+    // Public keys were updated on the server, and it sent us the updates
+    jiff.socket.on('public_keys', function (msg, callback) {
+      callback(true);
 
-      var i;
-      for (i in jiff.keymap) {
-        if (jiff.keymap.hasOwnProperty(i)) {
-          jiff.keymap[i] = jiff.hooks.parseKey(jiff.keymap[i]);
-        }
+      msg = JSON.parse(msg);
+      if (jiff.id !== 's1') {
+        msg = jiff.hooks.decryptSign(jiff, msg, jiff.secret_key, jiff.keymap['s1']);
+        msg = JSON.parse(msg);
       }
 
-      // Resolve any pending messages that were received before the sender's public key was known
-      jiff.resolve_messages_waiting_for_keys();
-
-      // Resolve any pending waits that have satisfied conditions
-      jiff.execute_wait_callbacks();
-
-      // Check if all keys have been received
-      if (jiff.keymap['s1'] == null) {
-        return;
-      }
-      for (i = 1; i &lt;= jiff.party_count; i++) {
-        if (jiff.keymap[i] == null) {
-          return;
-        }
-      }
-
-      // check if all parties are connected
-      if (jiff.__ready !== true) {
-        jiff.__ready = true;
-        if (options.onConnect != null) {
-          options.onConnect(jiff);
-        }
-      }
+      msg = jiff.execute_array_hooks('afterOperation', [jiff, 'public_keys', msg], 2);
+      jiff.store_public_keys(msg.public_keys);
     });
 
     // Store sharing and shares counter which keeps track of the count of
@@ -4608,16 +4709,14 @@
       // parse message
       var json_msg = JSON.parse(msg);
       var sender_id = json_msg['party_id'];
-      var op_id = json_msg['op_id'];
-      var share = json_msg['share'];
 
       if (jiff.keymap[sender_id] != null) {
-        receive_share(jiff, sender_id, share, op_id);
+        receive_share(jiff, json_msg);
       } else {
         if (jiff.messagesWaitingKeys[sender_id] == null) {
           jiff.messagesWaitingKeys[sender_id] = [];
         }
-        jiff.messagesWaitingKeys[sender_id].push({label: 'share', op_id: op_id, share: share});
+        jiff.messagesWaitingKeys[sender_id].push({label: 'share', msg: json_msg});
       }
     });
 
@@ -4626,19 +4725,15 @@
 
       // parse message
       var json_msg = JSON.parse(msg);
-
       var sender_id = json_msg['party_id'];
-      var op_id = json_msg['op_id'];
-      var share = json_msg['share'];
-      var Zp = json_msg['Zp'];
 
       if (jiff.keymap[sender_id] != null) {
-        receive_open(jiff, sender_id, share, op_id, Zp);
+        receive_open(jiff, json_msg);
       } else {
         if (jiff.messagesWaitingKeys[sender_id] == null) {
           jiff.messagesWaitingKeys[sender_id] = [];
         }
-        jiff.messagesWaitingKeys[sender_id].push({label: 'open', op_id: op_id, share: share, Zp: Zp});
+        jiff.messagesWaitingKeys[sender_id].push({ label: 'open', msg: json_msg });
       }
     });
 
@@ -4647,50 +4742,46 @@
       callback(true); // send ack to server
 
       var json_msg = JSON.parse(msg);
-
       var sender_id = json_msg['party_id'];
-      var tag = json_msg['tag'];
-      var message = json_msg['message'];
       var encrypted = json_msg['encrypted'];
 
       if (jiff.keymap[sender_id] != null || encrypted !== true) {
-        receive_custom(jiff, tag, sender_id, message, encrypted);
+        receive_custom(jiff, json_msg);
       } else {
         // key must not exist yet for sender_id, and encrypted must be true
         if (jiff.messagesWaitingKeys[sender_id] == null) {
           jiff.messagesWaitingKeys[sender_id] = [];
         }
-        jiff.messagesWaitingKeys[sender_id].push({label: 'custom', tag: tag, message: message });
+        jiff.messagesWaitingKeys[sender_id].push({ label: 'custom', msg: json_msg });
       }
     });
 
-    jiff.triplets_socket.on('triplet', function (msg, callback) {
+    jiff.socket.on('triplet', function (msg, callback) {
       callback(true); // send ack to server
 
-      if (jiff.id !== 's1' || (options.triplets_server != null &amp;&amp; options.triplets_server !== hostname)) {
+      msg = JSON.parse(msg);
+      if (jiff.id !== 's1') {
         // decrypt and verify message signature
-        msg = jiff.hooks.decryptSign(msg, jiff.secret_key, jiff.keymap['s1'], 'triplet');
+        msg = jiff.hooks.decryptSign(jiff, msg, jiff.secret_key, jiff.keymap['s1']);
+        msg = JSON.parse(msg);
       }
 
       // parse message
-      var json_msg = JSON.parse(msg);
-      var triplet = json_msg['triplet'];
-      var triplet_id = json_msg['triplet_id'];
-
-      receive_triplet(jiff, triplet_id, triplet);
+      receive_triplet(jiff, msg);
     });
 
-    jiff.numbers_socket.on('number', function (msg, callback) {
+    jiff.socket.on('number', function (msg, callback) {
       callback(true); // send ack to server
 
-      if (jiff.id !== 's1' || (options.numbers_server != null &amp;&amp; options.numbers_server !== hostname)) {
+      msg = JSON.parse(msg);
+      if (jiff.id !== 's1') {
         // decrypt and verify message signature
-        msg = jiff.hooks.decryptSign(msg, jiff.secret_key, jiff.keymap['s1'], 'number');
+        msg = jiff.hooks.decryptSign(jiff, msg, jiff.secret_key, jiff.keymap['s1']);
+        msg = JSON.parse(msg);
       }
 
       // parse message
-      var json_msg = JSON.parse(msg); // this is an array of { "number": {value}, "number_id": {string} }
-      receive_server_share_number(jiff, json_msg);
+      receive_server_share_number(jiff, msg);
     });
 
     jiff.socket.on('error', function (msg) {
@@ -4704,6 +4795,8 @@
         // check that the reason is an error and not a user initiated disconnect
         console.log('Disconnected! ' + reason);
       }
+
+      jiff.execute_array_hooks('afterOperation', [jiff, 'disconnect', reason], -1);
     });
 
     // Connect when all is done
@@ -4755,7 +4848,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Nov 13 2018 23:06:10 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 24 2019 22:52:11 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

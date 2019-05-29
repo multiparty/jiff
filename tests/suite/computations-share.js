@@ -104,33 +104,31 @@ function singleTest(jiff_instance, t) {
 }
 
 // Run a batch of tests according to parallelism degree until all tests are consumed
-function batchTest(jiff_instance, startIndex) {
-  var t;
-  var end = Math.min(startIndex + testParallel, inputs.length);
+async function batchTest(jiff_instance) {
+  //var end = Math.min(startIndex + testParallel, inputs.length);
 
-  // Reached the end
-  if (startIndex >= end) {
-    jiff_instance.disconnect(true, true);
-
-    if (jiff_instance.id === 1) {
-      var exception;
-      if (errors.length > 0) {
-        exception = Error('Failed Test: ' + test + '\n\t' + errors.join('\n\t'));
-      }
-      done(exception);
+  for (var t = 0; t < inputs.length; t++) {
+    if (t % testParallel === 0) {
+      jiff_instance.start_barrier();
     }
-    return;
-  }
 
-  // Keep going
-  jiff_instance.start_barrier();
-  for (t = startIndex; t < end; t++) {
     var promise = singleTest(jiff_instance, t);
     jiff_instance.add_to_barriers(promise);
+
+    if (t % testParallel === testParallel - 1 || t === inputs.length - 1) {
+      await jiff_instance.end_barrier();
+    }
   }
-  jiff_instance.end_barrier(function () {
-    batchTest(jiff_instance, t);
-  });
+
+  // Reached the end
+  jiff_instance.disconnect(true, true);
+  if (jiff_instance.id === 1) {
+    var exception;
+    if (errors.length > 0) {
+      exception = Error('Failed Test: ' + test + '\n\t' + errors.join('\n\t'));
+    }
+    done(exception);
+  }
 }
 
 // Default Computation Scheme
