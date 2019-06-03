@@ -43,7 +43,7 @@ function submit() {
     $('#output').append("<p class='error'>Please select a choice.</p>");
     return;
   }
-  input = input === 'yes' ? true : false;
+  input = input === 'yes' ? 1 : 0;
   $('#submit').attr('disabled', true);
   $('#output').append('<p>Starting...</p>');
 
