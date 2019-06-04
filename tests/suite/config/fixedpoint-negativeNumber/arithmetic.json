@@ -26,7 +26,7 @@
       }
     },
     "*": {
-      "count": 10,
+      "count": 5,
       "parallel": 3,
       "options": {
         "Zp": "262139",
@@ -36,7 +36,7 @@
       }
     },
     "*bgw": {
-      "count": 10,
+      "count": 5,
       "parallel": 3,
       "options": {
         "Zp": "262139",
@@ -46,7 +46,7 @@
       }
     },
     "abs": {
-      "count": 20,
+      "count": 15,
       "parallel": 5,
       "options": {
         "Zp": 251,
@@ -57,7 +57,7 @@
       }
     },
     "/": {
-      "count": 5,
+      "count": 3,
       "parallel": 3,
       "options": {
         "Zp": "2097143",
@@ -78,7 +78,7 @@
       }
     },
     "floor": {
-      "count": 15,
+      "count": 10,
       "parallel": 5,
       "options": {
         "Zp": 251,

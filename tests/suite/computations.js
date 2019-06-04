@@ -25,6 +25,7 @@ var function_map = {
   },
   'secret': {
     '*': 'smult',
+    '*bgw': 'smult_bgw',
     '|': 'sor_bit',
     '<': 'slt',
     '^': 'sxor_bit',

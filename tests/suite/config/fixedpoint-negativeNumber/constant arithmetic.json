@@ -37,7 +37,7 @@
       }
     },
     "*": {
-      "count": 10,
+      "count": 5,
       "parallel": 3,
       "options": {
         "Zp": "262139",
@@ -47,7 +47,7 @@
       }
     },
     "/": {
-      "count": 8,
+      "count": 5,
       "parallel": 3,
       "options": {
         "Zp": "2097143",
