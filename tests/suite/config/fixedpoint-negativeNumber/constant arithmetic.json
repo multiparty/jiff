@@ -47,8 +47,8 @@
       }
     },
     "/": {
-      "count": 5,
-      "parallel": 3,
+      "count": 3,
+      "parallel": 1,
       "options": {
         "Zp": "2097143",
         "party_count": 3,

@@ -21,7 +21,8 @@ var function_map = {
     '==': 'ceq',
     '!=': 'cneq',
     '/': 'cdiv',
-    'cdivfac': 'cdivfac'
+    'cdivfac': 'cdivfac',
+    '*': 'cmult'
   },
   'secret': {
     '*': 'smult',
