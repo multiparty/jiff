@@ -37,7 +37,7 @@
     },
     "*bgw": {
       "count": 5,
-      "parallel": 2,
+      "parallel": 1,
       "options": {
         "Zp": "131071",
         "party_count": 4,
