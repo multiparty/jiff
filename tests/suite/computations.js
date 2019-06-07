@@ -37,7 +37,8 @@ var function_map = {
     '!=': 'sneq',
     '/': 'sdiv',
     '%': 'smod',
-    'abs': 'abs'
+    'abs': 'abs',
+    'floor': 'floor'
   }
 };
 
@@ -284,7 +285,9 @@ exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done)
   var operation = function_map[isConstant][test];
   if (operation != null && jiff_instance.has_preprocessing(operation)) {
     var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
-    var promise = jiff_instance.preprocessing(operation, inputs.length * (Object.keys(inputs[0]).length - 1), testParallel, null, threshold);
+    var singleTestCount = Object.keys(inputs[0]).length;
+    var count = inputs.length * (singleTestCount > 1 ? singleTestCount - 1 : 1);
+    var promise = jiff_instance.preprocessing(operation, count, testParallel, null, threshold);
     promise.then(function () {
       jiff_instance.finish_preprocessing();
       batchTest(jiff_instance, 0);

@@ -49,25 +49,25 @@
       "count": 3,
       "parallel": 2,
       "options": {
-        "Zp": "1048573",
+        "Zp": "16381",
         "party_count": 3,
         "integer_digits": 2,
-        "decimal_digits": 2
+        "decimal_digits": 1
       }
     },
     "%": {
       "count": 2,
       "parallel": 2,
       "options": {
-        "Zp": "1048573",
+        "Zp": "16381",
         "party_count": 3,
-        "integer_digits": 3,
-        "decimal_digits": 3,
+        "integer_digits": 2,
+        "decimal_digits": 2,
         "warn": false
       }
     },
     "floor": {
-      "count": 15,
+      "count": 10,
       "parallel": 5,
       "options": {
         "Zp": 127,
