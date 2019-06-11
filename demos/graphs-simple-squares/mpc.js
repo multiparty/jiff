@@ -8,6 +8,7 @@
     var opt = Object.assign({}, options);
     opt.autoConnect = false;
     // Added options goes here
+    opt.crypto_provider = true;
 
     if (node) {
       // eslint-disable-next-line no-undef

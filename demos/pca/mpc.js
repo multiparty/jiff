@@ -7,6 +7,7 @@
   exports.connect = function (hostname, computation_id, options) {
     // Added options goes here
     var opt = Object.assign({}, options);
+    opt.crypto_provider = true;
 
     // if you need any extensions, put them here
     if (node) {

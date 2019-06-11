@@ -7,8 +7,8 @@
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
     // Added options goes here
+    opt.crypto_provider = true;
 
-    console.log(opt);
     if (node) {
       // eslint-disable-next-line no-undef
       jiff = require('../../lib/jiff-client');
@@ -17,7 +17,6 @@
     // eslint-disable-next-line no-undef
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
     // if you need any extensions, put them here
-    console.log(saved_instance.crypto_provider);
 
     return saved_instance;
   };

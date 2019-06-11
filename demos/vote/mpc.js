@@ -8,6 +8,7 @@
     var opt = Object.assign({}, options);
     // Added options goes here
     opt.Zp = 13;
+    opt.crypto_provider = true;
 
     if (node) {
       // eslint-disable-next-line no-undef

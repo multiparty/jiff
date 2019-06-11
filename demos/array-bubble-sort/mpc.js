@@ -7,6 +7,7 @@
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
     // Added options goes here
+    opt.crypto_provider = true;
 
     if (node) {
       // eslint-disable-next-line no-undef
