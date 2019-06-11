@@ -28,8 +28,10 @@ if (party_id != null) {
   party_id = parseInt(party_id, 10);
 }
 
+var crypto_provider = true;
+
 // JIFF options
-var options = {party_count: party_count, party_id: party_id};
+var options = {party_count: party_count, party_id: party_id, crypto_provider: crypto_provider};
 options.onConnect = function (jiff_instance) {
   var promise = mpc.compute(input);
 
