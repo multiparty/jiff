@@ -59,7 +59,7 @@
     if (array.length === 1) {
       return array[0].seq(element);
     }
-
+    
     // comparison
     var mid = Math.floor(array.length/2);
     var cmp = element.slt(array[mid]);
