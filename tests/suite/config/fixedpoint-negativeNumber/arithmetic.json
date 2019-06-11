@@ -1,5 +1,5 @@
 {
-  "tests": [ "+", "-", "*", "*bgw", "|", "^", "!", "abs", "floor",  "/", "%" ],
+  "tests": [ "+", "-", "*", "*bgw", "|", "^", "!", "abs", "floor", "/", "%" ],
   "suiteConf": {
     "port": 3001,
     "extensions": [ "bigNumber", "fixedpoint", "negativeNumber" ],
@@ -37,7 +37,7 @@
     },
     "*bgw": {
       "count": 5,
-      "parallel": 2,
+      "parallel": 1,
       "options": {
         "Zp": "262139",
         "party_count": 4,
@@ -46,7 +46,7 @@
       }
     },
     "abs": {
-      "count": 15,
+      "count": 10,
       "parallel": 5,
       "options": {
         "Zp": 251,
@@ -58,22 +58,22 @@
     },
     "/": {
       "count": 3,
-      "parallel": 3,
+      "parallel": 1,
       "options": {
-        "Zp": "2097143",
+        "Zp": "32749",
         "party_count": 3,
         "integer_digits": 2,
-        "decimal_digits": 2
+        "decimal_digits": 1
       }
     },
     "%": {
       "count": 3,
-      "parallel": 2,
+      "parallel": 1,
       "options": {
-        "Zp": "2097143",
+        "Zp": "32749",
         "party_count": 3,
-        "integer_digits": 3,
-        "decimal_digits": 3,
+        "integer_digits": 2,
+        "decimal_digits": 2,
         "warn": false
       }
     },

@@ -20,12 +20,12 @@ for f in tests/suite/config/${JIFF_TEST_NAME}/*.json; do
 
     if [ "$2" == "parallel" ]
     then
-        ./node_modules/.bin/mocha --reporter spec tests/suite/index.js &
+        ./node_modules/.bin/mocha --max-old-space-size=8192 --reporter spec tests/suite/index.js &
         tests_pids[${i}]=$!
         i=$((i+1))
         sleep 1
     else
-        ./node_modules/.bin/mocha --reporter spec tests/suite/index.js
+        ./node_modules/.bin/mocha --max-old-space-size=8192 --reporter spec tests/suite/index.js
         CODE=$?
         if [[ "${CODE}" != "0" ]]; then
           EXIT_CODE=$CODE
