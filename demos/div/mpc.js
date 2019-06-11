@@ -19,6 +19,9 @@
         return saved_instance;
     };
 
+    /*
+     *  NOTE: NOT COMPLETE or FIXED or CLEANED
+     */
     function bit_decomposition(s) {
         var n = 4;//Math.ceil(Math.log2(Zp));//plus one?
         let zero = saved_instance.protocols.generate_and_share_zero;
