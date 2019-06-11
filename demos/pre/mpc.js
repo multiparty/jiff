@@ -26,7 +26,7 @@
     }
 
     var total_count = multiplication_count * (jiff_instance.party_count - 1);
-    var promise = jiff_instance.preprocessing('slt', 1 /* 10 */, null, null, null, null, null, null, null);
+    var promise = jiff_instance.preprocessing('smult', total_count /* 10 */, null, null, null, null, null, null, null);
     return promise;
   };
 
@@ -51,15 +51,14 @@
 
     // The MPC implementation should go *HERE*
     var shares = jiff_instance.share(input);
-    var sum = shares[1];
-    /*
+    var result = shares[1];
+
     for (var i = 2; i <= jiff_instance.party_count; i++) {
-      sum = sum.smult(shares[i]);
+      result = result.smult(shares[i]);
     }
-    */
-    sum = sum.slt(shares[2]);
+
 
     // Return a promise to the final output(s)
-    return jiff_instance.open(sum);
+    return jiff_instance.open(result);
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
