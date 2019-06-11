@@ -19,22 +19,43 @@
         return saved_instance;
     };
 
+    function local_decompose(number, bitLength) {
+        return [...("0".repeat(bitLength) + number.toString(2)).slice(-bitLength)].reverse().map(bit => +bit);
+    }
+
     /*
-     *  NOTE: NOT COMPLETE or FIXED or CLEANED
+     *  NOTE: NOT CLEANED nor CHECKED
      */
     function bit_decomposition(s) {
-        var n = 4;//Math.ceil(Math.log2(Zp));//plus one?
+        var bitLength = Math.ceil(Math.log2(Zp));  // Ceil not Floor. Note that we subtract 1 later
+
+        // generate the bits of a 'random' number less than our prime  // TODO: FIX THIS. IT LEAKS ONE BIT
         let zero = saved_instance.protocols.generate_and_share_zero;
-        var bits = [zero(), zero(), zero(), zero()];//[zero(), ...jiff_instance.server_generate_and_share({bit: true, count: n-1})];
+        var bits = [zero(), ...jiff_instance.server_generate_and_share({bit: true, count: bitLength-1})];
 
         var r = saved_instance.protocols.bit_composition(bits);
 
         var deferred = $.Deferred();
         saved_instance.open(r.sadd(s)).then(function(r_plus_s) {
-            console.log("r_plus_s", r_plus_s);
-            var x = [...("0".repeat(Math.ceil(Math.log2(Zp))) + r_plus_s.toString(2)).slice(-n)].reverse().map(e => +e);
+            // console.log("r_plus_s", r_plus_s);
 
-            var diff = csub_bits([...x], bits);
+            // Locally decompose the sum into bits
+            var x = local_decompose(r_plus_s, bitLength);
+            // Compute the bits of s (when r+s<p)
+            let sub_result = csub_bits_safe([...x], bits);  // safe because we keep the last borrow that signifies an overflow
+            var diff = sub_result.diff;
+
+            // Locally decompose the sum into bits
+            var x_plus_p = local_decompose(r_plus_s + Zp, bitLength + 1);
+            // Compute the bits of s (when r+s≥p)
+            var diff_corrected = csub_bits([...x_plus_p], [zero(), ...bits]);  // msb will be zero
+
+            // Check overflow
+            var overflowed = sub_result.overflowed;
+            // diff.map(bit => bit.cadd(overflowed.cmult(  Zp???  )))
+            for (var i = 0; i < bitLength; i++) {
+                diff[i] = overflowed.if_else(diff[i], diff_corrected[i]);
+            }
 
             // Return the array
             deferred.resolve(diff);
@@ -133,6 +154,16 @@
      *  Cost: bits * 2 smult
      */
     function csub_bits(x, y, n = x.length) {
+        return csub_bits_safe(x, y, n).diff;
+    }
+
+    /**
+     *  Compute difference of constant bits and secret bits
+     *  difference[] := constant[] - secret[]
+     *  Returns the difference AND whether or not it overflowed
+     *  Cost: bits * 2 smult
+     */
+    function csub_bits_safe(x, y, n) {
         // initialize difference with correct lsb
         var diff = [y[0].cxor_bit(x[0]), new Array(n-1)];
 
@@ -152,7 +183,7 @@
             diff[i] = diff[i].sxor_bit(last_borrow);
         }
 
-        return diff;
+        return {diff: diff, overflowed: borrow};
     }
 
     /**
