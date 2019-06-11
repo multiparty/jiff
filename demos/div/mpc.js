@@ -24,20 +24,21 @@
     }
 
     /*
-     *  NOTE: NOT CLEANED nor CHECKED
+     *  Secret bit decomposition protocal
+     *  Decompose a secret share into an array of secret shared bits
+     *  Cost: 1 open, 2 ssub_bits, log p if_else, 1 bit_composition
      */
     function bit_decomposition(s) {
         var bitLength = Math.ceil(Math.log2(Zp));  // Ceil not Floor. Note that we subtract 1 later
 
         // generate the bits of a 'random' number less than our prime  // TODO: FIX THIS. IT LEAKS ONE BIT
         let zero = saved_instance.protocols.generate_and_share_zero;
-        var bits = [zero(), ...jiff_instance.server_generate_and_share({bit: true, count: bitLength-1})];
+        var bits = [...saved_instance.server_generate_and_share({bit: true, count: bitLength-1}), zero()];
 
         var r = saved_instance.protocols.bit_composition(bits);
 
         var deferred = $.Deferred();
         saved_instance.open(r.sadd(s)).then(function(r_plus_s) {
-            // console.log("r_plus_s", r_plus_s);
 
             // Locally decompose the sum into bits
             var x = local_decompose(r_plus_s, bitLength);
@@ -45,16 +46,16 @@
             let sub_result = csub_bits_safe([...x], bits);  // safe because we keep the last borrow that signifies an overflow
             var diff = sub_result.diff;
 
-            // Locally decompose the sum into bits
+            // Locally decompose the sum into bits plus our prime
             var x_plus_p = local_decompose(r_plus_s + Zp, bitLength + 1);
             // Compute the bits of s (when r+s≥p)
-            var diff_corrected = csub_bits([...x_plus_p], [zero(), ...bits]);  // msb will be zero
+            var diff_corrected = csub_bits([...x_plus_p], [...bits, zero()]);  // msb will be zero
 
             // Check overflow
             var overflowed = sub_result.overflowed;
             // diff.map(bit => bit.cadd(overflowed.cmult(  Zp???  )))
             for (var i = 0; i < bitLength; i++) {
-                diff[i] = overflowed.if_else(diff[i], diff_corrected[i]);
+                diff[i] = overflowed.if_else(diff_corrected[i], diff[i]);
             }
 
             // Return the array
@@ -69,12 +70,7 @@
      *  Cost:
      */
     function longD(a, b) {
-        // saved_instance.protocols.bit_composition(a).logLEAK('a');
-        // saved_instance.protocols.bit_composition(b).logLEAK('b');
         let n = a.length;
-        console.log("a.length", a.length);
-        console.log("b.length", b.length);
-
         let zero = () => saved_instance.protocols.generate_and_share_zero();
         var q = (new Array(n)).fill(zero()).map(zero);  // quotient
         var r = (new Array(n)).fill(zero()).map(zero);  // remainder
@@ -84,14 +80,11 @@
             // double r and add bit i of a
             r.pop();
             r = [a[i], ...r];
-            // saved_instance.protocols.bit_composition(r).logLEAK('r_' + i);
-            // saved_instance.protocols.bit_composition(b).logLEAK('b_' + i);
 
             // Get the next bit of the quotient
             // and conditionally subtract b from the
             // intermediate remainder to continue
             let cmp = slt_bits(r, b).not();  // sgteq_bits
-            //cmp.logLEAK("comparison" + i);
 
             q[i] = cmp;
 
@@ -99,8 +92,6 @@
             for (var j = 0; j < r.length; j++) {
                 r[j] = cmp.if_else(sub[j], r[j]);
             }
-
-            //saved_instance.protocols.bit_composition(r).logLEAK('r after' + i);
         }
 
         return {quo: q, rem: r};
@@ -163,7 +154,7 @@
      *  Returns the difference AND whether or not it overflowed
      *  Cost: bits * 2 smult
      */
-    function csub_bits_safe(x, y, n) {
+    function csub_bits_safe(x, y, n = x.length) {
         // initialize difference with correct lsb
         var diff = [y[0].cxor_bit(x[0]), new Array(n-1)];
 
@@ -220,6 +211,8 @@
     exports.compute = function (input, part, protocal, jiff_instance) {
         if (jiff_instance == null) {
             jiff_instance = saved_instance;
+        } else {
+            saved_instance = jiff_instance;
         }
 
         // The MPC implementation should go *HERE*
@@ -227,8 +220,6 @@
         var cmp = shares[1].sgt(shares[2]);
         var numerator = cmp.if_else(shares[1], shares[2]);
         var denominator = cmp.if_else(shares[2], shares[1]);
-        numerator.logLEAK("numerator");
-        denominator.logLEAK("denominator");
         var quo;
         var rem;
         var deferred_results = {quo: $.Deferred(), rem: $.Deferred()};
@@ -237,24 +228,11 @@
             console.log("run experimental");
             bit_decomposition(numerator).then(function(numerator_bits){
                 bit_decomposition(denominator).then(function(denominator_bits){
-                    // for (var i = 0; i < numerator_bits.length; i++) {
-                    //     numerator_bits[i].logLEAK("numerator_bits[" + i + "]");
-                    // }
-                    // for (var i = 0; i < denominator_bits.length; i++) {
-                    //     denominator_bits[i].logLEAK("denominator_bits[" + i + "]");
-                    // }
-                    // jiff_instance.protocols.bit_composition(numerator_bits).logLEAK('numerator_bits_value');
-                    // jiff_instance.protocols.bit_composition(denominator_bits).logLEAK('denominator_bits_value');
-                    // jiff_instance.protocols.bit_composition(numerator_bits.reverse()).logLEAK('numerator_reverse_value');
-                    // jiff_instance.protocols.bit_composition(denominator_bits.reverse()).logLEAK('denominator_reverse_value');
                     let out = longD(numerator_bits, denominator_bits);
                     quo = jiff_instance.protocols.bit_composition(out.quo);
                     rem = jiff_instance.protocols.bit_composition(out.rem);
 
-                    //let out = {quo: jiff_instance.protocols.bit_composition(numerator_bits), rem: jiff_instance.protocols.bit_composition(denominator_bits)};
-
                     // Return a promise to the final output(s)
-                    // return {quo: jiff_instance.open(quo), rem: jiff_instance.open(rem)};
                     deferred_results.quo.resolve(quo);
                     deferred_results.rem.resolve(rem);
                 });
@@ -262,14 +240,13 @@
         } else {  // Default
             console.log("run default");
             quo = numerator.sdiv(denominator);
-            rem = jiff_instance.protocols.generate_and_share_zero();
+            rem = jiff_instance.protocols.generate_and_share_zero();  // old sdiv doesn't keep track of the remainder
 
             // Return a promise to the final output(s)
-            // return {quo: jiff_instance.open(quo), rem: jiff_instance.open(rem)};
             deferred_results.quo.resolve(quo);
             deferred_results.rem.resolve(rem);
         }
 
-        return {quo: deferred_results.quo.promise(), rem: deferred_results.rem.promise(), jiff_instance: saved_instance/*jiff_instance*/};
+        return {quo: deferred_results.quo.promise(), rem: deferred_results.rem.promise(), jiff_instance: jiff_instance};
     };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
