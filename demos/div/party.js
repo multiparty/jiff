@@ -35,13 +35,11 @@ options.onConnect = function (jiff_instance) {
         jiff_instance.open(quo).then(function (v) {
             console.log("Finished in " + (new Date() - start_time)/1000 + "s");
             console.log(v);
-            
+
             promise.rem.then(function (rem) {
                 jiff_instance.open(rem).then(function (v) {
                     console.log(v);
-                    // setTimeout(function() {
-                        jiff_instance.disconnect(false, true);
-                    // }, 9000);
+                    jiff_instance.disconnect(false, true);
                 });
             });
         });

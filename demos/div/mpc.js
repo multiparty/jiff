@@ -24,42 +24,59 @@
     }
 
     /*
+     *  Secret Rejection Sampling
+     *  Uniformly sample numbers in the range [0, n)
+     */
+    function rejection_sample(upper_bound = Zp, bitLength = Math.ceil(Math.log2(Zp)), deferred_sampling = $.Deferred()) {
+        var bits = saved_instance.server_generate_and_share({bit: true, count: bitLength});
+        var cmp_lt_ub = saved_instance.protocols.clt_bits(upper_bound+1, bits).not();
+        saved_instance.open(cmp_lt_ub).then(function(cmp_lt_ub) {
+            if (cmp_lt_ub === 1) {
+                deferred_sampling.resolve(bits);
+            } else {
+                console.log("resample");
+                rejection_sample(upper_bound, bitLength, deferred_sampling);
+            }
+        });
+        return deferred_sampling;
+    }
+
+    /*
      *  Secret bit decomposition protocal
      *  Decompose a secret share into an array of secret shared bits
      *  Cost: 1 open, 2 ssub_bits, log p if_else, 1 bit_composition
      */
     function bit_decomposition(s) {
-        var bitLength = Math.ceil(Math.log2(Zp));  // Ceil not Floor. Note that we subtract 1 later
-
-        // generate the bits of a 'random' number less than our prime  // TODO: FIX THIS. IT LEAKS ONE BIT
-        let zero = saved_instance.protocols.generate_and_share_zero;
-        var bits = [...saved_instance.server_generate_and_share({bit: true, count: bitLength-1}), zero()];
-
-        var r = saved_instance.protocols.bit_composition(bits);
+        var bitLength = Math.ceil(Math.log2(Zp));  // ceil not floor. Note that we subtract 1 later
 
         var deferred = $.Deferred();
-        saved_instance.open(r.sadd(s)).then(function(r_plus_s) {
 
-            // Locally decompose the sum into bits
-            var x = local_decompose(r_plus_s, bitLength);
-            // Compute the bits of s (when r+s<p)
-            let sub_result = csub_bits_safe([...x], bits);  // safe because we keep the last borrow that signifies an overflow
-            var diff = sub_result.diff;
+        // generate the bits of a random number less than our prime
+        rejection_sample(Zp, bitLength).promise().then(function (bits) {
+            let r = saved_instance.protocols.bit_composition(bits);
+            saved_instance.open(r.sadd(s)).then(function(r_plus_s) {
 
-            // Locally decompose the sum into bits plus our prime
-            var x_plus_p = local_decompose(r_plus_s + Zp, bitLength + 1);
-            // Compute the bits of s (when r+s≥p)
-            var diff_corrected = csub_bits([...x_plus_p], [...bits, zero()]);  // msb will be zero
+                // Locally decompose the sum into bits
+                var x = local_decompose(r_plus_s, bitLength);
+                // Compute the bits of s (when r+s<p)
+                let sub_result = csub_bits_safe([...x], bits);  // safe because we keep the last borrow that signifies an overflow
+                var diff = sub_result.diff;
 
-            // Check overflow
-            var overflowed = sub_result.overflowed;
-            // diff.map(bit => bit.cadd(overflowed.cmult(  Zp???  )))
-            for (var i = 0; i < bitLength; i++) {
-                diff[i] = overflowed.if_else(diff_corrected[i], diff[i]);
-            }
+                // Locally decompose the sum into bits plus our prime
+                var x_plus_p = local_decompose(r_plus_s + Zp, bitLength + 1);
+                // Compute the bits of s (when r+s≥p)
+                var diff_corrected = csub_bits([...x_plus_p], [...bits, saved_instance.protocols.generate_and_share_zero()]);  // msb will be zero
 
-            // Return the array
-            deferred.resolve(diff);
+                // Check overflow
+                var overflowed = sub_result.overflowed;
+                // diff.map(bit => bit.cadd(overflowed.cmult(  Zp???  )))
+                for (var i = 0; i < bitLength; i++) {
+                    diff[i] = overflowed.if_else(diff_corrected[i], diff[i]);
+                }
+
+                // Return the array
+                deferred.resolve(diff);
+            });
         });
 
         return deferred.promise();

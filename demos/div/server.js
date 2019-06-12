@@ -16,5 +16,5 @@ http.listen(8080, function () {
 });
 
 console.log('Direct your browser to *:8080/demos/div/client.html.');
-console.log('To run a node.js based party: node demos/div/party <input>');
+console.log('To run a node.js based party: node demos/div/party <input> [<modulus> [<protocal> [<computation id>]]]]');
 console.log();
