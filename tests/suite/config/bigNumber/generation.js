@@ -22,22 +22,4 @@ baseGeneration.generateMultiple = function (test, options, factor) {
   return coef.times(factor);
 };
 
-exports.generateShareInputs = function (test, count, options) {
-  return baseGeneration.generateShareInputs(test, count, options);
-};
-
-exports.generateArithmeticInputs = function (test, count, options) {
-  return baseGeneration.generateArithmeticInputs(test, count, options);
-};
-
-exports.generateConstantArithmeticInputs = function (test, count, options) {
-  return baseGeneration.generateConstantArithmeticInputs(test, count, options);
-};
-
-exports.generateComparisonInputs = function (test, count, options) {
-  return baseGeneration.generateComparisonInputs(test, count, options);
-};
-
-exports.generateConstantComparisonInputs = function (test, count, options) {
-  return baseGeneration.generateConstantComparisonInputs(test, count, options);
-};
+module.exports = baseGeneration;

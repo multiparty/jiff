@@ -105,3 +105,5 @@ exports.generateConstantComparisonInputs = function (test, count, options) {
   isConstant = true;
   return baseGeneration.generateConstantComparisonInputs(test, count, options);
 };
+
+exports.generateIfElseInputs = baseGeneration.generateIfElseInputs;

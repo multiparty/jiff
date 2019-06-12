@@ -21,11 +21,13 @@ env:
 - TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
 - TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
 - TEST_NAME='fixedpoint' TEST_SUITE='comparison'
+- TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
 - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='share'
 - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='arithmetic'
 - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant arithmetic'
 - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant comparison'
 - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='comparison'
+- TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
 script:
 - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
 - if [ "$DEMOS" == "TRUE" ]; then npm run-script test-demo -- \*; else npm run test -- "$TEST_NAME" "$TEST_SUITE"; fi

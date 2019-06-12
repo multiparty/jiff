@@ -220,3 +220,17 @@ exports.generateConstantComparisonInputs = function (test, count, options) {
 
   return inputs;
 };
+
+// If Else: generate random bit b and two random numbers x1, x2
+// Return {1: b, 2: x1, 3: x3}
+exports.generateIfElseInputs = function (test, count, options) {
+  var inputs = [];
+  for (var t = 0; t < count; t++) {
+    var oneInput = {};
+    oneInput[1] = exports.generateBit(test, options);
+    oneInput[2] = exports.generateUniform(test, options);
+    oneInput[3] = exports.generateUniform(test, options);
+    inputs.push(oneInput);
+  }
+  return inputs;
+};

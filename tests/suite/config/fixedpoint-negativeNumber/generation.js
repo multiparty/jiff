@@ -5,7 +5,7 @@ BigNumber.config({ DECIMAL_PLACES: 131 });
 // Reuse base generation but with different underlying generation methods
 var baseGeneration = require('../base/generation.js');
 
-// functions specific to fixedpoint
+// functions specific to fixedpoint and negative number
 var isConstant;
 function determineMax(test, party_count, integer_digits, decimal_digits) {
   var max = new BigNumber(10).pow(integer_digits + decimal_digits);
@@ -91,3 +91,5 @@ exports.generateConstantComparisonInputs = function (test, count, options) {
   isConstant = true;
   return baseGeneration.generateConstantComparisonInputs(test, count, options);
 };
+
+exports.generateIfElseInputs = baseGeneration.generateIfElseInputs;

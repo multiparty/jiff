@@ -3,7 +3,7 @@ var BigNumber = require('bignumber.js');
 // Reuse base generation but with different underlying generation methods
 var baseGeneration = require('../base/generation.js');
 
-// functions specific to fixedpoint
+// functions specific to negative number
 var isConstant;
 function determineMax(test, party_count, Zp) {
   var max = BigNumber(Zp).div(2).floor();
@@ -71,3 +71,5 @@ exports.generateConstantComparisonInputs = function (test, count, options) {
   isConstant = true;
   return baseGeneration.generateConstantComparisonInputs(test, count, options);
 };
+
+exports.generateIfElseInputs = baseGeneration.generateIfElseInputs;

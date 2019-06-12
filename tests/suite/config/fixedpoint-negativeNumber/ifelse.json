@@ -1,0 +1,29 @@
+{
+  "tests": [ "sif_else", "s1if_else", "s2if_else", "cif_else" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "bigNumber", "fixedpoint", "negativeNumber" ],
+    "generation": {
+      "file": "config/fixedpoint-negativeNumber/generation.js",
+      "function": "generateIfElseInputs"
+    },
+    "computation": {
+      "file": "computations-ifelse.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 20,
+      "parallel": 5,
+      "options": {
+        "Zp": 32749,
+        "party_count": 3,
+        "decimal_digits": 2,
+        "integer_digits": 2,
+        "warn": false
+      }
+    }
+  }
+}
