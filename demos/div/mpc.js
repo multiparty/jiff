@@ -83,6 +83,7 @@
     }
 
     /**
+     *  Long Division
      *  Compute q in a=q*b+r where p > a ≥ b > 0
      *  Cost:
      */
@@ -101,13 +102,14 @@
             // Get the next bit of the quotient
             // and conditionally subtract b from the
             // intermediate remainder to continue
-            let cmp = slt_bits(r, b).not();  // sgteq_bits
+            let sub_result = ssub_bits_safe(r, b);  // safe because we keep the last borrow that signifies an overflow
+            let cmp = sub_result.overflowed.not();  // sgteq_bits(r, b)
+            let r_minus_b = sub_result.diff;
 
             q[i] = cmp;
 
-            let sub = ssub_bits(r, b);
             for (var j = 0; j < r.length; j++) {
-                r[j] = cmp.if_else(sub[j], r[j]);
+                r[j] = cmp.if_else(r_minus_b[j], r[j]);
             }
         }
 
@@ -129,10 +131,20 @@
     }
 
     /**
-     *  Compute difference of secret bits
+     *  Compute difference of two arrays of secret bits
+     *  Note: Final borrow is 1 if invalid/negative
      *  Cost: bits * 4 smult
      */
     function ssub_bits(x, y, n = x.length) {
+        return ssub_bits_safe(x, y, n).diff;
+    }
+
+    /**
+     * Compute difference of two arrays of secret bits
+     *  Returns the difference AND whether or not it overflowed
+     *  Cost: bits * 4 smult
+     */
+    function ssub_bits_safe(x, y, n = x.length) {
         // initialize difference with correct lsb
         var diff = [x[0].sxor_bit(y[0]), new Array(n-1)];
 
@@ -152,7 +164,7 @@
             diff[i] = diff[i].sxor_bit(last_borrow);
         }
 
-        return diff;
+        return {diff: diff, overflowed: borrow};
     }
 
     /**
@@ -222,7 +234,15 @@
         return sum;
     }
 
+    /**
+     *  Compute the product of secret bits
+     *  Note: Overflow is irrelevant
+     *        The full result is calculated and bit_composition
+     *        if/when done later will wrap it around automatically
+     *  Cost: (2 * bits + 4) * bits smult
+     */
     function smult_bits(a, b, n = a.length) {
+        let z = saved_instance.protocols.generate_and_share_zero();
         let zero = () => saved_instance.protocols.generate_and_share_zero();
 
         // Initialize the product c with lg(a)+lg(b) bits
@@ -230,13 +250,15 @@
 
         // Shift b to create the intermediate values,
         // and sum if the corresponding bit in a is 1
-        var tmp = [];
+        var intermediate = (new Array(n)).fill([]);
         for (var i = 0; i < n; i++) {
-            tmp[i] = sadd_bits(c, [...(new Array(i)).fill(zero()), ...b, ...(new Array(n-i)).fill(zero())]);
-
-            for (var j = i; j < n+i; j++) {
-                c[j] = a[i].if_else(tmp[i][j], c[j]);
+            for (var j = 0; j < n; j++) {
+                intermediate[i][j] = a[i].if_else(b[j], z);
             }
+        }
+
+        for (var i = 0; i < n; i++) {
+            c = sadd_bits(c, [...(new Array(i)).fill(zero()), ...intermediate[i], ...(new Array(n-i)).fill(zero())]);
         }
 
         return c;
@@ -257,17 +279,17 @@
         var cmp = shares[1].sgt(shares[2]);
         var numerator = cmp.if_else(shares[1], shares[2]);
         var denominator = cmp.if_else(shares[2], shares[1]);
-        var quo;
-        var rem;
+
         var deferred_results = {quo: $.Deferred(), rem: $.Deferred()};
         console.log("protocal: " + protocal);
         if (protocal === "experimental 1") {
             console.log("run experimental");
+
             bit_decomposition(numerator).then(function(numerator_bits){
                 bit_decomposition(denominator).then(function(denominator_bits){
                     let out = longD(numerator_bits, denominator_bits);
-                    quo = jiff_instance.protocols.bit_composition(out.quo);
-                    rem = jiff_instance.protocols.bit_composition(out.rem);
+                    var quo = jiff_instance.protocols.bit_composition(out.quo);
+                    var rem = jiff_instance.protocols.bit_composition(out.rem);
 
                     // Return a promise to the final output(s)
                     deferred_results.quo.resolve(quo);
@@ -276,8 +298,9 @@
             });
         } else {  // Default
             console.log("run default");
-            quo = numerator.sdiv(denominator);
-            rem = jiff_instance.protocols.generate_and_share_zero();  // old sdiv doesn't keep track of the remainder
+
+            var quo = numerator.sdiv(denominator);
+            var rem = jiff_instance.protocols.generate_and_share_zero();  // old sdiv doesn't keep track of the remainder
 
             // Return a promise to the final output(s)
             deferred_results.quo.resolve(quo);
