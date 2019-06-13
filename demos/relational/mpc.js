@@ -21,25 +21,17 @@
   };
 
   /**
-   * The MPC computation
+   * Testing relational functions
    */
-  exports.test_map = function(arr, jiff_instance) {
+  exports.test_map_eq = function(arr, jiff_instance) {
     var deferred = $.Deferred();
-    var promise = deferred.promise();
     var allPromisedResults = [];
 
     jiff_instance.share_array(arr, arr.length).then( function(shares) {
-        //var result = jiff_instance.helpers.map(shares[1], function(s) { return s; });
-        // todo these are not what I expected. figure out what these are and who they belong to
-        // (and why they refuse to resolve
-        var real_array = shares[1];
-        var empty_array = shares[2];
-        var empty_array2 = shares[3];
-        console.log('lens from 1 2 3:', real_array.length, empty_array.length, empty_array2.length);
+        var result = jiff_instance.helpers.map(shares[1], function(s) { return s.eq(s); });
  
         // process array of outputs
         for(var i = 0; i<result.length; i++){
-          result[i].logLEAK("output"+i);
           allPromisedResults.push(jiff_instance.open(result[i]));
         }
 
@@ -47,8 +39,32 @@
             deferred.resolve(results);
         });
     });
+    return deferred.promise();;
+  }
 
-    return promise;
+  exports.test_map_square = function(arr, jiff_instance) {
+    var deferred = $.Deferred();
+    var allPromisedResults = [];
+
+    jiff_instance.share_array(arr, arr.length).then( function(shares) {
+        var sums = shares[1];
+        for (var i=0; i<sums.length; i++) {
+          for (var p=2; p<jiff_instance.party_count; p++) {
+            sums[i] = sums[i].sadd( shares[p][i] );
+          }
+        }
+        var result = jiff_instance.helpers.map(sums, function(s) { return s.smult(s); });
+ 
+        // process array of outputs
+        for(var i = 0; i<result.length; i++){
+          allPromisedResults.push(jiff_instance.open(result[i]));
+        }
+
+        Promise.all(allPromisedResults).then(function (results) {
+            deferred.resolve(results);
+        });
+    });
+    return deferred.promise();;
 
   }
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
