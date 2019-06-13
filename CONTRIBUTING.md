@@ -15,7 +15,7 @@ Welcome! These are the guidelines for contributing to JIFF. Feel free to propose
 ### What do I need to know to help? ###
 If you are interested in making a code contribution to JIFF, the project is entirely written in JavaScript. If you would like to become more familiar with MPC protocols and the cryptographic tools underlying JIFF, there are a variety of resources to check out:
 
-* [A Pragmatic Introduction to Secure Multi-Pary Computation](https://securecomputation.org/)
+* [A Pragmatic Introduction to Secure Multi-Party Computation](https://securecomputation.org/)
 * [Example of a real-world software deployment that uses JIFF](https://github.com/multiparty/web-mpc)
 * [JIFF Documentation](https://multiparty.org/jiff/docs/jsdoc/)
 * [JIFF Presentation at DIMACS/MACS Workshop](https://www.youtube.com/watch?v=S-IkyOEgrfI)
