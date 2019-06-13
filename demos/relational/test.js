@@ -22,9 +22,9 @@ var maxLength = 10;
  *   'party_id': [ 'test1_input', 'test2_input', ...]
  * }
  *
- * In this setting, each input is a single integer.
+ * Here, party 1 has a random array and parties 2-party_count have all 0s
  */
-function generateMapInput(party_count) {
+function generateInput(party_count) {
   var inputs = {};
 
   for (var i=1; i<=party_count; i++) {
@@ -54,19 +54,20 @@ function generateMapInput(party_count) {
  * @param {object} inputs - same format as generateInputs output.
  * Should return a single array with the expected result for every test in order
  *   [ 'test1_output', 'test2_output', ... ]
+ *
+ *  pairwise sums party inputs and maps fun over resulting array
  */
 function computeMapResults(inputs, fun) {
   var results = [];
-  // test loop
   for (var t=0; t<n; t++) {
-
+    // sum parallel arrays
     var arr = inputs[1][t];
     for(var p=2; p<=party_count; p++) {
       for(var i=0; i<arr.length; i++) {
         arr[i] += inputs[p][t][i];
       }
     }
-
+    // apply map function
     var res = [];
     for(var i=0; i<arr.length; i++) {
       res.push(fun(arr[i]));
@@ -76,30 +77,54 @@ function computeMapResults(inputs, fun) {
   return results;
 }
 
+/*
+ * pairwise sums party inputs and filters out element that don't satisfy fun
+ * replacing them with nil
+ */
+function computeFilterResults(inputs, fun, nil){
+  var results = [];
+  for (var t=0; t<n; t++) {
+    // sum parallel arrays
+    var arr = inputs[1][t];
+    for(var p=2; p<=party_count; p++) {
+      for(var i=0; i<arr.length; i++) {
+        arr[i] += inputs[p][t][i];
+      }
+    }
+    // apply filter
+    var res = [];
+    for(var i=0; i<arr.length; i++) {
+      res.push(fun(arr[i])?arr[i]:nil);
+    }
+    results.push(res);
+  }
+  return results;
+}
+
 function genericTest(gen_f, compute_f, mpc_f, done, testname) {
   var count = 0;
 
-  var mapInputs = gen_f(party_count);
-  var expected_mapResults = computeMapResults(mapInputs, compute_f);
+  var inputs = gen_f(party_count);
+  var expected_results = compute_f(inputs);
 
   var onConnect = function (jiff_instance) {
-    var partyInputs = mapInputs[jiff_instance.id];
+    var partyInputs = inputs[jiff_instance.id];
 
-    var mapResults = [];
+    var actual_results = [];
     (function one_test_case(j) {
       if (jiff_instance.id === 1 && showProgress) {
         console.log('\tStart ', j > partyInputs.length ? partyInputs.length : j, '/', partyInputs.length);
       }
 
       if (j < partyInputs.length) {
-        var map_promises = [];
+        var promises = [];
         for (var t = 0; t < parallelismDegree && (j + t) < partyInputs.length; t++) {
-          map_promises.push(mpc_f(partyInputs[j+t], jiff_instance));
+          promises.push(mpc_f(partyInputs[j+t], jiff_instance));
         }
 
-        Promise.all(map_promises).then(function (results) {
+        Promise.all(promises).then(function (results) {
           for (var t = 0; t < results.length; t++) {
-            mapResults.push(results[t]);
+            actual_results.push(results[t]);
           }
           one_test_case(j+parallelismDegree);
         });
@@ -109,17 +134,17 @@ function genericTest(gen_f, compute_f, mpc_f, done, testname) {
 
       // If we reached here, it means we are done
       count++;
-      for (var i = 0; i < mapResults.length; i++) {
+      for (var i = 0; i < actual_results.length; i++) {
         // construct debugging message
-        var ithInputs = mapInputs[1][i] + '';
+        var ithInputs = inputs[1][i] + '';
         for (var p = 2; p <= party_count; p++) {
-          ithInputs += ',' + mapInputs[p][i];
+          ithInputs += ',' + inputs[p][i];
         }
         var msg = 'Party: ' + jiff_instance.id + '. inputs: [' + ithInputs + ']';
 
         // assert results are accurate
         try {
-          assert.equal(expected_mapResults[i].toString(), mapResults[i].toString(), msg);
+          assert.equal(expected_results[i].toString(), actual_results[i].toString(), msg);
         } catch (assertionError) {
           done(assertionError);
           done = function () {
@@ -142,25 +167,56 @@ function genericTest(gen_f, compute_f, mpc_f, done, testname) {
 
 }
 
-/**
- * Do not change unless you have to.
- */
 // eslint-disable-next-line no-undef
-describe('Test', function () {
+describe('Map', function () {
   this.timeout(0); // Remove timeout
 
-  it('Map Square Test', function(done) {
-    gen_f = generateMapInput;
-    compute_f = function(x) { return x * x; };
+  it('Square Test', function(done) {
+    gen_f = generateInput;
+    compute_f = function(inputs) {
+      return computeMapResults(inputs, function(x) { return x * x; });
+    }
     mpc_f = mpc.test_map_square;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-square');
   });
 
-  it('Map Equality Test', function(done) {
-    gen_f = generateMapInput;
-    compute_f = function(x) { return (x===x)?1:0; };
+  it('Equality Test', function(done) {
+    gen_f = generateInput;
+    compute_f = function(inputs) {
+      return computeMapResults(inputs, function(x) { return (x===x)?1:0; });
+    };
     mpc_f = mpc.test_map_eq;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-equality');
   });
+});
 
+describe('Filter', function () {
+  this.timeout(0);
+
+  it('None Test', function(done) {
+    gen_f = generateInput;
+    compute_f = function(inputs) {
+      return computeFilterResults(inputs, function(x) { return true; }, 0);
+    };
+    mpc_f = mpc.test_filter_none;
+    genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-filter-none');
+  });
+
+  it('All Test', function(done) {
+    gen_f = generateInput;
+    compute_f = function(inputs) {
+      return computeFilterResults(inputs, function(x) { return false; }, 0);
+    };
+    mpc_f = mpc.test_filter_all;
+    genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-filter-all');
+  });
+
+  it('Some Test', function(done) {
+    gen_f = generateInput;
+    compute_f = function(inputs) {
+      return computeFilterResults(inputs, function(x) { return x>50; }, 0);
+    };
+    mpc_f = mpc.test_filter_some;
+    genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-filter-some');
+  });
 });
