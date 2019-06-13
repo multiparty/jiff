@@ -222,6 +222,26 @@
         return sum;
     }
 
+    function smult_bits(a, b, n = a.length) {
+        let zero = () => saved_instance.protocols.generate_and_share_zero();
+
+        // Initialize the product c with lg(a)+lg(b) bits
+        var c = (new Array(2*n)).fill(zero()).map(zero);
+
+        // Shift b to create the intermediate values,
+        // and sum if the corresponding bit in a is 1
+        var tmp = [];
+        for (var i = 0; i < n; i++) {
+            tmp[i] = sadd_bits(c, [...(new Array(i)).fill(zero()), ...b, ...(new Array(n-i)).fill(zero())]);
+
+            for (var j = i; j < n+i; j++) {
+                c[j] = a[i].if_else(tmp[i][j], c[j]);
+            }
+        }
+
+        return c;
+    }
+
     /**
      * The MPC computation
      */
