@@ -209,6 +209,7 @@
     /**
      *  Compute sum of secret bits
      *  Note: Final carry is 1 if overflowed, 0 otherwise
+     *        and the sum n+1 bits not n
      *  Cost: bits * 4 smult
      */
     function sadd_bits(x, y, n = x.length) {
@@ -231,7 +232,35 @@
             sum[i] = sum[i].sxor_bit(last_carry);
         }
 
-        return sum;
+        return sum.concat(carry);
+    }
+
+    /**
+     *  Compute sum of secret bits with constant bits
+     *  Note: The sum n+1 bits not n
+     *  Cost: bits * 4 smult
+     */
+    function cadd_bits(x, y, n = x.length) {
+        // initialize difference with correct lsb
+        var sum = [x[0].cxor_bit(y[0]), new Array(n-1)];
+
+        // initialize first carried bit
+        var carry = x[0].cmult(y[0]);
+
+        // loop over the remaining bits
+        for (var i = 1; i < n; i++) {
+            // single digit addition
+            sum[i] = x[i].cxor_bit(y[i]);
+
+            // save and update carry
+            let last_carry = carry;
+            carry = x[i].cmult(y[i]).sor_bit(x[i].cxor_bit(y[i]).smult(carry));
+
+            // add the last carry
+            sum[i] = sum[i].sxor_bit(last_carry);
+        }
+
+        return sum.concat(carry);
     }
 
     /**
@@ -259,6 +288,27 @@
 
         for (var i = 0; i < n; i++) {
             c = sadd_bits(c, [...(new Array(i)).fill(zero()), ...intermediate[i], ...(new Array(n-i)).fill(zero())]);
+        }
+
+        return c;
+    }
+
+    /**
+     *  Compute the product of secret bits with constant bits
+     *  Cost: 4 * bits^2 smult
+     */
+    function cmult_bits(a, b, n = a.length) {
+        let zero = () => saved_instance.protocols.generate_and_share_zero();
+
+        // Initialize the product c with lg(a)+lg(b) bits
+        var c = (new Array(2*n)).fill(zero()).map(zero);
+
+        // Shift b to create the intermediate values,
+        // and sum if the corresponding bit in a is 1
+        for (var i = 0; i < n; i++) {
+            if (b[i]) {
+                c = sadd_bits(c, [...(new Array(i)).fill(zero()), ...a, ...(new Array(n-i)).fill(zero())]);
+            }
         }
 
         return c;
