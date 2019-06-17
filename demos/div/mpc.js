@@ -112,6 +112,31 @@
                 r[j] = cmp.if_else(r_minus_b[j], r[j]);
             }
         }
+    function cdiv_bits(a, b) {
+        let n = a.length;
+        let zero = () => saved_instance.protocols.generate_and_share_zero();
+        var q = (new Array(n)).fill(zero()).map(zero);  // quotient
+        var r = (new Array(n)).fill(zero()).map(zero);  // remainder
+
+        // loop over each bit
+        for (var i = n-1; i >= 0; i--) {
+            // double r and add bit i of a
+            r.pop();
+            r = [a[i], ...r];
+
+            // Get the next bit of the quotient
+            // and conditionally subtract b from the
+            // intermediate remainder to continue
+            let sub_result = csub_cbits_safe(r, b);  // safe because we keep the last borrow that signifies an overflow
+            let cmp = sub_result.overflowed.not();  // sgteq_cbits(r, b)
+            let r_minus_b = sub_result.diff;
+
+            q[i] = cmp;
+
+            for (var j = 0; j < r.length; j++) {
+                r[j] = cmp.if_else(r_minus_b[j], r[j]);
+            }
+        }
 
         return {quo: q, rem: r};
     }
@@ -198,6 +223,45 @@
             // save and update borrow
             let last_borrow = borrow;
             borrow = diff[i].not().smult(borrow).sadd(y[i].cmult(1-x[i]));
+
+            // disclude last borrow
+            diff[i] = diff[i].sxor_bit(last_borrow);
+        }
+
+        return {diff: diff, overflowed: borrow};
+    }
+
+    /**
+     *  Compute difference of constant bits and secret bits
+     *  difference[] := secret[] - constant[]
+     *  Note: Final borrow is 1 if invalid/negative
+     *  Cost: bits * 2 smult
+     */
+    function csub_cbits(x, y, n = x.length) {
+        return csub_cbits_safe(x, y, n).diff;
+    }
+
+    /**
+     *  Compute difference of constant bits and secret bits
+     *  difference[] := secret[] - constant[]
+     *  Returns the difference AND whether or not it overflowed
+     *  Cost: bits * 2 smult
+     */
+    function csub_cbits_safe(x, y, n = x.length) {
+        // initialize difference with correct lsb
+        var diff = [x[0].cxor_bit(y[0]), new Array(n-1)];
+
+        // initialize first borrowed bit
+        var borrow = x[0].not().cmult(y[0]);
+
+        // loop over the remaining bits
+        for (var i = 1; i < n; i++) {
+            // single digit subtraction
+            diff[i] = x[i].cxor_bit(y[i]);
+
+            // save and update borrow
+            let last_borrow = borrow;
+            borrow = diff[i].not().smult(borrow).sadd(x[i].not().cmult(y[i]));
 
             // disclude last borrow
             diff[i] = diff[i].sxor_bit(last_borrow);
