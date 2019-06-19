@@ -378,6 +378,31 @@
         return c;
     }
 
+    function local_compose(bits) {
+        var number = 0;
+        for (var i = bits.length-1; i >= 0; i--) {
+            number <<=1;
+            number += bits[i];
+        }
+        return number;
+    }
+
+    function open_bits_to_array(bits) {
+        var opened = [];
+        for (var i = 0; i < bits.length; i++) {
+            opened[i] = saved_instance.open(bits[i]);
+        }
+        return opened;
+    }
+
+    function open_bits(bits) {
+        var deferred_number = $.Deferred();
+        Promise.all(open_bits_to_array(bits)).then(function (bits) {
+            deferred_number.resolve(local_compose(bits));
+        });
+        return deferred_number.promise();
+    }
+
     /**
      * The MPC computation
      */
