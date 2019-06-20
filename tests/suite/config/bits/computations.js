@@ -68,34 +68,33 @@ baseComputations.mpcInterpreter['%'] = function (operand1, operand2) {
 
 // Wrap single compute function with calls to bit_decomposition and bit_composition
 var oldSingleCompute = baseComputations.singleCompute;
-baseComputations.singleCompute = async function (test, values, interpreter) {
-  try {
-    if (interpreter === baseComputations.mpcInterpreter) {
-      values = Object.assign({}, values);
-
-      for (var p in values) {
-        if (!values.hasOwnProperty(p) || values[p] == null || p === 'constant') {
-          continue;
-        }
-
-        if (testConfig.decompose == null || testConfig.decompose.indexOf(p) > -1) {
-          values[p] = await values[p].bit_decomposition();
-        }
-      }
-    }
-
-    var result = await oldSingleCompute(test, values, interpreter);
-    if (interpreter === baseComputations.mpcInterpreter) {
-      result = result[0].jiff.protocols.bits.bit_composition(result);
-    } else {
-      result = result % Zp;
-    }
-    return result;
-  } catch (err) {
-    console.log(err);
-    throw err;
+baseComputations.singleCompute = function (test, values, interpreter) {
+  if (interpreter === baseComputations.openInterpreter) {
+    return oldSingleCompute(test, values, interpreter) % Zp;
   }
-}
+
+  var keys = Object.keys(values);
+  var bits = [];
+  var promises = [];
+  for (var i = 0; i < keys.length; i++) {
+    bits[i] = values[keys[i]];
+    if (bits[i] != null && (testConfig['decompose'] == null || testConfig['decompose'].indexOf(keys[i]) > -1)) {
+      bits[i] = bits[i].bit_decomposition();
+      (function (i) {
+        bits[i] = bits[i].then(function (decomposition) {
+          bits[i] = decomposition;
+          return true;
+        });
+      })(i);
+      promises.push(bits[i]);
+    }
+  }
+
+  return Promise.all(promises).then(function () {
+    var result = oldSingleCompute(test, bits, interpreter);
+    return result[0].jiff.protocols.bits.bit_composition(result);
+  });
+};
 
 // Default Computation Scheme
 exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done, _testConfig) {

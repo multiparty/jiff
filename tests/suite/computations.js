@@ -145,7 +145,7 @@ exports.openInterpreter = {
 };
 
 // Interpret the computation on the given values
-exports.singleCompute = async function (test, values, interpreter) {
+exports.singleCompute = function (test, values, interpreter) {
   try {
     var func = interpreter[test];
 
@@ -159,24 +159,24 @@ exports.singleCompute = async function (test, values, interpreter) {
     indices.sort();
 
     // Compute
-    var result = await func(values[indices[0]], values[indices[1]]);
+    var result = func(values[indices[0]], values[indices[1]]);
     for (var i = 2; i < indices.length; i++) {
-      result = await func(result, values[indices[i]]);
+      result = func(result, values[indices[i]]);
     }
     return result;
   } catch (err) {
     console.log(err);
     errors.push(err);
   }
-}
+};
 
 // Run a single test case under MPC and in the open and compare the results
-async function singleTest(jiff_instance, t) {
+function singleTest(jiff_instance, t) {
   try {
     var testInputs = inputs[t];
 
     // Compute in the Open
-    var actualResult = await exports.singleCompute(test, testInputs, exports.openInterpreter);
+    var actualResult = exports.singleCompute(test, testInputs, exports.openInterpreter);
 
     // Figure out who is sharing
     var input = testInputs[jiff_instance.id];
@@ -192,21 +192,42 @@ async function singleTest(jiff_instance, t) {
     var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
     var shares = jiff_instance.share(input, threshold, null, senders);
     shares['constant'] = testInputs['constant'];
-    var mpcResult = await exports.singleCompute(test, shares, exports.mpcInterpreter);
+    var mpcResult = exports.singleCompute(test, shares, exports.mpcInterpreter);
     if (mpcResult == null) {
       return null;
     }
 
-    return mpcResult.open().then(function (mpcResult) {
-      // Assert both results are equal
-      if (actualResult.toString() !== mpcResult.toString()) {
-        if (jiff_instance.id === 1) {
-          errors.push(myJoin(senders, testInputs, test) + ' != ' + mpcResult.toString() + ' ----- Expected ' + actualResult.toString());
+    var openAndVerify = function (mpcResult) {
+      return mpcResult.open().then(function (mpcResult) {
+        try {
+          // Assert both results are equal
+          if (actualResult.toString() !== mpcResult.toString()) {
+            if (jiff_instance.id === 1) {
+              errors.push(myJoin(senders, testInputs, test) + ' != ' + mpcResult.toString() + ' ----- Expected ' + actualResult.toString());
+            }
+          }/* else if (jiff_instance.id === 1) {
+            console.log(myJoin(senders, testInputs, test) + ' = ' + mpcResult.toString());
+          }*/
+        } catch (err) {
+          errors.push(err);
         }
-      }/* else if (jiff_instance.id === 1) {
-        console.log(myJoin(senders, testInputs, test) + ' = ' + mpcResult.toString());
-      }*/
-    });
+      });
+    };
+
+    if (mpcResult.then != null) { // returned a promise
+      return new Promise(function (resolve) {
+        mpcResult.then(function (mpcResult) {
+          var openPromise = openAndVerify(mpcResult);
+          if (openPromise == null) {
+            resolve();
+          } else {
+            openPromise.then(resolve);
+          }
+        });
+      });
+    }
+
+    return openAndVerify(mpcResult);
   } catch (err) {
     errors.push(err);
   }
@@ -221,7 +242,7 @@ async function batchTest(jiff_instance) {
       jiff_instance.start_barrier();
     }
 
-    var promise = await singleTest(jiff_instance, t);
+    var promise = singleTest(jiff_instance, t);
     jiff_instance.add_to_barriers(promise);
 
     if (t % testParallel === testParallel - 1 || t === inputs.length - 1) {
