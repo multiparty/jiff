@@ -145,7 +145,7 @@ exports.openInterpreter = {
 };
 
 // Interpret the computation on the given values
-function compute(test, values, interpreter) {
+exports.singleCompute = async function (test, values, interpreter) {
   try {
     var func = interpreter[test];
 
@@ -159,9 +159,9 @@ function compute(test, values, interpreter) {
     indices.sort();
 
     // Compute
-    var result = func(values[indices[0]], values[indices[1]]);
+    var result = await func(values[indices[0]], values[indices[1]]);
     for (var i = 2; i < indices.length; i++) {
-      result = func(result, values[indices[i]]);
+      result = await func(result, values[indices[i]]);
     }
     return result;
   } catch (err) {
@@ -171,12 +171,12 @@ function compute(test, values, interpreter) {
 }
 
 // Run a single test case under MPC and in the open and compare the results
-function singleTest(jiff_instance, t) {
+async function singleTest(jiff_instance, t) {
   try {
     var testInputs = inputs[t];
 
     // Compute in the Open
-    var actualResult = compute(test, testInputs, exports.openInterpreter);
+    var actualResult = await exports.singleCompute(test, testInputs, exports.openInterpreter);
 
     // Figure out who is sharing
     var input = testInputs[jiff_instance.id];
@@ -192,7 +192,7 @@ function singleTest(jiff_instance, t) {
     var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
     var shares = jiff_instance.share(input, threshold, null, senders);
     shares['constant'] = testInputs['constant'];
-    var mpcResult = compute(test, shares, exports.mpcInterpreter);
+    var mpcResult = await exports.singleCompute(test, shares, exports.mpcInterpreter);
     if (mpcResult == null) {
       return null;
     }
@@ -221,7 +221,7 @@ async function batchTest(jiff_instance) {
       jiff_instance.start_barrier();
     }
 
-    var promise = singleTest(jiff_instance, t);
+    var promise = await singleTest(jiff_instance, t);
     jiff_instance.add_to_barriers(promise);
 
     if (t % testParallel === testParallel - 1 || t === inputs.length - 1) {

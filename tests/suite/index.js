@@ -64,7 +64,7 @@ describe(name + ': ' + suite, function () {
 
         // Create and run instances
         options.onConnect = function (jiff_instance) {
-          computation(jiff_instance, alias, inputs, testParallel, done);
+          computation(jiff_instance, alias, inputs, testParallel, done, testConfig);
         };
         init.createInstances(party_count, port, computation_id, options, extensions);
       });

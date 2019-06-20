@@ -1,0 +1,77 @@
+{
+  "tests": [ "decomposition2-127", "decomposition2-15485867", "decomposition3-127", "decomposition3-15485867", "decomposition5-127", "decomposition5-2039" ],
+  "suiteConf": {
+    "port": 3001,
+    "generation": {
+      "file": "config/bits/generation.js",
+      "function": "generateDecomposition"
+    },
+    "computation": {
+      "file": "config/bits/computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "decomposition2-127": {
+      "alias": "decomposition",
+      "count": 20,
+      "parallel": 5,
+      "decomposition": [1],
+      "options": {
+        "Zp": 127,
+        "party_count": 2
+      }
+    },
+    "decomposition2-15485867": {
+      "alias": "decomposition",
+      "count": 8,
+      "parallel": 3,
+      "decomposition": [1],
+      "options": {
+        "Zp": 15485867,
+        "party_count": 2
+      }
+    },
+    "decomposition3-127": {
+      "alias": "decomposition",
+      "count": 20,
+      "parallel": 5,
+      "decomposition": [1],
+      "options": {
+        "Zp": 127,
+        "party_count": 3
+      }
+    },
+    "decomposition3-15485867": {
+      "alias": "decomposition",
+      "count": 8,
+      "parallel": 3,
+      "decomposition": [1],
+      "options": {
+        "Zp": 15485867,
+        "party_count": 3
+      }
+    },
+    "decomposition5-127": {
+      "alias": "decomposition",
+      "count": 20,
+      "parallel": 5,
+      "decomposition": [1],
+      "options": {
+        "Zp": 127,
+        "party_count": 3
+      }
+    },
+    "decomposition5-2039": {
+      "alias": "decomposition",
+      "count": 5,
+      "parallel": 2,
+      "decomposition": [1],
+      "options": {
+        "Zp": 2039,
+        "party_count": 5
+      }
+    }
+  }
+}
