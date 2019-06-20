@@ -4,6 +4,8 @@
 
 JIFF is a JavaScript library for builing applications that rely on secure multi-party computation. JIFF is built to be highly flexible with a focus on usability, with the ability to be run in the browser, on mobile phones, or via node.js. JIFF is designed so that developers need not be familiar with MPC techniques or know the details of cryptographic protocols in order to build secure applications.
 
+# For Developers
+
 ## Requirements
 
 ### Server
@@ -128,7 +130,14 @@ Run the bignumber test suite in the following way:
 npm run-script test-bignumber
 ```
 
-### Costs of Operations:
+## How to Contribute
+Check out our contribution guidelines and resources @ [CONTRIBUTING.md](CONTRIBUTING.md).
+
+# For Cryptographers
+
+## Security Model and Assumptions
+
+## Costs of Operations:
 Below is a table of the current costs of operations in the *base* jiff with no extensions:
 
 | Operation         | Rounds            | Total Messages                   | Preprocessing Rounds | Preprocessing Total Messages               | Dependenices |
@@ -160,9 +169,6 @@ Dependenices:
 6. constant division has one open sequenced with 4 parallel constant inequality checks and two multiplications.
 7. Secret XORs and ORs are equivalent to a single multiplication, constant XORs and ORs are free.
 
-
-## How to Contribute
-Check out our contribution guidelines and resources @ [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Information and Collaborators
 
