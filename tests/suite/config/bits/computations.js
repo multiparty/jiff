@@ -3,6 +3,7 @@ var baseComputations = require('../../computations.js');
 
 var Zp;
 var testConfig;
+var partyCount;
 
 // Real mod as opposed to remainder
 baseComputations.mod = function (x, y) {
@@ -19,17 +20,21 @@ baseComputations.openInterpreter['decomposition'] = function (operand1) {
 baseComputations.openInterpreter['+'] = function (operand1, operand2) {
   return (operand1 + operand2) % Zp;
 };
+var minusCount = 1;
 baseComputations.openInterpreter['-'] = function (operand1, operand2) {
+  minusCount = (minusCount + 1) % (partyCount - 1);
   if (operand1 >= operand2) {
-    return (operand1 - operand2) % Zp;
+    return operand1 - operand2;
   } else {
-    var n = operand2.toString(2).length;
-    var bits = Math.abs(operand1 - operand2).toString(2).split('');
-    while (bits.length < n) {
-      bits.push(0);
+    var n = Zp.toString(2).length + minusCount;
+    var bits = Math.abs(operand1 - operand2).toString(2).split('').reverse();
+    for (var i = 0; i < bits.length; i++) {
+      bits[i] = bits[i] === '0' ? '1' : '0';
     }
-    bits.push(1);
-    return parseInt(bits.join('')) % Zp;
+    while (bits.length <= n) {
+      bits.push('1');
+    }
+    return parseInt(bits.reverse().join(''), 2) + 1 + Zp;
   }
 };
 baseComputations.openInterpreter['*'] = function (operand1, operand2) {
@@ -82,6 +87,8 @@ baseComputations.singleCompute = async function (test, values, interpreter) {
     var result = await oldSingleCompute(test, values, interpreter);
     if (interpreter === baseComputations.mpcInterpreter) {
       result = result[0].jiff.protocols.bits.bit_composition(result);
+    } else {
+      result = result % Zp;
     }
     return result;
   } catch (err) {
@@ -93,6 +100,7 @@ baseComputations.singleCompute = async function (test, values, interpreter) {
 // Default Computation Scheme
 exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done, _testConfig) {
   Zp = jiff_instance.Zp;
+  partyCount = jiff_instance.party_count;
   testConfig = _testConfig;
   return baseComputations.compute(jiff_instance, _test, _inputs, _testParallel, _done, testConfig);
 };

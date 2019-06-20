@@ -18,7 +18,7 @@
       "parallel": 3,
       "options": {
         "Zp": 127,
-        "party_count": 2
+        "party_count": 3
       }
     },
     "*": {
@@ -26,7 +26,7 @@
       "parallel": 3,
       "options": {
         "Zp": 127,
-        "party_count": 2
+        "party_count": 3
       }
     },
     "/": {
@@ -34,7 +34,7 @@
       "parallel": 3,
       "options": {
         "Zp": 127,
-        "party_count": 2
+        "party_count": 3
       }
     },
     "%": {
@@ -42,7 +42,7 @@
       "parallel": 3,
       "options": {
         "Zp": 127,
-        "party_count": 2
+        "party_count": 3
       }
     }
   }
