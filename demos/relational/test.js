@@ -7,14 +7,17 @@ var mpc = require('./mpc.js');
 var showProgress = false;
 var party_count = 3;
 var parallelismDegree = 5; // Max number of test cases running in parallel
-var num_tests = 10;
-var Zp = null;
+var num_tests = 1;
+var Zp = 15485867;
 
 // Parameters specific to this demo
 var maxValue = 100;
-var maxLength = 10;
+var maxLength = 15;
 
 
+/**
+ * GENERIC INPUT GENERATION FUNCTIONS
+ */
 /**
  * generates inputs held in a list
  * each element represents a single test case
@@ -26,39 +29,28 @@ var maxLength = 10;
  *   3 : { arr: [...], x1:d1, x2:d2 },
  *  ...
  * }
-
-
-/**
- * Generates inputs for mult3 tests
- * Should return an object with this format:
- * {
- *   'party_id': [ 'test1_input', 'test2_input', ...]
- * }
- *
- * Here, party 1 has a random array and parties 2-party_count have all 0s
  */
 function generateArrayInput(length) {
   var inputs = {};
 
   for (var t=0; t<num_tests; t++) {
     if (length == null) {
-      //length = Math.floor(Math.random() * maxLength);
-      length = 4;
+      length = Math.floor(Math.random() * maxLength);
     }
     party_inputs = {};
     for(var i=1; i<=party_count; i++) {
       party_inputs[i] = {};
     }
 
-    var arr = [];
-    for (var k=0; k<length; k++) {
-      arr.push(Math.floor(Math.random() * maxValue));
-    }
-    party_inputs[1]['arr'] = arr;
-
-    // everyone else's arrays are boring
-    for (var i=2; i<= party_count; i++) {
-      party_inputs[i]['arr'] = Array(length).fill(0);
+    for (var i=1; i<= party_count; i++) {
+      var arr = [];
+      /*
+      for (var k=0; k<length; k++) {
+        arr.push(Math.floor(Math.random() * maxValue));
+      }
+      */
+      arr = Array(length).fill(1);
+      party_inputs[i]['arr'] = arr;
     }
 
     inputs[t] = party_inputs;
@@ -66,13 +58,12 @@ function generateArrayInput(length) {
   return inputs;
 }
 
-/**
- * UTILITY FUNCTIONS
- */
 // sums parallel arrays
 function sumArrays(single_test_inputs ) {
-  var sum = single_test_inputs[1]['arr'];
-  for(var p=2; p<=party_count; p++) {
+  var length = single_test_inputs[1]['arr'].length;
+  var sum = Array(length).fill(0);
+
+  for(var p=1; p<=party_count; p++) {
     for(var i=0; i<sum.length; i++) {
       sum[i] += single_test_inputs[p]['arr'][i];
     }
@@ -80,65 +71,29 @@ function sumArrays(single_test_inputs ) {
   return sum;
 }
 
+// adds attribute to every party's input for every test
+function addInputAttr(input,key,val) {
+  for (var t=0; t<num_tests; t++) {
+    for (var p=1; p<=party_count; p++){
+      input[t][p][key] = val;
+    }
+  }
+  return input;
+}
 
-/**
- * Computes the expected results in the clear
- * @param {object} inputs - same format as generateArrayInput output.
- * Should return a single array with the expected result for every test in order
- *   [ 'test1_output', 'test2_output', ... ]
- *
- *  pairwise sums party inputs and maps fun over resulting array
+
+/* runs a generic test
+ * @param {function} gen_f - generates data
+ * @param {function} compute_f - computes correct results in the clear
+ * @param {function} mpc_f - computes correct results in mpc
+ * @param {function} done - called when the test is over
+ * @param {string} testname - string describing the test
  */
-function computeMapResults(inputs, fun) {
-  var results = [];
-  for (var t=0; t<num_tests; t++) {
-    var arr = sumArrays(inputs[t]);
-    // apply map function
-    var res = [];
-    for(var i=0; i<arr.length; i++) {
-      res.push(fun(arr[i]));
-    }
-    results.push(res);
-  }
-  return results;
-}
-
-
-function computeReduceResults(inputs, fun, z) {
-  var results = [];
-  for (var t=0; t<num_tests; t++) {
-    var arr = sumArrays(inputs[t]);
-
-    if (z == null && arr.length === 0) {
-      results.push(null);
-      continue;
-    } else if (arr.length === 0) {
-      results.push(z);
-      continue;
-    }
-    
-    var res;
-    if (z == null) {
-      res = arr[0]
-    } else {
-      res = fun(arr[0], z);
-    }
-
-    for (var i=1; i<arr.length; i++) {
-      res = fun(arr[i], res);
-    }
-    results.push(res);
-  }
-  return results;
-}
-
 function genericTest(gen_f, compute_f, mpc_f, done, testname) {
   var count = 0;
 
   var inputs = gen_f();
-  console.log(inputs);
   var expected_results = compute_f(inputs);
-  console.log(expected_results);
 
   var onConnect = function (jiff_instance) {
     var actual_results = [];
@@ -165,11 +120,12 @@ function genericTest(gen_f, compute_f, mpc_f, done, testname) {
 
       // If we reached here, it means we are done
       count++;
+      assert(expected_results.length === actual_results.length);
       for (var i = 0; i < actual_results.length; i++) {
         // construct debugging message
-        var ithInputs = inputs[1][i] + '';
+        var ithInputs = inputs[i][1] + '';
         for (var p = 2; p <= party_count; p++) {
-          ithInputs += ',' + inputs[p][i];
+          ithInputs += ',' + inputs[i][p];
         }
         var msg = 'Party: ' + jiff_instance.id + '. inputs: [' + ithInputs + ']';
 
@@ -196,6 +152,31 @@ function genericTest(gen_f, compute_f, mpc_f, done, testname) {
   }
 }
 
+/**
+ * MAP COMPUTATIONS AND TESTS **********
+ *
+ * Computes the expected results in the clear
+ * @param {object} inputs - same format as generateArrayInput output.
+ * Should return a single array with the expected result for every test in order
+ *   [ 'test1_output', 'test2_output', ... ]
+ *
+ *  pairwise sums party inputs and maps fun over resulting array
+ */
+function computeMapResults(inputs, fun) {
+  var results = [];
+  for (var t=0; t<num_tests; t++) {
+    var arr = sumArrays(inputs[t]);
+    // apply map function
+    var res = [];
+    for(var i=0; i<arr.length; i++) {
+      res.push(fun(arr[i]) % Zp);
+    }
+    results.push(res);
+  }
+  return results;
+}
+
+
 // eslint-disable-next-line no-undef
 describe('Map', function () {
   this.timeout(0); // Remove timeout
@@ -220,17 +201,8 @@ describe('Map', function () {
 });
 
 
-
-// adds attribute to every party's input for every test
-function addInputAttr(input,key,val) {
-  for (var t=0; t<num_tests; t++) {
-    for (var p=1; p<=party_count; p++){
-      input[t][p][key] = val;
-    }
-  }
-  return input;
-}
-/*
+/* FILTER COMPUTATIONS AND TESTS **********
+ *
  * pairwise sums party inputs and filters out element that don't satisfy fun
  * replacing them with nil
  */
@@ -241,7 +213,7 @@ function computeFilterResults(inputs, fun, nil){
     // apply filter
     var res = [];
     for(var i=0; i<arr.length; i++) {
-      res.push(fun(arr[i])?arr[i]:nil);
+      res.push(fun(arr[i])?arr[i]:nil % Zp);
     }
     results.push(res);
   }
@@ -289,10 +261,27 @@ describe('Filter', function () {
   });
 });
 
-describe.only('Reduce', function () {
+/* REDUCE COMPUTATIONS AND TESTS **********/
+
+function computeReduceResults(inputs, fun, z) {
+  var results = [];
+  for (var t=0; t<num_tests; t++) {
+    var arr = sumArrays(inputs[t]);
+    
+    var res = z;
+    for (var i=0; i<arr.length; i++) {
+      res = fun(arr[i], res);
+    }
+    res = res % Zp;
+    results.push(res);
+  }
+  return results;
+}
+
+describe('Reduce', function () {
   this.timeout(0);
 
-  it('Empty Array, defined Z', function(done) {
+  it('Empty Addition', function(done) {
     gen_f = function(pc) { 
       var input = generateArrayInput(0);  // generate len-0 arrays
       return addInputAttr(input, 'z', 15);
@@ -300,8 +289,32 @@ describe.only('Reduce', function () {
     compute_f = function(inputs) {
       return computeReduceResults(inputs, function(elt, z) { return elt+z; }, 15);
     };
-    mpc_f = mpc.test_reduce_empty;
-    console.log("mpc before:", mpc_f);
-    genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-a');
+    mpc_f = mpc.test_reduce_addition;
+    genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-empty');
   });
+
+  it('Full Addition', function(done) {
+    gen_f = function(pc) { 
+      var input = generateArrayInput(); 
+      return addInputAttr(input, 'z', 0);
+    };
+    compute_f = function(inputs) {
+      return computeReduceResults(inputs, function(elt, z) { return elt+z; }, 0);
+    };
+    mpc_f = mpc.test_reduce_addition;
+    genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-full');
+  });
+
+  it('Full Multiplication', function(done) {
+    gen_f = function(pc) { 
+      var input = generateArrayInput();  
+      return addInputAttr(input, 'z', 1);
+    };
+    compute_f = function(inputs) {
+      return computeReduceResults(inputs, function(elt, z) { return elt*z; }, 1);
+    };
+    mpc_f = mpc.test_reduce_mult;
+    genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-mult');
+  });
+
 });

@@ -29,9 +29,10 @@
 
     var arr = input['arr'];
     jiff_instance.share_array(arr, arr.length).then( function(shares) {
+        // pairwise addition
         var sums = shares[1];
         for (var i=0; i<sums.length; i++) {
-          for (var p=2; p<jiff_instance.party_count; p++) {
+          for (var p=2; p<=jiff_instance.party_count; p++) {
             sums[i] = sums[i].sadd( shares[p][i] );
           }
         }
@@ -71,7 +72,7 @@
         var sums = shares[1];
         // pairwise addition
         for (var i=0; i<sums.length; i++) {
-          for (var p=2; p<jiff_instance.party_count; p++) {
+          for (var p=2; p<=jiff_instance.party_count; p++) {
             sums[i] = sums[i].sadd( shares[p][i] );
           }
         }
@@ -119,12 +120,13 @@
         var arrays = shares[0];
 
         var z = shares[1][1]; // just use party 1's z
-        // todod assert all zs are the same
+        // todo assert all zs are the same
 
         // pairwise addition
         var sums = arrays[1];
-        for (var i=0; i<sums.length; i++) {
-          for (var p=2; p<jiff_instance.party_count; p++) {
+
+        for (var p=2; p<=jiff_instance.party_count; p++) {
+          for (var i=0; i<sums.length; i++) {
             sums[i] = sums[i].sadd( arrays[p][i] );
           }
         }
@@ -147,7 +149,14 @@
     return deferred.promise();;
   }
 
-  exports.test_reduce_empty = function(inputs, jiff_instance) {
+  exports.test_reduce_mult = function(inputs, jiff_instance) {
+    var prod_f = function(e, z) {
+      return e.smult(z);
+    }
+    return test_reduce(inputs, prod_f, jiff_instance);
+  }
+
+  exports.test_reduce_addition = function(inputs, jiff_instance) {
     var sum_f = function(e, z) {
       return e.sadd(z);
     }
