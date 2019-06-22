@@ -146,7 +146,7 @@
             deferred.resolve(results);
         });
     });
-    return deferred.promise();;
+    return deferred.promise();
   }
 
   exports.test_reduce_mult = function(inputs, jiff_instance) {
@@ -161,6 +161,44 @@
       return e.sadd(z);
     }
     return test_reduce(inputs, sum_f, jiff_instance);
+  }
+
+  function test_countif(inputs, fun, jiff_instance) {
+    var deferred = $.Deferred();
+
+    jiff_instance.share_array(inputs['arr'], inputs['arr'].length).then( function(shares) {
+      // pairwise addition
+      var sums = shares[1];
+
+      for (var p=2; p<=jiff_instance.party_count; p++) {
+        for (var i=0; i<sums.length; i++) {
+          sums[i] = sums[i].sadd( shares[p][i] );
+        }
+      }
+
+      var count = jiff_instance.helpers.countif(sums, fun);
+
+      if (count == null) {
+        deferred.resolve(0);
+      } else {
+        jiff_instance.open(count).then(function (result) {
+          deferred.resolve(result);
+        });
+      }
+
+    });
+
+    return deferred.promise();
+  }
+
+  exports.test_count_all = function(inputs, jiff_instance) {
+    var true_f = function(s) { return s.eq(s); };
+    return test_countif(inputs, true_f, jiff_instance);
+  }
+
+  exports.test_count_none = function(inputs, jiff_instance) {
+    var false_f = function(s) { return s.neq(s); };
+    return test_countif(inputs, false_f, jiff_instance);
   }
 
 

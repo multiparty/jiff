@@ -44,12 +44,10 @@ function generateArrayInput(length) {
 
     for (var i=1; i<= party_count; i++) {
       var arr = [];
-      /*
       for (var k=0; k<length; k++) {
         arr.push(Math.floor(Math.random() * maxValue));
       }
-      */
-      arr = Array(length).fill(1);
+      //arr = Array(length).fill(1);
       party_inputs[i]['arr'] = arr;
     }
 
@@ -278,6 +276,7 @@ function computeReduceResults(inputs, fun, z) {
   return results;
 }
 
+// TODO try a test that composes an array or something more complicated
 describe('Reduce', function () {
   this.timeout(0);
 
@@ -316,5 +315,58 @@ describe('Reduce', function () {
     mpc_f = mpc.test_reduce_mult;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-mult');
   });
-
 });
+
+
+function computeCountifResults(inputs, fun) {
+  var results = [];
+  for (var t=0; t<num_tests; t++) {
+    var arr = sumArrays(inputs[t]);
+    
+    var sum = 0;
+    for (var i=0; i<arr.length; i++) {
+      if (fun(arr[i])) {
+        sum += 1;
+      }
+    }
+    sum = sum % Zp;
+    results.push(sum);
+  }
+  return results;
+}
+
+describe('Count If', function () {
+  this.timeout(0); // Remove timeout
+  
+  it('All Test', function(done) {
+    gen_f = generateArrayInput;
+    compute_f = function(inputs) {
+      return computeCountifResults(inputs, function(x) { return x === x; });
+    }
+    mpc_f = mpc.test_count_all;
+    genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-count-all');
+  });
+
+  it('None Test', function(done) {
+    gen_f = generateArrayInput;
+    compute_f = function(inputs) {
+      return computeCountifResults(inputs, function(x) { return x !== x; });
+    }
+    mpc_f = mpc.test_count_none;
+    genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-count-none');
+  });
+
+  it('Empty Test', function(done) {
+    gen_f = function(pc) { 
+      return generateArrayInput(0);  // generate len-0 arrays
+    }
+    compute_f = function(inputs) {
+      return computeCountifResults(inputs, function(x) { return x === x; });
+    }
+    mpc_f = mpc.test_count_all;
+    genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-count-empty');
+  });
+});
+
+
+
