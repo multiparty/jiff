@@ -349,7 +349,7 @@ function computeCountifResults(inputs, fun) {
   return results;
 }
 
-describe('Count If', function () {
+describe.only('Count If', function () {
   this.timeout(0); // Remove timeout
   
   it('All Test', function(done) {
@@ -379,6 +379,15 @@ describe('Count If', function () {
     }
     mpc_f = mpc.test_count_all;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-count-empty');
+  });
+  
+  it('Some Test', function(done) {
+    gen_f = generateArrayInput;
+    compute_f = function(inputs) {
+      return computeCountifResults(inputs, function(x) { return x > 50; });
+    };
+    mpc_f = mpc.test_count_some;
+    genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-count-some');
   });
 });
 

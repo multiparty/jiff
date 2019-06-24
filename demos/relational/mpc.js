@@ -190,13 +190,9 @@
 
       var count = jiff_instance.helpers.countif(sums, fun);
 
-      if (count == null) {
-        deferred.resolve(0);
-      } else {
-        jiff_instance.open(count).then(function (result) {
-          deferred.resolve(result);
-        });
-      }
+      jiff_instance.open(count).then(function (result) {
+        deferred.resolve(result);
+      });
 
     });
 
@@ -211,6 +207,11 @@
   exports.test_count_none = function(inputs, jiff_instance) {
     var false_f = function(s) { return s.neq(s); };
     return test_countif(inputs, false_f, jiff_instance);
+  }
+
+  exports.test_count_some = function(inputs, jiff_instance) {
+    var some_f = function(s) { return s.cgt(50); };
+    return test_countif(inputs, some_f, jiff_instance);
   }
 
 
