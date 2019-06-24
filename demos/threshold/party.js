@@ -40,6 +40,6 @@ jiff_instance.wait_for(upper_parties, function () {
 
   promise.then(function (v) {
     console.log(v);
-    jiff_instance.disconnect(true);
+    jiff_instance.disconnect(false, true);
   });
 });
