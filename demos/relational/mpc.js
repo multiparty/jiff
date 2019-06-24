@@ -77,7 +77,7 @@
           }
         }
         // apply filter
-        var nil = sums[0].cmult(0).cadd(cnil);
+        var nil = jiff_instance.protocols.generate_and_share_zero().cadd(cnil);
         var result = jiff_instance.helpers.filter(sums, fun, nil);
  
         // process array of outputs

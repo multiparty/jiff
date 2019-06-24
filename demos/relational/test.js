@@ -218,8 +218,20 @@ function computeFilterResults(inputs, fun, nil){
 }
 
 // runs filtering tests
-describe('Filter', function () {
+describe.only('Filter', function () {
   this.timeout(0);
+
+  it('Empty Test', function(done) {
+    gen_f = function() {
+      input = generateArrayInput(0);
+      return addInputAttr(input, 'nil', 0);
+    };
+    compute_f = function(inputs) {
+      return computeFilterResults(inputs, function(x) { return true; }, 0);
+    };
+    mpc_f = mpc.test_filter_all;
+    genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-filter-empty');
+  });
 
   it('None Test', function(done) {
     gen_f = function() {
@@ -349,7 +361,7 @@ function computeCountifResults(inputs, fun) {
   return results;
 }
 
-describe.only('Count If', function () {
+describe('Count If', function () {
   this.timeout(0); // Remove timeout
   
   it('All Test', function(done) {
