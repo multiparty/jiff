@@ -279,7 +279,7 @@ function computeReduceResults(inputs, fun, z) {
 }
 
 // TODO try a test that composes an array or something more complicated
-describe.only('Reduce', function () {
+describe('Reduce', function () {
   this.timeout(0);
 
   it('Empty Addition', function(done) {
