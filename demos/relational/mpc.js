@@ -114,7 +114,11 @@
     var allPromisedResults = [];
 
     arr_promise = jiff_instance.share_array(inputs['arr'], inputs['arr'].length);
-    z_promise = jiff_instance.share(inputs['z']);
+    if (inputs['z'].length !== undefined) {
+      z_promise = jiff_instance.share_array(inputs['z'],inputs['z'].length); 
+    } else {
+      z_promise = jiff_instance.share(inputs['z']);
+    }
     
     Promise.all([arr_promise, z_promise]).then( function(shares) {
         var arrays = shares[0];
@@ -125,8 +129,8 @@
         // pairwise addition
         var sums = arrays[1];
 
-        for (var p=2; p<=jiff_instance.party_count; p++) {
-          for (var i=0; i<sums.length; i++) {
+        for (var i=0; i<sums.length; i++) {
+          for (var p=2; p<=jiff_instance.party_count; p++) {
             sums[i] = sums[i].sadd( arrays[p][i] );
           }
         }
@@ -152,15 +156,23 @@
   exports.test_reduce_mult = function(inputs, jiff_instance) {
     var prod_f = function(e, z) {
       return e.smult(z);
-    }
+    };
     return test_reduce(inputs, prod_f, jiff_instance);
   }
 
   exports.test_reduce_addition = function(inputs, jiff_instance) {
     var sum_f = function(e, z) {
       return e.sadd(z);
-    }
+    };
     return test_reduce(inputs, sum_f, jiff_instance);
+  }
+
+  exports.test_reduce_append = function(inputs, jiff_instance) {
+    var app_f = function(x, xs) {
+      xs.push(x);
+      return xs;
+    };
+    return test_reduce(inputs, app_f, jiff_instance);
   }
 
   function test_countif(inputs, fun, jiff_instance) {

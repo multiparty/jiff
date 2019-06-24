@@ -47,7 +47,6 @@ function generateArrayInput(length) {
       for (var k=0; k<length; k++) {
         arr.push(Math.floor(Math.random() * maxValue));
       }
-      //arr = Array(length).fill(1);
       party_inputs[i]['arr'] = arr;
     }
 
@@ -269,15 +268,18 @@ function computeReduceResults(inputs, fun, z) {
     var res = z;
     for (var i=0; i<arr.length; i++) {
       res = fun(arr[i], res);
+      // lots of mods
+      if (typeof res === 'number') {
+        res = res % Zp;
+      }
     }
-    res = res % Zp;
     results.push(res);
   }
   return results;
 }
 
 // TODO try a test that composes an array or something more complicated
-describe('Reduce', function () {
+describe.only('Reduce', function () {
   this.timeout(0);
 
   it('Empty Addition', function(done) {
@@ -314,6 +316,18 @@ describe('Reduce', function () {
     };
     mpc_f = mpc.test_reduce_mult;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-mult');
+  });
+
+  it('Array Output', function(done) {
+    gen_f = function(pc) {
+      var input = generateArrayInput();
+      return addInputAttr(input, 'z', []);
+    };
+    compute_f = function(inputs) {
+      return computeReduceResults(inputs, function(x, xs) { xs.push(x); return xs; }, []);
+    }
+    mpc_f = mpc.test_reduce_append;
+    genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-append');
   });
 });
 
