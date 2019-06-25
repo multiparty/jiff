@@ -179,20 +179,20 @@ describe('Map', function () {
   this.timeout(0); // Remove timeout
 
   it('Square Test', function(done) {
-    gen_f = generateArrayInput;
-    compute_f = function(inputs) {
+    var gen_f = generateArrayInput;
+    var compute_f = function(inputs) {
       return computeMapResults(inputs, function(x) { return x * x; });
-    }
-    mpc_f = mpc.test_map_square;
+    };
+    var mpc_f = mpc.test_map_square;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-square');
   });
 
   it('Equality Test', function(done) {
-    gen_f = generateArrayInput;
-    compute_f = function(inputs) {
+    var gen_f = generateArrayInput;
+    var compute_f = function(inputs) {
       return computeMapResults(inputs, function(x) { return (x===x)?1:0; });
     };
-    mpc_f = mpc.test_map_eq;
+    var mpc_f = mpc.test_map_eq;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-equality');
   });
 });
@@ -218,54 +218,54 @@ function computeFilterResults(inputs, fun, nil){
 }
 
 // runs filtering tests
-describe.only('Filter', function () {
+describe('Filter', function () {
   this.timeout(0);
 
   it('Empty Test', function(done) {
-    gen_f = function() {
+    var gen_f = function() {
       input = generateArrayInput(0);
       return addInputAttr(input, 'nil', 0);
     };
-    compute_f = function(inputs) {
+    var compute_f = function(inputs) {
       return computeFilterResults(inputs, function(x) { return true; }, 0);
     };
-    mpc_f = mpc.test_filter_all;
+    var mpc_f = mpc.test_filter_all;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-filter-empty');
   });
 
   it('None Test', function(done) {
-    gen_f = function() {
+    var gen_f = function() {
       input = generateArrayInput();
       return addInputAttr(input, 'nil', 0);
     };
-    compute_f = function(inputs) {
+    var compute_f = function(inputs) {
       return computeFilterResults(inputs, function(x) { return true; }, 0);
     };
-    mpc_f = mpc.test_filter_none;
+    var mpc_f = mpc.test_filter_none;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-filter-none');
   });
 
   it('All Test', function(done) {
-    gen_f = function() {
+    var gen_f = function() {
       input = generateArrayInput();
       return addInputAttr(input, 'nil', 0);
     };
-    compute_f = function(inputs) {
+    var compute_f = function(inputs) {
       return computeFilterResults(inputs, function(x) { return false; }, 0);
     };
-    mpc_f = mpc.test_filter_all;
+    var mpc_f = mpc.test_filter_all;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-filter-all');
   });
 
   it('Some Test', function(done) {
-    gen_f = function() {
+    var gen_f = function() {
       input = generateArrayInput();
       return addInputAttr(input, 'nil', 0);
     };
-    compute_f = function(inputs) {
+    var compute_f = function(inputs) {
       return computeFilterResults(inputs, function(x) { return x>50; }, 0);
     };
-    mpc_f = mpc.test_filter_some;
+    var mpc_f = mpc.test_filter_some;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-filter-some');
   });
 });
@@ -295,50 +295,50 @@ describe('Reduce', function () {
   this.timeout(0);
 
   it('Empty Addition', function(done) {
-    gen_f = function(pc) { 
+    var gen_f = function(pc) { 
       var input = generateArrayInput(0);  // generate len-0 arrays
       return addInputAttr(input, 'z', 15);
     };
-    compute_f = function(inputs) {
+    var compute_f = function(inputs) {
       return computeReduceResults(inputs, function(elt, z) { return elt+z; }, 15);
     };
-    mpc_f = mpc.test_reduce_addition;
+    var mpc_f = mpc.test_reduce_addition;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-empty');
   });
 
   it('Full Addition', function(done) {
-    gen_f = function(pc) { 
+    var gen_f = function(pc) { 
       var input = generateArrayInput(); 
       return addInputAttr(input, 'z', 0);
     };
-    compute_f = function(inputs) {
+    var compute_f = function(inputs) {
       return computeReduceResults(inputs, function(elt, z) { return elt+z; }, 0);
     };
-    mpc_f = mpc.test_reduce_addition;
+    var mpc_f = mpc.test_reduce_addition;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-full');
   });
 
   it('Full Multiplication', function(done) {
-    gen_f = function(pc) { 
+    var gen_f = function(pc) { 
       var input = generateArrayInput();  
       return addInputAttr(input, 'z', 1);
     };
-    compute_f = function(inputs) {
+    var compute_f = function(inputs) {
       return computeReduceResults(inputs, function(elt, z) { return elt*z; }, 1);
     };
-    mpc_f = mpc.test_reduce_mult;
+    var mpc_f = mpc.test_reduce_mult;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-mult');
   });
 
   it('Array Output', function(done) {
-    gen_f = function(pc) {
+    var gen_f = function(pc) {
       var input = generateArrayInput();
       return addInputAttr(input, 'z', []);
     };
-    compute_f = function(inputs) {
+    var compute_f = function(inputs) {
       return computeReduceResults(inputs, function(x, xs) { xs.push(x); return xs; }, []);
-    }
-    mpc_f = mpc.test_reduce_append;
+    };
+    var mpc_f = mpc.test_reduce_append;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-append');
   });
 });
@@ -365,40 +365,40 @@ describe('Count If', function () {
   this.timeout(0); // Remove timeout
   
   it('All Test', function(done) {
-    gen_f = generateArrayInput;
-    compute_f = function(inputs) {
+    var gen_f = generateArrayInput;
+    var compute_f = function(inputs) {
       return computeCountifResults(inputs, function(x) { return x === x; });
-    }
-    mpc_f = mpc.test_count_all;
+    };
+    var mpc_f = mpc.test_count_all;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-count-all');
   });
 
   it('None Test', function(done) {
-    gen_f = generateArrayInput;
-    compute_f = function(inputs) {
+    var gen_f = generateArrayInput;
+    var compute_f = function(inputs) {
       return computeCountifResults(inputs, function(x) { return x !== x; });
-    }
-    mpc_f = mpc.test_count_none;
+    };
+    var mpc_f = mpc.test_count_none;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-count-none');
   });
 
   it('Empty Test', function(done) {
-    gen_f = function(pc) { 
+    var gen_f = function(pc) { 
       return generateArrayInput(0);  // generate len-0 arrays
-    }
-    compute_f = function(inputs) {
+    };
+    var compute_f = function(inputs) {
       return computeCountifResults(inputs, function(x) { return x === x; });
-    }
-    mpc_f = mpc.test_count_all;
+    };
+    var mpc_f = mpc.test_count_all;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-count-empty');
   });
   
   it('Some Test', function(done) {
-    gen_f = generateArrayInput;
-    compute_f = function(inputs) {
+    var gen_f = generateArrayInput;
+    var compute_f = function(inputs) {
       return computeCountifResults(inputs, function(x) { return x > 50; });
     };
-    mpc_f = mpc.test_count_some;
+    var mpc_f = mpc.test_count_some;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-count-some');
   });
 });
