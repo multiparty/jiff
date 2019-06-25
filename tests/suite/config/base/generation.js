@@ -112,7 +112,7 @@ exports.generateArithmeticInputs = function (test, count, options) {
 exports.generateConstantArithmeticInputs = function (test, count, options) {
   var inputs = [];
   var t, oneInput;
-  if (test.startsWith('/') || test === '%' || test === 'cdivfac') {
+  if (test.indexOf('/') > -1 || test.indexOf('%') > -1 || test === 'cdivfac') {
     // division and mod: only two inputs, the second is non-zero.
     for (t = 0; t < count; t++) {
       oneInput = {};
@@ -121,6 +121,12 @@ exports.generateConstantArithmeticInputs = function (test, count, options) {
         oneInput[1] = exports.generateMultiple(test, options, oneInput['constant']);
       } else {
         oneInput[1] = exports.generateDividend(test, options, oneInput['constant']);
+      }
+
+      if (test.startsWith('c')) {
+        var tmp = oneInput['constant'];
+        oneInput['constant'] = oneInput[1];
+        oneInput[1] = tmp;
       }
       inputs.push(oneInput);
     }

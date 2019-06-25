@@ -1,0 +1,26 @@
+{
+  "tests": [ "+c", "-c", "c-", "*c", "/c", "%c", "c/", "c%" ],
+  "suiteConf": {
+    "port": 3001,
+    "generation": {
+      "file": "config/bits/generation.js",
+      "function": "generateConstantArithmeticInputs"
+    },
+    "computation": {
+      "file": "config/bits/computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 20,
+      "parallel": 5,
+      "decompose": [ "1" ],
+      "options": {
+        "Zp": 127,
+        "party_count": 3
+      }
+    }
+  }
+}

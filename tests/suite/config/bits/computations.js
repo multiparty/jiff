@@ -1,28 +1,25 @@
 // Use base computation but override interpreters.
 var baseComputations = require('../../computations.js');
 
-var Zp;
-var testConfig;
-var partyCount;
+var Zp, testConfig, partyCount;
 
-// Real mod as opposed to remainder
-baseComputations.mod = function (x, y) {
-  if (x.lt(0)) {
-    return x.plus(y).mod(y);
-  }
-  return x.mod(y);
-};
 
 // How to interpret non-MPC operations
+// decomposition
 baseComputations.openInterpreter['decomposition'] = function (operand1) {
   return operand1; // decomposition -> is a no-op
 };
+// arithmetic
 baseComputations.openInterpreter['+'] = function (operand1, operand2) {
   return (operand1 + operand2) % Zp;
 };
 var minusCount = 1;
-baseComputations.openInterpreter['-'] = function (operand1, operand2) {
-  minusCount = (minusCount + 1) % (partyCount - 1);
+baseComputations.openInterpreter['-'] = function (operand1, operand2, numberOfOps) {
+  if (numberOfOps == null) {
+    numberOfOps = partyCount - 1;
+  }
+
+  minusCount = (minusCount + 1) % (numberOfOps);
   if (operand1 >= operand2) {
     return operand1 - operand2;
   } else {
@@ -46,10 +43,31 @@ baseComputations.openInterpreter['/'] = function (operand1, operand2) {
 baseComputations.openInterpreter['%'] = function (operand1, operand2) {
   return (operand1 % operand2);
 };
+// constant arithmetic
+baseComputations.openInterpreter['+c'] = baseComputations.openInterpreter['+'];
+baseComputations.openInterpreter['-c'] = function (operand1, operand2) {
+  return baseComputations.openInterpreter['-'](operand1, operand2, 1);
+};
+baseComputations.openInterpreter['c-'] = function (operand1, operand2) {
+  return baseComputations.openInterpreter['-'](operand2, operand1, 1);
+};
+baseComputations.openInterpreter['*c'] = baseComputations.openInterpreter['*'];
+baseComputations.openInterpreter['/c'] = baseComputations.openInterpreter['/'];
+baseComputations.openInterpreter['%c'] = baseComputations.openInterpreter['%'];
+baseComputations.openInterpreter['c/'] =  function (operand1, operand2) {
+  return baseComputations.openInterpreter['/'](operand2, operand1);
+};
+baseComputations.openInterpreter['c%'] =  function (operand1, operand2) {
+  return baseComputations.openInterpreter['%'](operand2, operand1);
+};
 
+
+// How to interpret MPC operations
+// decomposition
 baseComputations.mpcInterpreter['decomposition'] = function (operand1) {
   return operand1;
 };
+// arithmetic
 baseComputations.mpcInterpreter['+'] = function (operand1, operand2) {
   return operand1[0].jiff.protocols.bits.sadd(operand1, operand2);
 };
@@ -65,6 +83,32 @@ baseComputations.mpcInterpreter['/'] = function (operand1, operand2) {
 baseComputations.mpcInterpreter['%'] = function (operand1, operand2) {
   return operand1[0].jiff.protocols.bits.sdiv(operand1, operand2).remainder;
 };
+// constant arithmetic
+baseComputations.mpcInterpreter['+c'] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.cadd(operand1, operand2);
+};
+baseComputations.mpcInterpreter['-c'] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.csubl(operand1, operand2);
+};
+baseComputations.mpcInterpreter['c-'] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.csubr(operand2, operand1);
+};
+baseComputations.mpcInterpreter['*c'] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.cmult(operand1, operand2);
+};
+baseComputations.mpcInterpreter['/c'] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.cdivl(operand1, operand2).quotient;
+};
+baseComputations.mpcInterpreter['%c'] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.cdivl(operand1, operand2).remainder;
+};
+baseComputations.mpcInterpreter['c/'] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.cdivr(operand2, operand1).quotient;
+};
+baseComputations.mpcInterpreter['c%'] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.cdivr(operand2, operand1).remainder;
+};
+
 
 // Wrap single compute function with calls to bit_decomposition and bit_composition
 var oldSingleCompute = baseComputations.singleCompute;
@@ -74,19 +118,19 @@ baseComputations.singleCompute = function (test, values, interpreter) {
   }
 
   var keys = Object.keys(values);
-  var bits = [];
+  var bits = {};
   var promises = [];
   for (var i = 0; i < keys.length; i++) {
-    bits[i] = values[keys[i]];
-    if (bits[i] != null && (testConfig['decompose'] == null || testConfig['decompose'].indexOf(keys[i]) > -1)) {
-      bits[i] = bits[i].bit_decomposition();
-      (function (i) {
-        bits[i] = bits[i].then(function (decomposition) {
-          bits[i] = decomposition;
+    var key = keys[i];
+    if (values[key] != null && (testConfig['decompose'] == null || testConfig['decompose'].indexOf(key) > -1)) {
+      (function (key) {
+        promises.push(values[key].bit_decomposition().then(function (decomposition) {
+          bits[key] = decomposition;
           return true;
-        });
-      })(i);
-      promises.push(bits[i]);
+        }));
+      })(key);
+    } else {
+      bits[key] = values[key];
     }
   }
 
