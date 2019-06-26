@@ -43,6 +43,7 @@ baseComputations.openInterpreter['/'] = function (operand1, operand2) {
 baseComputations.openInterpreter['%'] = function (operand1, operand2) {
   return (operand1 % operand2);
 };
+
 // constant arithmetic
 baseComputations.openInterpreter['+c'] = baseComputations.openInterpreter['+'];
 baseComputations.openInterpreter['-c'] = function (operand1, operand2) {
@@ -60,6 +61,34 @@ baseComputations.openInterpreter['c/'] =  function (operand1, operand2) {
 baseComputations.openInterpreter['c%'] =  function (operand1, operand2) {
   return baseComputations.openInterpreter['%'](operand2, operand1);
 };
+
+// comparisons
+baseComputations.openInterpreter['<'] = function (operand1, operand2) {
+  return Number(operand1 < operand2);
+};
+baseComputations.openInterpreter['<='] = function (operand1, operand2) {
+  return Number(operand1 <= operand2);
+};
+baseComputations.openInterpreter['>'] = function (operand1, operand2) {
+  return Number(operand1 > operand2);
+};
+baseComputations.openInterpreter['>='] = function (operand1, operand2) {
+  return Number(operand1 >= operand2);
+};
+baseComputations.openInterpreter['=='] = function (operand1, operand2) {
+  return Number(operand1 === operand2);
+};
+baseComputations.openInterpreter['!='] = function (operand1, operand2) {
+  return Number(operand1 !== operand2);
+};
+
+// constant comparisons
+baseComputations.openInterpreter['c<'] = baseComputations.openInterpreter['<'];
+baseComputations.openInterpreter['c<='] = baseComputations.openInterpreter['<='];
+baseComputations.openInterpreter['c>'] = baseComputations.openInterpreter['>'];
+baseComputations.openInterpreter['c>='] = baseComputations.openInterpreter['>='];
+baseComputations.openInterpreter['c=='] = baseComputations.openInterpreter['=='];
+baseComputations.openInterpreter['c!='] = baseComputations.openInterpreter['!='];
 
 
 // How to interpret MPC operations
@@ -108,6 +137,44 @@ baseComputations.mpcInterpreter['c/'] = function (operand1, operand2) {
 baseComputations.mpcInterpreter['c%'] = function (operand1, operand2) {
   return operand1[0].jiff.protocols.bits.cdivr(operand2, operand1).remainder;
 };
+// comparisons
+baseComputations.openInterpreter['<'] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.slt(operand1, operand2);
+};
+baseComputations.openInterpreter['<='] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.slteq(operand1, operand2);
+};
+baseComputations.openInterpreter['>'] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.sgt(operand1, operand2);
+};
+baseComputations.openInterpreter['>='] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.sgteq(operand1, operand2);
+};
+baseComputations.openInterpreter['=='] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.seq(operand1, operand2);
+};
+baseComputations.openInterpreter['!='] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.sneq(operand1, operand2);
+};
+// constant comparisons
+baseComputations.openInterpreter['c<'] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.clt(operand1, operand2);
+};
+baseComputations.openInterpreter['c<='] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.clteq(operand1, operand2);
+};
+baseComputations.openInterpreter['c>'] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.cgt(operand1, operand2);
+};
+baseComputations.openInterpreter['c>='] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.cgteq(operand1, operand2);
+};
+baseComputations.openInterpreter['c=='] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.ceq(operand1, operand2);
+};
+baseComputations.openInterpreter['c!='] = function (operand1, operand2) {
+  return operand1[0].jiff.protocols.bits.cneq(operand1, operand2);
+};
 
 
 // Wrap single compute function with calls to bit_decomposition and bit_composition
@@ -136,7 +203,11 @@ baseComputations.singleCompute = function (test, values, interpreter) {
 
   return Promise.all(promises).then(function () {
     var result = oldSingleCompute(test, bits, interpreter);
-    return result[0].jiff.protocols.bits.bit_composition(result);
+    if (result.length != null) {
+      return result[0].jiff.protocols.bits.bit_composition(result);
+    }
+
+    return result;
   });
 };
 
