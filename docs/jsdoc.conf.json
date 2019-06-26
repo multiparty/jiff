@@ -22,5 +22,17 @@
   "opts": {
     "destination": "./docs/jsdoc/",
     "template": "node_modules/docdash"
+  },
+  "docdash": {
+    "collalpse": true,
+    "search": true,
+    "menu":{
+      "Github Repo":{
+        "href":"https://github.com/multiparty/jiff",
+        "target":"_blank",
+        "class":"menu-item",
+        "id":"github_link"
+      }
+    }
   }
 }
