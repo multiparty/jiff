@@ -12,9 +12,9 @@ require('../../lib/jiff-server').make_jiff(http, { logs:true });
 
 // Serve static files.
 try {
-http.listen(8080, function () {
-  console.log('listening on *:8080');
-});
+  http.listen(8080, function () {
+    console.log('listening on *:8080');
+  });
 } catch (err) {
   console.log('ERROR:'+err.message)
 }

@@ -22,7 +22,7 @@ var maxLength = 15;
  * generates inputs held in a list
  * each element represents a single test case
  * held in an object with an entry for each party
- * Each party has an array 
+ * Each party has an array
  * and can add an arbitrary amount of extra info
  * { 1 : { arr: [...], x1:d1, x2:d2 },
  *   2 : { arr: [...], x1:d1, x2:d2 },
@@ -32,17 +32,18 @@ var maxLength = 15;
  */
 function generateArrayInput(length) {
   var inputs = {};
+  var i;
 
   for (var t=0; t<num_tests; t++) {
     if (length == null) {
       length = Math.floor(Math.random() * maxLength);
     }
-    party_inputs = {};
-    for(var i=1; i<=party_count; i++) {
+    var party_inputs = {};
+    for (i=1; i<=party_count; i++) {
       party_inputs[i] = {};
     }
 
-    for (var i=1; i<= party_count; i++) {
+    for (i=1; i<= party_count; i++) {
       var arr = [];
       for (var k=0; k<length; k++) {
         arr.push(Math.floor(Math.random() * maxValue));
@@ -60,8 +61,8 @@ function sumArrays(single_test_inputs ) {
   var length = single_test_inputs[1]['arr'].length;
   var sum = Array(length).fill(0);
 
-  for(var p=1; p<=party_count; p++) {
-    for(var i=0; i<sum.length; i++) {
+  for (var p=1; p<=party_count; p++) {
+    for (var i=0; i<sum.length; i++) {
       sum[i] += single_test_inputs[p]['arr'][i];
     }
   }
@@ -71,7 +72,7 @@ function sumArrays(single_test_inputs ) {
 // adds attribute to every party's input for every test
 function addInputAttr(input,key,val) {
   for (var t=0; t<num_tests; t++) {
-    for (var p=1; p<=party_count; p++){
+    for (var p=1; p<=party_count; p++) {
       input[t][p][key] = val;
     }
   }
@@ -165,7 +166,7 @@ function computeMapResults(inputs, fun) {
     var arr = sumArrays(inputs[t]);
     // apply map function
     var res = [];
-    for(var i=0; i<arr.length; i++) {
+    for (var i=0; i<arr.length; i++) {
       res.push(fun(arr[i]) % Zp);
     }
     results.push(res);
@@ -178,19 +179,25 @@ function computeMapResults(inputs, fun) {
 describe('Map', function () {
   this.timeout(0); // Remove timeout
 
-  it('Square Test', function(done) {
+  // eslint-disable-next-line no-undef
+  it('Square Test', function (done) {
     var gen_f = generateArrayInput;
-    var compute_f = function(inputs) {
-      return computeMapResults(inputs, function(x) { return x * x; });
+    var compute_f = function (inputs) {
+      return computeMapResults(inputs, function (x) {
+        return x * x;
+      });
     };
     var mpc_f = mpc.test_map_square;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-square');
   });
 
-  it('Equality Test', function(done) {
+  // eslint-disable-next-line no-undef
+  it('Equality Test', function (done) {
     var gen_f = generateArrayInput;
-    var compute_f = function(inputs) {
-      return computeMapResults(inputs, function(x) { return (x===x)?1:0; });
+    var compute_f = function (inputs) {
+      return computeMapResults(inputs, function (x) {
+        return (x===x)?1:0;
+      });
     };
     var mpc_f = mpc.test_map_eq;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-equality');
@@ -203,13 +210,13 @@ describe('Map', function () {
  * pairwise sums party inputs and filters out element that don't satisfy fun
  * replacing them with nil
  */
-function computeFilterResults(inputs, fun, nil){
+function computeFilterResults(inputs, fun, nil) {
   var results = [];
   for (var t=0; t<num_tests; t++) {
     var arr = sumArrays(inputs[t]);
     // apply filter
     var res = [];
-    for(var i=0; i<arr.length; i++) {
+    for (var i=0; i<arr.length; i++) {
       res.push(fun(arr[i])?arr[i]:nil % Zp);
     }
     results.push(res);
@@ -218,52 +225,65 @@ function computeFilterResults(inputs, fun, nil){
 }
 
 // runs filtering tests
+// eslint-disable-next-line no-undef
 describe('Filter', function () {
   this.timeout(0);
 
-  it('Empty Test', function(done) {
-    var gen_f = function() {
-      input = generateArrayInput(0);
+  // eslint-disable-next-line no-undef
+  it('Empty Test', function (done) {
+    var gen_f = function () {
+      var input = generateArrayInput(0);
       return addInputAttr(input, 'nil', 0);
     };
-    var compute_f = function(inputs) {
-      return computeFilterResults(inputs, function(x) { return true; }, 0);
+    var compute_f = function (inputs) {
+      return computeFilterResults(inputs, function (x) {
+        return true;
+      }, 0);
     };
     var mpc_f = mpc.test_filter_all;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-filter-empty');
   });
 
-  it('None Test', function(done) {
-    var gen_f = function() {
-      input = generateArrayInput();
+  // eslint-disable-next-line no-undef
+  it('None Test', function (done) {
+    var gen_f = function () {
+      var input = generateArrayInput();
       return addInputAttr(input, 'nil', 0);
     };
-    var compute_f = function(inputs) {
-      return computeFilterResults(inputs, function(x) { return true; }, 0);
+    var compute_f = function (inputs) {
+      return computeFilterResults(inputs, function (x) {
+        return true;
+      }, 0);
     };
     var mpc_f = mpc.test_filter_none;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-filter-none');
   });
 
-  it('All Test', function(done) {
-    var gen_f = function() {
-      input = generateArrayInput();
+  // eslint-disable-next-line no-undef
+  it('All Test', function (done) {
+    var gen_f = function () {
+      var input = generateArrayInput();
       return addInputAttr(input, 'nil', 0);
     };
-    var compute_f = function(inputs) {
-      return computeFilterResults(inputs, function(x) { return false; }, 0);
+    var compute_f = function (inputs) {
+      return computeFilterResults(inputs, function (x) {
+        return false;
+      }, 0);
     };
     var mpc_f = mpc.test_filter_all;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-filter-all');
   });
 
-  it('Some Test', function(done) {
-    var gen_f = function() {
-      input = generateArrayInput();
+  // eslint-disable-next-line no-undef
+  it('Some Test', function (done) {
+    var gen_f = function () {
+      var input = generateArrayInput();
       return addInputAttr(input, 'nil', 0);
     };
-    var compute_f = function(inputs) {
-      return computeFilterResults(inputs, function(x) { return x>50; }, 0);
+    var compute_f = function (inputs) {
+      return computeFilterResults(inputs, function (x) {
+        return x>50;
+      }, 0);
     };
     var mpc_f = mpc.test_filter_some;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-filter-some');
@@ -276,7 +296,7 @@ function computeReduceResults(inputs, fun, z) {
   var results = [];
   for (var t=0; t<num_tests; t++) {
     var arr = sumArrays(inputs[t]);
-    
+
     var res = z;
     for (var i=0; i<arr.length; i++) {
       res = fun(arr[i], res);
@@ -290,53 +310,65 @@ function computeReduceResults(inputs, fun, z) {
   return results;
 }
 
-// TODO try a test that composes an array or something more complicated
+// eslint-disable-next-line no-undef
 describe('Reduce', function () {
   this.timeout(0);
 
-  it('Empty Addition', function(done) {
-    var gen_f = function(pc) { 
+  // eslint-disable-next-line no-undef
+  it('Empty Addition', function (done) {
+    var gen_f = function (pc) {
       var input = generateArrayInput(0);  // generate len-0 arrays
       return addInputAttr(input, 'z', 15);
     };
-    var compute_f = function(inputs) {
-      return computeReduceResults(inputs, function(elt, z) { return elt+z; }, 15);
+    var compute_f = function (inputs) {
+      return computeReduceResults(inputs, function (elt, z) {
+        return elt+z;
+      }, 15);
     };
     var mpc_f = mpc.test_reduce_addition;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-empty');
   });
 
-  it('Full Addition', function(done) {
-    var gen_f = function(pc) { 
-      var input = generateArrayInput(); 
+  // eslint-disable-next-line no-undef
+  it('Full Addition', function (done) {
+    var gen_f = function (pc) {
+      var input = generateArrayInput();
       return addInputAttr(input, 'z', 0);
     };
-    var compute_f = function(inputs) {
-      return computeReduceResults(inputs, function(elt, z) { return elt+z; }, 0);
+    var compute_f = function (inputs) {
+      return computeReduceResults(inputs, function (elt, z) {
+        return elt+z;
+      }, 0);
     };
     var mpc_f = mpc.test_reduce_addition;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-full');
   });
 
-  it('Full Multiplication', function(done) {
-    var gen_f = function(pc) { 
-      var input = generateArrayInput();  
+  // eslint-disable-next-line no-undef
+  it('Full Multiplication', function (done) {
+    var gen_f = function (pc) {
+      var input = generateArrayInput();
       return addInputAttr(input, 'z', 1);
     };
-    var compute_f = function(inputs) {
-      return computeReduceResults(inputs, function(elt, z) { return elt*z; }, 1);
+    var compute_f = function (inputs) {
+      return computeReduceResults(inputs, function (elt, z) {
+        return elt*z;
+      }, 1);
     };
     var mpc_f = mpc.test_reduce_mult;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-mult');
   });
 
-  it('Array Output', function(done) {
-    var gen_f = function(pc) {
+  // eslint-disable-next-line no-undef
+  it('Array Output', function (done) {
+    var gen_f = function (pc) {
       var input = generateArrayInput();
       return addInputAttr(input, 'z', []);
     };
-    var compute_f = function(inputs) {
-      return computeReduceResults(inputs, function(x, xs) { xs.push(x); return xs; }, []);
+    var compute_f = function (inputs) {
+      return computeReduceResults(inputs, function (x, xs) {
+        xs.push(x); return xs;
+      }, []);
     };
     var mpc_f = mpc.test_reduce_append;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-reduce-append');
@@ -348,7 +380,7 @@ function computeCountifResults(inputs, fun) {
   var results = [];
   for (var t=0; t<num_tests; t++) {
     var arr = sumArrays(inputs[t]);
-    
+
     var sum = 0;
     for (var i=0; i<arr.length; i++) {
       if (fun(arr[i])) {
@@ -361,42 +393,55 @@ function computeCountifResults(inputs, fun) {
   return results;
 }
 
+// eslint-disable-next-line no-undef
 describe('Count If', function () {
   this.timeout(0); // Remove timeout
-  
-  it('All Test', function(done) {
+
+  // eslint-disable-next-line no-undef
+  it('All Test', function (done) {
     var gen_f = generateArrayInput;
-    var compute_f = function(inputs) {
-      return computeCountifResults(inputs, function(x) { return x === x; });
+    var compute_f = function (inputs) {
+      return computeCountifResults(inputs, function (x) {
+        return x === x;
+      });
     };
     var mpc_f = mpc.test_count_all;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-count-all');
   });
 
-  it('None Test', function(done) {
+  // eslint-disable-next-line no-undef
+  it('None Test', function (done) {
     var gen_f = generateArrayInput;
-    var compute_f = function(inputs) {
-      return computeCountifResults(inputs, function(x) { return x !== x; });
+    var compute_f = function (inputs) {
+      return computeCountifResults(inputs, function (x) {
+        return x !== x;
+      });
     };
     var mpc_f = mpc.test_count_none;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-count-none');
   });
 
-  it('Empty Test', function(done) {
-    var gen_f = function(pc) { 
+  // eslint-disable-next-line no-undef
+  it('Empty Test', function (done) {
+    var gen_f = function (pc) {
       return generateArrayInput(0);  // generate len-0 arrays
     };
-    var compute_f = function(inputs) {
-      return computeCountifResults(inputs, function(x) { return x === x; });
+    var compute_f = function (inputs) {
+      return computeCountifResults(inputs, function (x) {
+        return x === x;
+      });
     };
     var mpc_f = mpc.test_count_all;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-count-empty');
   });
-  
-  it('Some Test', function(done) {
+
+  // eslint-disable-next-line no-undef
+  it('Some Test', function (done) {
     var gen_f = generateArrayInput;
-    var compute_f = function(inputs) {
-      return computeCountifResults(inputs, function(x) { return x > 50; });
+    var compute_f = function (inputs) {
+      return computeCountifResults(inputs, function (x) {
+        return x > 50;
+      });
     };
     var mpc_f = mpc.test_count_some;
     genericTest(gen_f, compute_f, mpc_f, done, 'mocha-test-count-some');
