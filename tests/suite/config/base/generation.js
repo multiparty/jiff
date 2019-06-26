@@ -123,7 +123,7 @@ exports.generateConstantArithmeticInputs = function (test, count, options) {
         oneInput[1] = exports.generateDividend(test, options, oneInput['constant']);
       }
 
-      if (test.startsWith('c')) {
+      if (test !== 'cdivfac' && test.startsWith('c')) {
         var tmp = oneInput['constant'];
         oneInput['constant'] = oneInput[1];
         oneInput[1] = tmp;
