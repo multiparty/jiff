@@ -16,10 +16,8 @@ baseComputations.openInterpreter['+'] = function (operand1, operand2) {
   return (operand1 + operand2) % Zp;
 };
 var minusCount = 1;
-baseComputations.openInterpreter['-'] = function (operand1, operand2, numberOfOps) {
-  if (numberOfOps == null) {
-    numberOfOps = partyCount - 1;
-  }
+baseComputations.openInterpreter['-'] = function (operand1, operand2) {
+  var numberOfOps = partyCount - 1;
 
   minusCount = (minusCount + 1) % (numberOfOps);
   if (operand1 >= operand2) {
@@ -163,7 +161,7 @@ baseComputations.mpcInterpreter['c<'] = function (operand1, operand2) {
   var res = operand1[0].jiff.protocols.bits.clt(operand1, operand2);
   if (res === true) {
     res = secret1;
-  } else if (res === false){
+  } else if (res === false) {
     res = secret0;
   }
   return res;
@@ -172,7 +170,7 @@ baseComputations.mpcInterpreter['c<='] = function (operand1, operand2) {
   var res = operand1[0].jiff.protocols.bits.clteq(operand1, operand2);
   if (res === true) {
     res = secret1;
-  } else if (res === false){
+  } else if (res === false) {
     res = secret0;
   }
   return res;
@@ -181,7 +179,7 @@ baseComputations.mpcInterpreter['c>'] = function (operand1, operand2) {
   var res = operand1[0].jiff.protocols.bits.cgt(operand1, operand2);
   if (res === true) {
     res = secret1;
-  } else if (res === false){
+  } else if (res === false) {
     res = secret0;
   }
   return res;
@@ -190,7 +188,7 @@ baseComputations.mpcInterpreter['c>='] = function (operand1, operand2) {
   var res = operand1[0].jiff.protocols.bits.cgteq(operand1, operand2);
   if (res === true) {
     res = secret1;
-  } else if (res === false){
+  } else if (res === false) {
     res = secret0;
   }
   return res;
@@ -199,7 +197,7 @@ baseComputations.mpcInterpreter['c=='] = function (operand1, operand2) {
   var res = operand1[0].jiff.protocols.bits.ceq(operand1, operand2);
   if (res === true) {
     res = secret1;
-  } else if (res === false){
+  } else if (res === false) {
     res = secret0;
   }
   return res;
@@ -208,45 +206,35 @@ baseComputations.mpcInterpreter['c!='] = function (operand1, operand2) {
   var res = operand1[0].jiff.protocols.bits.cneq(operand1, operand2);
   if (res === true) {
     res = secret1;
-  } else if (res === false){
+  } else if (res === false) {
     res = secret0;
   }
   return res;
 };
 
-
-// Wrap single compute function with calls to bit_decomposition and bit_composition
-var oldSingleCompute = baseComputations.singleCompute;
-baseComputations.singleCompute = function (test, values, interpreter) {
-  if (interpreter === baseComputations.openInterpreter) {
-    return oldSingleCompute(test, values, interpreter) % Zp;
+baseComputations.shareHook = async function (jiff_instance, test, testInputs, input, threshold, receivers, senders) {
+  var shares = jiff_instance.share(input, threshold, receivers, senders);
+  var i, pid;
+  for (i = 0; i < senders.length; i++) {
+    pid = senders[i];
+    shares[pid] = shares[pid].bit_decomposition();
   }
 
-  var keys = Object.keys(values);
-  var bits = {};
-  var promises = [];
-  for (var i = 0; i < keys.length; i++) {
-    var key = keys[i];
-    if (values[key] != null && (testConfig['decompose'] == null || testConfig['decompose'].indexOf(key) > -1)) {
-      (function (key) {
-        promises.push(values[key].bit_decomposition().then(function (decomposition) {
-          bits[key] = decomposition;
-          return true;
-        }));
-      })(key);
-    } else {
-      bits[key] = values[key];
-    }
+  for (i = 0; i < senders.length; i++) {
+    pid = senders[i];
+    shares[pid] = await shares[pid];
   }
 
-  return Promise.all(promises).then(function () {
-    var result = oldSingleCompute(test, bits, interpreter);
-    if (result.length != null) {
-      return result[0].jiff.protocols.bits.bit_composition(result);
-    }
+  return shares;
+};
 
-    return result;
-  });
+baseComputations.openHook = async function (jiff_instance, test, bits) {
+  var share = jiff_instance.protocols.bits.bit_composition(bits);
+  return await share.open();
+};
+
+baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
+  return (mpcResult.toString() === (expectedResult % Zp).toString());
 };
 
 // Default Computation Scheme
