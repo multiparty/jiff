@@ -51,6 +51,7 @@
   "dependencies": {
     "bignumber.js": "^5.0.0",
     "cross-env": "^5.0.5",
+    "docdash": "^1.1.1",
     "increase-memory-limit": "^1.0.3",
     "jquery-deferred": "^0.3.1",
     "libsodium-wrappers": "^0.7.2",
