@@ -1,7 +1,7 @@
 // Use base computation but override interpreters.
 var baseComputations = require('../../computations.js');
 
-var Zp, testConfig, partyCount;
+var Zp, testConfig, partyCount, test;
 
 var secret1, secret0;
 
@@ -18,6 +18,9 @@ baseComputations.openInterpreter['+'] = function (operand1, operand2) {
 var minusCount = 1;
 baseComputations.openInterpreter['-'] = function (operand1, operand2) {
   var numberOfOps = partyCount - 1;
+  if (test.indexOf('c') > -1) {
+    numberOfOps = 1;
+  }
 
   minusCount = (minusCount + 1) % (numberOfOps);
   if (operand1 >= operand2) {
@@ -228,8 +231,11 @@ baseComputations.shareHook = async function (jiff_instance, test, testInputs, in
   return shares;
 };
 
-baseComputations.openHook = async function (jiff_instance, test, bits) {
-  var share = jiff_instance.protocols.bits.bit_composition(bits);
+baseComputations.openHook = async function (jiff_instance, test, share) {
+  if (share.length != null) {
+    // share is really a bunch of bits
+    share = jiff_instance.protocols.bits.bit_composition(share);
+  }
   return await share.open();
 };
 
@@ -242,6 +248,7 @@ exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done,
   Zp = jiff_instance.Zp;
   partyCount = jiff_instance.party_count;
   testConfig = _testConfig;
+  test = _test;
 
   secret1 = jiff_instance.share(1);
   secret0 = jiff_instance.share(0);
