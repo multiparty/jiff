@@ -1,35 +1,20 @@
 {
-  "tests": [ "<", "<=", ">", ">=", "==", "!=" ],
+  "tests": [ "c<", "c<=", "c>", "c>=", "c==", "c!=" ],
   "suiteConf": {
     "port": 3001,
     "generation": {
-      "file": "config/base/generation.js",
+      "file": "config/bits/generation.js",
       "function": "generateConstantComparisonInputs"
     },
     "computation": {
-      "file": "computations.js",
+      "file": "config/bits/computations.js",
       "function": "compute"
     }
   },
 
   "testConf": {
     "default": {
-      "count": 15,
-      "parallel": 5,
-      "options": {
-        "Zp": 127,
-        "party_count": 3
-      }
-    },
-    "==": {
-      "count": 15,
-      "parallel": 5,
-      "options": {
-        "Zp": 127,
-        "party_count": 3
-      }
-    },
-    "!=": {
+      "decompose": ["1"],
       "count": 15,
       "parallel": 5,
       "options": {

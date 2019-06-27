@@ -3,6 +3,8 @@ var baseComputations = require('../../computations.js');
 
 var Zp, testConfig, partyCount;
 
+var secret1, secret0;
+
 
 // How to interpret non-MPC operations
 // decomposition
@@ -138,42 +140,78 @@ baseComputations.mpcInterpreter['c%'] = function (operand1, operand2) {
   return operand1[0].jiff.protocols.bits.cdivr(operand2, operand1).remainder;
 };
 // comparisons
-baseComputations.openInterpreter['<'] = function (operand1, operand2) {
+baseComputations.mpcInterpreter['<'] = function (operand1, operand2) {
   return operand1[0].jiff.protocols.bits.slt(operand1, operand2);
 };
-baseComputations.openInterpreter['<='] = function (operand1, operand2) {
+baseComputations.mpcInterpreter['<='] = function (operand1, operand2) {
   return operand1[0].jiff.protocols.bits.slteq(operand1, operand2);
 };
-baseComputations.openInterpreter['>'] = function (operand1, operand2) {
+baseComputations.mpcInterpreter['>'] = function (operand1, operand2) {
   return operand1[0].jiff.protocols.bits.sgt(operand1, operand2);
 };
-baseComputations.openInterpreter['>='] = function (operand1, operand2) {
+baseComputations.mpcInterpreter['>='] = function (operand1, operand2) {
   return operand1[0].jiff.protocols.bits.sgteq(operand1, operand2);
 };
-baseComputations.openInterpreter['=='] = function (operand1, operand2) {
+baseComputations.mpcInterpreter['=='] = function (operand1, operand2) {
   return operand1[0].jiff.protocols.bits.seq(operand1, operand2);
 };
-baseComputations.openInterpreter['!='] = function (operand1, operand2) {
+baseComputations.mpcInterpreter['!='] = function (operand1, operand2) {
   return operand1[0].jiff.protocols.bits.sneq(operand1, operand2);
 };
 // constant comparisons
-baseComputations.openInterpreter['c<'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.clt(operand1, operand2);
+baseComputations.mpcInterpreter['c<'] = function (operand1, operand2) {
+  var res = operand1[0].jiff.protocols.bits.clt(operand1, operand2);
+  if (res === true) {
+    res = secret1;
+  } else if (res === false){
+    res = secret0;
+  }
+  return res;
 };
-baseComputations.openInterpreter['c<='] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.clteq(operand1, operand2);
+baseComputations.mpcInterpreter['c<='] = function (operand1, operand2) {
+  var res = operand1[0].jiff.protocols.bits.clteq(operand1, operand2);
+  if (res === true) {
+    res = secret1;
+  } else if (res === false){
+    res = secret0;
+  }
+  return res;
 };
-baseComputations.openInterpreter['c>'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.cgt(operand1, operand2);
+baseComputations.mpcInterpreter['c>'] = function (operand1, operand2) {
+  var res = operand1[0].jiff.protocols.bits.cgt(operand1, operand2);
+  if (res === true) {
+    res = secret1;
+  } else if (res === false){
+    res = secret0;
+  }
+  return res;
 };
-baseComputations.openInterpreter['c>='] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.cgteq(operand1, operand2);
+baseComputations.mpcInterpreter['c>='] = function (operand1, operand2) {
+  var res = operand1[0].jiff.protocols.bits.cgteq(operand1, operand2);
+  if (res === true) {
+    res = secret1;
+  } else if (res === false){
+    res = secret0;
+  }
+  return res;
 };
-baseComputations.openInterpreter['c=='] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.ceq(operand1, operand2);
+baseComputations.mpcInterpreter['c=='] = function (operand1, operand2) {
+  var res = operand1[0].jiff.protocols.bits.ceq(operand1, operand2);
+  if (res === true) {
+    res = secret1;
+  } else if (res === false){
+    res = secret0;
+  }
+  return res;
 };
-baseComputations.openInterpreter['c!='] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.cneq(operand1, operand2);
+baseComputations.mpcInterpreter['c!='] = function (operand1, operand2) {
+  var res = operand1[0].jiff.protocols.bits.cneq(operand1, operand2);
+  if (res === true) {
+    res = secret1;
+  } else if (res === false){
+    res = secret0;
+  }
+  return res;
 };
 
 
@@ -216,5 +254,8 @@ exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done,
   Zp = jiff_instance.Zp;
   partyCount = jiff_instance.party_count;
   testConfig = _testConfig;
+
+  secret1 = jiff_instance.share(1);
+  secret0 = jiff_instance.share(0);
   return baseComputations.compute(jiff_instance, _test, _inputs, _testParallel, _done, testConfig);
 };
