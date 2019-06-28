@@ -33,6 +33,9 @@
         "class":"menu-item",
         "id":"github_link"
       }
+    },
+    "meta": {
+      "title": "JIFF Library Documentation"
     }
   }
 }
