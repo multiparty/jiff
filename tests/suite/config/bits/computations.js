@@ -153,11 +153,6 @@ baseComputations.shareHook = async function (jiff_instance, test, testInputs, in
         shares[pid] = shares[pid].bit_decomposition();
       }
     }
-
-    for (i = 0; i < senders.length; i++) {
-      pid = senders[i];
-      shares[pid] = await shares[pid];
-    }
   }
 
   if (testConfig['share'] === 'share_bits') {

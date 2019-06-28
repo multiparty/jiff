@@ -46,13 +46,21 @@ describe(name + ': ' + suite, function () {
         var alias = testConfig.alias != null ? testConfig.alias : test;
 
         // figure out computation inputs
-        var generation = require('./' + config['suiteConf']['generation']['file']);
-        var inputs;
-        try {
-          inputs = generation[config['suiteConf']['generation']['function']](test, testCount, options);
-        } catch (error) {
-          console.log('Input generation error ', error);
-          done(error);
+        var inputs = [];
+        if (testConfig['inputs'] != null) {
+          inputs = testConfig['inputs'];
+        }
+
+        // Generate random inputs
+        if (testCount != null && testCount > inputs.length) {
+          testCount = testCount - inputs.length;
+          var generation = require('./' + config['suiteConf']['generation']['file']);
+          try {
+            inputs = inputs.concat(generation[config['suiteConf']['generation']['function']](test, testCount, options));
+          } catch (error) {
+            console.log('Input generation error ', error);
+            done(error);
+          }
         }
 
         // figure out computation
