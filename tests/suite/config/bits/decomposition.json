@@ -17,7 +17,6 @@
       "alias": "decomposition",
       "count": 20,
       "parallel": 5,
-      "decomposition": [1],
       "options": {
         "Zp": 127,
         "party_count": 2
@@ -27,7 +26,6 @@
       "alias": "decomposition",
       "count": 8,
       "parallel": 3,
-      "decomposition": [1],
       "options": {
         "Zp": 15485867,
         "party_count": 2
@@ -37,7 +35,6 @@
       "alias": "decomposition",
       "count": 20,
       "parallel": 5,
-      "decomposition": [1],
       "options": {
         "Zp": 127,
         "party_count": 3
@@ -47,7 +44,6 @@
       "alias": "decomposition",
       "count": 8,
       "parallel": 3,
-      "decomposition": [1],
       "options": {
         "Zp": 15485867,
         "party_count": 3
@@ -57,7 +53,6 @@
       "alias": "decomposition",
       "count": 20,
       "parallel": 5,
-      "decomposition": [1],
       "options": {
         "Zp": 127,
         "party_count": 3
@@ -67,7 +62,6 @@
       "alias": "decomposition",
       "count": 5,
       "parallel": 2,
-      "decomposition": [1],
       "options": {
         "Zp": 2039,
         "party_count": 5

@@ -195,6 +195,7 @@ exports.singleCompute = function (jiff_instance, shareParameters, test, values, 
     }
     return result;
   } catch (err) {
+    console.log(err);
     errors.push(err);
   }
 };

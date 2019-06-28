@@ -1,14 +1,17 @@
 exports.generateUniform = function (test, options) {
-  return Math.floor(Math.random() * options.Zp);
+  var max = options.max || options.Zp;
+  return Math.floor(Math.random() * max);
 };
 exports.generateNonZeroUniform = function (test, options) {
-  return Math.floor(Math.random() * (options.Zp - 1)) + 1;
+  var max = options.max || options.Zp;
+  return Math.floor(Math.random() * (max - 1)) + 1;
 };
 exports.generateBit = function (test, options) {
   return Math.random() < 0.5 ? 0 : 1;
 };
 exports.generateMultiple = function (test, options, factor) {
-  var coef = exports.generateUniform(test, { Zp: Math.floor(options.Zp/factor) });
+  var max = options.max || options.Zp;
+  var coef = exports.generateUniform(test, { max: Math.floor(max / factor) });
   return coef * factor;
 };
 exports.generateDividend = function (test, options, divisor) {

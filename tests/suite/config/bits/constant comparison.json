@@ -14,7 +14,6 @@
 
   "testConf": {
     "default": {
-      "decompose": ["1"],
       "count": 15,
       "parallel": 5,
       "options": {

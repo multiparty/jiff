@@ -1,256 +1,207 @@
 // Use base computation but override interpreters.
 var baseComputations = require('../../computations.js');
 
-var Zp, testConfig, partyCount, test;
-
-var secret1, secret0;
-
+var testConfig;
 
 // How to interpret non-MPC operations
-// decomposition
-baseComputations.openInterpreter['decomposition'] = function (operand1) {
-  return operand1; // decomposition -> is a no-op
-};
-// arithmetic
-baseComputations.openInterpreter['+'] = function (operand1, operand2) {
-  return (operand1 + operand2) % Zp;
-};
-var minusCount = 1;
-baseComputations.openInterpreter['-'] = function (operand1, operand2) {
-  var numberOfOps = partyCount - 1;
-  if (test.indexOf('c') > -1) {
-    numberOfOps = 1;
-  }
-
-  minusCount = (minusCount + 1) % (numberOfOps);
-  if (operand1 >= operand2) {
+baseComputations.openInterpreter = {
+  'decomposition': function (operand1) {
+    return operand1; // decomposition -> is a no-op
+  },
+  '+': function (operand1, operand2) {
+    return operand1 + operand2;
+  },
+  '-': function (operand1, operand2) {
     return operand1 - operand2;
-  } else {
-    var n = Zp.toString(2).length + minusCount;
-    var bits = Math.abs(operand1 - operand2).toString(2).split('').reverse();
-    for (var i = 0; i < bits.length; i++) {
-      bits[i] = bits[i] === '0' ? '1' : '0';
-    }
-    while (bits.length <= n) {
-      bits.push('1');
-    }
-    return parseInt(bits.reverse().join(''), 2) + 1 + Zp;
+  },
+  '*': function (operand1, operand2) {
+    return operand1 * operand2;
+  },
+  '/': function (operand1, operand2) {
+    return Math.floor(operand1 / operand2);
+  },
+  '%': function (operand1, operand2) {
+    return operand1 % operand2;
+  },
+  '+c': function (operand1, operand2) {
+    return operand1 + operand2;
+  },
+  '-c': function (operand1, operand2) {
+    return operand1 - operand2;
+  },
+  'c-': function (operand1, operand2) {
+    return operand2 - operand1;
+  },
+  '*c': function (operand1, operand2) {
+    return operand1 * operand2;
+  },
+  '/c': function (operand1, operand2) {
+    return Math.floor(operand1 / operand2);
+  },
+  '%c': function (operand1, operand2) {
+    return operand1 % operand2;
+  },
+  'c/': function (operand1, operand2) {
+    return Math.floor(operand2 / operand1);
+  },
+  'c%': function (operand1, operand2) {
+    return operand2 % operand1;
+  },
+  '<': function (operand1, operand2) {
+    return Number(operand1 < operand2);
+  },
+  '<=': function (operand1, operand2) {
+    return Number(operand1 <= operand2);
+  },
+  '>': function (operand1, operand2) {
+    return Number(operand1 > operand2);
+  },
+  '>=': function (operand1, operand2) {
+    return Number(operand1 >= operand2);
+  },
+  '==': function (operand1, operand2) {
+    return Number(operand1 === operand2);
+  },
+  '!=': function (operand1, operand2) {
+    return Number(operand1 !== operand2);
+  },
+  'c<': function (operand1, operand2) {
+    return Number(operand1 < operand2);
+  },
+  'c<=': function (operand1, operand2) {
+    return Number(operand1 <= operand2);
+  },
+  'c>': function (operand1, operand2) {
+    return Number(operand1 > operand2);
+  },
+  'c>=': function (operand1, operand2) {
+    return Number(operand1 >= operand2);
+  },
+  'c==': function (operand1, operand2) {
+    return Number(operand1 === operand2);
+  },
+  'c!=': function (operand1, operand2) {
+    return Number(operand1 !== operand2);
   }
 };
-baseComputations.openInterpreter['*'] = function (operand1, operand2) {
-  return (operand1 * operand2) % Zp;
-};
-baseComputations.openInterpreter['/'] = function (operand1, operand2) {
-  return Math.floor(operand1 / operand2);
-};
-baseComputations.openInterpreter['%'] = function (operand1, operand2) {
-  return (operand1 % operand2);
-};
 
-// constant arithmetic
-baseComputations.openInterpreter['+c'] = baseComputations.openInterpreter['+'];
-baseComputations.openInterpreter['-c'] = function (operand1, operand2) {
-  return baseComputations.openInterpreter['-'](operand1, operand2, 1);
+var curryCombinator = function (opName, attr, flipOperands) {
+  if (attr == null) {
+    if (flipOperands !== true) {
+      return function (operand1, operand2) {
+        return operand1[0].jiff.protocols.bits[opName](operand1, operand2);
+      }
+    } else {
+      return function (operand1, operand2) {
+        return operand1[0].jiff.protocols.bits[opName](operand2, operand1);
+      }
+    }
+  } else {
+    if (flipOperands !== true) {
+      return function (operand1, operand2) {
+        return operand1[0].jiff.protocols.bits[opName](operand1, operand2)[attr];
+      }
+    } else {
+      return function (operand1, operand2) {
+        return operand1[0].jiff.protocols.bits[opName](operand2, operand1)[attr];
+      }
+    }
+  }
 };
-baseComputations.openInterpreter['c-'] = function (operand1, operand2) {
-  return baseComputations.openInterpreter['-'](operand2, operand1, 1);
-};
-baseComputations.openInterpreter['*c'] = baseComputations.openInterpreter['*'];
-baseComputations.openInterpreter['/c'] = baseComputations.openInterpreter['/'];
-baseComputations.openInterpreter['%c'] = baseComputations.openInterpreter['%'];
-baseComputations.openInterpreter['c/'] =  function (operand1, operand2) {
-  return baseComputations.openInterpreter['/'](operand2, operand1);
-};
-baseComputations.openInterpreter['c%'] =  function (operand1, operand2) {
-  return baseComputations.openInterpreter['%'](operand2, operand1);
-};
-
-// comparisons
-baseComputations.openInterpreter['<'] = function (operand1, operand2) {
-  return Number(operand1 < operand2);
-};
-baseComputations.openInterpreter['<='] = function (operand1, operand2) {
-  return Number(operand1 <= operand2);
-};
-baseComputations.openInterpreter['>'] = function (operand1, operand2) {
-  return Number(operand1 > operand2);
-};
-baseComputations.openInterpreter['>='] = function (operand1, operand2) {
-  return Number(operand1 >= operand2);
-};
-baseComputations.openInterpreter['=='] = function (operand1, operand2) {
-  return Number(operand1 === operand2);
-};
-baseComputations.openInterpreter['!='] = function (operand1, operand2) {
-  return Number(operand1 !== operand2);
-};
-
-// constant comparisons
-baseComputations.openInterpreter['c<'] = baseComputations.openInterpreter['<'];
-baseComputations.openInterpreter['c<='] = baseComputations.openInterpreter['<='];
-baseComputations.openInterpreter['c>'] = baseComputations.openInterpreter['>'];
-baseComputations.openInterpreter['c>='] = baseComputations.openInterpreter['>='];
-baseComputations.openInterpreter['c=='] = baseComputations.openInterpreter['=='];
-baseComputations.openInterpreter['c!='] = baseComputations.openInterpreter['!='];
-
 
 // How to interpret MPC operations
-// decomposition
-baseComputations.mpcInterpreter['decomposition'] = function (operand1) {
-  return operand1;
-};
-// arithmetic
-baseComputations.mpcInterpreter['+'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.sadd(operand1, operand2);
-};
-baseComputations.mpcInterpreter['-'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.ssub(operand1, operand2);
-};
-baseComputations.mpcInterpreter['*'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.smult(operand1, operand2);
-};
-baseComputations.mpcInterpreter['/'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.sdiv(operand1, operand2).quotient;
-};
-baseComputations.mpcInterpreter['%'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.sdiv(operand1, operand2).remainder;
-};
-// constant arithmetic
-baseComputations.mpcInterpreter['+c'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.cadd(operand1, operand2);
-};
-baseComputations.mpcInterpreter['-c'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.csubl(operand1, operand2);
-};
-baseComputations.mpcInterpreter['c-'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.csubr(operand2, operand1);
-};
-baseComputations.mpcInterpreter['*c'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.cmult(operand1, operand2);
-};
-baseComputations.mpcInterpreter['/c'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.cdivl(operand1, operand2).quotient;
-};
-baseComputations.mpcInterpreter['%c'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.cdivl(operand1, operand2).remainder;
-};
-baseComputations.mpcInterpreter['c/'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.cdivr(operand2, operand1).quotient;
-};
-baseComputations.mpcInterpreter['c%'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.cdivr(operand2, operand1).remainder;
-};
-// comparisons
-baseComputations.mpcInterpreter['<'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.slt(operand1, operand2);
-};
-baseComputations.mpcInterpreter['<='] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.slteq(operand1, operand2);
-};
-baseComputations.mpcInterpreter['>'] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.sgt(operand1, operand2);
-};
-baseComputations.mpcInterpreter['>='] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.sgteq(operand1, operand2);
-};
-baseComputations.mpcInterpreter['=='] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.seq(operand1, operand2);
-};
-baseComputations.mpcInterpreter['!='] = function (operand1, operand2) {
-  return operand1[0].jiff.protocols.bits.sneq(operand1, operand2);
-};
-// constant comparisons
-baseComputations.mpcInterpreter['c<'] = function (operand1, operand2) {
-  var res = operand1[0].jiff.protocols.bits.clt(operand1, operand2);
-  if (res === true) {
-    res = secret1;
-  } else if (res === false) {
-    res = secret0;
+baseComputations.mpcInterpreter = {
+  '+': curryCombinator('sadd'),
+  '-': curryCombinator('ssub'),
+  '*': curryCombinator('smult'),
+  '/': curryCombinator('sdiv', 'quotient'),
+  '%': curryCombinator('sdiv', 'remainder'),
+  '+c': curryCombinator('cadd'),
+  '-c': curryCombinator('csubl'),
+  '*c': curryCombinator('cmult'),
+  '<': curryCombinator('slt'),
+  '<=': curryCombinator('slteq'),
+  '>': curryCombinator('sgt'),
+  '>=': curryCombinator('sgteq'),
+  '==': curryCombinator('seq'),
+  '!=': curryCombinator('sneq'),
+  'c<': curryCombinator('clt'),
+  'c<=': curryCombinator('clteq'),
+  'c>': curryCombinator('cgt'),
+  'c>=': curryCombinator('cgteq'),
+  'c==': curryCombinator('ceq'),
+  'c!=': curryCombinator('cneq'),
+  'c-': curryCombinator('csubr', null, true),
+  '/c': curryCombinator('cdivl', 'quotient'),
+  '%c': curryCombinator('cdivl', 'remainder'),
+  'c/': curryCombinator('cdivr', 'quotient', true),
+  'c%': curryCombinator('cdivr', 'remainder', true),
+  'decomposition': function (operand1) {
+    return operand1;
   }
-  return res;
-};
-baseComputations.mpcInterpreter['c<='] = function (operand1, operand2) {
-  var res = operand1[0].jiff.protocols.bits.clteq(operand1, operand2);
-  if (res === true) {
-    res = secret1;
-  } else if (res === false) {
-    res = secret0;
-  }
-  return res;
-};
-baseComputations.mpcInterpreter['c>'] = function (operand1, operand2) {
-  var res = operand1[0].jiff.protocols.bits.cgt(operand1, operand2);
-  if (res === true) {
-    res = secret1;
-  } else if (res === false) {
-    res = secret0;
-  }
-  return res;
-};
-baseComputations.mpcInterpreter['c>='] = function (operand1, operand2) {
-  var res = operand1[0].jiff.protocols.bits.cgteq(operand1, operand2);
-  if (res === true) {
-    res = secret1;
-  } else if (res === false) {
-    res = secret0;
-  }
-  return res;
-};
-baseComputations.mpcInterpreter['c=='] = function (operand1, operand2) {
-  var res = operand1[0].jiff.protocols.bits.ceq(operand1, operand2);
-  if (res === true) {
-    res = secret1;
-  } else if (res === false) {
-    res = secret0;
-  }
-  return res;
-};
-baseComputations.mpcInterpreter['c!='] = function (operand1, operand2) {
-  var res = operand1[0].jiff.protocols.bits.cneq(operand1, operand2);
-  if (res === true) {
-    res = secret1;
-  } else if (res === false) {
-    res = secret0;
-  }
-  return res;
 };
 
+// Sharing bits
 baseComputations.shareHook = async function (jiff_instance, test, testInputs, input, threshold, receivers, senders) {
-  var shares = jiff_instance.share(input, threshold, receivers, senders);
-  var i, pid;
-  for (i = 0; i < senders.length; i++) {
-    pid = senders[i];
-    shares[pid] = shares[pid].bit_decomposition();
+  var shares;
+  if (testConfig['share'] == null || testConfig['share'] === 'decomposition') {
+    shares = jiff_instance.share(input, threshold, receivers, senders);
+    var i, pid;
+    for (i = 0; i < senders.length; i++) {
+      pid = senders[i];
+      if (testConfig['decompose'] == null || testConfig['decompose'].indexOf(pid) > -1) {
+        shares[pid] = shares[pid].bit_decomposition();
+      }
+    }
+
+    for (i = 0; i < senders.length; i++) {
+      pid = senders[i];
+      shares[pid] = await shares[pid];
+    }
   }
 
-  for (i = 0; i < senders.length; i++) {
-    pid = senders[i];
-    shares[pid] = await shares[pid];
+  if (testConfig['share'] === 'share_bits') {
+    var bitLength = testConfig['options']['max'] || jiff_instance.Zp;
+    bitLength = bitLength.toString(2).length;
+    shares = jiff_instance.protocols.bits.share_bits(input, bitLength, threshold, receivers, senders);
   }
-
   return shares;
 };
 
+// Opening bits
 baseComputations.openHook = async function (jiff_instance, test, share) {
-  if (share.length != null) {
-    // share is really a bunch of bits
-    share = jiff_instance.protocols.bits.bit_composition(share);
+  if (share === true || share === false) {
+    return share;
   }
-  return await share.open();
+
+  if (share.length == null) {
+    return await share.open();
+  }
+
+  // share is really a bunch of bits
+  if (testConfig['open'] == null || testConfig['open'] === 'composition') {
+    share = jiff_instance.protocols.bits.bit_composition(share);
+    return await share.open();
+  }
+
+  return await share[0].jiff.protocols.bits.open_bits(share);
 };
 
 baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
-  return (mpcResult.toString() === (expectedResult % Zp).toString());
+  if (test === '-' || test === 'c-' || test === '-c') {
+    if (mpcResult.toString(2).charAt(0) === '1' && expectedResult < 0) {
+      var twosComplement = mpcResult.toString(2).split('').map(function (bit) {
+        return bit === '1' ? '0' : '1';
+      }).join('');
+      mpcResult = -1 * (parseInt(twosComplement, 2) + 1);
+    }
+  }
+
+  return (mpcResult.toString() === expectedResult.toString());
 };
 
 // Default Computation Scheme
-exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done, _testConfig) {
-  Zp = jiff_instance.Zp;
-  partyCount = jiff_instance.party_count;
+exports.compute = function (_jiff_instance, _test, _inputs, _testParallel, _done, _testConfig) {
   testConfig = _testConfig;
-  test = _test;
-
-  secret1 = jiff_instance.share(1);
-  secret0 = jiff_instance.share(0);
-  return baseComputations.compute(jiff_instance, _test, _inputs, _testParallel, _done, testConfig);
+  return baseComputations.compute(_jiff_instance, _test, _inputs, _testParallel, _done, testConfig);
 };
