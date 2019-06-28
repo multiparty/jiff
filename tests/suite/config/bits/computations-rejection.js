@@ -46,7 +46,7 @@ baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
 var oldCompute = baseComputations.compute;
 baseComputations.compute = function (jiff_instance, test, inputs, testParallel, done, testConfig) {
   Zp = jiff_instance.Zp;
-  oldCompute.call(baseComputations, arguments);
+  oldCompute.apply(baseComputations, arguments);
 };
 
 module.exports = baseComputations;

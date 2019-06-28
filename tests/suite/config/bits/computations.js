@@ -198,5 +198,5 @@ baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
 // Default Computation Scheme
 exports.compute = function (_jiff_instance, _test, _inputs, _testParallel, _done, _testConfig) {
   testConfig = _testConfig;
-  return baseComputations.compute.call(baseComputations, arguments);
+  return baseComputations.compute.apply(baseComputations, arguments);
 };

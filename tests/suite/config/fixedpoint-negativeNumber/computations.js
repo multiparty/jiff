@@ -70,5 +70,5 @@ baseComputations.mpcInterpreter['floor'] = function (operand1, _) {
 // Default Computation Scheme
 exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done) {
   fix = jiff_instance.helpers.to_fixed;
-  return baseComputations.compute.call(baseComputations, arguments);
+  return baseComputations.compute.apply(baseComputations, arguments);
 };
