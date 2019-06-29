@@ -49,8 +49,8 @@
       }
     },
     "c/": {
-      "share": "share_bits",
-      "open": "composition",
+      "share": "decomposition",
+      "open": "open_bits",
       "count": 20,
       "parallel": 3,
       "options": {

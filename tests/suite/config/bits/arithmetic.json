@@ -26,12 +26,12 @@
     },
     "*": {
       "share": "share_bits",
-      "open": "composition",
+      "open": "open_bits",
       "count": 10,
       "parallel": 3,
       "options": {
         "Zp": 127,
-        "max": 5,
+        "max": 10,
         "party_count": 3
       }
     },
@@ -46,6 +46,7 @@
       }
     },
     "%": {
+      "share": "decomposition",
       "open": "composition",
       "count": 10,
       "parallel": 3,

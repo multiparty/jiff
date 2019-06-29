@@ -129,11 +129,6 @@ exports.generateConstantArithmeticInputs = function (test, count, options) {
         oneInput[1] = exports.generateDividend(test, options, max, oneInput['constant']);
       }
 
-      if (test !== 'cdivfac' && test.startsWith('c')) {
-        var tmp = oneInput['constant'];
-        oneInput['constant'] = oneInput[1];
-        oneInput[1] = tmp;
-      }
       inputs.push(oneInput);
     }
   } else if (test === '|' || test === '^') {

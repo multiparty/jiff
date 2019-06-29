@@ -13,6 +13,8 @@ baseGeneration.generateDecomposition = function (test, count, options) {
 };
 
 var oldArithmeticInputs = baseGeneration.generateArithmeticInputs;
+var oldConstantArithmeticInputs = baseGeneration.generateConstantArithmeticInputs;
+
 baseGeneration.generateArithmeticInputs = function (test, count, options) {
   if (test !== '-') {
     return oldArithmeticInputs(test, count, options);
@@ -34,6 +36,26 @@ baseGeneration.generateArithmeticInputs = function (test, count, options) {
 
     // Last input can cause negative number
     oneInput[party_count] = baseGeneration.generateUniform(test, options, max);
+    inputs.push(oneInput);
+  }
+
+  return inputs;
+};
+
+baseGeneration.generateConstantArithmeticInputs = function (test, count, options) {
+  if (test !== 'c/' && test !== 'c%') {
+    return oldConstantArithmeticInputs(test, count, options);
+  }
+
+  var max = options.max || options.Zp;
+  var cmax = options.cmax || max;
+
+  // division and mod: only two inputs, the second is non-zero.
+  var inputs = [];
+  for (var t = 0; t < count; t++) {
+    var oneInput = {};
+    oneInput[1] = baseGeneration.generateNonZeroUniform(test, options, max);
+    oneInput['constant'] = baseGeneration.generateDividend(test, options, cmax, oneInput[1]);
     inputs.push(oneInput);
   }
 
