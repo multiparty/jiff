@@ -5,7 +5,7 @@ var Zp;
 baseComputations.openInterpreter = 'OPEN';
 baseComputations.mpcInterpreter = 'MPC';
 
-// Sharing bits
+// No sharing, but keep track of upper and lower bounds
 baseComputations.shareParameters = function (jiff_instance, test, testInputs) {
   var keys = [];
   if (testInputs['upper'] != null) {
@@ -14,13 +14,11 @@ baseComputations.shareParameters = function (jiff_instance, test, testInputs) {
   if (testInputs['lower'] != null) {
     keys.push('lower');
   }
-  upper = testInputs['upper'];
   return { input: testInputs, senders: keys};
 };
 baseComputations.shareHook = function (jiff_instance, test, testInputs, input, threshold, receivers, senders) {
   return testInputs;
 };
-
 
 // Computing
 baseComputations.singleCompute = function (jiff_instance, shareParameters, test, values, interpreter) {
@@ -43,10 +41,7 @@ baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
   return (mpcResult >= lower) && (mpcResult < upper);
 };
 
-var oldCompute = baseComputations.compute;
-baseComputations.compute = function (jiff_instance, test, inputs, testParallel, done, testConfig) {
+exports.compute = function (jiff_instance, test, inputs, testParallel, done, testConfig) {
   Zp = jiff_instance.Zp;
-  oldCompute.apply(baseComputations, arguments);
+  baseComputations.compute.apply(baseComputations, arguments);
 };
-
-module.exports = baseComputations;

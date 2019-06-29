@@ -20,7 +20,8 @@
       "parallel": 3,
       "options": {
         "Zp": 127,
-        "max": 511,
+        "max": 255,
+        "cmax": 511,
         "party_count": 3
       }
     },
@@ -31,7 +32,8 @@
       "parallel": 3,
       "options": {
         "Zp": 127,
-        "max": 127,
+        "max": 255,
+        "cmax": 511,
         "party_count": 3
       }
     },
@@ -42,6 +44,7 @@
       "parallel": 3,
       "options": {
         "Zp": 127,
+        "cmax": 255,
         "party_count": 3
       }
     },
@@ -52,6 +55,7 @@
       "parallel": 3,
       "options": {
         "Zp": 127,
+        "cmax": 255,
         "party_count": 3
       }
     },
@@ -62,6 +66,7 @@
       "parallel": 3,
       "options": {
         "Zp": 127,
+        "cmax": 255,
         "party_count": 3
       }
     },
@@ -72,6 +77,7 @@
       "parallel": 3,
       "options": {
         "Zp": 127,
+        "cmax": 255,
         "party_count": 3
       }
     }

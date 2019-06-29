@@ -1,21 +1,18 @@
-exports.generateUniform = function (test, options) {
-  var max = options.max || options.Zp;
+exports.generateUniform = function (test, options, max) {
   return Math.floor(Math.random() * max);
 };
-exports.generateNonZeroUniform = function (test, options) {
-  var max = options.max || options.Zp;
+exports.generateNonZeroUniform = function (test, options, max) {
   return Math.floor(Math.random() * (max - 1)) + 1;
 };
-exports.generateBit = function (test, options) {
+exports.generateBit = function (/*test, options*/) {
   return Math.random() < 0.5 ? 0 : 1;
 };
-exports.generateMultiple = function (test, options, factor) {
-  var max = options.max || options.Zp;
-  var coef = exports.generateUniform(test, { max: Math.floor(max / factor) });
+exports.generateMultiple = function (test, options, max, factor) {
+  var coef = exports.generateUniform(test, options, Math.floor(max / factor));
   return coef * factor;
 };
-exports.generateDividend = function (test, options, divisor) {
-  return exports.generateUniform(test, options);
+exports.generateDividend = function (test, options, max, divisor) {
+  return exports.generateUniform(test, options, max);
 };
 
 // Generation API referred to from configuration JSON files
@@ -34,11 +31,12 @@ exports.generateShareInputs = function (test, count, options) {
   // 2) sharing threshold
   // 3) array of senders
   // 4) array of receivers
+  var max = options.max || options.Zp;
   for (var t = 0; t < count; t++) {
     var oneTest = { numbers: {} };
     // Generate numbers
     for (var p = 1; p <= options.party_count; p++) {
-      oneTest['numbers'][p] = exports.generateUniform(test, options);
+      oneTest['numbers'][p] = exports.generateUniform(test, options, max);
     }
     // 1 <= Threshold <= party_count
     oneTest['threshold'] = Math.floor(Math.random() * options.party_count) + 1;
@@ -70,14 +68,16 @@ exports.generateShareInputs = function (test, count, options) {
 // | and ^ requires bits, while thr denominator for / and % must be non-zero.
 exports.generateArithmeticInputs = function (test, count, options) {
   var party_count = options.party_count;
+  var max = options.max || options.Zp;
+
   var inputs = [];
   var t, p, oneInput;
   if (test.startsWith('/') || test === '%') {
     // division and mod: only two inputs, the second is non-zero.
     for (t = 0; t < count; t++) {
       oneInput = {};
-      oneInput[2] = exports.generateNonZeroUniform(test, options);
-      oneInput[1] = exports.generateDividend(test, options, oneInput[2]);
+      oneInput[2] = exports.generateNonZeroUniform(test, options, max);
+      oneInput[1] = exports.generateDividend(test, options, max, oneInput[2]);
       inputs.push(oneInput);
     }
   } else if (test === '|' || test === '^') {
@@ -101,7 +101,7 @@ exports.generateArithmeticInputs = function (test, count, options) {
     for (t = 0; t < count; t++) {
       oneInput = {};
       for (p = 1; p <= party_count; p++) {
-        oneInput[p] = exports.generateUniform(test, options);
+        oneInput[p] = exports.generateUniform(test, options, max);
       }
       inputs.push(oneInput);
     }
@@ -113,17 +113,20 @@ exports.generateArithmeticInputs = function (test, count, options) {
 // Constant Arithmetic inputs: an input for the first party, and a constant input.
 // | and ^ requires bits, while thr denominator for / and % must be non-zero.
 exports.generateConstantArithmeticInputs = function (test, count, options) {
+  var max = options.max || options.Zp;
+  var cmax = options.cmax || max;
+
   var inputs = [];
   var t, oneInput;
   if (test.indexOf('/') > -1 || test.indexOf('%') > -1 || test === 'cdivfac') {
     // division and mod: only two inputs, the second is non-zero.
     for (t = 0; t < count; t++) {
       oneInput = {};
-      oneInput['constant'] = exports.generateNonZeroUniform(test, options);
+      oneInput['constant'] = exports.generateNonZeroUniform(test, options, cmax);
       if (test === 'cdivfac') {
-        oneInput[1] = exports.generateMultiple(test, options, oneInput['constant']);
+        oneInput[1] = exports.generateMultiple(test, options, max, oneInput['constant']);
       } else {
-        oneInput[1] = exports.generateDividend(test, options, oneInput['constant']);
+        oneInput[1] = exports.generateDividend(test, options, max, oneInput['constant']);
       }
 
       if (test !== 'cdivfac' && test.startsWith('c')) {
@@ -145,8 +148,8 @@ exports.generateConstantArithmeticInputs = function (test, count, options) {
     // otherwise no constraints
     for (t = 0; t < count; t++) {
       oneInput = {};
-      oneInput[1] = exports.generateUniform(test, options);
-      oneInput['constant'] = exports.generateUniform(test, options);
+      oneInput[1] = exports.generateUniform(test, options, max);
+      oneInput['constant'] = exports.generateUniform(test, options, cmax);
       inputs.push(oneInput);
     }
   }
@@ -158,24 +161,15 @@ exports.generateConstantArithmeticInputs = function (test, count, options) {
 // if using random numbers and large Zp, inputs will be very unlikely to be equal
 // we must make it likely for the inputs to be equal manually for == and != checks
 exports.generateComparisonInputs = function (test, count, options) {
+  var max = options.max || options.Zp;
+
   var inputs = [];
-  var t, oneInput;
-  if (test === '==' || test === '!=' || test === '<=' || test === '>=') {
-    // equality checks: make it likely that the numbers are equal.
-    for (t = 0; t < count; t++) {
-      oneInput = {};
-      oneInput[1] = exports.generateUniform(test, options);
-      oneInput[2] = Math.random() < 0.5 ? oneInput[1] : exports.generateUniform(test, options);
-      inputs.push(oneInput);
-    }
-  } else {
-    // otherwise no constraints
-    for (t = 0; t < count; t++) {
-      oneInput = {};
-      oneInput[1] = exports.generateUniform(test, options);
-      oneInput[2] = exports.generateUniform(test, options);
-      inputs.push(oneInput);
-    }
+  // make it likely that the numbers are equal.
+  for (var t = 0; t < count; t++) {
+    var oneInput = {};
+    oneInput[1] = exports.generateUniform(test, options, max);
+    oneInput[2] = Math.random() < 0.5 ? oneInput[1] : exports.generateUniform(test, options, max);
+    inputs.push(oneInput);
   }
 
   return inputs;
@@ -185,24 +179,16 @@ exports.generateComparisonInputs = function (test, count, options) {
 // if using random numbers and large Zp, inputs will be very unlikely to be equal
 // we must make it likely for the inputs to be equal manually for == and != checks
 exports.generateConstantComparisonInputs = function (test, count, options) {
+  var max = options.max || options.Zp;
+  var cmax = options.cmax || max;
+
   var inputs = [];
-  var t, oneInput;
-  if (test === '==' || test === '!=' || test === '<=' || test === '>=') {
-    // equality checks: make it likely that the numbers are equal.
-    for (t = 0; t < count; t++) {
-      oneInput = {};
-      oneInput[1] = exports.generateUniform(test, options);
-      oneInput['constant'] = Math.random() < 0.5 ? oneInput[1] : exports.generateUniform(test, options);
-      inputs.push(oneInput);
-    }
-  } else {
-    // otherwise no constraints
-    for (t = 0; t < count; t++) {
-      oneInput = {};
-      oneInput[1] = exports.generateUniform(test, options);
-      oneInput['constant'] = exports.generateUniform(test, options);
-      inputs.push(oneInput);
-    }
+  // make it likely that the numbers are equal.
+  for (var t = 0; t < count; t++) {
+    var oneInput = {};
+    oneInput[1] = exports.generateUniform(test, options, max);
+    oneInput['constant'] = Math.random() < 0.5 ? oneInput[1] : exports.generateUniform(test, options, cmax);
+    inputs.push(oneInput);
   }
 
   return inputs;
