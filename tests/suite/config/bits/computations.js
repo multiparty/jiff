@@ -166,7 +166,7 @@ baseComputations.shareHook = async function (jiff_instance, test, testInputs, in
 // Opening bits
 baseComputations.openHook = async function (jiff_instance, test, share) {
   if (share === true || share === false) {
-    return share;
+    return Number(share);
   }
 
   if (share.length == null) {

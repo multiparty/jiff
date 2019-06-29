@@ -129,7 +129,7 @@
         {"upper": 1000000, "lower": 5}
       ]
     },
-    "rejection-Zp": {
+    "rejection-15485867": {
       "alias": "rejection",
       "parallel": 2,
       "options": {
