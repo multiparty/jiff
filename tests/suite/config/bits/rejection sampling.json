@@ -1,5 +1,5 @@
 {
-  "tests": [ "rejection127", "rejection128", "rejection2048", "rejection-1-2049", "rejection-100-200", "rejection-5-1000000", "rejection-15485867" ],
+  "tests": [ "rejection127", "rejection128", "rejection129", "rejection2048", "rejection-1-2049", "rejection-100-200", "rejection-5-1000000", "rejection-15485867" ],
   "suiteConf": {
     "port": 3001,
     "computation": {
@@ -9,6 +9,26 @@
   },
 
   "testConf": {
+    "rejection129": {
+      "alias": "rejection",
+      "parallel": 3,
+      "options": {
+        "Zp": 11,
+        "party_count": 3
+      },
+      "inputs": [
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129}
+      ]
+    },
     "rejection127": {
       "alias": "rejection",
       "parallel": 3,
