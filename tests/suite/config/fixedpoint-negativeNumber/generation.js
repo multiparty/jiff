@@ -72,10 +72,11 @@ var oldConstantComparison = baseGeneration.generateConstantComparisonInputs;
 baseGeneration.generateArithmeticInputs = function (test, count, options) {
   isConstant = false;
   if (test === 'floor' || test === 'abs') {
+    var max = options.max || options.Zp;
     var inputs = [];
     for (var t = 0; t < count; t++) {
       var oneInput = {};
-      oneInput[1] = baseGeneration.generateUniform(test, options);
+      oneInput[1] = baseGeneration.generateUniform(test, options, max);
       inputs.push(oneInput);
     }
     return inputs;
