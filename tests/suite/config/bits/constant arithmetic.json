@@ -46,7 +46,11 @@
         "Zp": 127,
         "cmax": 255,
         "party_count": 3
-      }
+      },
+      "inputs": [
+        {"1": 100, "constant": 1},
+        {"1": 20, "constant": 254}
+      ]
     },
     "c/": {
       "share": "decomposition",
@@ -57,7 +61,12 @@
         "Zp": 127,
         "cmax": 255,
         "party_count": 3
-      }
+      },
+      "inputs": [
+        {"1": 100, "constant": 0},
+        {"1": 52, "constant": 1},
+        {"1": 33, "constant": 2}
+      ]
     },
     "%c": {
       "share": "decomposition",
@@ -68,7 +77,11 @@
         "Zp": 127,
         "cmax": 255,
         "party_count": 3
-      }
+      },
+      "inputs": [
+        {"1": 100, "constant": 1},
+        {"1": 20, "constant": 254}
+      ]
     },
     "c%": {
       "share": "decomposition",
@@ -79,7 +92,12 @@
         "Zp": 127,
         "cmax": 255,
         "party_count": 3
-      }
+      },
+      "inputs": [
+        {"1": 100, "constant": 0},
+        {"1": 52, "constant": 1},
+        {"1": 33, "constant": 2}
+      ]
     }
   }
 }

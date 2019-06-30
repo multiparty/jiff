@@ -1,5 +1,15 @@
 /* global describe it */
 
+// Catch and log any uncaught exceptions
+process.on('uncaughtException', function (err) {
+  console.log('Uncaught Exception!');
+  console.log(err);
+  throw err;
+});
+process.on('unhandledRejection', function (reason) {
+  console.log('Unhandled Rejection', reason);
+});
+
 // Parameters
 var name = process.env['JIFF_TEST_NAME']; // the extension(s) to test
 var suite = process.env['JIFF_TEST_SUITE']; // the test suite
