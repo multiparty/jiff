@@ -14,6 +14,6 @@ http.listen(8080, function () {
   console.log('listening on *:8080');
 });
 
-console.log('Direct your browser to *:8080/demos/multipleshares/client.html.');
-console.log('To run a node.js based party: node demos/multipleshares/party <input>');
+console.log('Direct your browser to *:8080/demos/asyncshare/client.html.');
+console.log('To run a node.js based party: node demos/asyncshare/party <input>');
 console.log();
