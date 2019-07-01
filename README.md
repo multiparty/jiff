@@ -142,7 +142,10 @@ Below is a table of the current costs of operations in the *base* jiff with no e
 | =, c=, !=, c!=    | 2\*(bits+4)       | O( bits \* parties^2 )           | 3                    | 2\*bits \* (2\*parties + parties^2)        | c<, c>, \*   |
 | /                 | bits^2 + 5\*bits  | O( bits^2 \* parties^2 )         | 3                    | bits\*(2\*bits \* (2\*parties + parties^2))| <, c<, \*    |
 | c/                | 2\*(bits+3) + 5   | O( bits \* parties^2 )           | 3                    | 4 \* bits \* (2\*parties + parties^2)      | open, \*, c< |
-
+| bits+        | 8\*bits       | O( parties^2 \* bits ) | 2                    | 8 \* bits \* (parties \* parties - 1)              | triplet,open | 
+| bits-        | 8\*bits       | O( parties^2 \* bits ) | 2                    | 8 \* bits \* (parties \* parties - 1)              | triplet,open |
+| bits*        | 12\*bits       | O( parties^4 \* bits^2 ) | 2                    | 12 \* bits^2 \* (parties \* parties - 1)^2         | triplet,open |
+| bits/        | 25\*bits^2       | O( parties^2 \* bits^2 ) | 2                    | 25 \* bits^2 \* (parties \* parties - 1)         | triplet,open |
 
 Some exact costs not shown in the table:
 1. Exact total number of messages for secret inequalities is: 3\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1))) + 2\*parties + parties\*(parties-1)
