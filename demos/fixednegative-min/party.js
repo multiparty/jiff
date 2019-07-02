@@ -24,7 +24,7 @@ if (party_count == null) {
 
 var computation_id = process.argv[4];
 if (computation_id == null) {
-  computation_id = 'test-fixed';
+  computation_id = 'test-fixed-min';
 }
 
 var party_id = process.argv[5];
@@ -34,13 +34,13 @@ if (party_id != null) {
 
 
 // JIFF options
-var options = { party_count: party_count, party_id: party_id, decimal_digits: 2, integral_digits: 2, Zp: 32749 };
+var options = { party_count: party_count, party_id: party_id, decimal_digits: 2, integer_digits: 2, Zp: 32749 };
 options.onConnect = function (jiff_instance) {
   var promise = mpc.compute(input);
 
   promise.then(function (v) {
     console.log(v.toString(10));
-    jiff_instance.disconnect(true);
+    jiff_instance.disconnect(false, true);
   });
 };
 

@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>Live coding</title>
+    </head>
+
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+    <script type="text/javascript">
+        var options = {
+          logs: true,
+          party_count: 3,
+          sodium: false,
+          hooks: {
+            beforeOperation: [ function (jiff, opName, msg) {
+              console.log('Before', opName, msg);
+              return msg;
+            }],
+            afterOperation: [ function (jiff, opName, msg) {
+              console.log('After', opName, msg);
+              return msg;
+            }]
+          }
+        };
+    </script>
+<body>
+    Code in the console!
+</body>
+<script
+</html>

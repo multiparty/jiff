@@ -1,0 +1,13 @@
+{
+  "root": false,
+  "env": {
+    "node": true,
+    "browser": false,
+    "jquery": false,
+    "amd": false
+  },
+
+  "parserOptions":{
+    "ecmaVersion": 2017
+  }
+}

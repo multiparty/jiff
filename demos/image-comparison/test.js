@@ -43,11 +43,8 @@ function generateInputs(party_count) {
 function computeResults(inputs) {
   var results = [];
 
-  for (var j = 0; j < n; j++) {
-    var eq = 0;
-    for (var i = 1; i <= party_count; i++) {
-      eq = (eq === inputs[i][j] ? 1: 0);
-    }
+  for (var i = 0; i < n; i++) {
+    var eq = (inputs[1][i] === inputs[2][i]) ? 1 : 0;
     results.push(eq);
   }
 

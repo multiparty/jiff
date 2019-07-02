@@ -24,7 +24,7 @@ if (party_count == null) {
 
 var computation_id = process.argv[4];
 if (computation_id == null) {
-  computation_id = 'test-fixed';
+  computation_id = 'test-fixed-sum';
 }
 
 var party_id = process.argv[5];
@@ -41,7 +41,7 @@ options.onConnect = function (jiff_instance) {
 
   promise.then(function (v) {
     console.log(v.toString(10));
-    jiff_instance.disconnect(true);
+    jiff_instance.disconnect(false, true);
   });
 };
 

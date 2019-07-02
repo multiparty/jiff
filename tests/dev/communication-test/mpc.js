@@ -11,16 +11,18 @@
     opt.Zp = 11;
 
     if (node) {
-      // eslint-disable-next-line no-global-assign
+      // eslint-disable-next-line no-global-assign,no-undef
       jiff = require('../../../lib/jiff-client');
-      // eslint-disable-next-line no-global-assign
-      jiffPerformance = require('../../../lib/ext/jiff-client-performance');
-      // eslint-disable-next-line no-global-assign
+      // eslint-disable-next-line no-global-assign,no-undef
+      jiff_performance = require('../../../lib/ext/jiff-client-performance');
+      // eslint-disable-next-line no-global-assign,no-undef
       $ = require('jquery-deferred');
     }
 
     saved_instance = jiff.make_jiff(hostname, computation_id, opt);
-    saved_instance = jiffPerformance.make_jiff(saved_instance);
+    // eslint-disable-next-line no-undef
+    saved_instance.apply_extension(jiff_performance);
+
     exports.saved_instance = saved_instance;
     return saved_instance;
   };
@@ -42,22 +44,21 @@
 
     // The MPC implementation should go *HERE*
     var shares = jiff_instance.share(input);
-    var i = 1;
-    console.log(i);
+    var i = 0;
     (function next() {
+      console.log(i+1);
       jiff_instance.start_barrier();
 
       for (var j = 0; j < 5; j++) {
-        shares[1].sdiv(shares[2]);
+        shares[1] = shares[1].sdiv(shares[2]);
       }
+      shares[1] = shares[1].csub(1);
 
       i++;
-      console.log(i);
-
       if (i < 3) {
-        jiff_instance.end_barrier(next);
+        jiff_instance.end_barrier().then(next);
       } else {
-        jiff_instance.end_barrier(function () {
+        jiff_instance.end_barrier().then(function () {
           var promise = jiff_instance.open(shares[1]);
           promise.then(console.log).then(jiff_instance.disconnect);
           promise.then(final_deferred.resolve);

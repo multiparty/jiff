@@ -1,12 +1,16 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-require('../../lib/jiff-server').make_jiff(http, { logs:true });
 
-// Serve static files.
+//Serve static files
+//Configure App
 app.use('/demos', express.static('demos'));
 app.use('/lib', express.static('lib'));
 app.use('/lib/ext', express.static('lib/ext'));
+
+require('../../lib/jiff-server').make_jiff(http, { logs:true });
+
+// Serve static files.
 http.listen(8080, function () {
   console.log('listening on *:8080');
 });

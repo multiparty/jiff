@@ -1,0 +1,45 @@
+{
+  "tests": [ "<", "<=", ">", ">=", "==", "!=" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "restAPI" ],
+    "generation": {
+      "file": "config/base/generation.js",
+      "function": "generateConstantComparisonInputs"
+    },
+    "computation": {
+      "file": "computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 10,
+      "parallel": 5,
+      "options": {
+        "Zp": 127,
+        "party_count": 3,
+        "flushInterval": 50
+      }
+    },
+    "==": {
+      "count": 10,
+      "parallel": 5,
+      "options": {
+        "Zp": 127,
+        "party_count": 3,
+        "flushInterval": 50
+      }
+    },
+    "!=": {
+      "count": 10,
+      "parallel": 5,
+      "options": {
+        "Zp": 127,
+        "party_count": 3,
+        "flushInterval": 50
+      }
+    }
+  }
+}

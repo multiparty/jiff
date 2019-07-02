@@ -5,20 +5,20 @@ var BigNumber = require('bignumber.js');
 var baseGeneration = require('../base/generation.js');
 
 // Override
-baseGeneration.generateUniform = function (test, options) {
-  var Zp = new BigNumber(options.Zp);
-  return BigNumber.random().times(Zp).floor();
+baseGeneration.generateUniform = function (test, options, max) {
+  max = new BigNumber(max);
+  return BigNumber.random().times(max).floor();
 };
-baseGeneration.generateNonZeroUniform = function (test, options) {
-  var Zp = new BigNumber(options.Zp);
-  return BigNumber.random().times(Zp.minus(1)).plus(1).floor();
+baseGeneration.generateNonZeroUniform = function (test, options, max) {
+  max = new BigNumber(max);
+  return BigNumber.random().times(max.minus(1)).plus(1).floor();
 };
-baseGeneration.generateBit = function (test, options) {
+baseGeneration.generateBit = function () {
   return Math.random() < 0.5 ? new BigNumber(0) : new BigNumber(1);
 };
-baseGeneration.generateMultiple = function (test, options, factor) {
-  var Zp = new BigNumber(options.Zp);
-  var coef = baseGeneration.generateUniform(test, { Zp: Zp.div(factor).floor() });
+baseGeneration.generateMultiple = function (test, options, max, factor) {
+  max = new BigNumber(max);
+  var coef = baseGeneration.generateUniform(test, options, max.div(factor).floor());
   return coef.times(factor);
 };
 

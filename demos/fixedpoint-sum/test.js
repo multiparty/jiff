@@ -13,7 +13,7 @@ var parallelismDegree = 50; // Max number of test cases running in parallel
 var n = 500; // Number of test cases in total
 
 var magnitude = 5; // 5 digits of magnitude
-var accuracy = 5; // 5 digits of accuracy after decimal point
+var precision = 5; // 5 digits of precision after decimal point
 var maxValue = Math.floor(Math.pow(10, magnitude) / party_count);
 var Zp = new BigNumber(32416190071);
 /**
@@ -32,7 +32,7 @@ function generateInputs(party_count) {
   // Generate test cases one at a time
   for (var t = 0; t < n; t++) {
     for (var i = 1; i <= party_count; i++) {
-      var numString = (Math.random() * maxValue).toFixed(accuracy);
+      var numString = (Math.random() * maxValue).toFixed(precision);
       inputs[i].push(new BigNumber(numString));
     }
   }
@@ -126,7 +126,7 @@ describe('Test', function () {
       })(0);
     };
 
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp, integer_digits: magnitude, decimal_digits: accuracy, crypto_provider: true};
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp, integer_digits: magnitude, decimal_digits: precision, crypto_provider: true};
     for (var i = 0; i < party_count; i++) {
       mpc.connect('http://localhost:8080', 'mocha-test', options);
     }

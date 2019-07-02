@@ -2,7 +2,6 @@
  * Do not modify this file unless you have too
  * This file has UI handlers.
  */
-
 // eslint-disable-next-line no-unused-vars
 function connect() {
   $('#connectButton').prop('disabled', true);
@@ -10,15 +9,16 @@ function connect() {
   var party_count = parseInt($('#count').val());
 
   if (isNaN(party_count)) {
-    $('#output').append("<p class='error'>Party count must be a valid number!</p>");
+    $('#output').append('<p class="error">Party count must be a valid number!</p>');
     $('#connectButton').prop('disabled', false);
   } else {
     var options = { party_count: party_count};
     options.onError = function (error) {
-      $('#output').append("<p class='error'>"+error+'</p>');
+      $('#output').append('<p class="error">'+error+'</p>');
     };
     options.onConnect = function () {
-      $('#processButton').attr('disabled', false); $('#output').append('<p>All parties Connected!</p>');
+      $('#button').attr('disabled', false);
+      $('#output').append('<p>All parties Connected!</p>');
     };
 
     var hostname = window.location.hostname.trim();
@@ -47,25 +47,30 @@ function connect() {
 function submit() {
   var arr = JSON.parse(document.getElementById('inputText').value);
 
+  // Ensure array has only numbers
   for (var i = 0; i < arr.length; i++) {
-    if (typeof(arr[i]) !== 'number') {
-      alert('Please input an array of integers.');
+    if (isNaN(arr[i])) {
+      $('#output').append('<p class="error">Please input an array of valid numbers!</p>');
+      return;
+    } else if (100 < arr[i] || arr[i] < 0 || arr[i] !== Math.floor(arr[i])) {
+      $('#output').append('<p class="error">Please input an array of whole numbers between 0 and 100!</p>');
       return;
     }
   }
 
+  // Ensure array length is a power of 2
   var lg = arr.length;
   while (lg > 1) {
     if (lg % 2 !== 0) {
-      alert('Input array length must be a power of 2!');
+      $('#output').append('<p class="error">Input array length must be a power of 2!</p>');
       return;
     }
 
     lg = lg / 2;
   }
 
-
-  $('#processButton').attr('disabled', true);
+  // Disable UI controls
+  $('#button').attr('disabled', true);
   $('#output').append('<p>Starting...</p>');
 
   // eslint-disable-next-line no-undef
@@ -74,7 +79,6 @@ function submit() {
 }
 
 function handleResult(result) {
-  console.log('result: ',result);
   $('#output').append('<p>Result is: ' + result + '</p>');
   $('#button').attr('disabled', false);
 }

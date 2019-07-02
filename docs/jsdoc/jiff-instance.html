@@ -77,7 +77,7 @@ You can access any of the specified members of function with &lt;jiff-instance&g
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2834">line 2834</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2850">line 2850</a>
     </li></ul></dd>
     
 
@@ -120,15 +120,13 @@ You can access any of the specified members of function with &lt;jiff-instance&g
 
         
             
-<h4 class="name" id="__ready"><span class="type-signature"></span>__ready<span class="type-signature"> :boolean</span></h4>
+<h4 class="name" id="__initialized"><span class="type-signature"></span>__initialized<span class="type-signature"> :boolean</span></h4>
 
 
 
 
 <div class="description">
-    Flags whether this instance is capable of starting the computation.
-In other words, the public keys for all parties and servers are known,
-and the server is connected. [Do not use; ufse isReady() instead]
+    Flags whether this instance has been initialized (the server responded successfully to the initialization message)
 </div>
 
 
@@ -176,7 +174,81 @@ and the server is connected. [Do not use; ufse isReady() instead]
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2963">line 2963</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2999">line 2999</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="__ready"><span class="type-signature"></span>__ready<span class="type-signature"> :boolean</span></h4>
+
+
+
+
+<div class="description">
+    Flags whether this instance is capable of starting the computation.
+In other words, the public keys for all parties and servers are known,
+and the server is connected. [Do not use directly externally; use isReady() instead]
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">boolean</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2989">line 2989</a>
     </li></ul></dd>
     
 
@@ -248,7 +320,7 @@ and the server is connected. [Do not use; ufse isReady() instead]
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3174">line 3174</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3208">line 3208</a>
     </li></ul></dd>
     
 
@@ -320,7 +392,7 @@ and the server is connected. [Do not use; ufse isReady() instead]
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2955">line 2955</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2981">line 2981</a>
     </li></ul></dd>
     
 
@@ -394,7 +466,7 @@ This object has this format: { 'tag' => [ { "sender_id": <sender_id>, "message":
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3164">line 3164</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3198">line 3198</a>
     </li></ul></dd>
     
 
@@ -467,7 +539,7 @@ applied to this instance.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2880">line 2880</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2906">line 2906</a>
     </li></ul></dd>
     
 
@@ -540,7 +612,79 @@ Checkout the <a href="hooks.html">hooks documentation</a>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3182">line 3182</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3220">line 3220</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="hostname"><span class="type-signature"></span>hostname<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    The server hostname, ends with a slash, includes port and protocol (http/https).
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2895">line 2895</a>
     </li></ul></dd>
     
 
@@ -612,7 +756,7 @@ Checkout the <a href="hooks.html">hooks documentation</a>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2947">line 2947</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2973">line 2973</a>
     </li></ul></dd>
     
 
@@ -685,7 +829,7 @@ value is the public key (Uint8Array).
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3102">line 3102</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3136">line 3136</a>
     </li></ul></dd>
     
 
@@ -759,7 +903,7 @@ with a corresponding tag to the tag provided with the listener.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3154">line 3154</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3188">line 3188</a>
     </li></ul></dd>
     
 
@@ -832,7 +976,7 @@ with a corresponding tag to the tag provided with the listener.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3131">line 3131</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3165">line 3165</a>
     </li></ul></dd>
     
 
@@ -904,7 +1048,7 @@ with a corresponding tag to the tag provided with the listener.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3141">line 3141</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3175">line 3175</a>
     </li></ul></dd>
     
 
@@ -976,7 +1120,7 @@ with a corresponding tag to the tag provided with the listener.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3118">line 3118</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3152">line 3152</a>
     </li></ul></dd>
     
 
@@ -1048,7 +1192,7 @@ with a corresponding tag to the tag provided with the listener.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3111">line 3111</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3145">line 3145</a>
     </li></ul></dd>
     
 
@@ -1120,7 +1264,7 @@ with a corresponding tag to the tag provided with the listener.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3359">line 3359</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3462">line 3462</a>
     </li></ul></dd>
     
 
@@ -1192,7 +1336,7 @@ with a corresponding tag to the tag provided with the listener.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3259">line 3259</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3357">line 3357</a>
     </li></ul></dd>
     
 
@@ -1264,7 +1408,7 @@ with a corresponding tag to the tag provided with the listener.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2984">line 2984</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3029">line 3029</a>
     </li></ul></dd>
     
 
@@ -1449,7 +1593,7 @@ If the extension is not safe to be applied, an exception will be thrown with an 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2913">line 2913</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2939">line 2939</a>
     </li></ul></dd>
     
 
@@ -1584,7 +1728,7 @@ If the extension is not safe to be applied, an exception will be thrown with an 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2901">line 2901</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2927">line 2927</a>
     </li></ul></dd>
     
 
@@ -1695,7 +1839,7 @@ If the extension is not safe to be applied, an exception will be thrown with an 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3367">line 3367</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3470">line 3470</a>
     </li></ul></dd>
     
 
@@ -1933,7 +2077,7 @@ Allows the client program to exit.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line4312">line 4312</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line4466">line 4466</a>
     </li></ul></dd>
     
 
@@ -2193,7 +2337,7 @@ Allows the client program to exit.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3394">line 3394</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3551">line 3551</a>
     </li></ul></dd>
     
 
@@ -2376,7 +2520,7 @@ Hooks are executed sequentially such that the first hook's return value is passe
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3237">line 3237</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3335">line 3335</a>
     </li></ul></dd>
     
 
@@ -2533,7 +2677,7 @@ Hooks are executed sequentially such that the first hook's return value is passe
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2889">line 2889</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2915">line 2915</a>
     </li></ul></dd>
     
 
@@ -2641,7 +2785,7 @@ Hooks are executed sequentially such that the first hook's return value is passe
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2973">line 2973</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3007">line 3007</a>
     </li></ul></dd>
     
 
@@ -2822,7 +2966,7 @@ Removes any previously set listener for this tag.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3439">line 3439</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3598">line 3598</a>
     </li></ul></dd>
     
 
@@ -3068,7 +3212,7 @@ Removes any previously set listener for this tag.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3794">line 3794</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3953">line 3953</a>
     </li></ul></dd>
     
 
@@ -3365,7 +3509,7 @@ Removes any previously set listener for this tag.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3863">line 3863</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line4022">line 4022</a>
     </li></ul></dd>
     
 
@@ -3658,7 +3802,7 @@ Removes any previously set listener for this tag.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3827">line 3827</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3986">line 3986</a>
     </li></ul></dd>
     
 
@@ -3973,7 +4117,7 @@ Use this function in a party that will receive some answer/value but does not ha
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3968">line 3968</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line4127">line 4127</a>
     </li></ul></dd>
     
 
@@ -4272,7 +4416,7 @@ A share also has methods for performing operations.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3658">line 3658</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3817">line 3817</a>
     </li></ul></dd>
     
 
@@ -4610,7 +4754,7 @@ The parties will not know the value of the number (unless the request is for sha
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line4007">line 4007</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line4166">line 4166</a>
     </li></ul></dd>
     
 
@@ -4986,7 +5130,7 @@ The parties will not know the value of the number (unless the request is for sha
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3679">line 3679</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3838">line 3838</a>
     </li></ul></dd>
     
 
@@ -5423,7 +5567,7 @@ values.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3753">line 3753</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3912">line 3912</a>
     </li></ul></dd>
     
 
@@ -5853,7 +5997,7 @@ values.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3719">line 3719</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3878">line 3878</a>
     </li></ul></dd>
     
 
@@ -6154,7 +6298,7 @@ The server generates and sends the triplets on demand.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3987">line 3987</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line4146">line 4146</a>
     </li></ul></dd>
     
 
@@ -6193,6 +6337,92 @@ The server generates and sends the triplets on demand.
 
 
         
+            
+
+    
+
+    
+    <h4 class="name" id="%7BPromise%7Dsodium"><span class="type-signature"></span>{Promise} sodium<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    A promise for when the sodium wrappers are ready. This will be undefined if options.sodium is false.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line3019">line 3019</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     
 
     
@@ -6208,13 +6438,13 @@ The server generates and sends the triplets on demand.
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.sharing_schemes.html">sharing_schemes</a></li><li><a href="jiff.utils.html">utils</a></li><li><a href="jiff-instance.html">jiff-instance</a></li><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="jiff-instance.protocols.html">protocols</a></li><li><a href="SecretShare.html">SecretShare</a></li></ul><h3>Global</h3><ul><li><a href="global.html">if_else</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.sharing_schemes.html">sharing_schemes</a></li><li><a href="jiff.utils.html">utils</a></li><li><a href="jiff-instance.html">jiff-instance</a></li><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="jiff-instance.protocols.html">protocols</a></li><li><a href="SecretShare.html">SecretShare</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Nov 06 2018 10:33:22 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 24 2019 22:52:11 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

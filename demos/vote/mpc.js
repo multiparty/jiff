@@ -13,6 +13,8 @@
     if (node) {
       // eslint-disable-next-line no-undef
       jiff = require('../../lib/jiff-client');
+      // eslint-disable-next-line no-undef, no-global-assign
+      $ = require('jquery-deferred');
     }
 
     // eslint-disable-next-line no-undef
