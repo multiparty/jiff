@@ -1,0 +1,26 @@
+{
+  "tests": [ "c<", "c<=", "c>", "c>=", "c==", "c!=" ],
+  "suiteConf": {
+    "port": 3001,
+    "generation": {
+      "file": "config/bits/generation.js",
+      "function": "generateConstantComparisonInputs"
+    },
+    "computation": {
+      "file": "config/bits/computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 15,
+      "parallel": 5,
+      "options": {
+        "Zp": 127,
+        "cmax": 256,
+        "party_count": 3
+      }
+    }
+  }
+}

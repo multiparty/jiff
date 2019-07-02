@@ -1,19 +1,12 @@
-// Global parameters
-var done;
-
-// Test symbol/name, inputs, and parallelism degree
-var test;
-var inputs;
-var testParallel;
-
 // Acquire Zp from the jiff instance
 var Zp;
 
 // Flags success/failure
 var errors = [];
+var successes = [];
 
 // For logging purposes
-function myJoin(indices, values, sep) {
+exports.myJoin = function (indices, values, sep) {
   var str = '';
   for (var i = 0; i < indices.length - 1; i++) {
     str = str + values[indices[i]].toString() + sep;
@@ -30,7 +23,15 @@ function myJoin(indices, values, sep) {
   }
 
   return str;
-}
+};
+
+exports.errorMessage = function (jiff_instance, test, testInputs, shareParameters, mpcResult, expectedResult) {
+  return exports.myJoin(shareParameters.senders, testInputs, test) + ' != ' + mpcResult.toString() + ' ----- Expected ' + expectedResult.toString();
+};
+
+exports.successMessage = function (jiff_instance, test, testInputs, shareParameters, mpcResult, expectedResult) {
+  return exports.myJoin(shareParameters.senders, testInputs, test) + ' = ' + mpcResult.toString() + ' = ' + expectedResult.toString();
+};
 
 // Real mod as opposed to remainder
 exports.mod = function (x, y) {
@@ -87,7 +88,7 @@ exports.mpcInterpreter = {
   '!=': function (operand1, operand2) {
     return operand1.neq(operand2);
   },
-  '!': function (operand1, _) {
+  '!': function (operand1) {
     return operand1.not();
   }
 };
@@ -139,13 +140,42 @@ exports.openInterpreter = {
   '!=': function (operand1, operand2) {
     return Number(operand1 !== operand2);
   },
-  '!' : function (operand1, _) {
+  '!' : function (operand1) {
     return (operand1 + 1) % 2;
   }
 };
 
+exports.verifyResultHook = function (test, mpcResult, expectedResult) {
+  return (mpcResult.toString() === expectedResult.toString());
+};
+
+exports.shareHook = function (jiff_instance, test, testInputs, input, threshold, receivers, senders) {
+  return jiff_instance.share(input, threshold, receivers, senders);
+};
+
+exports.openHook = async function (jiff_instance, test, share) {
+  return await share.open();
+};
+
+exports.shareParameters = function (jiff_instance, test, testInputs) {
+  var input = testInputs[jiff_instance.id];
+
+  // Figure out who is sharing
+  var senders = [];
+  for (var p in testInputs) {
+    if (testInputs.hasOwnProperty(p) && p !== 'constant') {
+      senders.push(/^\d+$/.test(p.toString()) ? parseInt(p) : p);
+    }
+  }
+  senders.sort();
+
+  // Figure out threshold
+  var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
+  return { input: input, threshold: threshold, senders: senders, receivers: null, constant: testInputs['constant'] };
+};
+
 // Interpret the computation on the given values
-function compute(test, values, interpreter) {
+exports.singleCompute = function (jiff_instance, shareParameters, test, values, interpreter) {
   try {
     var func = interpreter[test];
 
@@ -168,52 +198,50 @@ function compute(test, values, interpreter) {
     console.log(err);
     errors.push(err);
   }
-}
+};
 
 // Run a single test case under MPC and in the open and compare the results
-function singleTest(jiff_instance, t) {
+exports.singleTest = async function (jiff_instance, test, testInputs) {
   try {
-    var testInputs = inputs[t];
+    // Share for MPC
+    var shareParameters = exports.shareParameters(jiff_instance, test, testInputs);
+    var shares = await exports.shareHook(jiff_instance, test, testInputs, shareParameters.input, shareParameters.threshold, shareParameters.receivers, shareParameters.senders);
+    if (shares == null) { // this party should not do anything
+      return null;
+    }
+    shares['constant'] = shareParameters.constant;
 
     // Compute in the Open
-    var actualResult = compute(test, testInputs, exports.openInterpreter);
+    var actualResult = await exports.singleCompute(jiff_instance, shareParameters, test, testInputs, exports.openInterpreter);
 
-    // Figure out who is sharing
-    var input = testInputs[jiff_instance.id];
-    var senders = [];
-    for (var p in testInputs) {
-      if (testInputs.hasOwnProperty(p) && p !== 'constant') {
-        senders.push(/^\d+$/.test(p.toString()) ? parseInt(p) : p);
-      }
-    }
-    senders.sort();
-
-    // Compute in MPC
-    var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
-    var shares = jiff_instance.share(input, threshold, null, senders);
-    shares['constant'] = testInputs['constant'];
-    var mpcResult = compute(test, shares, exports.mpcInterpreter);
+    // Compute under MPC
+    var mpcResult = await exports.singleCompute(jiff_instance, shareParameters, test, shares, exports.mpcInterpreter);
     if (mpcResult == null) {
       return null;
     }
 
-    return mpcResult.open().then(function (mpcResult) {
-      // Assert both results are equal
-      if (actualResult.toString() !== mpcResult.toString()) {
-        if (jiff_instance.id === 1) {
-          errors.push(myJoin(senders, testInputs, test) + ' != ' + mpcResult.toString() + ' ----- Expected ' + actualResult.toString());
-        }
-      }/* else if (jiff_instance.id === 1) {
-        console.log(myJoin(senders, testInputs, test) + ' = ' + mpcResult.toString());
-      }*/
-    });
+    // Open
+    mpcResult = await exports.openHook(jiff_instance, test, mpcResult);
+
+    // Verify result
+    // Assert both results are equal
+    if (!exports.verifyResultHook(test, mpcResult, actualResult)) {
+      errors.push(exports.errorMessage(jiff_instance, test, testInputs, shareParameters, mpcResult, actualResult));
+      return false;
+    }
+
+    successes.push(exports.successMessage(jiff_instance, test, testInputs, shareParameters, mpcResult, actualResult));
   } catch (err) {
+    console.log(err);
     errors.push(err);
+    return false;
   }
-}
+
+  return true;
+};
 
 // Run a batch of tests according to parallelism degree until all tests are consumed
-async function batchTest(jiff_instance) {
+exports.batch = async function (jiff_instance, test, testParallel, inputs, done, testConfig) {
   //var end = Math.min(startIndex + testParallel, inputs.length);
 
   for (var t = 0; t < inputs.length; t++) {
@@ -221,7 +249,7 @@ async function batchTest(jiff_instance) {
       jiff_instance.start_barrier();
     }
 
-    var promise = singleTest(jiff_instance, t);
+    var promise = exports.singleTest(jiff_instance, test, inputs[t]);
     jiff_instance.add_to_barriers(promise);
 
     if (t % testParallel === testParallel - 1 || t === inputs.length - 1) {
@@ -235,20 +263,22 @@ async function batchTest(jiff_instance) {
     var exception;
     if (errors.length > 0) {
       exception = Error('Failed Test: ' + test + '\n\t' + errors.join('\n\t'));
+    } if (testConfig['debug'] === true) {
+      console.log('Succeeded: ' + test + '\n\t' + successes.join('\n\t'));
     }
     done(exception);
   }
-}
+};
 
 // Default Computation Scheme
-exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done) {
+exports.compute = function (jiff_instance, test, inputs, testParallel, done, testConfig) {
+  // Reset errors
   errors = [];
-  done = _done;
-  test = _test;
-  inputs = _inputs;
-  testParallel = _testParallel;
+  successes = [];
 
+  // Global variables
   Zp = jiff_instance.Zp;
 
-  batchTest(jiff_instance);
+  // Perform tests asynchronously
+  exports.batch(jiff_instance, test, testParallel, inputs, done, testConfig);
 };

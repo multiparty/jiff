@@ -5,8 +5,11 @@ var baseGeneration = require('../base/generation.js');
 
 // functions specific to fixedpoint
 var isConstant;
-function determineMax(test, party_count, Zp) {
-  var max = BigNumber(Zp).div(2).floor();
+function determineMax(test, party_count, Zp, max) {
+  var maxZp = BigNumber(Zp).div(2).floor();
+  max = BigNumber(max);
+  max = max.lt(maxZp) ? max : maxZp;
+
   var operation_count = isConstant ? 2 : party_count;
 
   // +: max + max ... + max = party_count * max <= 10^(digits)
@@ -26,48 +29,52 @@ function determineMax(test, party_count, Zp) {
 }
 
 // Override
-baseGeneration.generateUniform = function (test, options) {
-  var max = determineMax(test, options.party_count, options.Zp);
+baseGeneration.generateUniform = function (test, options, max) {
+  max = determineMax(test, options.party_count, options.Zp, max);
   var nat = BigNumber.random().times(max).floor();
   return Math.random() < 0.5 ? nat : nat.times(-1);
 };
-baseGeneration.generateNonZeroUniform = function (test, options) {
-  var max = determineMax(test, options.party_count, options.Zp);
+baseGeneration.generateNonZeroUniform = function (test, options, max) {
+  max = determineMax(test, options.party_count, options.Zp, max);
   var nat = BigNumber.random().times(max.minus(1)).plus(1).floor();
   return Math.random() < 0.5 ? nat : nat.times(-1);
 };
-baseGeneration.generateBit = function (test, options) {
+baseGeneration.generateBit = function () {
   var num = Math.random() < 0.5 ? new BigNumber(0) : new BigNumber(1);
   return num;
 };
-baseGeneration.generateMultiple = function (test, options, factor) {
-  var max = determineMax(test, options.party_count, options.Zp);
+baseGeneration.generateMultiple = function (test, options, max, factor) {
+  max = determineMax(test, options.party_count, options.Zp, max);
   max = max.div(factor).abs().floor();
   var nat = BigNumber.random().times(max).floor();
   var coef = Math.random() < 0.5 ? nat : nat.times(-1);
   return coef.times(factor);
 };
 
-exports.generateShareInputs = function (test, count, options) {
-  return baseGeneration.generateShareInputs(test, count, options);
-};
+// Override entry points
+var oldArithmetic = baseGeneration.generateArithmeticInputs;
+var oldConstantArithmetic = baseGeneration.generateConstantArithmeticInputs;
+var oldComparison = baseGeneration.generateComparisonInputs;
+var oldConstantComparison = baseGeneration.generateConstantComparisonInputs;
 
-exports.generateArithmeticInputs = function (test, count, options) {
+baseGeneration.generateArithmeticInputs = function (test, count, options) {
   isConstant = false;
-  return baseGeneration.generateArithmeticInputs(test, count, options);
+  return oldArithmetic(test, count, options);
 };
 
-exports.generateConstantArithmeticInputs = function (test, count, options) {
+baseGeneration.generateConstantArithmeticInputs = function (test, count, options) {
   isConstant = true;
-  return baseGeneration.generateConstantArithmeticInputs(test, count, options);
+  return oldConstantArithmetic(test, count, options);
 };
 
-exports.generateComparisonInputs = function (test, count, options) {
+baseGeneration.generateComparisonInputs = function (test, count, options) {
   isConstant = false;
-  return baseGeneration.generateComparisonInputs(test, count, options);
+  return oldComparison(test, count, options);
 };
 
-exports.generateConstantComparisonInputs = function (test, count, options) {
+baseGeneration.generateConstantComparisonInputs = function (test, count, options) {
   isConstant = true;
-  return baseGeneration.generateConstantComparisonInputs(test, count, options);
+  return oldConstantComparison(test, count, options);
 };
+
+module.exports = baseGeneration;

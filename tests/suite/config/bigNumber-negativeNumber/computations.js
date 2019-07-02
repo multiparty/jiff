@@ -59,6 +59,4 @@ baseComputations.mpcInterpreter['abs'] = function (operand1, _) {
 };
 
 // Default Computation Scheme
-exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done) {
-  return baseComputations.compute(jiff_instance, _test, _inputs, _testParallel, _done);
-};
+module.exports = baseComputations;
