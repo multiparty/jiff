@@ -143,7 +143,7 @@ baseComputations.mpcInterpreter = {
 
 // Sharing bits
 baseComputations.shareHook = async function (jiff_instance, test, testInputs, input, threshold, receivers, senders) {
-  var shares;
+  var shares = {};
   if (testConfig['share'] == null || testConfig['share'] === 'decomposition') {
     shares = jiff_instance.share(input, threshold, receivers, senders);
     var i, pid;
@@ -159,6 +159,18 @@ baseComputations.shareHook = async function (jiff_instance, test, testInputs, in
     var bitLength = testConfig['options']['max'] || jiff_instance.Zp;
     bitLength = bitLength.toString(2).length;
     shares = jiff_instance.protocols.bits.share_bits(input, bitLength, threshold, receivers, senders);
+  }
+
+  if (testConfig['share'] === 'share_bits_lengths') {
+    for (i = 0; i < senders.length; i++) {
+      var sender = senders[i];
+      input = testInputs[sender];
+      bitLength = testInputs['_length'+sender];
+      if (bitLength == null) {
+        bitLength = input.toString(2).length;
+      }
+      shares[sender] = jiff_instance.protocols.bits.share_bits(input, bitLength, threshold, receivers, [sender])[sender];
+    }
   }
   return shares;
 };
