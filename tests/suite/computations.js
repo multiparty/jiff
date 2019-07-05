@@ -237,7 +237,7 @@ exports.singleTest = async function (jiff_instance, test, testInputs) {
   try {
     // Share for MPC
     var shareParameters = exports.shareParameters(jiff_instance, test, testInputs);
-    var shares = await exports.shareHook(jiff_instance, test, testInputs, shareParameters.input, shareParameters.threshold, shareParameters.receivers, shareParameters.senders);
+    var shares = await exports.shareHook(jiff_instance, test, testInputs, shareParameters.input, shareParameters.threshold, shareParameters.receivers, shareParameters.senders, shareParameters);
     if (shares == null) { // this party should not do anything
       return null;
     }

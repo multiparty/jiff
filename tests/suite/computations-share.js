@@ -19,23 +19,22 @@ baseComputations.shareParameters = function (jiff_instance, test, testInputs) {
   }
 };
 
-baseComputations.shareHook = function (jiff_instance, test, testInputs, input, threshold, receivers, senders) {
+baseComputations.shareHook = function (jiff_instance, test, testInputs, input, threshold, receivers, senders, shareParameters) {
   var id = jiff_instance.id;
   var shares = jiff_instance.share(input, threshold, receivers, senders);
 
   // Is this a re-share variant?
   if (test.startsWith('reshare')) {
-    var old_receivers = receivers;
-    receivers = testInputs['reshare_holders'];
-    threshold = testInputs['reshare_threshold'];
+    shareParameters.receivers = testInputs['reshare_holders'];
+    shareParameters.threshold = testInputs['reshare_threshold'];
     // re-share all shares according to new holders and threshold
     for (var si = 0; si < senders.length; si++) {
       var sender = senders[si];
-      shares[sender] = jiff_instance.protocols.reshare(shares[sender], threshold, receivers, old_receivers)
+      shares[sender] = jiff_instance.protocols.reshare(shares[sender], shareParameters.threshold, shareParameters.receivers, receivers)
     }
   }
 
-  if (receivers.indexOf(id) === -1 && senders.indexOf(id) === -1) {
+  if (shareParameters.receivers.indexOf(id) === -1 && senders.indexOf(id) === -1) {
     return null;
   }
 
