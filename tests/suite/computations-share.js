@@ -69,8 +69,8 @@ baseComputations.singleCompute = function (jiff_instance, shareParameters, test,
   return promise;
 };
 
-baseComputations.openHook = async function (jiff_instance, test, promise) {
-  return await promise;
+baseComputations.openHook = function (jiff_instance, test, promise) {
+  return promise;
 };
 
 baseComputations.errorMessage = function (jiff_instance, test, testInputs, shareParameters, mpcResult, expectedResult) {

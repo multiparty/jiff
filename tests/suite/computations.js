@@ -183,8 +183,8 @@ exports.shareHook = function (jiff_instance, test, testInputs, input, threshold,
   return jiff_instance.share(input, threshold, receivers, senders);
 };
 
-exports.openHook = async function (jiff_instance, test, share) {
-  return await share.open();
+exports.openHook = function (jiff_instance, test, share) {
+  return share.open();
 };
 
 exports.shareParameters = function (jiff_instance, test, testInputs) {
@@ -237,17 +237,17 @@ exports.singleTest = async function (jiff_instance, test, testInputs) {
   try {
     // Share for MPC
     var shareParameters = exports.shareParameters(jiff_instance, test, testInputs);
-    var shares = await exports.shareHook(jiff_instance, test, testInputs, shareParameters.input, shareParameters.threshold, shareParameters.receivers, shareParameters.senders, shareParameters);
+    var shares = exports.shareHook(jiff_instance, test, testInputs, shareParameters.input, shareParameters.threshold, shareParameters.receivers, shareParameters.senders, shareParameters);
     if (shares == null) { // this party should not do anything
       return null;
     }
     shares['constant'] = shareParameters.constant;
 
     // Compute in the Open
-    var actualResult = await exports.singleCompute(jiff_instance, shareParameters, test, testInputs, exports.openInterpreter);
+    var actualResult = exports.singleCompute(jiff_instance, shareParameters, test, testInputs, exports.openInterpreter);
 
     // Compute under MPC
-    var mpcResult = await exports.singleCompute(jiff_instance, shareParameters, test, shares, exports.mpcInterpreter);
+    var mpcResult = exports.singleCompute(jiff_instance, shareParameters, test, shares, exports.mpcInterpreter);
     if (mpcResult == null) {
       return null;
     }

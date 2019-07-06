@@ -154,7 +154,7 @@ baseComputations.mpcInterpreter = {
 };
 
 // Sharing bits
-baseComputations.shareHook = async function (jiff_instance, test, testInputs, input, threshold, receivers, senders) {
+baseComputations.shareHook = function (jiff_instance, test, testInputs, input, threshold, receivers, senders) {
   var shares = {};
   if (testConfig['share'] == null || testConfig['share'] === 'decomposition') {
     shares = jiff_instance.share(input, threshold, receivers, senders);
@@ -188,22 +188,22 @@ baseComputations.shareHook = async function (jiff_instance, test, testInputs, in
 };
 
 // Opening bits
-baseComputations.openHook = async function (jiff_instance, test, share) {
+baseComputations.openHook = function (jiff_instance, test, share) {
   if (share === true || share === false) {
     return Number(share);
   }
 
   if (share.length == null) {
-    return await share.open();
+    return share.open();
   }
 
   // share is really a bunch of bits
   if (testConfig['open'] == null || testConfig['open'] === 'composition') {
     share = jiff_instance.protocols.bits.bit_composition(share);
-    return await share.open();
+    return share.open();
   }
 
-  return await share[0].jiff.protocols.bits.open_bits(share);
+  return share[0].jiff.protocols.bits.open_bits(share);
 };
 
 baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
