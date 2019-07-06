@@ -26,7 +26,7 @@ baseComputations.singleCompute = function (jiff_instance, shareParameters, test,
     return values;
   }
 
-  return jiff_instance.protocols.bits.rejection_sampling(values['lower'], values['upper']);
+  return jiff_instance.protocols.bits.__rejection_sampling(values['lower'], values['upper']);
 };
 
 // Opening bits

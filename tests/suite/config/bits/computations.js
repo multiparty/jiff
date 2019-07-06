@@ -3,6 +3,18 @@ var baseComputations = require('../../computations.js');
 
 var testConfig;
 
+baseComputations.preprocessing_function_map = {
+  'constant': {
+    'c<': 'bits.clt',
+    'c<=': 'bits.clteq',
+    'c>': 'bits.cgt',
+    'c>=': 'bits.cgteq',
+    'c==': 'ceq',
+    'c!=': 'cneq'
+  },
+  'secret': {}
+};
+
 // How to interpret non-MPC operations
 baseComputations.openInterpreter = {
   'decomposition': function (operand1) {
