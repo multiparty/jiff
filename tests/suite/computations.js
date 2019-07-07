@@ -6,7 +6,7 @@ var errors = [];
 var successes = [];
 
 exports.preprocessing_function_map = {
-  'constant': {
+  constant: {
     '<': 'clt',
     '<=': 'clteq',
     '>': 'cgt',
@@ -17,7 +17,7 @@ exports.preprocessing_function_map = {
     'cdivfac': 'cdivfac',
     '*': 'cmult'
   },
-  'secret': {
+  secret: {
     '*': 'smult',
     '*bgw': 'smult_bgw',
     '|': 'sor_bit',

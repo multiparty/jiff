@@ -17,7 +17,13 @@ var oldConstantArithmeticInputs = baseGeneration.generateConstantArithmeticInput
 
 baseGeneration.generateArithmeticInputs = function (test, count, options) {
   if (test !== '-') {
-    return oldArithmeticInputs(test, count, options);
+    var result = oldArithmeticInputs(test, count, options);
+    if (test === '*') { // only a single multiplication
+      for (var r = 0; r < result.length; r++) {
+        result[r] = {1: result[r][1], 2: result[r][2]};
+      }
+    }
+    return result;
   }
 
   var max = options.max || options.Zp;
@@ -60,6 +66,14 @@ baseGeneration.generateConstantArithmeticInputs = function (test, count, options
   }
 
   return inputs;
+};
+
+baseGeneration.generateLengthsArithmeticInputs = function (test, count, options) {
+  var result = baseGeneration.generateArithmeticInputs(test, count, options);
+  for (var r = 0; r < result.length; r++) {
+    result[r] = {1: result[r][1], 2: result[r][2]};
+  }
+  return result;
 };
 
 module.exports = baseGeneration;

@@ -4,7 +4,7 @@
     "port": 3001,
     "generation": {
       "file": "config/bits/generation.js",
-      "function": "generateArithmeticInputs"
+      "function": "generateLengthsArithmeticInputs"
     },
     "computation": {
       "file": "config/bits/computations.js",
@@ -45,8 +45,8 @@
         { "1": 22, "2": 91 },
         { "1": 7, "2": 31, "_length1": 7 },
         { "1": 30, "2": 10, "_length2": 7 },
-        { "1": 14, "2": 5, "3": 1 },
-        { "1": 1, "2": 1, "3": 1 }
+        { "1": 14, "2": 5 },
+        { "1": 1, "2": 1 }
       ]
     },
     "/": {

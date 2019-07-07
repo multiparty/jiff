@@ -12,14 +12,28 @@ baseComputations.preprocessing_function_map = {
   'c>=': 'bits.cgteq',
   'c==': 'bits.ceq',
   'c!=': 'bits.cneq',
+  // secret comparison
+  '<': 'bits.slt',
+  '<=': 'bits.slteq',
+  '>': 'bits.sgt',
+  '>=': 'bits.sgteq',
+  '==': 'bits.seq',
+  '!=': 'bits.sneq',
   // constant arithmetic
   '+c': 'bits.cadd',
   '-c': 'bits.csubl',
   'c-': 'bits.csubr',
   '*c': 'bits.cmult',
-
+  '/c': 'bits.cdivl',
+  '%c': 'bits.cdivl',
+  'c/': 'bits.cdivr',
+  'c%': 'bits.cdivr',
   // arithmetic
-  '+': 'bits.sadd'
+  '+': 'bits.sadd',
+  '-': 'bits.ssub',
+  '*': 'bits.smult',
+  '/': 'bits.sdiv',
+  '%': 'bits.sdiv'
 };
 
 // How to interpret non-MPC operations
@@ -264,7 +278,7 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
   }
 
   // Take into consideration size increase after operation(s)
-  if (test === '+') {
+  if (test === '+' || test === '-') {
     params['bitLength'] += 1;
   }
 
