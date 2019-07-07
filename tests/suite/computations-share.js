@@ -91,4 +91,8 @@ baseComputations.successMessage = function (jiff_instance, test, testInputs, sha
   return msg;
 };
 
+baseComputations.preProcessingParams = function () {
+  return null;
+};
+
 module.exports = baseComputations;

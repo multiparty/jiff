@@ -48,15 +48,13 @@ baseComputations.singleCompute = function (jiff_instance, shareParameters, test,
   return interpreter(values);
 };
 
-// entry point
-var oldCompute = baseComputations.compute;
-baseComputations.compute = function (jiff_instance, test ,inputs, testParallel) {
-  var args = arguments;
-  var promise = jiff_instance.preprocessing('if_else', inputs.length, testParallel);
-  promise.then(function () {
-    jiff_instance.finish_preprocessing();
-    oldCompute.apply(baseComputations, args);
-  });
+// Pre-processing
+baseComputations.preProcessingParams = function (jiff_instance, test, inputs, testParallel, testConfig) {
+  return {
+    operation: 'if_else',
+    count: inputs.length,
+    batch: testParallel
+  }
 };
 
 module.exports = baseComputations;

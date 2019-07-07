@@ -4,15 +4,22 @@ var baseComputations = require('../../computations.js');
 var testConfig;
 
 baseComputations.preprocessing_function_map = {
-  'constant': {
-    'c<': 'bits.clt',
-    'c<=': 'bits.clteq',
-    'c>': 'bits.cgt',
-    'c>=': 'bits.cgteq',
-    'c==': 'ceq',
-    'c!=': 'cneq'
-  },
-  'secret': {}
+  'decomposition': 'bit_decomposition',
+  // constant comparison
+  'c<': 'bits.clt',
+  'c<=': 'bits.clteq',
+  'c>': 'bits.cgt',
+  'c>=': 'bits.cgteq',
+  'c==': 'bits.ceq',
+  'c!=': 'bits.cneq',
+  // constant arithmetic
+  '+c': 'bits.cadd',
+  '-c': 'bits.csubl',
+  'c-': 'bits.csubr',
+  '*c': 'bits.cmult',
+
+  // arithmetic
+  '+': 'bits.sadd'
 };
 
 // How to interpret non-MPC operations
@@ -217,6 +224,81 @@ baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
   }
 
   return (mpcResult.toString() === expectedResult.toString());
+};
+
+// Pre-processing
+baseComputations.preProcessingParams = function (jiff_instance, test, inputs, testParallel, testConfig) {
+  var operation = baseComputations.preprocessing_function_map[test];
+  if (operation == null || !jiff_instance.has_preprocessing(operation)) {
+    return null;
+  }
+
+  var singleTestCount = Object.keys(inputs[0]).length;
+  singleTestCount = singleTestCount > 1 ? (singleTestCount - 1) : singleTestCount;
+  var count = inputs.length * singleTestCount;
+  var params = {};
+  var decompositionCount = null;
+
+  // Number of bits in constants
+  var cmax = testConfig['options']['cmax'] || testConfig['options']['max'] || jiff_instance.Zp;
+  params['constantBits'] = cmax.toString(2).length;
+  if (cmax.toString(2).lastIndexOf('1') === 0) {
+    params['constantBits']--;
+  }
+
+  // Number of bits in secret
+  if (testConfig['share'] == null || testConfig['share'] === 'decomposition') {
+    params['bitLength'] = jiff_instance.Zp.toString(2).length;
+    decompositionCount = inputs.length * Object.keys(inputs[0]).length;
+  }
+  if (testConfig['share'] === 'share_bits') {
+    var max = testConfig['options']['max'] || jiff_instance.Zp;
+    params['bitLength'] = max.toString(2).length;
+    if (max.toString(2).lastIndexOf(1) === 0) { // power of 2
+      params['bitLength']--;
+    }
+  }
+
+  if (testConfig['share'] === 'share_bits_lengths') {
+    // will see what to do about this later
+  }
+
+  // Take into consideration size increase after operation(s)
+  if (test === '+') {
+    params['bitLength'] += 1;
+  }
+
+  // Do not double preprocess for bit_decomposition
+  if (operation === 'bit_decomposition') {
+    decompositionCount = null;
+  }
+
+  return {
+    operation: operation,
+    count: count,
+    batch: testParallel,
+    params: params,
+    Zp: jiff_instance.Zp,
+    decompositionCount: decompositionCount
+  };
+};
+
+baseComputations.preprocess = function (jiff_instance, test, inputs, testParallel, testConfig, preprocessingParams) {
+  var promise = jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['count'],
+    preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+    preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+    preprocessingParams['id_list'], preprocessingParams['params']);
+
+  // Perform any necessary preprocessing for decomposition
+  if (preprocessingParams['decompositionCount'] != null) {
+    var promise2 = jiff_instance.preprocessing('bit_decomposition', preprocessingParams['decompositionCount'],
+      preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+      preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+      preprocessingParams['id_list'], preprocessingParams['params']);
+    promise = Promise.all([promise, promise2]);
+  }
+
+  return promise.then(jiff_instance.finish_preprocessing);
 };
 
 // Default Computation Scheme

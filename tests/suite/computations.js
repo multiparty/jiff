@@ -302,6 +302,34 @@ exports.batch = async function (jiff_instance, test, testParallel, inputs, done,
   }
 };
 
+// handles any pre-processing
+exports.preProcessingParams = function (jiff_instance, test, inputs, testParallel, testConfig) {
+  var isConstant = inputs[0]['constant'] == null ? 'secret' : 'constant';
+  var operation = exports.preprocessing_function_map[isConstant][test];
+  if (operation != null && jiff_instance.has_preprocessing(operation)) {
+    var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
+    var singleTestCount = Object.keys(inputs[0]).length;
+    var count = inputs.length * (singleTestCount > 1 ? singleTestCount - 1 : 1);
+
+    return {
+      operation: operation,
+      count: count,
+      batch: testParallel,
+      threshold: threshold
+    }
+  }
+  return null;
+};
+
+exports.preprocess = function (jiff_instance, test, inputs, testParallel, testConfig, preprocessingParams) {
+  var promise = jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['count'],
+    preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+    preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+    preprocessingParams['id_list'], preprocessingParams['params']);
+
+  return promise.then(jiff_instance.finish_preprocessing);
+};
+
 // Default Computation Scheme
 exports.compute = function (jiff_instance, test, inputs, testParallel, done, testConfig) {
   // Reset errors
@@ -310,16 +338,10 @@ exports.compute = function (jiff_instance, test, inputs, testParallel, done, tes
 
   // Global variables
   Zp = jiff_instance.Zp;
-
-  var isConstant = inputs[0]['constant'] == null ? 'secret' : 'constant';
-  var operation = exports.preprocessing_function_map[isConstant][test];
-  if (operation != null && jiff_instance.has_preprocessing(operation)) {
-    var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
-    var singleTestCount = Object.keys(inputs[0]).length;
-    var count = inputs.length * (singleTestCount > 1 ? singleTestCount - 1 : 1);
-    var promise = jiff_instance.preprocessing(operation, count, testParallel, null, threshold);
+  var preProcessingParams = exports.preProcessingParams(jiff_instance, test, inputs, testParallel, testConfig);
+  if (preProcessingParams != null) {
+    var promise = exports.preprocess(jiff_instance, test, inputs, testParallel, testConfig, preProcessingParams);
     promise.then(function () {
-      jiff_instance.finish_preprocessing();
       exports.batch(jiff_instance, test, testParallel, inputs, done, testConfig);
     });
   } else {

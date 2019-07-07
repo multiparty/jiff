@@ -31,9 +31,9 @@
       "count": 20,
       "parallel": 3,
       "options": {
-        "Zp": 127,
-        "max": 255,
-        "cmax": 511,
+        "Zp": 11,
+        "max": 31,
+        "cmax": 63,
         "party_count": 3
       }
     },
