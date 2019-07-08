@@ -34,7 +34,7 @@
     },
     "decomposition3-127": {
       "alias": "decomposition",
-      "count": 20,
+      "count": 15,
       "parallel": 5,
       "options": {
         "Zp": 127,
@@ -43,7 +43,7 @@
     },
     "decomposition3-15485867": {
       "alias": "decomposition",
-      "count": 8,
+      "count": 5,
       "parallel": 3,
       "options": {
         "Zp": 15485867,
@@ -52,7 +52,7 @@
     },
     "decomposition5-127": {
       "alias": "decomposition",
-      "count": 20,
+      "count": 15,
       "parallel": 5,
       "options": {
         "Zp": 127,
@@ -71,7 +71,7 @@
     "decomposition-open-2-15485867": {
       "open": "open_bits",
       "alias": "decomposition",
-      "count": 8,
+      "count": 5,
       "parallel": 3,
       "options": {
         "Zp": 15485867,
@@ -81,7 +81,7 @@
     "decomposition-open-3-15485867": {
       "open": "open_bits",
       "alias": "decomposition",
-      "count": 8,
+      "count": 5,
       "parallel": 3,
       "options": {
         "Zp": 15485867,
@@ -91,7 +91,7 @@
     "decomposition-open-5-2039": {
       "open": "open_bits",
       "alias": "decomposition",
-      "count": 8,
+      "count": 5,
       "parallel": 3,
       "options": {
         "Zp": 2039,

@@ -38,7 +38,7 @@
     "/": {
       "share": "share_bits",
       "open": "composition",
-      "count": 10,
+      "count": 5,
       "parallel": 3,
       "options": {
         "Zp": 127,
@@ -48,7 +48,7 @@
     "%": {
       "share": "decomposition",
       "open": "composition",
-      "count": 10,
+      "count": 5,
       "parallel": 3,
       "options": {
         "Zp": 127,

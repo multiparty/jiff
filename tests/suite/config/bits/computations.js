@@ -247,6 +247,24 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
     return null;
   }
 
+  // special case: test for varying lengths
+  if (testConfig['share'] === 'share_bits_lengths') {
+    var paramsList = [];
+    for (var t = 0; t < inputs.length; t++) {
+      var bitLengthLeft = inputs[t]['_length1'];
+      if (bitLengthLeft == null) {
+        bitLengthLeft = inputs[t][1].toString(2).length;
+      }
+      var bitLengthRight = inputs[t]['_length2'];
+      if (bitLengthRight == null) {
+        bitLengthRight = inputs[t][2].toString(2).length;
+      }
+      paramsList.push({bitLengthLeft: bitLengthLeft, bitLengthRight: bitLengthRight});
+    }
+
+    return { operation: operation, count: 1, batch: testParallel, Zp: jiff_instance.Zp, paramsList: paramsList}
+  }
+
   var singleTestCount = Object.keys(inputs[0]).length;
   singleTestCount = singleTestCount > 1 ? (singleTestCount - 1) : singleTestCount;
   var count = inputs.length * singleTestCount;
@@ -273,10 +291,6 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
     }
   }
 
-  if (testConfig['share'] === 'share_bits_lengths') {
-    // will see what to do about this later
-  }
-
   // Take into consideration size increase after operation(s)
   if (test === '+' || test === '-') {
     params['bitLength'] += 1;
@@ -291,17 +305,22 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
     operation: operation,
     count: count,
     batch: testParallel,
-    params: params,
+    paramsList: [ params ],
     Zp: jiff_instance.Zp,
     decompositionCount: decompositionCount
   };
 };
 
 baseComputations.preprocess = function (jiff_instance, test, inputs, testParallel, testConfig, preprocessingParams) {
-  var promise = jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['count'],
-    preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
-    preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-    preprocessingParams['id_list'], preprocessingParams['params']);
+  var promises = [];
+  for (var i = 0; i < preprocessingParams['paramsList'].length; i++) {
+    var prm = jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['count'],
+      preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+      preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+      preprocessingParams['id_list'], preprocessingParams['paramsList'][i]);
+    promises.push(prm);
+  }
+  var promise = Promise.all(promises);
 
   // Perform any necessary preprocessing for decomposition
   if (preprocessingParams['decompositionCount'] != null) {

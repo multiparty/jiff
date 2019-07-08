@@ -16,7 +16,7 @@
     "default": {
       "share": "share_bits",
       "open": "open_bits",
-      "count": 20,
+      "count": 15,
       "parallel": 3,
       "options": {
         "Zp": 127,
@@ -28,7 +28,7 @@
     "*c": {
       "share": "share_bits",
       "open": "open_bits",
-      "count": 20,
+      "count": 10,
       "parallel": 3,
       "options": {
         "Zp": 11,
@@ -40,7 +40,7 @@
     "/c": {
       "share": "share_bits",
       "open": "composition",
-      "count": 20,
+      "count": 8,
       "parallel": 3,
       "options": {
         "Zp": 127,
@@ -55,15 +55,15 @@
     "c/": {
       "share": "decomposition",
       "open": "open_bits",
-      "count": 20,
+      "count": 8,
       "parallel": 3,
       "options": {
-        "Zp": 127,
-        "cmax": 255,
+        "Zp": 63,
+        "cmax": 127,
         "party_count": 3
       },
       "inputs": [
-        {"1": 100, "constant": 0},
+        {"1": 62, "constant": 0},
         {"1": 52, "constant": 1},
         {"1": 33, "constant": 2}
       ]
@@ -71,7 +71,7 @@
     "%c": {
       "share": "decomposition",
       "open": "composition",
-      "count": 20,
+      "count": 7,
       "parallel": 3,
       "options": {
         "Zp": 127,
@@ -86,15 +86,15 @@
     "c%": {
       "share": "decomposition",
       "open": "composition",
-      "count": 20,
+      "count": 7,
       "parallel": 3,
       "options": {
-        "Zp": 127,
-        "cmax": 255,
+        "Zp": 63,
+        "cmax": 127,
         "party_count": 3
       },
       "inputs": [
-        {"1": 100, "constant": 0},
+        {"1": 62, "constant": 0},
         {"1": 52, "constant": 1},
         {"1": 33, "constant": 2}
       ]
