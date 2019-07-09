@@ -37,10 +37,10 @@
     },
     "*bgw": {
       "count": 5,
-      "parallel": 1,
+      "parallel": 2,
       "options": {
         "Zp": "262139",
-        "party_count": 4,
+        "party_count": 3,
         "decimal_digits": 1,
         "integer_digits": 3
       }

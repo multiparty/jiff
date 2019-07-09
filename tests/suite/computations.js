@@ -200,7 +200,7 @@ exports.shareParameters = function (jiff_instance, test, testInputs) {
   senders.sort();
 
   // Figure out threshold
-  var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
+  var threshold = test === '*bgw' ? Math.floor((jiff_instance.party_count + 1) / 2) : jiff_instance.party_count;
   return { input: input, threshold: threshold, senders: senders, receivers: null, constant: testInputs['constant'] };
 };
 
@@ -311,7 +311,7 @@ exports.preProcessingParams = function (jiff_instance, test, inputs, testParalle
   var isConstant = inputs[0]['constant'] == null ? 'secret' : 'constant';
   var operation = exports.preprocessing_function_map[isConstant][test];
   if (operation != null && jiff_instance.has_preprocessing(operation)) {
-    var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
+    var threshold = test === '*bgw' ? Math.floor((jiff_instance.party_count + 1) / 2) : jiff_instance.party_count;
     var singleTestCount = Object.keys(inputs[0]).length;
     var count = inputs.length * (singleTestCount > 1 ? singleTestCount - 1 : 1);
 
