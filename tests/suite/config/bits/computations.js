@@ -242,6 +242,10 @@ baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
 
 // Pre-processing
 baseComputations.preProcessingParams = function (jiff_instance, test, inputs, testParallel, testConfig) {
+  if (testConfig['options']['crypto_provider'] === true) {
+    return null;
+  }
+
   var operation = baseComputations.preprocessing_function_map[test];
   if (operation == null || !jiff_instance.has_preprocessing(operation)) {
     return null;

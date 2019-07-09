@@ -50,6 +50,10 @@ baseComputations.singleCompute = function (jiff_instance, shareParameters, test,
 
 // Pre-processing
 baseComputations.preProcessingParams = function (jiff_instance, test, inputs, testParallel, testConfig) {
+  if (testConfig['options']['crypto_provider'] === true) {
+    return null;
+  }
+
   return {
     operation: 'if_else',
     count: inputs.length,

@@ -34,7 +34,13 @@
         "decimal_digits": 1,
         "integer_digits": 1,
         "warn": false
-      }
+      },
+      "inputs": [
+        {"1": 160, "constant": 32},
+        {"1": -123, "constant": 3},
+        {"1": 186, "constant": -6},
+        {"1": -205, "constant": -5}
+      ]
     },
     "*": {
       "count": 5,
@@ -44,7 +50,11 @@
         "party_count": 3,
         "decimal_digits": 1,
         "integer_digits": 3
-      }
+      },
+      "inputs": [
+        {"1": 311.2, "constant": 8},
+        {"1": 121.9, "constant": -12}
+      ]
     },
     "/": {
       "count": 3,

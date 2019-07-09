@@ -304,6 +304,10 @@ exports.batch = async function (jiff_instance, test, testParallel, inputs, done,
 
 // handles any pre-processing
 exports.preProcessingParams = function (jiff_instance, test, inputs, testParallel, testConfig) {
+  if (testConfig['options']['crypto_provider'] === true) {
+    return null;
+  }
+
   var isConstant = inputs[0]['constant'] == null ? 'secret' : 'constant';
   var operation = exports.preprocessing_function_map[isConstant][test];
   if (operation != null && jiff_instance.has_preprocessing(operation)) {

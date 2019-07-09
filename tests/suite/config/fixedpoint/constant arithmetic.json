@@ -25,6 +25,20 @@
         "warn": false
       }
     },
+    "cdivfac": {
+      "count": 100,
+      "parallel": 25,
+      "options": {
+        "Zp": "7212610147295474909544523785043492409969382148186765460082500085393519556525921455588705423020751421",
+        "party_count": 3,
+        "decimal_digits": 49,
+        "integer_digits": 50,
+        "warn": false
+      },
+      "inputs": [
+        {"1": 320, "constant": 32}
+      ]
+    },
     "*": {
       "count": 5,
       "parallel": 3,
@@ -33,7 +47,10 @@
         "party_count": 3,
         "decimal_digits": 1,
         "integer_digits": 3
-      }
+      },
+      "inputs": [
+        {"1": 311.2, "constant": 8}
+      ]
     },
     "/": {
       "count": 4,
