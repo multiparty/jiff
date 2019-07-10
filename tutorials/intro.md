@@ -36,7 +36,7 @@ http.listen(8080, function () {
 First, each friend makes a jiff client instance to participate in the computation. We'll call our computation 'our_computation':
 
 ```javascript
-my_jiff_instance = jiff.make_jiff('localhost:8080', 'our_computation');
+var my_jiff_instance = jiff.make_jiff('localhost:8080', 'our_computation');
 ```
 Here we define the jiff instance, tell it to connect to the server running on localhost, and specify which computation we want to be part of.
 
@@ -71,8 +71,95 @@ var result = my_jiff_instance.open(is_enough);
 Because we might be waiting for other people in the computation, `result` is actually a promise to a value, so we can't immediately print it out. Instead we'll wait for the promise to be resolved before printing anything:
 
 ```javascript
-result.promise.then(function (result) {
+result.then(function (result) {
   if (result) console.log("We're going on vacation!");
   else console.log("We can't afford to go :(");
-})
+});
+```
+
+# Running the whole computation
+Now that we know how to use the different features of JIFF, let's do some refactoring to make our program a bit more robust.
+
+First we'll take input from the command line for our budget instead of hardcoding it:
+```javascript
+var my_budget = parseInt(process.argv[2], 10);
+```
+We should also build an object with the JIFF options and pass that to make_jiff, to make it more readable if we add anything in the future:
+```javascript
+var options = {'party_count': 2};
+```
+To make sure the client waits to connect before doing anything, we'll wrap our computation in a function and pass it to the JIFF instance as the `onConnect` option:
+```javascript
+options.onConnect = function(my_jiff_instance) {
+
+  var shares = my_jiff_instance.share(my_budget);
+
+  var total_budget = shares[1].add(shares[2]);
+  var result = my_jiff_instance.open(is_enough);
+
+  result.then(function (result) {
+    if (result) console.log("We're going on vacation!");
+    else console.log("We can't afford to go :( ");
+
+    jiff_instance.disconnect();
+  });
+
+};
+```
+Now we can make our JIFF instance and pass it everything it needs in the options parameter:
+```javascript
+var my_jiff_instance = jiff.make_jiff('localhost:8080', 'our_computation', options);
+```
+And that's it!
+As soon as we connect to the server, our `onConnect` function will execute and we'll send shares to the other parties (when they're connected as well), run our computation and get the result, then disconnect from the server.
+
+## Complete Files
+### party.js
+```
+var my_budget = parseInt(process.argv[2], 10);
+
+var options = {'party_count': 2};
+options.onConnect = function(my_jiff_instance) {
+
+  var shares = my_jiff_instance.share(my_budget);
+
+  var total_budget = shares[1].add(shares[2]);
+  var result = my_jiff_instance.open(is_enough);
+
+  result.then(function (result) {
+    if (result) console.log("We're going on vacation!");
+    else console.log("We can't afford to go :( ");
+
+    jiff_instance.disconnect(false, true);
+  });
+
+};
+
+var my_jiff_instance = jiff.make_jiff('localhost:8080', 'our_computation', options);
+
+```
+### server.js
+```javascript
+var express = require('express');
+var app = express();
+var http = require('http').Server(app);
+
+//Serve static files
+//Configure App
+app.use('/demos', express.static('demos'));
+app.use('/lib', express.static('lib'));
+app.use('/lib/ext', express.static('lib/ext'));
+
+require('../../lib/jiff-server').make_jiff(http, { logs:true });
+
+// Serve static files.
+try {
+  http.listen(8080, function () {
+    console.log('listening on *:8080');
+  });
+} catch (err) {
+  console.log('ERROR:'+err.message)
+}
+
+console.log('To run a node.js based party: node party <input>');
 ```
