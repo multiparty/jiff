@@ -1,5 +1,5 @@
 {
-  "plugins": [],
+  "plugins": ["plugins/markdown"],
   "recurseDepth": 10,
   "source": {
     "includePattern": ".+\\.js(doc|x)?$",
@@ -30,6 +30,18 @@
       "Github Repo":{
         "href":"https://github.com/multiparty/jiff",
         "target":"_blank",
+        "class":"menu-item",
+        "id":"github_link"
+      },
+      "Tutorial":{
+        "href":"./intro.html",
+        "target":"_self",
+        "class":"menu-item",
+        "id":"github_link"
+      },
+      "Contributing to JIFF":{
+        "href":"./contributing.html",
+        "target":"_self",
         "class":"menu-item",
         "id":"github_link"
       }
