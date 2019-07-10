@@ -11,15 +11,16 @@ Here's what we'll do:
 
 We'll walk through the process step-by-step, and at the end we'll have two working files: one to run the server, and one for each freind participate with.
 
+
 # installing JIFF
 First, we'll install JIFF via npm:
 ```sh
 npm install jiff-mpc
 ```
 
-# Set up
+# Using JIFF
 Now, we need to set up a server to pass messages between each other.
-# Setting up the Server
+## Setting up the Server
 The server only needs to contain one file, server.js. We simply make a jiff server instance, and listen on an open port:
 
 ```javascript
@@ -31,7 +32,7 @@ http.listen(8080, function () {
 });
 ```
 
-# Defining a JIFF Client
+## Defining a JIFF Client
 First, each friend makes a jiff client instance to participate in the computation. We'll call our computation 'our_computation':
 
 ```javascript
@@ -39,7 +40,7 @@ my_jiff_instance = jiff.make_jiff('localhost:8080', 'our_computation');
 ```
 Here we define the jiff instance, tell it to connect to the server running on localhost, and specify which computation we want to be part of.
 
-# Computation
+## Computation
 The JIFF instance lets us do all sorts of fun things, like (securely) sharing our input with all the parties in our computation. This is done with the jiff.share() method:
 
 ```javascript
@@ -67,7 +68,7 @@ Finally, we can reveal the result of our computation by opening the value contai
 ```javascript
 var result = my_jiff_instance.open(is_enough);
 ```
-Because we might be waiting for other people in the computation, `result` is actually a promise to a value, so we can't immediately print it out. Instead we'll wait for the promise to be resolved before printing anything out:
+Because we might be waiting for other people in the computation, `result` is actually a promise to a value, so we can't immediately print it out. Instead we'll wait for the promise to be resolved before printing anything:
 
 ```javascript
 result.promise.then(function (result) {
