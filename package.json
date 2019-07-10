@@ -43,7 +43,7 @@
   "scripts": {
     "test": "./tests/suite/test.sh",
     "suite": "./tests/suite/suite.sh",
-    "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed s/CONTRIBUTING.md/CONTRIBUTING.html docs/jsdoc/*.html",
+    "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/CONTRIBUTING.md/CONTRIBUTING.html/g' docs/jsdoc/*.html",
     "test-demo": "./demos/run-test.sh",
     "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit",
     "lint": "./node_modules/.bin/eslint ."
