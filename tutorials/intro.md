@@ -36,6 +36,7 @@ http.listen(8080, function () {
 First, each friend makes a jiff client instance to participate in the computation. We'll call our computation 'our_computation':
 
 ```javascript
+jiff = require('../../lib/jiff-client');
 var my_jiff_instance = jiff.make_jiff('localhost:8080', 'our_computation');
 ```
 Here we define the jiff instance, tell it to connect to the server running on localhost, and specify which computation we want to be part of.
@@ -116,6 +117,8 @@ As soon as we connect to the server, our `onConnect` function will execute and w
 ## Complete Files
 ### party.js
 ```
+jiff = require('../../lib/jiff-client');
+
 var my_budget = parseInt(process.argv[2], 10);
 
 var options = {'party_count': 2};
