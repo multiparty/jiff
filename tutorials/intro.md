@@ -116,7 +116,7 @@ As soon as we connect to the server, our `onConnect` function will execute and w
 
 ## Complete Files
 ### party.js
-```
+```javascript
 jiff = require('../../lib/jiff-client');
 
 var my_budget = parseInt(process.argv[2], 10);
