@@ -146,7 +146,7 @@ npm run-script test-bignumber
 ```
 
 ## How to Contribute
-Check out our contribution guidelines and resources @ [CONTRIBUTING.md](CONTRIBUTING.md).
+Check out our contribution guidelines and resources @ [contributing](CONTRIBUTING.md).
 
 # For Cryptographers
 
