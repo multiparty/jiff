@@ -12,7 +12,7 @@ Here's what we'll do:
 We'll walk through the process step-by-step, and at the end we'll have two working files: one to run the server, and one for each freind participate with.
 
 
-# installing JIFF
+# Installing JIFF
 First, we'll install JIFF via npm:
 ```sh
 npm install jiff-mpc
@@ -78,7 +78,7 @@ result.then(function (result) {
 });
 ```
 
-# Running the whole computation
+# Running the Whole Computation
 Now that we know how to use the different features of JIFF, let's do some refactoring to make our program a bit more robust.
 
 First we'll take input from the command line for our budget instead of hardcoding it:
