@@ -134,7 +134,7 @@ options.onConnect = function(my_jiff_instance) {
     if (result) console.log("We're going on vacation!");
     else console.log("We can't afford to go :( ");
 
-    jiff_instance.disconnect(false, true);
+    jiff_instance.disconnect();
   });
 
 };
