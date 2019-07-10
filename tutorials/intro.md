@@ -9,7 +9,7 @@ Here's what we'll do:
 5. At the end, we'll only reveal if our total budget is greater or equal to $5000, the total budet can stay a secret!
 6. Go on vacation!! (hopefully)
 
-We'll walk through the process step-by-step, and at the end we'll have two working files: one to run the server, and one for each freind participate with.
+We'll walk through the process step-by-step, and at the end we'll have two working files: one to run the server, and one for each friend participate with.
 
 
 # Installing JIFF
@@ -114,6 +114,7 @@ var my_jiff_instance = jiff.make_jiff('localhost:8080', 'our_computation', optio
 And that's it!
 As soon as we connect to the server, our `onConnect` function will execute and we'll send shares to the other parties (when they're connected as well), run our computation and get the result, then disconnect from the server.
 
+Remember you'll need someone else (or another shell) to run party.js as well, since it wouldn't be multi-party computation with just one person!
 ## Complete Files
 ### party.js
 ```javascript
