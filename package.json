@@ -57,8 +57,8 @@
     "mathjs": "^5.0.4",
     "numeric": "^1.2.6",
     "request": "^2.88.0",
-    "socket.io": "^2.0.2",
-    "socket.io-client": "^2.1.1"
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
