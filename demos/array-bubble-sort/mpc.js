@@ -50,7 +50,7 @@
     var final_promise = final_deferred.promise();
 
     // Share the arrays
-    jiff_instance.share_ND_array(input, {1: input, 2: input}).then(function (shares) {
+    jiff_instance.share_array(input, input.length).then(function (shares) {
       // sum all shared input arrays element wise
       var array = shares[1];
       for (var p = 2; p <= jiff_instance.party_count; p++) {
