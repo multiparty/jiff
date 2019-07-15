@@ -81,9 +81,9 @@ We pass our input array and the length. In this case, all party inputs have the 
   var array_promise = jiff_instance.share_array(input, input.length);
 ```
 
-Once everyone's input is shared, we'll compute the inner product. The promise returns the shares from every party in an object. It has the form
+Once everyone's input is shared, we'll compute the inner product. The promise returns an object containing the shares from every party in an object. It has the form
 ```
-{1 : <party 1's array>, 2 : <party 2's array> }
+{1 : [<party 1's array>], 2 : [<party 2's array>] }
 ```
 
 The inner product takes the sum of the pairwise product of array elements.
@@ -93,7 +93,7 @@ array_promise.then( function (shares) {
   // pairwise product
   var products = shares[1];
   for (var i = 0; i < products.length; i++) {
-    products[i] = products[i].smult( shares[2][i] );
+    products[i] = products[i].smult(shares[2][i] );
   }
 
   // sum
@@ -121,7 +121,7 @@ function compute() {
     // compute inner product
     var products = shares[1];
     for (var i = 0; i < products.length; i++) {
-      products[i] = products[i].smult( shares[2][i] );
+      products[i] = products[i].smult(shares[2][i] );
     }
 
     var sum = products[0];
@@ -177,8 +177,10 @@ app.use('/bignumber.js', express.static('node_modules/bignumber.js'));
 On the client side, we need to include and apply both `fixedpoint` and `bignumber`. 
 
 ```javascript
-exports.connect = function (hostname, computation_id, opt) {
+exports.connect = function () {
+  // set up hostname, computation id, options
   ...
+  // find and apply extensions
   if (node) {
     jiff = require('../../lib/jiff-client');
     jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
@@ -186,12 +188,12 @@ exports.connect = function (hostname, computation_id, opt) {
   }
 
   opt.autoConnect = false;
-  saved_instance = jiff.make_jiff(hostname, computation_id, opt);
-  saved_instance.apply_extension(jiff_bignumber, opt);
-  saved_instance.apply_extension(jiff_fixedpoint, opt);
-  saved_instance.connect();
+  jiff_instance = jiff.make_jiff(hostname, computation_id, opt);
+  jiff_instance.apply_extension(jiff_bignumber, opt);
+  jiff_instance.apply_extension(jiff_fixedpoint, opt);
+  jiff_instance.connect();
 
-  return saved_instance;
+  return jiff_instance;
 };
 ```
 
@@ -201,6 +203,52 @@ TODO is this correct?
 Now we can run the inner product with fixed point (or a mix of fixed point and integer) inputs!
 
 ## Under the hood: optimizing for MPC
+Our computation works great with fixed point data, but maybe it's running a litle slower than we'd like. By optimizing the MPC operations, we can reduce the total amount of work being performed. 
+
+For example, the inner product requires many multiplications of floating point numbers. In JIFF, to multiply two fixed point numbers `a` and `b`, we multiply them normally, then divide by the total magnitude.
+
+1. `result` = `a` * `b`
+2. `result` = `result` / `magnitude`
+
+The division step is relatively expensive. The inner product is the sum of a large number of pairwise multiplications. We can use the associative property to "pull out" the division step. Let `m` be the magnitude and `[a1,...an]`, `[b1,...,bn]` be our two parties' input values.
+```
+(a1 * b1) / m + (a2 * b2) / m + ... + (an * bn) / m = (a1 * b1 + a2 * b2 + ... + an * bn) / m
+```
+
+Let's look at the current version of the inner product:
+```javascript
+var products = shares[1];
+for (var i = 0; i < products.length; i++) {
+  products[i] = products[i].smult(shares[2][i] );
+}
+
+var sum = products[0];
+for (var i = 1; i < products.length; i++) {
+  sum = sum.sadd( products[i] );
+}
+```
+
+The `smult` operation has an optional second parameter. If we set it to false, it will skip the division step.
+
+```javascript
+var products = shares[1];
+for (var i = 0; i < products.length; i++) {
+  products[i] = products[i].smult(shares[2][i], false);
+}
+```
+
+Then we can compute the magnitude and divide after the addition. We use the legacy `cdiv` function, since we're using it to manually move the location of the decimal point--we don't want to use the special fixed-point version of `cdiv`, which will move the decimal for us.
+```javascript
+var sum = products[0];
+for (var i = 1; i < products.length; i++) {
+  sum = sum.sadd( products[i] );
+}
+
+var magnitude = sum.jiff.helpers.magnitude(sum.jiff.decimal_digits);
+sum = sum.legacy.cdiv(magnitude);
+```
+
+This reduces the number of `cdiv` operations by an order of magnitude!
 
 ## Scaling up: controlling memory usage
 
