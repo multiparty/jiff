@@ -51,7 +51,6 @@
 
     // Share the arrays
     jiff_instance.share_ND_array(input).then(function (shares) {
-      console.log(shares);
       var full_array = [];
 
 
