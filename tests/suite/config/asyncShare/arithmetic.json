@@ -1,0 +1,58 @@
+{
+  "tests": [ "+", "-", "*", "*bgw", "|", "^", "!", "abs", "/", "%" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "asyncShare" ],
+    "generation": {
+      "file": "config/asyncShare/generation.js",
+      "function": "generateArithmeticInputs"
+    },
+    "computation": {
+      "file": "config/asyncShare/computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 100,
+      "parallel": 25,
+      "options": {
+        "Zp": 15485867,
+        "party_count": 3
+      }
+    },
+    "*bgw": {
+      "count": 100,
+      "parallel": 25,
+      "options": {
+        "Zp": 15485867,
+        "party_count": 4
+      }
+    },
+    "abs": {
+      "count": 10,
+      "parallel": 3,
+      "options": {
+        "Zp": 127,
+        "party_count": 3
+      }
+    },
+    "/": {
+      "count": 8,
+      "parallel": 3,
+      "options": {
+        "Zp": 127,
+        "party_count": 3
+      }
+    },
+    "%": {
+      "count": 8,
+      "parallel": 3,
+      "options": {
+        "Zp": 127,
+        "party_count": 3
+      }
+    }
+  }
+}
