@@ -5,13 +5,13 @@ var assert = require('chai').assert;
 var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
-var party_count = 4;
-var parallelismDegree = 5; // Max number of test cases running in parallel
+var party_count = 3;
+var parallelismDegree = 2; // Max number of test cases running in parallel
 var n = 15;
 
 // Parameters specific to this demo
 var maxElement = 13;
-var maxLength = 10;
+var maxLength = 5;
 
 var showProgress = true;
 var Zp = 13;
@@ -55,19 +55,16 @@ function computeResults(inputs) {
   var results = [];
 
   for (var t = 0; t < n; t++) {
-    var array = inputs[1][t].slice(); // Shallow copy, so that when modifying things are not changed!
 
-    for (var p = 2; p <= party_count; p++) {
-      var tmp = inputs[p][t];
-      for (var i = 0; i < array.length; i++) {
-        array[i] += tmp[i];
-      }
+    var arr = [];
+    for (var p = 1; p <= party_count; p++) {
+      arr = arr.concat(inputs[p][t]);
     }
 
-    array = array.sort(function (a, b) {
+    arr = arr.sort(function (a, b) {
       return a - b;
     });
-    results.push(array);
+    results.push(arr);
   }
 
   return results;
