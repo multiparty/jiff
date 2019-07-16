@@ -68,5 +68,43 @@ for (var op in operations) {
 # What If We Don't Preprocess anything?
 In the case that JIFF tries to perform an operation which needs preprocessing, but none has been performed - the default behavior is to fail:
 ```sh
-
+ UnhandledPromiseRejectionWarning: Error: No preprocessed value(s)
+that correspond to the op_id "smult:1,2:0:triplet"
 ```
+
+The other option is to have the server (which may also be a part of the computation) provide values to all parties for the operations, which happens at the time of computation. This can be configured when creating a jiff instance by setting the `crypto_provider` option to true:
+```javascript
+var jiff_instance = jiff.make_jiff(server_address, 'comp_id', {'crypto_provider': true} );
+```
+If no operations were anticipated or preprocessed for, the server will be queried for anything that requires it. If some operations were specified for preprocessing, but later more operations were added and there are not enough preprocessed values, the server will be queried for any perations that happen after the parties have run out of preprocessed values.
+
+While this allows you to get values such as beaver triples just-in-time, it also requires that you trust the coordinating server to generate these values fairly and honestly, which may or may not be part of your logistical assumptions. It also adds communication cost during the main phase of computation.
+
+## Securely Generating Just-In-Time values
+
+# Which Operations Require Preprocessing
+As mentioned earlier, not all operations on secret shares require pre-processing. For example, secure addition and secure subtraction require only local computation and don't need any helper values. Below is a table of all JIFF secret-share protocols that require preprocessing:
+
+| Protocol |
+|----------|
+| smult    |
+| sdiv     |
+| sxor_bit |
+| slt      |
+| cgt      |
+| clt      |
+| clt_bits |
+| cdiv     |
+| smod     |
+| if_else  |
+| sor_bij  |
+| slteq    |
+| sgteq    |
+| sgt      |
+| clteq    |
+| cgteq    |
+| seq      |
+| sneq     |
+| ceq      |
+| cneq     |
+
