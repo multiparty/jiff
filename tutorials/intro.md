@@ -15,7 +15,7 @@ We'll walk through the process step-by-step, and at the end we'll have two worki
 # Installing JIFF
 First, we'll install JIFF via npm:
 ```sh
-npm install jiff-mpc
+$ npm install jiff-mpc
 ```
 
 # Using JIFF
