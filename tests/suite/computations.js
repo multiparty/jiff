@@ -44,7 +44,8 @@ exports.mod = function (x, y) {
 // How to interpret MPC operations
 exports.mpcInterpreter = {
   '+': function (operand1, operand2) {
-    return operand1.add(operand2);
+    var result = operand1.add(operand2);
+    return result;
   },
   '-': function (operand1, operand2) {
     return operand1.sub(operand2);
@@ -190,9 +191,11 @@ exports.singleCompute = function (jiff_instance, shareParameters, test, values, 
 
     // Compute
     var result = func(values[indices[0]], values[indices[1]]);
-    for (var i = 2; i < indices.length; i++) {
-      result = func(result, values[indices[i]]);
-    }
+
+    //for (var i = 2; i < indices.length; i++) {
+    //  result = func(result, values[indices[i]]);
+    //}
+
     return result;
   } catch (err) {
     console.log(err);
@@ -236,7 +239,6 @@ exports.singleTest = async function (jiff_instance, test, testInputs) {
     errors.push(err);
     return false;
   }
-
   return true;
 };
 

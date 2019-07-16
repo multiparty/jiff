@@ -2,6 +2,8 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var base_instance = require('../../lib/jiff-server').make_jiff(http, { logs:true });
+var jiffAsyncShareServer = require('../../lib/ext/jiff-server-asyncshare');
+base_instance.apply_extension(jiffAsyncShareServer);
 
 //Serve static files
 //Configure App

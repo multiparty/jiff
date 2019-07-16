@@ -1,3 +1,8 @@
+
+// Flags success/failure
+var errors = [];
+var successes = [];
+
 // Use base computation but override interpreters.
 var baseComputations = require('../../computations.js');
 
@@ -142,10 +147,10 @@ baseComputations.mpcInterpreter = {
 };
 
 // Sharing bits
-baseComputations.shareHook = async function (jiff_instance, test, testInputs, input, threshold, receivers, senders) {
+baseComputations.shareHook = async function (jiff_instance, test, testInputs, input, threshold, receivers, senders, ratios) {
   var shares;
   if (testConfig['share'] == null || testConfig['share'] === 'decomposition') {
-    shares = jiff_instance.share(input, threshold, receivers, senders);
+    shares = jiff_instance.share(input, threshold, receivers, senders, jiff_instance.Zp, null, ratios);
     var i, pid;
     for (i = 0; i < senders.length; i++) {
       pid = senders[i];
@@ -193,6 +198,46 @@ baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
   }
 
   return (mpcResult.toString() === expectedResult.toString());
+};
+
+baseComputations.singleTest = async function (jiff_instance, test, testInputs) {
+  try {
+    // Share for MPC
+    var shareParameters = baseComputations.shareParameters(jiff_instance, test, testInputs);
+    var shares = await baseComputations.shareHook(jiff_instance, test, testInputs, shareParameters.input, shareParameters.threshold, shareParameters.receivers, shareParameters.senders, {1: 2, 2: 2, 3: 1, 4: 2});
+    if (shares == null) {
+      return null;
+    }
+
+    shares['constant'] = shareParameters.constant;
+
+    // Compute in the Open
+    var actualResult = await baseComputations.singleCompute(jiff_instance, shareParameters, test, testInputs[0], baseComputations.openInterpreter);
+
+    // Compute under MPC
+    var mpcResult = await baseComputations.singleCompute(jiff_instance, shareParameters, test, shares, baseComputations.mpcInterpreter);
+    if (mpcResult == null) {
+      return null;
+    }
+
+    // Open
+    mpcResult = await baseComputations.openHook(jiff_instance, test, mpcResult);
+
+    // Verify result
+    // Assert both results are equal
+    if (!baseComputations.verifyResultHook(test, mpcResult, actualResult)) {
+      errors.push(baseComputations.errorMessage(jiff_instance, test, testInputs[0], shareParameters, mpcResult, actualResult));
+      return false;
+    }
+
+    successes.push(baseComputations.successMessage(jiff_instance, test, testInputs[0], shareParameters, mpcResult, actualResult));
+  } catch (err) {
+    console.log(err);
+    errors.push(err);
+    return false;
+  }
+
+  return true;
 };
 
 // Default Computation Scheme
