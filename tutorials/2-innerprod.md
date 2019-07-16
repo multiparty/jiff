@@ -1,8 +1,8 @@
 
-In this tutorial, we'll look at an example implementation of the inner product. We'll start with a basic version, then extend it to support fixed-point numbers, optimize it under the constraints of MPC, and prepare to scale better.
+In this tutorial, we'll look at an example implementation of the inner product. We'll start with a basic version, then extend it to support fixed-point numbers, optimize it under the constraints of MPC, and prepare to scale better. This tutorial implements the 2-party version for simplicity, but the techniques exend to aribtrary parties.
 
 # Setting up a simple server
-We're going to stick with our simple server-as-message-router model from before. The `express` package provides a web framework, which we want to use over `http`.
+We're going to stick with our simple server-as-message-router model from before. The `express` package provides a web framework, which we want to use over `http`. This code goes in the file `server.js`.
 
 ```javascript
 var express = require('express');
@@ -39,7 +39,6 @@ var jiff_instance;
 
 function connect() {
 
-  // TODO: is this the correct hostname?
   var hostname = "http://localhost:8080";
 
   var computation_id = 'inner_product'; 
@@ -56,7 +55,7 @@ function connect() {
 ```
 
 ## Computing an inner product
-Once those details are taken care of, we can define the interesting part of the computation. The function outline shares our (hard-coded) input values, executes some computation, and logs the result when it is ready.
+Once those details are taken care of, we can define the interesting part of the computation. The function outline shares our (hard-coded) input values, executes some computation, and logs the result when it is ready. Again, in `client.js`:
 
 ```javascript
 function compute() {
@@ -73,7 +72,7 @@ function compute() {
 }
 ```
 
-The first step is to share our input with the rest of the parties. We use our saved and configured `jiff_instance` to do so. This operation is asynchronous--it requires communicating with every party to secret share the data--so it returns a promise.
+The first step is to share our input with the rest of the parties. We use our saved and configured `jiff_instance` to do so. This operation is asynchronous—it requires communicating with every party to secret share the data—so it returns a promise.
 
 We pass our input array and the length. In this case, all party inputs have the same, public length, and they're all providing the same type of input. These items are customizable; we'll look at an example later. TODO: link tutorial with different inputs or something
 
@@ -93,13 +92,13 @@ array_promise.then( function (shares) {
   // pairwise product
   var products = shares[1];
   for (var i = 0; i < products.length; i++) {
-    products[i] = products[i].smult(shares[2][i] );
+    products[i] = products[i].smult(shares[2][i]);
   }
 
   // sum
   var sum = products[0];
   for (var i = 1; i < products.length; i++) {
-    sum = sum.sadd( products[i] );
+    sum = sum.sadd(products[i]);
   }
 
 });
@@ -121,12 +120,12 @@ function compute() {
     // compute inner product
     var products = shares[1];
     for (var i = 0; i < products.length; i++) {
-      products[i] = products[i].smult(shares[2][i] );
+      products[i] = products[i].smult(shares[2][i]);
     }
 
     var sum = products[0];
     for (var i = 1; i < products.length; i++) {
-      sum = sum.sadd( products[i] );
+      sum = sum.sadd(products[i]);
     }
 
     // open the array
@@ -157,13 +156,12 @@ We also need to make sure the connecting and computation functions can be access
 ```
 
 TODO Add something about running and testing?!
-TODO do we need party.js here to run tests correctly??
 
 # Using the fixed point extension
 Our inner product code works fine with integers. However, many interesting applications in statistics, machine learning, and other domains require operations on real numbers. 
 The JIFF framework includes extensions which provide additional functionality. We'll use the `fixedpoint` extension (which extends the client behavior), and which depends on `bignumber`s (which extend both client and server behavior).
 
-We need to tell both the server and the client where to find the extension code. On the server side, we'll save our JIFF `base_instance`, then apply the `bignumber` extension. We'll also tell the server where to find the correct JIFF files. 
+We need to tell both the server and the client where to find the extension code. On the `server.js` side, we'll save our JIFF `base_instance`, then apply the `bignumber` extension. We'll also tell the server where to find the correct JIFF files. We update `server.js`:
 
 ```javascript
 var base_instance = require('../../lib/jiff-server').make_jiff(http, { logs:true });
@@ -174,7 +172,7 @@ base_instance.apply_extension(jiffBigNumberServer);
 app.use('/bignumber.js', express.static('node_modules/bignumber.js'));
 ```
 
-On the client side, we need to include and apply both `fixedpoint` and `bignumber`. 
+On the client side, we need to include and apply both `fixedpoint` and `bignumber`. In `client.js`:
 
 ```javascript
 exports.connect = function () {
@@ -205,12 +203,15 @@ Now we can run the inner product with fixed point (or a mix of fixed point and i
 ## Under the hood: optimizing for MPC
 Our computation works great with fixed point data, but maybe it's running a litle slower than we'd like. By optimizing the MPC operations, we can reduce the total amount of work being performed. 
 
-For example, the inner product requires many multiplications of floating point numbers. In JIFF, to multiply two fixed point numbers `a` and `b`, we multiply them normally, then divide by the total magnitude.
+For example, the inner product requires many multiplications of floating point numbers. In JIFF, to multiply two fixed point numbers `a` and `b`, we multiply them normally, then divide by the total magnitude `m`.
 
 1. `result` = `a` * `b`
-2. `result` = `result` / `magnitude`
+2. `result` = `result` / `m`
 
-The division step is relatively expensive. The inner product is the sum of a large number of pairwise multiplications. We can use the associative property to "pull out" the division step. Let `m` be the magnitude and `[a1,...an]`, `[b1,...,bn]` be our two parties' input values.
+Since `m` is a constant, we need to use the constant division `cdiv` function. This is relatively expensive: it takes `2*(bits+3) + 5` rounds of communication and 3 elements of preprocessing data. (Compare this in the [cost of operations](https://github.com/multiparty/jiff#costs-of-operations) table).
+TODO update this to new table location
+
+The inner product is the sum of a large number of pairwise fixed-point multiplications. We can use the associative property to "pull out" the division step. Let `m` be the magnitude and `[a1,...an]`, `[b1,...,bn]` be our two parties' input values.
 ```
 (a1 * b1) / m + (a2 * b2) / m + ... + (an * bn) / m = (a1 * b1 + a2 * b2 + ... + an * bn) / m
 ```
@@ -219,12 +220,12 @@ Let's look at the current version of the inner product:
 ```javascript
 var products = shares[1];
 for (var i = 0; i < products.length; i++) {
-  products[i] = products[i].smult(shares[2][i] );
+  products[i] = products[i].smult(shares[2][i]);
 }
 
 var sum = products[0];
 for (var i = 1; i < products.length; i++) {
-  sum = sum.sadd( products[i] );
+  sum = sum.sadd(products[i]);
 }
 ```
 
@@ -237,11 +238,11 @@ for (var i = 0; i < products.length; i++) {
 }
 ```
 
-Then we can compute the magnitude and divide after the addition. We use the legacy `cdiv` function, since we're using it to manually move the location of the decimal point--we don't want to use the special fixed-point version of `cdiv`, which will move the decimal for us.
+Then we can compute the magnitude and divide after the addition. We use the legacy `cdiv` function, since we're using it to manually move the location of the decimal point—we don't want to use the special fixed-point version of `cdiv`, which will move the decimal for us.
 ```javascript
 var sum = products[0];
 for (var i = 1; i < products.length; i++) {
-  sum = sum.sadd( products[i] );
+  sum = sum.sadd(products[i]);
 }
 
 var magnitude = sum.jiff.helpers.magnitude(sum.jiff.decimal_digits);
@@ -250,7 +251,10 @@ sum = sum.legacy.cdiv(magnitude);
 
 This reduces the number of `cdiv` operations by an order of magnitude!
 
+TODO: I haven't been able to test this becasue every line with an `smult(..., false)` throws a million errors with mocha.
+
 ## Scaling up: controlling memory usage
+TODO: Not sure what kinan wants here
 
 # Next steps
 There are a few messy things here. Client-specific variables, like our private input values, are hardcoded in, so each party will have to manually change the code. In the XXX tutorial, we'll show how to connect the client to a webpage, which makes it much easier for clients to change these data.
