@@ -43,7 +43,7 @@
   "scripts": {
     "test": "./tests/suite/test.sh",
     "suite": "./tests/suite/suite.sh",
-    "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html",
+    "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/CONTRIBUTING.md/CONTRIBUTING.html/g' docs/jsdoc/*.html",
     "test-demo": "./demos/run-test.sh",
     "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit",
     "lint": "./node_modules/.bin/eslint ."
@@ -51,6 +51,7 @@
   "dependencies": {
     "bignumber.js": "^5.0.0",
     "cross-env": "^5.0.5",
+    "docdash": "^1.1.1",
     "increase-memory-limit": "^1.0.3",
     "jquery-deferred": "^0.3.1",
     "libsodium-wrappers": "^0.7.2",

@@ -4,6 +4,8 @@
 
 JIFF is a JavaScript library for builing applications that rely on secure multi-party computation. JIFF is built to be highly flexible with a focus on usability, with the ability to be run in the browser, on mobile phones, or via node.js. JIFF is designed so that developers need not be familiar with MPC techniques or know the details of cryptographic protocols in order to build secure applications.
 
+# For Developers
+
 ## Requirements
 
 ### Server
@@ -83,6 +85,21 @@ The latest documentation can be viewed at on the [project page](https://multipar
 ./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json
 npm run-script gen-docs # shortcut
 ```
+### Where to Look in the Docs
+The documentation is separated into the distinct namespaces in JIFF:
+
+
+    ├─ jiff                   The exposed API for the client-side JIFF library, used to create a new JIFF instance
+    │  ├─ sharing_schemes     The default sharing protocols used internally by JIFF (Shamir Secret Sharing)
+    │  ├─ utils               Functions used internally by JIFF, but may be useful outside of the instance code (e.g. encryption/decryption)
+    ├─ jiff-instance          The interface defined by an instance of JIFF (created via `jiff.make_jiff()`)
+    │  │                        contains `share()` which secret-shares a value that can then be securely computed on,
+    │  │                        and `open()` which reveals the value of a secret
+    │  ├─ helpers             Mathematical helper functions (e.g. modulus) which are used internally
+    │  ├─ protocols           Functions used during computation and/or preprocessing. Extensions will likely add common functionality here.
+    ├─ SecretShare            Provides API to securely operate over shared values (e.g. multiplying numbers shared between parties).
+    │  │                        Operations are executed asynchronously and do not requre the developer to manage promises or synchronization.
+
 
 ## Running Tests
 
@@ -128,7 +145,14 @@ Run the bignumber test suite in the following way:
 npm run-script test-bignumber
 ```
 
-### Costs of Operations:
+## How to Contribute
+Check out our contribution guidelines and resources @ [contributing](CONTRIBUTING.md).
+
+# For Cryptographers
+
+## Security Model and Assumptions
+
+## Costs of Operations:
 Below is a table of the current costs of operations in the *base* jiff with no extensions:
 
 | Operation         | Rounds            | Total Messages                   | Preprocessing Rounds | Preprocessing Total Messages               | Dependenices |
@@ -163,9 +187,6 @@ Dependenices:
 6. constant division has one open sequenced with 4 parallel constant inequality checks and two multiplications.
 7. Secret XORs and ORs are equivalent to a single multiplication, constant XORs and ORs are free.
 
-
-## How to Contribute
-Check out our contribution guidelines and resources @ [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Information and Collaborators
 
