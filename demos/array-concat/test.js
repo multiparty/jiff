@@ -39,7 +39,7 @@ function generateInputs(party_count) {
 
   for (var i = 0; i < party_count; i++) {
     for (var j = 0; j < n; j++) {
-      inputs[i+1].push(generateRandomString(Math.floor(Math.random() * maximumStringLength)));
+      inputs[i+1].push(generateRandomString(Math.ceil(Math.random() * (maximumStringLength-1))));
     }
   }
   return inputs;

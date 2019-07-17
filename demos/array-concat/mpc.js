@@ -56,7 +56,6 @@
         }
 
         final_deferred.resolve(string);
-        console.log('string', string);
       });
     });
 
