@@ -40,21 +40,14 @@
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
 
-    var promise = jiff_instance.share_array(arr);
-    promise.then(function (shares) {
+    jiff_instance.share_array(arr).then(function (shares) {
       var result = [];
 
       for (var p = 1; p <= jiff_instance.party_count; p++) {
         result = result.concat(shares[p]);
       }
 
-      var promises = [];
-      for (var i = 0; i < result.length; i++) {
-        promises.push(jiff_instance.open(result[i]));
-      }
-
-      // Handle the results
-      Promise.all(promises).then(function (results) {
+      jiff_instance.open_ND_array(result).then(function (results) {
         // convert each opened number to a character
         // and add it to the final strings
         var string = '';
@@ -63,6 +56,7 @@
         }
 
         final_deferred.resolve(string);
+        console.log('string', string);
       });
     });
 
