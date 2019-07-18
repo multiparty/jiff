@@ -36,14 +36,14 @@
         "warn": false
       },
       "inputs": [
-        {"1": 160, "constant": 32},
-        {"1": -123, "constant": 3},
-        {"1": 186, "constant": -6},
-        {"1": -205, "constant": -5}
+        {"1": 1.6, "constant": 0.8},
+        {"1": -8, "constant": 2},
+        {"1": 6.6, "constant": -2.2},
+        {"1": -6.4, "constant": -3.2}
       ]
     },
     "*": {
-      "count": 5,
+      "count": 6,
       "parallel": 3,
       "options": {
         "Zp": "262139",
@@ -52,8 +52,9 @@
         "integer_digits": 3
       },
       "inputs": [
-        {"1": 311.2, "constant": 8},
-        {"1": 121.9, "constant": -12}
+        {"1": 311.2, "constant": 2},
+        {"1": 81.9, "constant": -12},
+        {"1": -63.5, "constant": -10}
       ]
     },
     "/": {
@@ -64,7 +65,10 @@
         "party_count": 3,
         "integer_digits": 2,
         "decimal_digits": 2
-      }
+      },
+      "inputs": [
+        {"1": 81.89 ,"constant": -11}
+      ]
     }
   }
 }

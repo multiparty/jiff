@@ -60,7 +60,10 @@
         "party_count": 3,
         "integer_digits": 2,
         "decimal_digits": 2
-      }
+      },
+      "inputs": [
+        {"1": 81.89 ,"constant": 11}
+      ]
     }
   }
 }
