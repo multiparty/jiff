@@ -1,9 +1,8 @@
 # What is Preprocessing?
-In general, MPC is much slower than standard computation - mostly due to communication costs between parties. While some operations are free (meaning they only rely on local computation), such as secure addition, other operations (e.g. secure multiplication) incur high communication costs. Specifically for multiplication, the protocol used in JIFF relies on helper values of a certain form, called beaver triples (a,b,c such that a\*b=c).
+In general, MPC is much slower than standard computation - mostly due to communication costs between parties. While some operations are free (meaning they only rely on local computation), such as secure addition, other operations (e.g. secure multiplication) incur high communication costs. Specifically for multiplication, the protocol used in JIFF relies on helper values of a certain form, called beaver triples (a,b,c such that a\*b=c). In JIFF, preprocessing of beaver triples is accomplished via multiplication with the BGW protocol.
 
-Preprocessing allows us to compute and distribute these values before the main phase of computation, which results in much lower communication costs during the online phase of a computation.
+While preprocessing still incurs communication costs, it can ideally be executed before data is ready to be shared or before all parties online, which leads to a faster online phase.
 
-While preprocessing still incurs communication costs, it can ideally be executed before data is ready to be shared or before all parties online, which stops the generation of beaver triples and other helper-values from becoming a bottleneck during the online-phase.
 
 # How to Use Preprocessing in JIFF
 The `jiff.preprocessing()` exists to preprocess any values needed for later computation. All preprocessing needs to know is which operations will be performed and how many times, so the programmer does not need to know what other protocols or values those depend on.
@@ -17,7 +16,6 @@ The preprocessing function takes many more optional parameters, but for our very
 jiff.finish_preprocessing();
 ```
 This is important for synchronization during the online-phase of computation, to ensure allparties are using the same pre-processed values for the same operations.
-
 Later, when we perform the secure division, any values that it relies on will be pulled from the table which stores preprocessed values:
 ```javascript
 // let's assume the number of inputs is public
@@ -31,7 +29,7 @@ In the simple example above, all parties are involved in preprocessing as well a
 
 For this example, let's imagine we have a large database of user preferences and we want to cluster users based on these, but without revealing any individuals' preferences. Additionally, users may change their preferences and we want to recompute the clusters every day. This type of constraint solving is likely to involve many comparisons and multiplications.
 
-Let's say some of the servers are always online, but others only come online to submit the updated user preferences and execute the constraint-solver. In this case we can have the group of servers that is always online perform all the necessary pre-processing before the other servers come online every day and then share the values as soon as they connect.
+Some of the servers might always be online, but others only come online to submit the updated user preferences and execute the constraint-solver. In this case we can have the group of servers that is always online perform all the necessary pre-processing before the other servers come online every day and then share the values as soon as they connect.
 ```javascript
 // define what operations we need to preprocess for, and how many of each
 var operations = {'smult': 100, 'slt': 100};
@@ -76,11 +74,11 @@ The other option is to have the server (which may also be a part of the computat
 ```javascript
 var jiff_instance = jiff.make_jiff(server_address, 'comp_id', {'crypto_provider': true} );
 ```
-If no operations were anticipated or preprocessed for, the server will be queried for anything that requires it. If some operations were specified for preprocessing, but later more operations were added and there are not enough preprocessed values, the server will be queried for any perations that happen after the parties have run out of preprocessed values.
+If no operations preprocessed for, the server will be queried for anything that requires it. If some operations were specified for preprocessing, but later more operations were added and there are not enough preprocessed values, the server will be queried for any operations that happen after the parties have run out of preprocessed values.
 
-While this allows you to get values such as beaver triples just-in-time, it also requires that you trust the coordinating server to generate these values fairly and honestly, which may or may not be part of your logistical assumptions. It also adds communication cost during the main phase of computation.
+While this allows you to get values such as beaver triples just-in-time, it also requires that you trust the coordinating server to generate these values fairly and honestly, which may or may not be part of your logistical assumptions. It is recommended that you pre-process for all operations that you anticipate performing.
+It also requires extra communication with the server during the main phase of computation.
 
-## Securely Generating Just-In-Time values
 
 # Which Operations Require Preprocessing
 As mentioned earlier, not all operations on secret shares require pre-processing. For example, secure addition and secure subtraction require only local computation and don't need any helper values. Below is a table of all JIFF secret-share protocols that require preprocessing:
