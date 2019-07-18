@@ -1,6 +1,6 @@
 In this tutorial, we'll look at the implemention of searching with two parties.
 
-##Problem Statement :
+## Problem Statement :
 Suppose **party 1** has an array of values and **party 2** has a value.
 We want to find out whether **party 1**'s value is present in **party 2**'s array, without either party knowing each others inputs.
 -------------------------------------------------------------------------
