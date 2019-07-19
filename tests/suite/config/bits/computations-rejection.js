@@ -39,7 +39,7 @@ baseComputations.openHook = function (jiff_instance, test, share) {
 baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
   var lower = expectedResult['lower'] || 0;
   var upper = expectedResult['upper'] || Zp;
-  return (mpcResult >= lower) && (mpcResult < upper);
+  return (mpcResult >= lower) && (mpcResult < upper) && !Number.isNaN(mpcResult) && typeof(mpcResult) === 'number' && mpcResult !== Infinity;
 };
 
 exports.compute = function (jiff_instance, test, inputs, testParallel, done, testConfig) {
