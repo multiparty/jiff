@@ -1,8 +1,3 @@
-
-// Flags success/failure
-var errors = [];
-var successes = [];
-
 // Use base computation but override interpreters.
 var baseComputations = require('../../computations.js');
 
@@ -163,9 +158,26 @@ baseComputations.shareHook = async function (jiff_instance, test, testInputs, in
   if (testConfig['share'] === 'share_bits') {
     var bitLength = testConfig['options']['max'] || jiff_instance.Zp;
     bitLength = bitLength.toString(2).length;
-    shares = jiff_instance.protocols.bits.share_bits(input, bitLength, threshold, receivers, senders);
+    shares = jiff_instance.protocols.bits.share_bits(input, bitLength, threshold, receivers, senders, jiff_instance.Zp, null, ratios);
   }
   return shares;
+};
+
+baseComputations.shareParameters = function (jiff_instance, test, testInputs) {
+  var input = testInputs[jiff_instance.id];
+
+  // Figure out who is sharing
+  var senders = [];
+  for (var p in testInputs) {
+    if (testInputs.hasOwnProperty(p) && p != 'constant') {
+      senders.push(/^\d+$/.test(p.toString()) ? parseInt(p) : p);
+    }
+  }
+  senders.sort();
+
+  // Figure out threshold
+  var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
+  return {input: input, threshold: threshold, senders: senders, receivers: null, constant: testInputs['constant']};
 };
 
 // Opening bits
@@ -212,13 +224,14 @@ baseComputations.singleTest = async function (jiff_instance, test, testInputs) {
     shares['constant'] = shareParameters.constant;
 
     // Compute in the Open
-    var actualResult = await baseComputations.singleCompute(jiff_instance, shareParameters, test, testInputs[0], baseComputations.openInterpreter);
-
+    //var actualResult = await baseComputations.singleCompute(jiff_instance, shareParameters, test, testInputs, baseComputations.openInterpreter);
+    //console.log(actualResult);
     // Compute under MPC
     var mpcResult = await baseComputations.singleCompute(jiff_instance, shareParameters, test, shares, baseComputations.mpcInterpreter);
     if (mpcResult == null) {
       return null;
     }
+    //console.log(jiff_instance.id, 'mpc', mpcResult.length);
 
     // Open
     mpcResult = await baseComputations.openHook(jiff_instance, test, mpcResult);
@@ -226,11 +239,11 @@ baseComputations.singleTest = async function (jiff_instance, test, testInputs) {
     // Verify result
     // Assert both results are equal
     if (!baseComputations.verifyResultHook(test, mpcResult, actualResult)) {
-      errors.push(baseComputations.errorMessage(jiff_instance, test, testInputs[0], shareParameters, mpcResult, actualResult));
+      errors.push(baseComputations.errorMessage(jiff_instance, test, testInputs, shareParameters, mpcResult, actualResult));
       return false;
     }
 
-    successes.push(baseComputations.successMessage(jiff_instance, test, testInputs[0], shareParameters, mpcResult, actualResult));
+    successes.push(baseComputations.successMessage(jiff_instance, test, testInputs, shareParameters, mpcResult, actualResult));
   } catch (err) {
     console.log(err);
     errors.push(err);

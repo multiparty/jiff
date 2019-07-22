@@ -1,6 +1,3 @@
-// Acquire Zp from the jiff instance
-var Zp;
-
 // Flags success/failure
 var errors = [];
 var successes = [];

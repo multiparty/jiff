@@ -49,6 +49,17 @@ baseGeneration.generateComparisonInputs = function (test, count, options) {
   return inputs;
 }
 
+var oldConstantComparisonInputs = baseGeneration.generateConstantComparisonInputs;
+baseGeneration.generateConstantComparisonInputs = function (test, count, options) {
+  var inputs = [];
+  var arithInputs = oldConstantComparisonInputs(test, count, options);
+  var ratioInputs = baseGeneration.generateShareRatios(test,count,options);
+  for (var t = 0; t < count; t++) {
+    inputs.push([arithInputs[t], ratioInputs[t]]);
+  }
+  return inputs;
+}
+
 
 baseGeneration.generateShareInputs = function (test, count, options) {
   var all_parties = [];

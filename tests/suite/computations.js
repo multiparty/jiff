@@ -191,11 +191,9 @@ exports.singleCompute = function (jiff_instance, shareParameters, test, values, 
 
     // Compute
     var result = func(values[indices[0]], values[indices[1]]);
-
     //for (var i = 2; i < indices.length; i++) {
     //  result = func(result, values[indices[i]]);
     //}
-
     return result;
   } catch (err) {
     console.log(err);
