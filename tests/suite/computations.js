@@ -164,7 +164,7 @@ exports.shareParameters = function (jiff_instance, test, testInputs) {
   // Figure out who is sharing
   var senders = [];
   for (var p in testInputs) {
-    if (testInputs.hasOwnProperty(p) && p !== 'constant') {
+    if (testInputs.hasOwnProperty(p) && p !== 'constant' && !p.startsWith('_')) {
       senders.push(/^\d+$/.test(p.toString()) ? parseInt(p) : p);
     }
   }
@@ -184,7 +184,9 @@ exports.singleCompute = function (jiff_instance, shareParameters, test, values, 
     var indices = [];
     for (var p in values) {
       if (values.hasOwnProperty(p) && values[p] != null) {
-        indices.push(p);
+        if (!p.toString().startsWith('_')) {
+          indices.push(p);
+        }
       }
     }
     indices.sort();
