@@ -44,8 +44,7 @@ exports.mod = function (x, y) {
 // How to interpret MPC operations
 exports.mpcInterpreter = {
   '+': function (operand1, operand2) {
-    var result = operand1.add(operand2);
-    return result;
+    return operand1.add(operand2);
   },
   '-': function (operand1, operand2) {
     return operand1.sub(operand2);

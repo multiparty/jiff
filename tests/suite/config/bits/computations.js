@@ -215,11 +215,10 @@ baseComputations.singleTest = async function (jiff_instance, test, testInputs) {
   try {
     // Share for MPC
     var shareParameters = baseComputations.shareParameters(jiff_instance, test, testInputs);
-    var shares = await baseComputations.shareHook(jiff_instance, test, testInputs, shareParameters.input, shareParameters.threshold, shareParameters.receivers, shareParameters.senders, {1: 2, 2: 2, 3: 1, 4: 2});
+    var shares = await baseComputations.shareHook(jiff_instance, test, testInputs, shareParameters.input, shareParameters.threshold, shareParameters.receivers, shareParameters.senders, {1: 2, 2: 2, 3: 1});
     if (shares == null) {
       return null;
     }
-
     shares['constant'] = shareParameters.constant;
 
     // Compute in the Open

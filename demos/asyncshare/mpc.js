@@ -24,20 +24,24 @@
   /**
    * The MPC computation
    */
-  exports.compute = function (input, jiff_instance) {
+  exports.compute = async function (input, jiff_instance) {
     if (jiff_instance == null) {
       jiff_instance = saved_instance;
     }
 
     // The MPC implementation should go *HERE*
-    var shares = jiff_instance.share(input);
+    var bitLength = 9;
+    var shares = jiff_instance.protocols.bits.share_bits(input, bitLength, null, null, null, null, null, {1: 2, 2: 2, 3: 1});
     var sum = shares[1];
-    //for (var i = 2; i <= jiff_instance.party_count; i++) {
-    //  sum = sum.smult(shares[i]);
-    //}
-    sum = sum.cdiv(2);
+    for (var i = 2; i <= jiff_instance.party_count; i++) {
+      sum = sum[0].jiff.protocols.bits.sadd(sum, shares[i]);
+    }
+
+
+
 
     // Return a promise to the final output(s)
-    return jiff_instance.open(sum);
+    var opensum = sum[0].jiff.protocols.bits.bit_composition(sum);
+    return opensum.open();
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));

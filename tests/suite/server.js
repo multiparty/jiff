@@ -1,5 +1,4 @@
 var extensions = process.env['JIFF_TEST_NAME'];
-console.log(extensions);
 
 var express = require('express');
 var app = express();
@@ -25,10 +24,9 @@ if (extensions != null && extensions.indexOf('restAPI') > -1) {
   app.use(bodyParser.json());
   jiff_instance.apply_extension(jiffRestAPIServer, options);
 }
-if (extensions != null && extensions.indexOf('asyncShare') > -1) {
-  console.log('async extension server');
-  jiff_instance.apply_extension(jiffAsyncShareServer, options);
-}
+//if (extensions != null && extensions.indexOf('asyncShare') != null) {
+//  jiff_instance.apply_extension(jiffAsyncShareServer, options);
+//}
 
 // Serve static files.
 app.use('/demos', express.static('demos'));
