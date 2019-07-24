@@ -23,96 +23,6 @@
     return saved_instance;
   };
 
-  /** Shuffle using Bubblesort
-   * Reorders shares in array by sorting (using bubblesort) generated y shares
-   */
-
-  function bubble-shuffle(arr) {
-    for (var i = 0; i < arr.length; i++) {
-      for (var j = 0; j < (arr.length - i - 1); j++) {
-        var a = arr[j][1];
-        var b = arr[j+1][1];
-        var a2 = arr[j][0];
-        var b2 = arr[j+1][0];
-        var cmp = a.slt(b);
-
-        // swap Y values
-        arr[j][1] = cmp.if_else(a, b);
-        arr[j+1][1] = cmp.if_else(b, a);
-        // swap X values
-        arr[j][0] = cmp.if_else(a2, b2);
-        arr[j+1][0] = cmp.if_else(b2, a2);
-      }
-    }
-
-    // Throw away Y values
-    for (var i = 0; i < arr.length; i++){
-      arr[i] = arr[i][0];
-    }
-    return arr;
-  }
-
-  /** Shuffle using Mergesort
-   * Reorders shares in array by sorting (using bubblesort) generated y shares
-   */
-
-  function merge-shuffle(arr){
-    oddEvenSort(arr, 0, arr.length);
-
-    // Throw away Y values
-    for (var i = 0; i < arr.length; i++){
-      arr[i] = arr[i][0];
-    }
-    return arr;
-  }
-
-  function oddEvenSort(arr, lo, n) {
-    if (n > 1) {
-      var m = Math.floor(n/2);
-      oddEvenSort(arr, lo, m);
-      oddEvenSort(arr, lo+m, m);
-      oddEvenMerge(arr, lo, n, 1);
-    }
-  }
-
-  // lo: lower bound of indices, n: number of elements, r: step
-  function oddEvenMerge(arr, lo, n, r) {
-    var m = r * 2;
-    if (m < n) {
-      oddEvenMerge(arr, lo, n, m);
-      oddEvenMerge(arr, lo+r, n, m);
-
-      for (var i = (lo+r); (i+r)<(lo+n); i+=m)  {
-        compareExchange(arr, i, i+r);
-      }
-    } else {
-      compareExchange(arr,lo,lo+r);
-    }
-  }
-
-  function compareExchange(arr, i, j) {
-    if (j >= arr.length || i >= arr.length) {
-      return;
-    }
-
-    var a = arr[i][1];
-    var b = arr[j][1];
-    var a2 = arr[i][0];
-    var b2 = arr[j][0];
-
-    var cmp = a.lt(b);
-
-    // swap Y values
-    arr[i][1] = cmp.if_else(a, b);
-    arr[j][1] = cmp.if_else(b, a);
-    // swap X values
-    arr[i][0] = cmp.if_else(a2,b2);
-    arr[j][0] = cmp.if_else(b2,a2);
-  }
-
-  /**
-   * The MPC computation
-   */
   exports.compute = function (input, jiff_instance) {
     if (jiff_instance == null) {
       jiff_instance = saved_instance;
@@ -124,31 +34,17 @@
     // Share the arrays
     jiff_instance.share_array(input, input.length).then(function (shares) {
       // sum all shared input arrays element wise
-
-      /*var array = shares[1];
+      var array = shares[1];
       for (var p = 2; p <= jiff_instance.party_count; p++) {
         for (var i = 0; i < array.length; i++) {
           array[i] = array[i].sadd(shares[p][i]);
         }
       }
-      */
-      var array = [];
-      for (var p = 1; p <= jiff_instance.party_count; p++){
-        for (var i = 0; i < (shares[p].length); i++) {
-          array.push(shares[p][i]);
-        }
-      }
 
-      var arr2 = jiff_instance.server_generate_and_share({count: array.length});
+      // shuffle new array
+      var shuffled = shuffle(array, jiff_instance);
 
-      for (var i = 0; i < array.length; i++){
-        array[i] = [array[i],arr2[i]]
-      }
-
-      // shuffle the new array
-      var shuffled = bubble-shuffle(array);
-      // var shuffled = merge-shuffle(array);
-
+      // Open the array
       var allPromises = [];
       for (var k = 0; k < shuffled.length; k++) {
         allPromises.push(jiff_instance.open(shuffled[k]));
@@ -160,10 +56,26 @@
     });
 
     return final_promise;
-
-    // The MPC implementation should go *HERE*
-
-    // Return a promise to the final output(s)
-    /// return jiff_instance.open(result);
   };
+
+  function shuffle(array, jiff_instance) {
+    for (var i = array.length - 1; i > 0; i--) {
+      var bits = jiff_instance.protocols.bits.rejection_sampling(null, i+1);
+      var random = jiff_instance.protocols.bits.bit_composition(bits);
+      array = search_and_swap(array, random, i);
+    }
+
+    return array;
+  }
+
+  function search_and_swap(array, random, i) {
+    for (var j = 0; j < array.length; j++) {
+      var c1 = array[j];
+      var cmp = random.ceq(j);
+      array[j] = cmp.if_else(array[i], c1);
+      array[i] = cmp.if_else(c1, array[i]);
+    }
+    return array;
+  }
+
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
