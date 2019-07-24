@@ -22,12 +22,12 @@ $ npm install jiff-mpc
 
 
 # Setting up the Server
-We need to set up a server to pass messages between all the friends. The server hosts an `http` page and a message router. When computation parties need to communicate, they send their messages to the server, which forwards them to the final recipient. 
+We need to set up a server to pass messages between all the friends. The server hosts an `http` page and a message router. When computation parties need to communicate, they send their messages to the server, which forwards them to the final recipient.
 
 This communication logic is all defined in JIFF's server code. To run a computation, we need to set up an `http` server and initialize a JIFF instance.
-This can be defined in a single file, which we call `server.js`. 
+This can be defined in a single file, which we call `server.js`.
 
-The `express` package provides a web framework, which we use over `http`. 
+The `express` package provides a web framework, which we use over `http`.
 ```javascript
 var express = require('express');
 var app = express();
@@ -61,8 +61,8 @@ We also need to tell the client where the JIFF client code is kept.
 
 ```javascript
 // TODO: is this necessary if we're using npm?
-jiff = require('../../lib/jiff-client');
-jiff_instance = jiff.make_jiff('localhost:8080', 'vacation');
+var jiff = require('../../lib/jiff-client');
+var jiff_instance = jiff.make_jiff('localhost:8080', 'vacation');
 ```
 
 ## Implementing our vacation function
@@ -141,32 +141,37 @@ var my_jiff_instance = jiff.make_jiff('localhost:8080', 'vacation', options);
 And that's it!
 When we connect to the server, our `onConnect` function will automatically execute. We'll send shares to the other parties as they connect, jointly run our computation and get the result, then disconnect from the server.
 
-Remember you'll need someone else (or another shell) to run `party.js` as well, since it wouldn't be multi-party computation with just one person!
+Remember you'll need someone else (or another shell) to run `party.js` as well, since it wouldn't be multi-party computation with just one person! The party.js file below expects 3 people to participate.
 
 ## Complete Files
 ### party.js
 ```javascript
-jiff = require('../../lib/jiff-client');
+var jiff = require('../lib/jiff-client');
 
 var my_budget = parseInt(process.argv[2], 10);
+console.log(my_budget);
 
-var options = {'party_count': 3};
-options.onConnect = function(my_jiff_instance) {
+var options = {party_count: 3};
+options.onConnect = function (my_jiff_instance) {
 
   var shares = my_jiff_instance.share(my_budget);
 
-  var total_budget = shares[1].add(shares[2]);
+  var total_budget = shares[1].add(shares[2]).add(shares[3]);
+  var is_enough = total_budget.gteq(5000);
   var result = my_jiff_instance.open(is_enough);
 
   result.then(function (result) {
-    if (result) console.log("We're going on vacation!");
-    else console.log("We can't afford to go :( ");
+    if (result) {
+      console.log("We're going on vacation!");
+    } else {
+      console.log("We can't afford to go :( ");
+    }
 
-    jiff_instance.disconnect();
+    my_jiff_instance.disconnect();
   });
 };
 
-var my_jiff_instance = jiff.make_jiff('localhost:8080', 'vacation', options);
+var my_jiff_instance = jiff.make_jiff('http://localhost:8080', 'vacation', options);
 ```
 
 ### server.js
@@ -175,10 +180,6 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 
-// Configure app to serve static files
-app.use('/demos', express.static('demos'));
-app.use('/lib', express.static('lib'));
-app.use('/lib/ext', express.static('lib/ext'));
 
 // Set up server jiff instance
 require('../../lib/jiff-server').make_jiff(http, { logs:true });
