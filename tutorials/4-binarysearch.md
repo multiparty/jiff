@@ -7,7 +7,7 @@ We want to find out whether **party 1**'s value is present in **party 2**'s arra
 Let's start with the set up.
 
 # Set up a server
-We're going to stick with our simple server-as-message-router model from [before](../1-intro.md). The `express` package provides a web framework, which we want to use over `http`. This code goes in the file `server.js`.
+We're going to stick with our simple server-as-message-router model from [before](jiff/tutorials/1-intro.md). The `express` package provides a web framework, which we want to use over `http`. This code goes in the file `server.js`.
 
 ```javascript
 var express = require('express');
