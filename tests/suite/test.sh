@@ -16,6 +16,8 @@ else
   echo "====================" >> "${logs}"
   echo "NEW TEST $(date)" >> "${logs}"
   echo "====================" >> "${logs}"
+  echo "test name ${JIFF_TEST_NAME}"
+  echo "test suite ${JIFF_TEST_SUITE}"
 
   node tests/suite/server.js >> "${logs}" &
 

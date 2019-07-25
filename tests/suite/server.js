@@ -1,4 +1,8 @@
-var extensions = process.env['JIFF_TEST_NAME'];
+var name = process.env['JIFF_TEST_NAME'];
+var suite = process.env['JIFF_TEST_SUITE'];
+// JIFF test configuration
+var config = require('./config/' + name + '/' + suite + '.json');
+var extensions = config['suiteConf']['extensions'];
 
 var express = require('express');
 var app = express();

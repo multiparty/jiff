@@ -10,13 +10,16 @@ echo "====================" >> "${logs}"
 echo "NEW TEST $(date)" >> "${logs}"
 echo "====================" >> "${logs}"
 
-node tests/suite/server.js >> "${logs}" &
-
 EXIT_CODE=0
 i=0
 for f in tests/suite/config/${JIFF_TEST_NAME}/*.json; do
     FULLNAME=$(basename "$f")
     export JIFF_TEST_SUITE="${FULLNAME%.json}"
+
+    echo "test name ${JIFF_TEST_NAME}"
+    echo "test suite ${JIFF_TEST_SUITE}"
+
+    node tests/suite/server.js >> "${logs}" &
 
     if [ "$2" == "parallel" ]
     then
@@ -31,6 +34,8 @@ for f in tests/suite/config/${JIFF_TEST_NAME}/*.json; do
           EXIT_CODE=$CODE
         fi
     fi
+
+    kill $(ps aux | grep "node tests/suite/server\.js" | awk '{ print $2}')
 done
 
 if [ "$2" == "parallel" ]
