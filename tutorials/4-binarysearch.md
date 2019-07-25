@@ -1,13 +1,13 @@
-In this tutorial, we'll look at the implemention of searching with two parties.
+In this tutorial, we'll look at implementing searching with two parties. <br>
+Let's say **party 1** inputs an array of values and **party 2** inputs a value to search for. They both want to find out whether the value exists in the array but neither party is willing to reveal its inputs.
 
-## Problem Statement :
-Suppose **party 1** has an array of values and **party 2** has a value.
-We want to find out whether **party 1**'s value is present in **party 2**'s array, without either party knowing each others inputs.
--------------------------------------------------------------------------
-Let's start with the set up.
-
+To solve this, we can search under MPC and without revealing parties' inputs, return:<br> 
+- 1 if the value exists in party 1's array
+- 0 if the value is not found in the array.
+-----------------------------------------------------------------------------
+Let's get started with the set up first.
 # Set up a server
-We're going to stick with our simple server-as-message-router model from [before](multiparty/jiff/tutorials/1-intro.md). The `express` package provides a web framework, which we want to use over `http`. This code goes in the file `server.js`.
+We're going to stick with our simple server-as-message-router model from [before](/multiparty/jiff/tutorials/1-intro.md). The `express` package provides a web framework, which we want to use over `http`. This code goes in the file `server.js`.
 
 ```javascript
 var express = require('express');
