@@ -1,4 +1,9 @@
-var extensions = process.env['JIFF_TEST_NAME'];
+var name = process.env['JIFF_TEST_NAME'];
+var suite = process.env['JIFF_TEST_SUITE'];
+// JIFF test configuration
+var config = require('./config/' + name + '/' + suite + '.json');
+// Get extensions
+var extensions = config['suiteConf']['extensions'];
 
 var express = require('express');
 var app = express();
@@ -24,7 +29,7 @@ if (extensions != null && extensions.indexOf('restAPI') > -1) {
   app.use(bodyParser.json());
   jiff_instance.apply_extension(jiffRestAPIServer, options);
 }
-if (extensions != null && extensions.indexOf('asyncShare') != null) {
+if (extensions != null && extensions.indexOf('asyncShare') > -1) {
   jiff_instance.apply_extension(jiffAsyncShareServer, options);
 }
 
