@@ -22,12 +22,21 @@ var Zp = null;
  */
 function generateInputs(party_count) {
   var inputs = {};
+  for (var i = 1; i <= party_count; i++) {
+    inputs[i] = [];
+  }
 
-  // Generate test cases one at a time
+
   for (var t = 0; t < n; t++) {
-    /*
-     * INPUT GENERATION CODE GOES HERE
-     */
+    var length = Math.floor(Math.random() * maxLength) + 1;
+    for (var p = 1; p <= party_count; p++) {
+      var arr = [];
+      while (arr.length < length) {
+        arr.push(Math.floor(Math.random() * maxElement / party_count));
+      }
+
+      inputs[p][t] = arr;
+    }
   }
 
   return inputs;
@@ -42,11 +51,22 @@ function generateInputs(party_count) {
 function computeResults(inputs) {
   var results = [];
 
-  for (var j = 0; j < n; j++) {
-    /*
-     * COMPUTING THE RESULT IN THE OPEN CODE GOES HERE
-     */
+  for (var t = 0; t < n; t++) {
+    var array = inputs[1][t].slice(); // Shallow copy, so that when modifying things are not changed!
+
+    for (var p = 2; p <= party_count; p++) {
+      var tmp = inputs[p][t];
+      for (var i = 0; i < array.length; i++) {
+        array[i] += tmp[i];
+      }
+    }
+
+    array = array.sort(function (a, b) {
+      return a - b;
+    });
+    results.push(array);
   }
+
   return results;
 }
 
@@ -89,6 +109,11 @@ describe('Test', function () {
 
           return;
         }
+
+        // Sort the testResults
+        testResults = testResults.sort(function (a, b) {
+          return a - b;
+        });
 
         // If we reached here, it means we are done
         count++;

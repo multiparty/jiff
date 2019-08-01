@@ -59,13 +59,21 @@
   };
 
   function shuffle(array, jiff_instance) {
-    for (var i = array.length - 1; i > 0; i--) {
-      var bits = jiff_instance.protocols.bits.rejection_sampling(null, i+1);
+    var result = [];
+    for (var i = array.length-1; i > 0; i--) {
+      array = array.slice(0, i+1);
+
+      var bits = jiff_instance.protocols.bits.rejection_sampling(0, i+1);
       var random = jiff_instance.protocols.bits.bit_composition(bits);
-      array = search_and_swap(array, random, i);
+      array = binary_swap(array, random, array[i]);
+      var tmp = array[1];
+      array = array[0];
+      array[i] = tmp;
+      result[i] = array[i];
     }
 
-    return array;
+    result[0] = array[0];
+    return result;
   }
 
   function search_and_swap(array, random, i) {
@@ -76,6 +84,42 @@
       array[i] = cmp.if_else(c1, array[i]);
     }
     return array;
+  }
+
+  function binary_swap(array, element, last) {
+    if (array.length === 1) {
+      var tmp = array[0];
+      array[0] = last;
+      return [array, tmp];
+    }
+
+    // comparison
+    var mid = Math.floor(array.length/2);
+    var cmp = element.clt(mid);
+
+
+    // Slice array in half, choose slice depending on cmp
+    var nArray = [];
+    for (var i = 0; i < mid; i++) {
+      var c1 = array[i];
+      var c2 = array[mid+i];
+      nArray[i] = cmp.if_else(c1, c2);
+    }
+
+    // watch out for off by 1 errors if length is odd.
+    if (2*mid < array.length) {
+      nArray[mid] = array[2*mid];
+    }
+
+    element = cmp.if_else(element, element.csub(mid));
+    var result = binary_swap(nArray, element, last);
+
+    for (var i = 0; i < mid; i++) {
+      array[i] = cmp.if_else(result[0][i], array[i]);
+      array[mid+i] = cmp.if_else(array[mid+i], result[0][i]);
+    }
+
+    return [array, result[1]];
   }
 
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
