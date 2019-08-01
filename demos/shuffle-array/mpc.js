@@ -66,6 +66,7 @@
       var bits = jiff_instance.protocols.bits.rejection_sampling(0, i+1);
       var random = jiff_instance.protocols.bits.bit_composition(bits);
       array = binary_swap(array, random, array[i]);
+      // swap element found into last position of array
       var tmp = array[1];
       array = array[0];
       array[i] = tmp;
@@ -110,7 +111,7 @@
     if (2*mid < array.length) {
       nArray[mid] = array[2*mid];
     }
-
+    // change element to search for depending on array split decision
     element = cmp.if_else(element, element.csub(mid));
     var result = binary_swap(nArray, element, last);
 
