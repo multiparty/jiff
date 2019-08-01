@@ -105,10 +105,10 @@ describe('Test', function () {
 
           Promise.all(promises).then(function (parallelResults) {
             // Sort the testResults
-            parallelResults = parallelResults.sort(function (a, b) {
-              return a - b;
-            });
             for (var t = 0; t < parallelResults.length; t++) {
+              parallelResults[t] = parallelResults[t].sort(function (a, b) {
+                return a - b;
+              });
               testResults.push(parallelResults[t]);
             }
 
