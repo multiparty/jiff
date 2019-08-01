@@ -31,7 +31,6 @@ function generateInputs(party_count) {
     inputs[i] = [];
   }
 
-
   for (var t = 0; t < n; t++) {
     var length = Math.floor(Math.random() * maxLength) + 1;
     for (var p = 1; p <= party_count; p++) {
@@ -105,6 +104,10 @@ describe('Test', function () {
           }
 
           Promise.all(promises).then(function (parallelResults) {
+            // Sort the testResults
+            parallelResults = parallelResults.sort(function (a, b) {
+              return a - b;
+            });
             for (var t = 0; t < parallelResults.length; t++) {
               testResults.push(parallelResults[t]);
             }
@@ -114,11 +117,6 @@ describe('Test', function () {
 
           return;
         }
-
-        // Sort the testResults
-        testResults = testResults.sort(function (a, b) {
-          return a - b;
-        });
 
         // If we reached here, it means we are done
         count++;
