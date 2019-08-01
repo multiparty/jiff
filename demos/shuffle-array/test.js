@@ -8,7 +8,12 @@ var showProgress = true;
 var party_count = 3;
 var parallelismDegree = 5; // Max number of test cases running in parallel
 var n = 10; // Number of test cases in total
-var Zp = null;
+
+var maxElement = 13;
+var maxLength = 10;
+
+var showProgress = true;
+var Zp = 13;
 
 // Parameters specific to this demo
 /* PUT PARAMETERS HERE */
