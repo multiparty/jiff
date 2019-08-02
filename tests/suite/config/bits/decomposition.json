@@ -3,7 +3,6 @@
              "decomposition-open-2-15485867", "decomposition-open-3-15485867", "decomposition-open-5-2039" ],
   "suiteConf": {
     "port": 3001,
-    "extensions" : ["asyncShare"],
     "generation": {
       "file": "config/bits/generation.js",
       "function": "generateDecomposition"

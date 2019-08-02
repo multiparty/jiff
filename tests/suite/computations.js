@@ -238,7 +238,7 @@ exports.singleTest = async function (jiff_instance, test, testInputs) {
     errors.push(err);
     return false;
   }
-  
+
   return true;
 };
 

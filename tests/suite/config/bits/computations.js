@@ -3,10 +3,6 @@ var baseComputations = require('../../computations.js');
 
 var testConfig;
 
-// Flags success/failure
-var errors = [];
-var successes = [];
-
 // How to interpret non-MPC operations
 baseComputations.openInterpreter = {
   'decomposition': function (operand1) {
@@ -146,10 +142,10 @@ baseComputations.mpcInterpreter = {
 };
 
 // Sharing bits
-baseComputations.shareHook = async function (jiff_instance, test, testInputs, input, threshold, receivers, senders, ratios) {
+baseComputations.shareHook = async function (jiff_instance, test, testInputs, input, threshold, receivers, senders) {
   var shares = {};
   if (testConfig['share'] == null || testConfig['share'] === 'decomposition') {
-    shares = jiff_instance.share(input, threshold, receivers, senders, jiff_instance.Zp, null, ratios);
+    shares = jiff_instance.share(input, threshold, receivers, senders);
     var i, pid;
     for (i = 0; i < senders.length; i++) {
       pid = senders[i];
@@ -162,7 +158,7 @@ baseComputations.shareHook = async function (jiff_instance, test, testInputs, in
   if (testConfig['share'] === 'share_bits') {
     var bitLength = testConfig['options']['max'] || jiff_instance.Zp;
     bitLength = bitLength.toString(2).length;
-    shares = jiff_instance.protocols.bits.share_bits(input, bitLength, threshold, receivers, senders, jiff_instance.Zp, null, ratios);
+    shares = jiff_instance.protocols.bits.share_bits(input, bitLength, threshold, receivers, senders);
   }
 
   if (testConfig['share'] === 'share_bits_lengths') {
@@ -173,7 +169,7 @@ baseComputations.shareHook = async function (jiff_instance, test, testInputs, in
       if (bitLength == null) {
         bitLength = input.toString(2).length;
       }
-      shares[sender] = jiff_instance.protocols.bits.share_bits(input, bitLength, threshold, receivers, [sender], jiff_instance.Zp, null, ratios)[sender];
+      shares[sender] = jiff_instance.protocols.bits.share_bits(input, bitLength, threshold, receivers, [sender])[sender];
     }
   }
   return shares;
@@ -209,44 +205,6 @@ baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
   }
 
   return (mpcResult.toString() === expectedResult.toString());
-};
-
-baseComputations.singleTest = async function (jiff_instance, test, testInputs) {
-  try {
-    // Share for MPC
-    var shareParameters = baseComputations.shareParameters(jiff_instance, test, testInputs);
-    var shares = await baseComputations.shareHook(jiff_instance, test, testInputs, shareParameters.input, shareParameters.threshold, shareParameters.receivers, shareParameters.senders, {1: 2, 2: 2, 3: 1});
-    if (shares == null) {
-      return null;
-    }
-    shares['constant'] = shareParameters.constant;
-
-    // Compute in the Open
-    var actualResult = await baseComputations.singleCompute(jiff_instance, shareParameters, test, testInputs, baseComputations.openInterpreter);
-
-    // Compute under MPC
-    var mpcResult = await baseComputations.singleCompute(jiff_instance, shareParameters, test, shares, baseComputations.mpcInterpreter);
-    if (mpcResult == null) {
-      return null;
-    }
-
-    // Open
-    mpcResult = await baseComputations.openHook(jiff_instance, test, mpcResult);
-
-    // Verify result
-    // Assert both results are equal
-    if (!baseComputations.verifyResultHook(test, mpcResult, actualResult)) {
-      errors.push(baseComputations.errorMessage(jiff_instance, test, testInputs, shareParameters, mpcResult, actualResult));
-      return false;
-    }
-
-    successes.push(baseComputations.successMessage(jiff_instance, test, testInputs, shareParameters, mpcResult, actualResult));
-  } catch (err) {
-    console.log(err);
-    errors.push(err);
-    return false;
-  }
-  return true;
 };
 
 // Default Computation Scheme
