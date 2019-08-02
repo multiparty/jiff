@@ -65,7 +65,7 @@ function computeResults(inputs) {
       }
     }
 
-    array = array.sort(function (a, b) {
+    array.sort(function (a, b) {
       return a - b;
     });
     results.push(array);
@@ -106,7 +106,7 @@ describe('Test', function () {
           Promise.all(promises).then(function (parallelResults) {
             // Sort the testResults
             for (var t = 0; t < parallelResults.length; t++) {
-              parallelResults[t] = parallelResults[t].sort(function (a, b) {
+              parallelResults[t].sort(function (a, b) {
                 return a - b;
               });
               testResults.push(parallelResults[t]);
@@ -129,6 +129,9 @@ describe('Test', function () {
           var msg = 'Party: ' + jiff_instance.id + '. inputs: [' + ithInputs + ']';
 
           // assert results are accurate
+          //var sortedResults = testResults[i].sort(function (a,b) {
+          //  return a - b;
+          //});
           try {
             assert.deepEqual(testResults[i].toString(), realResults[i].toString(), msg);
           } catch (assertionError) {

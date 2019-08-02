@@ -60,11 +60,13 @@
 
   function shuffle(array, jiff_instance) {
     var result = [];
-    for (var i = array.length-1; i > 0; i--) {
+    var n = array.length-1;
+    for (var i = n; i > 0; i--) {
       array = array.slice(0, i+1);
 
       var bits = jiff_instance.protocols.bits.rejection_sampling(0, i+1);
       var random = jiff_instance.protocols.bits.bit_composition(bits);
+
       array = binary_swap(array, random, array[i]);
       // swap element found into last position of array
       var tmp = array[1];
@@ -118,6 +120,10 @@
     for (var i = 0; i < mid; i++) {
       array[i] = cmp.if_else(result[0][i], array[i]);
       array[mid+i] = cmp.if_else(array[mid+i], result[0][i]);
+    }
+
+    if (2*mid < array.length) {
+      array[array.length-1] = cmp.if_else(array[array.length-1], result[0][mid]);
     }
 
     return [array, result[1]];
