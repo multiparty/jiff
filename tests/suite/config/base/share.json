@@ -31,7 +31,7 @@
       }
     },
     "share4": {
-      "count": 80,
+      "count": 50,
       "parallel": 20,
       "options": {
         "Zp": 2039,
@@ -39,16 +39,16 @@
       }
     },
     "share5": {
-      "count": 50,
-      "parallel": 20,
+      "count": 30,
+      "parallel": 15,
       "options": {
         "Zp": 2039,
         "party_count": 5
       }
     },
     "share10": {
-      "count": 40,
-      "parallel": 15,
+      "count": 10,
+      "parallel": 5,
       "options": {
         "Zp": 2039,
         "party_count": 10
@@ -79,7 +79,7 @@
       }
     },
     "reshare-parties5": {
-      "count": 100,
+      "count": 50,
       "parallel": 20,
       "options": {
         "Zp": 2039,

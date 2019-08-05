@@ -56,8 +56,9 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
 
   return {
     operation: 'if_else',
-    count: inputs.length,
-    batch: testParallel
+    op_count: inputs.length,
+    batch: testParallel,
+    open_count: inputs.length
   }
 };
 

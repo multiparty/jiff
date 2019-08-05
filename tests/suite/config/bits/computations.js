@@ -246,9 +246,12 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
     return null;
   }
 
+  // preprocessing for opens
+  var open_count = inputs.length;
+
   var operation = baseComputations.preprocessing_function_map[test];
   if (operation == null || !jiff_instance.has_preprocessing(operation)) {
-    return null;
+    return { open_count: inputs.length };
   }
 
   // special case: test for varying lengths
@@ -266,14 +269,14 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
       paramsList.push({bitLengthLeft: bitLengthLeft, bitLengthRight: bitLengthRight});
     }
 
-    return { operation: operation, count: 1, batch: testParallel, Zp: jiff_instance.Zp, paramsList: paramsList}
+    return { operation: operation, op_count: 1, batch: testParallel, Zp: jiff_instance.Zp, paramsList: paramsList, open_count: open_count };
   }
 
   var singleTestCount = Object.keys(inputs[0]).length;
   singleTestCount = singleTestCount > 1 ? (singleTestCount - 1) : singleTestCount;
   var count = inputs.length * singleTestCount;
   var params = {};
-  var decompositionCount = null;
+  var decomposition_count = null;
 
   // Number of bits in constants
   var cmax = testConfig['options']['cmax'] || testConfig['options']['max'] || jiff_instance.Zp;
@@ -285,7 +288,7 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
   // Number of bits in secret
   if (testConfig['share'] == null || testConfig['share'] === 'decomposition') {
     params['bitLength'] = jiff_instance.Zp.toString(2).length;
-    decompositionCount = inputs.length * Object.keys(inputs[0]).length;
+    decomposition_count = inputs.length * Object.keys(inputs[0]).length;
   }
   if (testConfig['share'] === 'share_bits') {
     var max = testConfig['options']['max'] || jiff_instance.Zp;
@@ -302,37 +305,48 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
 
   // Do not double preprocess for bit_decomposition
   if (operation === 'bit_decomposition') {
-    decompositionCount = null;
+    decomposition_count = null;
   }
 
   return {
     operation: operation,
-    count: count,
+    op_count: count,
     batch: testParallel,
     paramsList: [ params ],
     Zp: jiff_instance.Zp,
-    decompositionCount: decompositionCount
+    decomposition_count: decomposition_count,
+    open_count: open_count
   };
 };
 
 baseComputations.preprocess = function (jiff_instance, test, inputs, testParallel, testConfig, preprocessingParams) {
   var promises = [];
-  for (var i = 0; i < preprocessingParams['paramsList'].length; i++) {
-    var prm = jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['count'],
-      preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
-      preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-      preprocessingParams['id_list'], preprocessingParams['paramsList'][i]);
-    promises.push(prm);
+  if (preprocessingParams['operation'] != null) {
+    for (var i = 0; i < preprocessingParams['paramsList'].length; i++) {
+      var prm = jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['op_count'],
+        preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+        preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+        preprocessingParams['id_list'], preprocessingParams['paramsList'][i]);
+      promises.push(prm);
+    }
   }
-  var promise = Promise.all(promises);
 
   // Perform any necessary preprocessing for decomposition
-  if (preprocessingParams['decompositionCount'] != null) {
-    var promise2 = jiff_instance.preprocessing('bit_decomposition', preprocessingParams['decompositionCount'],
+  var promise = Promise.all(promises);
+  if (preprocessingParams['decomposition_count'] != null) {
+    var promise2 = jiff_instance.preprocessing('bit_decomposition', preprocessingParams['decomposition_count'],
       preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
       preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
       preprocessingParams['id_list'], preprocessingParams['params']);
     promise = Promise.all([promise, promise2]);
+  }
+
+  if (preprocessingParams['open_count'] != null) {
+    var promise3 = jiff_instance.preprocessing('open', preprocessingParams['open_count'],
+      preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+      preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+      preprocessingParams['id_list'], preprocessingParams['params']);
+    promise = Promise.all([promise, promise3]);
   }
 
   return promise.then(jiff_instance.finish_preprocessing);

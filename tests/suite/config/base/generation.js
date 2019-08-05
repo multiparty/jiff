@@ -62,6 +62,9 @@ exports.generateShareInputs = function (test, count, options) {
     while (receivers.length > rn) {
       receivers.splice(Math.floor(Math.random() * receivers.length), 1);
     }
+    senders.sort();
+    receivers.sort();
+
     oneTest['senders'] = senders;
     oneTest['receivers'] = receivers;
 
@@ -77,6 +80,7 @@ exports.generateShareInputs = function (test, count, options) {
       while (reshare_holders.length > hn) {
         reshare_holders.splice(Math.floor(Math.random() * reshare_holders.length), 1);
       }
+      reshare_holders.sort();
 
       oneTest['reshare_holders'] = reshare_holders;
       oneTest['reshare_threshold'] = Math.floor(Math.random() * reshare_holders.length) + 1; // 1 <= reshare_threshold <= length of holders

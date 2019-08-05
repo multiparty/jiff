@@ -92,7 +92,33 @@ baseComputations.successMessage = function (jiff_instance, test, testInputs, sha
 };
 
 baseComputations.preProcessingParams = function () {
-  return null;
+  return true;
+};
+
+baseComputations.preprocess = function (jiff_instance, test, inputs, testParallel) {
+  // Preprocess for each test alone
+  var promises = [];
+  for (var i = 0; i < inputs.length; i++) {
+    var receivers = inputs[i]['receivers'];
+    var senders = inputs[i]['senders'];
+    var threshold = inputs[i]['threshold'];
+
+    if (test.startsWith('reshare')) {
+      receivers = inputs[i]['reshare_holders'];
+      threshold = inputs[i]['reshare_threshold'];
+    }
+
+    // every receiver performs an open *per* sender with the given threshold!
+    var promises2 = [];
+    for (var j = 0; j < senders.length; j++) {
+      var promise = jiff_instance.preprocessing('open', 1,
+        testParallel, null, threshold, receivers, senders, null, null, {open_parties: [senders[j]]});
+      promises2.push(promise);
+    }
+    promises.push(Promise.all(promises2));
+  }
+
+  return Promise.all(promises).then(jiff_instance.finish_preprocessing);
 };
 
 module.exports = baseComputations;
