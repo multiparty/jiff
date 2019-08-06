@@ -16,6 +16,7 @@
     "default": {
       "share": "share_bits",
       "open": "open_bits",
+      "output_length": 11,
       "count": 15,
       "parallel": 3,
       "options": {
@@ -28,6 +29,7 @@
     "*c": {
       "share": "share_bits",
       "open": "open_bits",
+      "output_length": 11,
       "count": 10,
       "parallel": 3,
       "options": {
@@ -55,6 +57,7 @@
     "c/": {
       "share": "decomposition",
       "open": "open_bits",
+      "output_length": 7,
       "count": 8,
       "parallel": 3,
       "options": {

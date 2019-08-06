@@ -16,6 +16,7 @@
     "default": {
       "share": "share_bits",
       "open": "open_bits",
+      "output_length": 11,
       "count": 10,
       "parallel": 3,
       "options": {
@@ -27,6 +28,7 @@
     "*": {
       "share": "share_bits",
       "open": "open_bits",
+      "output_length": 8,
       "count": 10,
       "parallel": 3,
       "options": {

@@ -42,6 +42,35 @@ baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
   return (mpcResult >= lower) && (mpcResult < upper) && !Number.isNaN(mpcResult) && typeof(mpcResult) === 'number' && mpcResult !== Infinity;
 };
 
+// Pre-processing
+baseComputations.preProcessingParams = function (jiff_instance, test, inputs, testParallel, testConfig) {
+  if (testConfig['options']['crypto_provider'] === true) {
+    return null;
+  }
+
+  var bitLength = null;
+  if (inputs[0].upper != null) {
+    bitLength = inputs[0].upper.toString(2).length;
+  }
+
+  return {
+    open_count: inputs.length,
+    batch: testParallel,
+    params: {
+      bitLength: bitLength
+    }
+  };
+};
+
+baseComputations.preprocess = function (jiff_instance, test, inputs, testParallel, testConfig, preprocessingParams) {
+  var promise = jiff_instance.preprocessing('open_bits', preprocessingParams['open_count'],
+    preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+    preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+    preprocessingParams['id_list'], preprocessingParams['params']);
+
+  return promise.then(jiff_instance.finish_preprocessing);
+};
+
 exports.compute = function (jiff_instance, test, inputs, testParallel, done, testConfig) {
   Zp = jiff_instance.Zp;
   baseComputations.compute.apply(baseComputations, arguments);

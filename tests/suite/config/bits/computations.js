@@ -342,14 +342,24 @@ baseComputations.preprocess = function (jiff_instance, test, inputs, testParalle
   }
 
   if (preprocessingParams['open_count'] != null) {
-    var promise3 = jiff_instance.preprocessing('open', preprocessingParams['open_count'],
-      preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
-      preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-      preprocessingParams['id_list'], preprocessingParams['params']);
+    var promise3 = baseComputations.open_preprocess(jiff_instance, preprocessingParams, test, testConfig);
     promise = Promise.all([promise, promise3]);
   }
 
   return promise.then(jiff_instance.finish_preprocessing);
+};
+
+baseComputations.open_preprocess = function (jiff_instance, preprocessingParams, test, testConfig) {
+  var open_type = testConfig['open'] === 'open_bits' ? 'open_bits' : 'open';
+  var copy = Object.assign({}, preprocessingParams['params']);
+  if (open_type === 'open_bits') {
+    copy['bitLength'] = testConfig['output_length'];
+  }
+
+  return jiff_instance.preprocessing(open_type, preprocessingParams['open_count'],
+    preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+    preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+    preprocessingParams['id_list'], copy);
 };
 
 // Default Computation Scheme
