@@ -1,5 +1,5 @@
 {
-  "tests": [ "share2", "share3", "share4", "share5", "share10" ],
+  "tests": [ "share2" ],
   "suiteConf": {
     "port": 3001,
     "extensions": [ ],

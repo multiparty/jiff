@@ -25,7 +25,6 @@ baseComputations.shareHook = function (jiff_instance, test, testInputs, input, t
     return null;
   }
 
-  console.log(input);
   return jiff_instance.share_ND_array(input, null,threshold, receivers, senders);
 };
 
@@ -43,17 +42,25 @@ baseComputations.singleCompute = function (jiff_instance, shareParameters, test,
     return jiff_instance.receive_open(shareParameters.receivers, shareParameters.threshold);
   }
 
+  //console.log(values);
+
   // Case 2: received shares, maybe sent one too
   var promise = null; // if sent a share, this will be assigned a promise to it when it is opened
   for (var i = 0; i < shareParameters.senders.length; i++) {
     // Loop over received shares, open each one to its original sender
     var pid = shareParameters.senders[i];
     var shares = values[pid];
-    console.log(shares == null);
+    //console.log(shares == null);
+    //if (shares == null) {
+    //  console.log(shareParameters, pid, values);
+    //}
     var tmp = jiff_instance.open_ND_array(shares, [pid]);
     if (tmp != null) { // pid == jiff_instance.id
       promise = tmp;
     }
+    //tmp.then(function (result) {
+    //  console.log(shareParameters, result);
+    //});
   }
 
   return promise;
