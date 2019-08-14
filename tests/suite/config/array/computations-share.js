@@ -38,11 +38,10 @@ baseComputations.singleCompute = function (jiff_instance, shareParameters, test,
 
   // Case 1: did not receive any shares, must have sent one, will receive an open.
   if (shareParameters.receivers.indexOf(jiff_instance.id) === -1) {
-    console.log('did not receive any shares:', shareParameters)
-    return jiff_instance.receive_open(shareParameters.receivers, shareParameters.threshold);
+    console.log('did not receive any shares:', jiff_instance.id, shareParameters);
+    //return null;
+    return jiff_instance.receive_open_ND_array(shareParameters.receivers, shareParameters.threshold);
   }
-
-  //console.log(values);
 
   // Case 2: received shares, maybe sent one too
   var promise = null; // if sent a share, this will be assigned a promise to it when it is opened
@@ -52,15 +51,15 @@ baseComputations.singleCompute = function (jiff_instance, shareParameters, test,
     var shares = values[pid];
     //console.log(shares == null);
     //if (shares == null) {
-    //  console.log(shareParameters, pid, values);
+     // console.log('null shares', shareParameters, pid, values);
     //}
     var tmp = jiff_instance.open_ND_array(shares, [pid]);
-    if (tmp != null) { // pid == jiff_instance.id
+    if (pid == jiff_instance.id) {
       promise = tmp;
+      tmp.then(function (result) {
+        console.log(shareParameters, jiff_instance.id, result);
+      });
     }
-    //tmp.then(function (result) {
-    //  console.log(shareParameters, result);
-    //});
   }
 
   return promise;

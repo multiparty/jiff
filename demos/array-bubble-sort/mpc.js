@@ -50,14 +50,13 @@
     var final_promise = final_deferred.promise();
 
     // Share the arrays
-    jiff_instance.share_ND_array(input, null, 1, [1, 2, 3], [1,2]).then(function (shares) {
-      //console.log(shares);
+    jiff_instance.share_ND_array(input, null, 1, [1, 2], [1, 2]).then(function (shares) {
       var full_array = shares[2];
-      console.log(full_array);
+
       // join arrays
       //for (var p = 1; p <= jiff_instance.party_count; p++) {
       //  full_array = full_array.concat(shares[p]);
-     // }
+      //}
 
       // sort new array
       //var sorted = bubblesort(full_array);
@@ -67,9 +66,8 @@
       //for (var k = 0; k < sorted.length; k++) {
       //  allPromises.push(jiff_instance.open_ND_array(sorted[k]));
       //}
-      var openpromise = jiff_instance.open(full_array[0], [1,2]);
-
-      Promise.all([openpromise]).then(function (results) {
+      var openpromise = jiff_instance.open_ND_array(full_array, [1,2]);
+      openpromise.then(function (results) {
         final_deferred.resolve(results);
       });
     });

@@ -16,7 +16,7 @@
   "testConf": {
     "share2": {
       "count": 10,
-      "parallel": 25,
+      "parallel": 1,
       "options": {
         "Zp": 2039,
         "party_count": 2
