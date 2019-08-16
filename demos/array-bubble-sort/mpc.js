@@ -50,7 +50,7 @@
     var final_promise = final_deferred.promise();
 
     // Share the arrays
-    jiff_instance.share_ND_array(input, null, 1, [1, 2], [1, 2]).then(function (shares) {
+    jiff_instance.share_ND_array(input, null, 1, [2], [1, 2]).then(function (shares) {
       var full_array = shares[2];
 
       // join arrays
@@ -66,7 +66,12 @@
       //for (var k = 0; k < sorted.length; k++) {
       //  allPromises.push(jiff_instance.open_ND_array(sorted[k]));
       //}
-      var openpromise = jiff_instance.open_ND_array(full_array, [1,2]);
+      var openpromise;
+      if (jiff_instance.id === 1) {
+        openpromise = jiff_instance.receive_open_ND_array([1,2], 1);
+      } else {
+        openpromise = jiff_instance.open_ND_array(full_array, [1,2]);
+      }
       openpromise.then(function (results) {
         final_deferred.resolve(results);
       });
