@@ -39,7 +39,6 @@ baseComputations.singleCompute = function (jiff_instance, shareParameters, test,
   // Case 1: did not receive any shares, must have sent one, will receive an open.
   if (shareParameters.receivers.indexOf(jiff_instance.id) === -1) {
     console.log('did not receive any shares:', jiff_instance.id, shareParameters);
-    //return null;
     return jiff_instance.receive_open_ND_array(shareParameters.receivers, shareParameters.threshold);
   }
 
