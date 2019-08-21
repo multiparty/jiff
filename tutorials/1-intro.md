@@ -1,7 +1,7 @@
 # Why Use JIFF?
 My group of friends and I are planning a vacation together. We want to see if we can afford a certain trip (let's say total it would cost $5000) but none of us want to reveal how much we are willing to pay (maybe not the greatest friends...). Hey, I have an idea! Let's use JIFF to compute our total budget without sharing how much any individual is willing to pay. Then we can see if we can afford the trip and no one has to reveal their personal budget.
 
-The JIFF workflow looks like this. As a group, we
+The JIFF workflow looks like this. As a group, we will
 1. Install JIFF
 2. Set up a central server to coordinate and communicate
 3. Define the function we'd like to compute. In this case, we'll sum our personal budgets and compare to the $5000 threshold.
@@ -76,7 +76,7 @@ var shares = my_jiff_instance.share(my_budget);
 
 ```
 By default, the `share` function assumes that every party will provide an input. It returns an object that contains secret shares of everyone's values. This is the JSON encoding of this object:
-```json
+```
 { 1: <SecretShare>, 2: <SecretShare>, ..., n: <SecretShare> }
 ```
 Each `SecretShare` object contains a fragment of the input associated with that party and defines [other useful functions](https://multiparty.org/jiff/docs/jsdoc/SecretShare.html) for arithmetic operations and comparisons.
@@ -90,9 +90,10 @@ We'll use a comparison to check if our total budget meets the cost of the vactio
 ```javascript
 var is_enough = sum.gteq(5000);
 ```
-The variable `is_enough` is also a secret share, but we know it's a boolean value--either 0 or 1--depending on the result of the comparison.
+The `gteq` is short-hand for 'greater than or equal', JIFF provides this and many other functions for comparing secret-shared values.
+The result, which we'll store in the variable`is_enough`, is also a secret share, but we know it must be a boolean value--either 0 or 1--depending on the result of the comparison.
 
-Finally, we reveal the result of our computation by opening the value contained in `is_enough`. This operation has all parties reveal their individual secret shares to determine the true value.
+Finally, we reveal the result of our computation by opening the value contained in `is_enough`. This operation has all parties combine their individual secret shares to determine the true value.
 ```javascript
 var result = my_jiff_instance.open(is_enough);
 ```
