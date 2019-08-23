@@ -316,12 +316,21 @@ exports.preProcessingParams = function (jiff_instance, test, inputs, testParalle
   var op_count = 0;
 
   var isConstant = inputs[0]['constant'] == null ? 'secret' : 'constant';
+  var threshold = test === '*bgw' ? Math.floor((jiff_instance.party_count + 1) / 2) : jiff_instance.party_count;
   var operation = exports.preprocessing_function_map[isConstant][test];
   if (operation != null && jiff_instance.has_preprocessing(operation)) {
-    var threshold = test === '*bgw' ? Math.floor((jiff_instance.party_count + 1) / 2) : jiff_instance.party_count;
     var singleTestCount = Object.keys(inputs[0]).length;
     op_count = inputs.length * (singleTestCount > 1 ? singleTestCount - 1 : 1);
     op = operation;
+  }
+
+  var params = null;
+  if (test === '/' && testConfig['ondemand'] === false) {
+    op_count = 1;
+    params = [];
+    for (var c = 0; c < inputs.length; c++) {
+      params.push({ constant: inputs[c]['constant'] });
+    }
   }
 
   return {
@@ -329,25 +338,34 @@ exports.preProcessingParams = function (jiff_instance, test, inputs, testParalle
     op_count: op_count,
     batch: testParallel,
     threshold: threshold,
-    open_count: open_count
+    open_count: open_count,
+    params: params
   }
 };
 
 exports.preprocess = function (jiff_instance, test, inputs, testParallel, testConfig, preprocessingParams) {
-  var promise1 = null;
-  if (preprocessingParams['operation'] != null) {
-    promise1 = jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['op_count'],
-      preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
-      preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-      preprocessingParams['id_list'], preprocessingParams['params']);
+  if (preprocessingParams['params'] == null) {
+    preprocessingParams['params'] = [null];
   }
 
-  var promise2 = jiff_instance.preprocessing('open', preprocessingParams['open_count'],
+  var promises = [];
+  if (preprocessingParams['operation'] != null) {
+    for (var i = 0; i < preprocessingParams['params'].length; i++) {
+      var promise = jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['op_count'],
+        preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+        preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+        preprocessingParams['id_list'], preprocessingParams['params'][i]);
+      promises.push(promise);
+    }
+  }
+
+  promise = jiff_instance.preprocessing('open', preprocessingParams['open_count'],
     preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
     preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-    preprocessingParams['id_list'], preprocessingParams['params']);
+    preprocessingParams['id_list'], preprocessingParams['open_params']);
+  promises.push(promise);
 
-  return Promise.all([promise1, promise2]).then(jiff_instance.finish_preprocessing);
+  return Promise.all(promises).then(jiff_instance.finish_preprocessing);
 };
 
 // Default Computation Scheme

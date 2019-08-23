@@ -23,6 +23,7 @@
     },
     "/Zp127": {
       "alias": "/",
+      "ondemand": false,
       "count": 8,
       "parallel": 3,
       "options": {
