@@ -176,7 +176,7 @@
     // All parties listen for the message with offsets and permutation values, and store the information in it.
     jiff_instance.listen('preprocess' + this_count, function (sender_id, message) {
       jiff_instance.remove_listener('preprocess' + this_count);
-      jiff_instance.op_id_seed = this_count + ':';
+      jiff_instance.seed_ids(this_count);
 
       var received = JSON.parse(message);
       offsets = received[0];
@@ -184,6 +184,7 @@
 
       // Share the arrays
       jiff_instance.share_array(input, input.length).then(function (shares) {
+        jiff_instance.seed_ids(this_count);
         // sum all shared input arrays element wise
         var array = shares[1];
         for (var p = 2; p <= jiff_instance.party_count; p++) {
