@@ -54,7 +54,7 @@
       // I am a lower party, I have an input that I submit to the upper parties,
       // and they send me back a result at the end.
       jiff_instance.share(input, 1, upper_parties, lower_parties);
-      return jiff_instance.receive_open(upper_parties, upper_parties.length);
+      return jiff_instance.receive_open(upper_parties);
     } else {
       // I am an upper party, I have no input, but I receive all the lower parties inputs,
       // I count how many of these inputs are above the threshold.
