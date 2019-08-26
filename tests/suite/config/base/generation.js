@@ -116,7 +116,7 @@ exports.generateArithmeticInputs = function (test, count, options) {
       }
       inputs.push(oneInput);
     }
-  } else if (test === '!') {
+  } else if (test === '!' || test === 'floor' || test === 'abs') {
     for (t = 0; t < count; t++) {
       oneInput = {};
       oneInput[1] = exports.generateBit(test, options);

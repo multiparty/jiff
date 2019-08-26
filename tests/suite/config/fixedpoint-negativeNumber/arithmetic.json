@@ -78,8 +78,8 @@
       }
     },
     "floor": {
-      "count": 10,
-      "parallel": 5,
+      "count": 6,
+      "parallel": 3,
       "options": {
         "Zp": 251,
         "party_count": 3,
