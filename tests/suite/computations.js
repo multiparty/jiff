@@ -380,6 +380,7 @@ exports.compute = function (jiff_instance, test, inputs, testParallel, done, tes
   if (preProcessingParams != null) {
     var promise = exports.preprocess(jiff_instance, test, inputs, testParallel, testConfig, preProcessingParams);
     promise.then(function () {
+      console.log('done preprocessing');
       exports.batch(jiff_instance, test, testParallel, inputs, done, testConfig);
     });
   } else {
