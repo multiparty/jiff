@@ -60,8 +60,8 @@
     var promise = jiff_instance.open(out);
 
     var promise2 = promise.then(function (v) {
-      var variance = v/(jiff_instance.party_count - 1);
-      return Math.sqrt(variance);       // Return standard deviation.
+      var variance = v / (jiff_instance.party_count - 1);
+      return Math.sqrt(variance); // Return standard deviation.
     });
 
     return promise2;

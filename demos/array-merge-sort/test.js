@@ -1,3 +1,13 @@
+// Catch and log any uncaught exceptions
+process.on('uncaughtException', function (err) {
+  console.log('Uncaught Exception!');
+  console.log(err);
+  throw err;
+});
+process.on('unhandledRejection', function (reason) {
+  console.log('Unhandled Rejection', reason);
+});
+
 // Chai
 var assert = require('chai').assert;
 var mpc = require('./mpc.js');

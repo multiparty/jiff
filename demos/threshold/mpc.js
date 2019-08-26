@@ -49,18 +49,17 @@
     }
 
     // computation
-
     if (lower_parties.indexOf(id) > -1) {
       // I am a lower party, I have an input that I submit to the upper parties,
       // and they send me back a result at the end.
-      jiff_instance.share(input, 1, upper_parties, lower_parties);
+      jiff_instance.share(input, upper_parties.length, upper_parties, lower_parties);
       return jiff_instance.receive_open(upper_parties);
     } else {
       // I am an upper party, I have no input, but I receive all the lower parties inputs,
       // I count how many of these inputs are above the threshold.
       var shares = jiff_instance.share(input, upper_parties.length, upper_parties, lower_parties);
-      var result = shares[1].cgt(threshold);
 
+      var result = shares[1].cgt(threshold);
       for (var p = 2; p <= lower_count; p++) {
         result = result.sadd(shares[p].cgt(threshold));
       }

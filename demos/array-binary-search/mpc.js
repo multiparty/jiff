@@ -1,5 +1,6 @@
 (function (exports, node) {
   var saved_instance;
+  var seeds = {};
 
   /**
    * Connect to the server and initialize the jiff instance
@@ -28,6 +29,12 @@
       jiff_instance = saved_instance;
     }
 
+    // Unique prefix seed for op_ids
+    if (seeds[jiff_instance.id] == null) {
+      seeds[jiff_instance.id] = 0;
+    }
+    var seed = seeds[jiff_instance.id]++;
+
     var element = null;
     var array = null;
     if (jiff_instance.id === 1) {
@@ -46,7 +53,9 @@
 
     element = jiff_instance.share(element, 2, [1, 2], [ 2 ])[2];
     jiff_instance.share_array(array, null, 2, [1, 2], [ 1 ]).then(function (array) {
-      array = array[1];         // Note that array[2] is a null array shared by player 2 so should be discarded.
+      jiff_instance.seed_ids(seed);
+
+      array = array[1];
       var result = binary_search(array, element);
       result.open().then(function (result) {
         deferred.resolve(result);

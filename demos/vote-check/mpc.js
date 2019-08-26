@@ -48,6 +48,7 @@
 
     // This array holds the shares for each option in the voting
     jiff_instance.share_array(inputs).then(function (option_shares) {
+      jiff_instance.seed_ids(this_count);
       var results = option_shares[1].slice();
 
       var i, j;
@@ -61,10 +62,10 @@
       // Do Checks:
       // Check 1
       // each single vote option must be less than or equal to 1
-      var check = option_shares[1][0].clteq(1, 't'+this_count+':clteq_check:--');
+      var check = option_shares[1][0].clteq(1);
       for (j = 1; j <= jiff_instance.party_count; j++) {
         for (i = 0; i < option_shares[j].length; i++) {
-          check = check.smult(option_shares[j][i].clteq(1, 't'+this_count+':clteq_check:'+i+':'+j), 't'+this_count+':smult_check:'+i+':'+j);
+          check = check.smult(option_shares[j][i].clteq(1));
         }
       }
 
@@ -75,17 +76,17 @@
         for (i = 1; i < option_shares[j].length; i++) {
           sum = sum.sadd(option_shares[j][i]);
         }
-        check = check.smult(sum.clteq(1, 't'+this_count+':clteq_check2:'+j), 't'+this_count+':smult_check2:'+j);
+        check = check.smult(sum.clteq(1));
       }
 
       // Apply Checks:
       // if some check fails, set all votes to 0
       for (i = 0; i < results.length; i++) {
-        results[i] = results[i].smult(check, 't'+this_count+':smult_apply:'+i+':'+j);
+        results[i] = results[i].smult(check);
       }
 
       // Open
-      jiff_instance.open_array(results, null, 't'+this_count+':open').then(function (results) {
+      jiff_instance.open_array(results).then(function (results) {
         deferred.resolve(results);
       });
     });

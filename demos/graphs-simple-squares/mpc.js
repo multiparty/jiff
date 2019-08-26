@@ -1,5 +1,9 @@
 (function (exports, node) {
   var saved_instance;
+  var base_op_id = {
+    1: 0,
+    2: 0
+  };
 
   /**
    * Connect to the server and initialize the jiff instance
@@ -51,6 +55,9 @@
       jiff_instance = saved_instance;
     }
 
+    // Unique prefix seed for all op ids
+    var op_id_seed = base_op_id[jiff_instance.id]++;
+
     var values = [];
     for (var i = 0; i < coordinates.length; i++) {
       values.push(coordinates[i].x);
@@ -65,6 +72,7 @@
 
     // share input with all parties
     jiff_instance.share_array(values).then(function (inputs) {
+      jiff_instance.seed_ids(op_id_seed);
       var xAvg = zero;
       var yAvg = zero;
       var xSqAvg = zero;
