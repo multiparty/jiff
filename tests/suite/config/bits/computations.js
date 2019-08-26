@@ -224,7 +224,7 @@ baseComputations.openHook = function (jiff_instance, test, share) {
     return share.open();
   }
 
-  return share[0].jiff.protocols.bits.open_bits(share);
+  return share[0].jiff.protocols.bits.open(share);
 };
 
 baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
@@ -350,9 +350,9 @@ baseComputations.preprocess = function (jiff_instance, test, inputs, testParalle
 };
 
 baseComputations.open_preprocess = function (jiff_instance, preprocessingParams, test, testConfig) {
-  var open_type = testConfig['open'] === 'open_bits' ? 'open_bits' : 'open';
+  var open_type = testConfig['open'] === 'bits.open' ? 'bits.open' : 'open';
   var copy = Object.assign({}, preprocessingParams['params']);
-  if (open_type === 'open_bits') {
+  if (open_type === 'bits.open') {
     copy['bitLength'] = testConfig['output_length'];
   }
 

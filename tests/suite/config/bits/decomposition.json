@@ -69,7 +69,7 @@
       }
     },
     "decomposition-open-2-15485867": {
-      "open": "open_bits",
+      "open": "bits.open",
       "alias": "decomposition",
       "count": 5,
       "parallel": 3,
@@ -79,7 +79,7 @@
       }
     },
     "decomposition-open-3-15485867": {
-      "open": "open_bits",
+      "open": "bits.open",
       "alias": "decomposition",
       "count": 5,
       "parallel": 3,
@@ -89,7 +89,7 @@
       }
     },
     "decomposition-open-5-2039": {
-      "open": "open_bits",
+      "open": "bits.open",
       "alias": "decomposition",
       "count": 5,
       "parallel": 3,

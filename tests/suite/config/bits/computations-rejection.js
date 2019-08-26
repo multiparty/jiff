@@ -32,7 +32,7 @@ baseComputations.singleCompute = function (jiff_instance, shareParameters, test,
 
 // Opening bits
 baseComputations.openHook = function (jiff_instance, test, share) {
-  return share[0].jiff.protocols.bits.open_bits(share);
+  return share[0].jiff.protocols.bits.open(share);
 };
 
 // Verification
@@ -63,7 +63,7 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
 };
 
 baseComputations.preprocess = function (jiff_instance, test, inputs, testParallel, testConfig, preprocessingParams) {
-  var promise = jiff_instance.preprocessing('open_bits', preprocessingParams['open_count'],
+  var promise = jiff_instance.preprocessing('bits.open', preprocessingParams['open_count'],
     preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
     preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
     preprocessingParams['id_list'], preprocessingParams['params']);
