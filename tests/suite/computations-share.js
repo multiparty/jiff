@@ -49,23 +49,23 @@ baseComputations.singleCompute = function (jiff_instance, shareParameters, test,
   // MPC interpreter
   // If we got here, we must be either a sender or a receiver
 
-  // Case 1: did not receive any shares, must have sent one, will receive an open.
-  if (shareParameters.receivers.indexOf(jiff_instance.id) === -1) {
-    return jiff_instance.receive_open(shareParameters.receivers, shareParameters.senders, shareParameters.threshold);
-  }
-
-  // Case 2: received shares, maybe sent one too
-  var promise = null; // if sent a share, this will be assigned a promise to it when it is opened
+  var promise = null;
+  var pid, tmp;
   for (var i = 0; i < shareParameters.senders.length; i++) {
-    // Loop over received shares, open each one to its original sender
-    var pid = shareParameters.senders[i];
-    var share = values[pid];
-    var tmp = jiff_instance.open(share, [pid]);
-    if (tmp != null) { // pid == jiff_instance.id
+    pid = shareParameters.senders[i];
+    if (shareParameters.receivers.indexOf(jiff_instance.id) === -1) {
+      // Case 1: did not receive any shares, must have sent one, will receive an open.
+      tmp = jiff_instance.receive_open(shareParameters.receivers, shareParameters.senders, shareParameters.threshold);
+    } else {
+      // Case 2: received shares, maybe sent one too
+      var share = values[pid];
+      tmp = jiff_instance.open(share, shareParameters.senders);
+    }
+
+    if (pid === jiff_instance.id) {
       promise = tmp;
     }
   }
-
   return promise;
 };
 
@@ -108,14 +108,9 @@ baseComputations.preprocess = function (jiff_instance, test, inputs, testParalle
       threshold = inputs[i]['reshare_threshold'];
     }
 
-    // every receiver performs an open *per* sender with the given threshold!
-    var promises2 = [];
-    for (var j = 0; j < senders.length; j++) {
-      var promise = jiff_instance.preprocessing('open', 1,
-        testParallel, null, threshold, receivers, senders, null, null, {open_parties: [senders[j]]});
-      promises2.push(promise);
-    }
-    promises.push(Promise.all(promises2));
+    // every receiver performs an open to all sender for all shares it received with the given threshold!
+    var promise = jiff_instance.preprocessing('open', senders.length, testParallel, null, threshold, receivers, senders, null, null, {open_parties: senders});
+    promises.push(promise);
   }
 
   return Promise.all(promises).then(jiff_instance.finish_preprocessing);
