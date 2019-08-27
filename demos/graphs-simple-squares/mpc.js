@@ -131,7 +131,8 @@
         var m = mSq.sqrt();
         m = jiff_instance.helpers.to_fixed(m);
 
-        var p = yAvg.cmult(precision).ssub(xAvg.cmult(m, null, false));
+        var p = yAvg.ssub(xAvg.cmult(m));
+        p = p.cmult(precision);
         p.open().then(function (p) {
           p = jiff_instance.helpers.to_fixed(p.div(precision));
           deferred.resolve({ m: m, p: p});

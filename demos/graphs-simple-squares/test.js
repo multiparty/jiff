@@ -185,8 +185,9 @@ describe('Test', function () {
 
           // assert results are accurate
           try {
+            var within_margin = Math.abs(testResults[i].p - realResults[i].p) < 0.1;
+            assert.deepEqual(within_margin, true, msg + ' yINTERCEPT!');
             assert.deepEqual(testResults[i].m.toString(), realResults[i].m.toString(), msg + ' SLOPE!');
-            assert.deepEqual(testResults[i].p.toString(), realResults[i].p.toString(), msg + ' yINTERCEPT!');
           } catch (assertionError) {
             done(assertionError);
             done = function () { };
