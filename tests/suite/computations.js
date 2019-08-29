@@ -343,11 +343,20 @@ exports.preProcessingParams = function (jiff_instance, test, inputs, testParalle
   }
 };
 
+exports.started = 0;
+
 exports.preprocess = function (jiff_instance, test, inputs, testParallel, testConfig, preprocessingParams) {
   if (preprocessingParams['params'] == null) {
     preprocessingParams['params'] = [null];
   }
 
+  // Benchmarking for preprocessing
+  if (exports.started === 0) {
+    console.time('Preprocessing ' + test);
+  }
+  exports.started++;
+
+  // Perform preprocessing
   var promises = [];
   if (preprocessingParams['operation'] != null) {
     for (var i = 0; i < preprocessingParams['params'].length; i++) {
@@ -365,7 +374,16 @@ exports.preprocess = function (jiff_instance, test, inputs, testParallel, testCo
     preprocessingParams['id_list'], preprocessingParams['open_params']);
   promises.push(promise);
 
-  return Promise.all(promises).then(jiff_instance.finish_preprocessing);
+  return Promise.all(promises).then(exports.preprocess_done.bind(null, jiff_instance, test));
+};
+
+exports.preprocess_done = function (jiff_instance, test) {
+  jiff_instance.finish_preprocessing();
+
+  exports.started--;
+  if (exports.started === 0) {
+    console.timeEnd('Preprocessing ' + test);
+  }
 };
 
 // Default Computation Scheme
@@ -380,7 +398,6 @@ exports.compute = function (jiff_instance, test, inputs, testParallel, done, tes
   if (preProcessingParams != null) {
     var promise = exports.preprocess(jiff_instance, test, inputs, testParallel, testConfig, preProcessingParams);
     promise.then(function () {
-      console.log('done preprocessing');
       exports.batch(jiff_instance, test, testParallel, inputs, done, testConfig);
     });
   } else {

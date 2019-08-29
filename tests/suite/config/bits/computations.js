@@ -320,6 +320,12 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
 };
 
 baseComputations.preprocess = function (jiff_instance, test, inputs, testParallel, testConfig, preprocessingParams) {
+  // Benchmarking for preprocessing
+  if (baseComputations.started === 0) {
+    console.time('Preprocessing ' + test);
+  }
+  baseComputations.started++;
+
   var promises = [];
   if (preprocessingParams['operation'] != null) {
     for (var i = 0; i < preprocessingParams['paramsList'].length; i++) {
@@ -346,7 +352,7 @@ baseComputations.preprocess = function (jiff_instance, test, inputs, testParalle
     promise = Promise.all([promise, promise3]);
   }
 
-  return promise.then(jiff_instance.finish_preprocessing);
+  return promise.then(baseComputations.preprocess_done.bind(null, jiff_instance, test));
 };
 
 baseComputations.open_preprocess = function (jiff_instance, preprocessingParams, test, testConfig) {
