@@ -2,7 +2,7 @@
   "tests": [ "+", "-", "*", "*bgw", "|", "^", "!", "floor", "/", "%" ],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ "bigNumber", "fixedpoint" ],
+    "extensions": [ "bigNumber", "fixedpoint", "debugging" ],
     "generation": {
       "file": "config/fixedpoint/generation.js",
       "function": "generateArithmeticInputs"
@@ -26,8 +26,8 @@
       }
     },
     "*": {
-      "count": 15,
-      "parallel": 5,
+      "count": 5,
+      "parallel": 2,
       "options": {
         "Zp": "131071",
         "party_count": 3,

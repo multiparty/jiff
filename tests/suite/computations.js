@@ -346,40 +346,44 @@ exports.preProcessingParams = function (jiff_instance, test, inputs, testParalle
 exports.started = 0;
 
 exports.preprocess = function (jiff_instance, test, inputs, testParallel, testConfig, preprocessingParams) {
+  exports.preprocess_start(test);
+
   if (preprocessingParams['params'] == null) {
     preprocessingParams['params'] = [null];
   }
 
+  // Perform preprocessing
+  if (preprocessingParams['operation'] != null) {
+    for (var i = 0; i < preprocessingParams['params'].length; i++) {
+      jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['op_count'],
+        preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+        preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+        preprocessingParams['id_list'], preprocessingParams['params'][i]);
+    }
+  }
+
+  jiff_instance.preprocessing('open', preprocessingParams['open_count'],
+    preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+    preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+    preprocessingParams['id_list'], preprocessingParams['open_params']);
+
+  return new Promise(function (resolve) {
+    jiff_instance.onFinishPreprocessing(function () {
+      exports.preprocess_done(test);
+      resolve();
+    });
+  });
+};
+
+exports.preprocess_start = function (test) {
   // Benchmarking for preprocessing
   if (exports.started === 0) {
     console.time('Preprocessing ' + test);
   }
   exports.started++;
-
-  // Perform preprocessing
-  var promises = [];
-  if (preprocessingParams['operation'] != null) {
-    for (var i = 0; i < preprocessingParams['params'].length; i++) {
-      var promise = jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['op_count'],
-        preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
-        preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-        preprocessingParams['id_list'], preprocessingParams['params'][i]);
-      promises.push(promise);
-    }
-  }
-
-  promise = jiff_instance.preprocessing('open', preprocessingParams['open_count'],
-    preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
-    preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-    preprocessingParams['id_list'], preprocessingParams['open_params']);
-  promises.push(promise);
-
-  return Promise.all(promises).then(exports.preprocess_done.bind(null, jiff_instance, test));
 };
 
-exports.preprocess_done = function (jiff_instance, test) {
-  jiff_instance.finish_preprocessing();
-
+exports.preprocess_done = function (test) {
   exports.started--;
   if (exports.started === 0) {
     console.timeEnd('Preprocessing ' + test);

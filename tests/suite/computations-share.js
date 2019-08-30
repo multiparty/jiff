@@ -96,8 +96,8 @@ baseComputations.preProcessingParams = function () {
 };
 
 baseComputations.preprocess = function (jiff_instance, test, inputs, testParallel) {
-  // Preprocess for each test alone
-  var promises = [];
+  baseComputations.preprocess_start(test);
+
   for (var i = 0; i < inputs.length; i++) {
     var receivers = inputs[i]['receivers'];
     var senders = inputs[i]['senders'];
@@ -109,11 +109,15 @@ baseComputations.preprocess = function (jiff_instance, test, inputs, testParalle
     }
 
     // every receiver performs an open to all sender for all shares it received with the given threshold!
-    var promise = jiff_instance.preprocessing('open', senders.length, testParallel, null, threshold, receivers, senders, null, null, {open_parties: senders});
-    promises.push(promise);
+    jiff_instance.preprocessing('open', senders.length, testParallel, null, threshold, receivers, senders, null, null, {open_parties: senders});
   }
 
-  return Promise.all(promises).then(jiff_instance.finish_preprocessing);
+  return new Promise(function (resolve) {
+    jiff_instance.onFinishPreprocessing(function () {
+      baseComputations.preprocess_done(test);
+      resolve();
+    });
+  });
 };
 
 module.exports = baseComputations;

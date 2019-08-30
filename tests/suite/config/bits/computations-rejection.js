@@ -63,18 +63,19 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
 };
 
 baseComputations.preprocess = function (jiff_instance, test, inputs, testParallel, testConfig, preprocessingParams) {
-  // Benchmarking for preprocessing
-  if (baseComputations.started === 0) {
-    console.time('Preprocessing ' + test);
-  }
-  baseComputations.started++;
+  baseComputations.preprocess_start(test);
 
-  var promise = jiff_instance.preprocessing('bits.open', preprocessingParams['open_count'],
+  jiff_instance.preprocessing('bits.open', preprocessingParams['open_count'],
     preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
     preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
     preprocessingParams['id_list'], preprocessingParams['params']);
 
-  return promise.then(baseComputations.preprocess_done.bind(null, jiff_instance, test));
+  return new Promise(function (resolve) {
+    jiff_instance.onFinishPreprocessing(function () {
+      baseComputations.preprocess_done(test);
+      resolve();
+    });
+  });
 };
 
 exports.compute = function (jiff_instance, test, inputs, testParallel, done, testConfig) {

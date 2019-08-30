@@ -1,5 +1,6 @@
 {
   "tests": [ "+c", "-c", "c-", "*c", "/c", "%c", "c/", "c%" ],
+  "extensions": [ "debugging" ],
   "suiteConf": {
     "port": 3001,
     "generation": {
