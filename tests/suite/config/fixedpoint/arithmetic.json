@@ -26,23 +26,23 @@
       }
     },
     "*": {
-      "count": 5,
+      "count": 4,
       "parallel": 2,
       "options": {
-        "Zp": "131071",
+        "Zp": "1021",
         "party_count": 3,
         "decimal_digits": 1,
-        "integer_digits": 3
+        "integer_digits": 1
       }
     },
     "*bgw": {
-      "count": 5,
+      "count": 4,
       "parallel": 2,
       "options": {
-        "Zp": "131071",
+        "Zp": "1021",
         "party_count": 3,
         "decimal_digits": 1,
-        "integer_digits": 3
+        "integer_digits": 1
       }
     },
     "/": {
@@ -59,16 +59,16 @@
       "count": 2,
       "parallel": 2,
       "options": {
-        "Zp": "16381",
+        "Zp": "1021",
         "party_count": 3,
         "integer_digits": 2,
-        "decimal_digits": 2,
+        "decimal_digits": 1,
         "warn": false
       }
     },
     "floor": {
-      "count": 6,
-      "parallel": 3,
+      "count": 4,
+      "parallel": 2,
       "options": {
         "Zp": 127,
         "party_count": 3,

@@ -8,9 +8,19 @@ var jiffServer = require('../../lib/jiff-server');
 var jiffRestAPIServer =  require('../../lib/ext/jiff-server-restful');
 var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
 
+var socketOptions = {};
+
+if (extensions != null && extensions.indexOf('fixedpoint') > -1) {
+  socketOptions = {
+    pingTimeout: 25000,
+    pingInterval: 60000
+  };
+}
+
 var options = {
   logs: true,
-  app: app
+  app: app,
+  socketOptions: socketOptions
 };
 
 var jiff_instance = jiffServer.make_jiff(http, options);
