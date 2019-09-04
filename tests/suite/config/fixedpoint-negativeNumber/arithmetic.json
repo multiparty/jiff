@@ -29,25 +29,25 @@
       "count": 5,
       "parallel": 2,
       "options": {
-        "Zp": "262139",
+        "Zp": "32749",
         "party_count": 3,
         "decimal_digits": 1,
-        "integer_digits": 3
+        "integer_digits": 2
       }
     },
     "*bgw": {
       "count": 5,
       "parallel": 2,
       "options": {
-        "Zp": "262139",
+        "Zp": "32749",
         "party_count": 3,
         "decimal_digits": 1,
-        "integer_digits": 3
+        "integer_digits": 2
       }
     },
     "abs": {
-      "count": 10,
-      "parallel": 5,
+      "count": 6,
+      "parallel": 3,
       "options": {
         "Zp": 251,
         "integer_digits": 1,
@@ -58,28 +58,28 @@
     },
     "/": {
       "count": 3,
-      "parallel": 1,
+      "parallel": 2,
       "options": {
-        "Zp": "32749",
+        "Zp": "2040",
         "party_count": 3,
-        "integer_digits": 2,
+        "integer_digits": 1,
         "decimal_digits": 1
       }
     },
     "%": {
-      "count": 3,
-      "parallel": 1,
+      "count": 2,
+      "parallel": 2,
       "options": {
-        "Zp": "32749",
+        "Zp": "2040",
         "party_count": 3,
         "integer_digits": 2,
-        "decimal_digits": 2,
+        "decimal_digits": 1,
         "warn": false
       }
     },
     "floor": {
-      "count": 6,
-      "parallel": 3,
+      "count": 4,
+      "parallel": 2,
       "options": {
         "Zp": 251,
         "party_count": 3,
