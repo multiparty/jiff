@@ -6,7 +6,8 @@ var extensions = {
   bigNumber: require('../../lib/ext/jiff-client-bignumber'),
   fixedpoint: require('../../lib/ext/jiff-client-fixedpoint'),
   negativeNumber: require('../../lib/ext/jiff-client-negativenumber'),
-  restAPI: require('../../lib/ext/jiff-client-restful')
+  restAPI: require('../../lib/ext/jiff-client-restful'),
+  asyncShare: require('../../lib/ext/jiff-client-asynchronousshare')
 };
 
 // Create the jiff instances for tests
