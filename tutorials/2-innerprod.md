@@ -2,7 +2,7 @@
 In this tutorial, we'll look at an example implementation of the inner product. We'll start with a basic version, then extend it to support fixed-point numbers, optimize it under the constraints of MPC, and prepare to scale better. This tutorial implements the 2-party version for simplicity, but the techniques exend to aribtrary parties.
 
 # Setting up a server
-We're going to stick with our simple server-as-message-router model from before. The server.js file will look the same as in the [intro tutorial](/multiparty/jiff/tutorials/1-intro.md).
+We're going to stick with our simple server-as-message-router model from before. The server.js file will look the same as in the [intro tutorial](/tutorials/1-intro.md).
 
 # Implementing client code
 In this setting, we want to compute an inner product. Each party has an input vector, and will receive an integer as output. As before, the client program has two jobs: they connect to the server, and they work together to compute the inner product under MPC.
@@ -120,22 +120,6 @@ function compute() {
 }
 ```
 
-We also need to make sure the connecting and computation functions can be accessed by other files, so we wrap all the code in a wrapper.
-
-```javascript
-(function (exports, node) {
-  ...
-  function connect() { ... }
-  function compute() { ... }
-
-  exports.connect = connect;
-  exports.compute = compute;
-
-}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
-```
-
-TODO Add something about running and testing?!
-
 # Using the fixed point extension
 Our inner product code works fine with integers. However, many interesting applications in statistics, machine learning, and other domains require operations on real numbers.
 The JIFF framework includes extensions which provide additional functionality. We'll use the `fixedpoint` extension (which extends the client behavior), and which depends on `bignumber`s (which extend both client and server behavior).
@@ -182,7 +166,7 @@ Now we can run the inner product with fixed point (or a mix of fixed point and i
 ## Under the hood: optimizing for MPC
 Our computation works great with fixed point data, but maybe it's running a litle slower than we'd like. By optimizing the MPC operations, we can reduce the total amount of work being performed.
 
-For example, the inner product requires many multiplications of floating point numbers. In JIFF, to multiply two fixed point numbers `a` and `b`, we multiply them normally, then divide by the total magnitude `m`.
+For example, the inner product requires many multiplications of fixed point numbers. In JIFF, to multiply two fixed point numbers `a` and `b`, we multiply them normally, then divide by the total magnitude `m`.
 
 1. `result` = `a` * `b`
 2. `result` = `result` / `m`

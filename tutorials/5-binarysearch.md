@@ -7,7 +7,7 @@ To solve this, we can search under MPC and without revealing parties' inputs, re
 -----------------------------------------------------------------------------
 
 # Setting up a server
-We're going to stick with our simple server-as-message-router model from before. The server.js file will look the same as in the [intro tutorial](/multiparty/jiff/tutorials/1-intro.md).
+We're going to stick with our simple server-as-message-router model from before. The server.js file will look the same as in the [intro tutorial](/tutorials/1-intro.md).
 
 # Implementing client code
 The client program has two jobs: it connects to the server, and works with the server to search under MPC. <br>
