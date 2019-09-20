@@ -194,18 +194,3 @@ function binary_search(array, element) {
   return binary_search(nArray, element);
 }
 ```
-----------------------------------------------------------
-We have now implemented linear and binary search. <br>
-As a last step, we need to make sure the connecting and computation functions can be accessed by other files, so we wrap all the code in a wrapper.
-
-```javascript
-(function (exports, node) {
-  ...
-  function connect() { ... }
-  function compute() { ... }
-
-  exports.connect = connect;
-  exports.compute = compute;
-
-}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
-```
