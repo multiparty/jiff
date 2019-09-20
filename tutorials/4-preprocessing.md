@@ -164,4 +164,5 @@ As mentioned earlier, not all operations on secret shares require pre-processing
 | ceq      |
 | cneq     |
 | open     |
+| if_else  |
 
