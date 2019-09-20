@@ -1,48 +1,27 @@
 
 In this tutorial, we'll look at an example implementation of the inner product. We'll start with a basic version, then extend it to support fixed-point numbers, optimize it under the constraints of MPC, and prepare to scale better. This tutorial implements the 2-party version for simplicity, but the techniques exend to aribtrary parties.
 
-# Setting up a simple server
-We're going to stick with our simple server-as-message-router model from before. The `express` package provides a web framework, which we want to use over `http`. This code goes in the file `server.js`.
-
-```javascript
-var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-```
-
-We configure the server to know where our libraries live.
-```javascript
-require('../../lib/jiff-server').make_jiff(http, { logs:true });
-app.use('/demos', express.static('demos'));
-app.use('/lib', express.static('lib'));
-app.use('/lib/ext', express.static('lib/ext'));
-```
-
-Now we can set our server to run locally on port 8080.
-```javascript
-http.listen(8080, function() {
-  console.log('listening on localhost:8080');
-});
-```
+# Setting up a server
+We're going to stick with our simple server-as-message-router model from before. The server.js file will look the same as in the [intro tutorial](/multiparty/jiff/tutorials/1-intro.md).
 
 # Implementing client code
-In this setting, we want to compute an inner product. Each party has an input vector, and will receive an integer as output. As before, the client program has two jobs: they connect to the server, and they work together to compute the inner product under MPC. 
+In this setting, we want to compute an inner product. Each party has an input vector, and will receive an integer as output. As before, the client program has two jobs: they connect to the server, and they work together to compute the inner product under MPC.
 
-## Connecting to the server 
-In the file `client.js`, we start by connecting to the server. First, we define the `hostname` that the server above is running on. Second, since this is a multi-party computation, we need to tell the server how many parties there are (`party_count`), and the name of our computation(`computation_id`). 
+## Connecting to the server
+In the file `client.js`, we start by connecting to the server. First, we define the `hostname` that the server above is running on. Second, since this is a multi-party computation, we need to tell the server how many parties there are (`party_count`), and the name of our computation(`computation_id`).
 
 The `make_jiff` function uses this information to set up a new JIFF object.
 We save the fully configured `jiff_instance` in a global variable, so we can use it when we compute our function.
 
 ```javascript
-var jiff_instance; 
+var jiff_instance;
 
 function connect() {
 
   var hostname = "http://localhost:8080";
 
-  var computation_id = 'inner_product'; 
-  var options = {party_count: 2}; 
+  var computation_id = 'inner_product';
+  var options = {party_count: 2};
 
   // TODO: is this necessary if we're using npm?
   if (node) {
@@ -145,7 +124,7 @@ We also need to make sure the connecting and computation functions can be access
 
 ```javascript
 (function (exports, node) {
-  ... 
+  ...
   function connect() { ... }
   function compute() { ... }
 
@@ -158,7 +137,7 @@ We also need to make sure the connecting and computation functions can be access
 TODO Add something about running and testing?!
 
 # Using the fixed point extension
-Our inner product code works fine with integers. However, many interesting applications in statistics, machine learning, and other domains require operations on real numbers. 
+Our inner product code works fine with integers. However, many interesting applications in statistics, machine learning, and other domains require operations on real numbers.
 The JIFF framework includes extensions which provide additional functionality. We'll use the `fixedpoint` extension (which extends the client behavior), and which depends on `bignumber`s (which extend both client and server behavior).
 
 We need to tell both the server and the client where to find the extension code. On the `server.js` side, we'll save our JIFF `base_instance`, then apply the `bignumber` extension. We'll also tell the server where to find the correct JIFF files. We update `server.js`:
@@ -201,7 +180,7 @@ TODO is this correct?
 Now we can run the inner product with fixed point (or a mix of fixed point and integer) inputs!
 
 ## Under the hood: optimizing for MPC
-Our computation works great with fixed point data, but maybe it's running a litle slower than we'd like. By optimizing the MPC operations, we can reduce the total amount of work being performed. 
+Our computation works great with fixed point data, but maybe it's running a litle slower than we'd like. By optimizing the MPC operations, we can reduce the total amount of work being performed.
 
 For example, the inner product requires many multiplications of floating point numbers. In JIFF, to multiply two fixed point numbers `a` and `b`, we multiply them normally, then divide by the total magnitude `m`.
 

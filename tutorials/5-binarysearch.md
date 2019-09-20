@@ -5,61 +5,14 @@ To solve this, we can search under MPC and without revealing parties' inputs, re
 - 1 if the value exists in party 1's array
 - 0 if the value is not found in the array.
 -----------------------------------------------------------------------------
-Let's get started with the set up first.
-# Set up a server
-We're going to stick with our simple server-as-message-router model from [before](/multiparty/jiff/tutorials/1-intro.md). The `express` package provides a web framework, which we want to use over `http`. This code goes in the file `server.js`.
 
-```javascript
-var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-```
-
-We configure the server to know where our libraries live.
-```javascript
-require('../../lib/jiff-server').make_jiff(http, { logs:true });
-app.use('/demos', express.static('demos'));
-app.use('/lib', express.static('lib'));
-app.use('/lib/ext', express.static('lib/ext'));
-```
-
-Now we can set our server to run locally on port 8080.
-```javascript
-http.listen(8080, function() {
-  console.log('listening on localhost:8080');
-});
-```
+# Setting up a server
+We're going to stick with our simple server-as-message-router model from before. The server.js file will look the same as in the [intro tutorial](/multiparty/jiff/tutorials/1-intro.md).
 
 # Implementing client code
 The client program has two jobs: it connects to the server, and works with the server to search under MPC. <br>
 In this tutorial, we will implement searching with 2 parties: <br>
 **party 1** will input the array and **party 2** will input the value being searched for.
-
-## Connecting to the server
-In the file `client.js`, we start by connecting to the server. First, we define the `hostname` that the server above is running on. Second, since this is a multi-party computation, we need to tell the server how many parties there are (`party_count`), and the name of our computation(`computation_id`).
-
-The `make_jiff` function uses this information to set up a new JIFF object.
-We save the fully configured `jiff_instance` in a global variable, so we can use it when we compute our function.
-
-```javascript
-var jiff_instance;
-
-function connect() {
-
-  var hostname = "http://localhost:8080";
-
-  var computation_id = 'search';
-  var options = {party_count: 2};
-
-  // TODO: is this necessary if we're using npm?
-  if (node) {
-    jiff = require('../../lib/jiff-client');
-    $ = require('jquery-deferred');
-  }
-
-  jiff_instance = jiff.make_jiff(hostname, computation_id, options);
-}
-```
 
 # <a name="Start-the-Computation"></a> Start the Computation
 Once the set up of the server and parties is taken care of, we can start the search computation.

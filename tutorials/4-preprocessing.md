@@ -95,7 +95,7 @@ As mentioned earlier, not all operations on secret shares require pre-processing
 | cdiv     |
 | smod     |
 | if_else  |
-| sor_bij  |
+| sor_bit  |
 | slteq    |
 | sgteq    |
 | sgt      |

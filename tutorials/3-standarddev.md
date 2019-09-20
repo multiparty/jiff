@@ -15,34 +15,6 @@ only supports integer operations, there will be some accuracy loss due to roundi
 computation. These accuracy losses will be minimized with the extension to floating point arithmetic.o
 
 
-## Connecting to the server
-In the file `client.js`, we start by connecting to the server. First, we define the `hostname` that the server above is
-running on. Second, since this is a multi-party computation, we need to tell the server how many parties there are
-(`party_count`), and the name of our computation(`computation_id`).
-
-The `make_jiff` function uses this information to set up a new JIFF object.
-We save the fully configured `jiff_instance` in a global variable, so we can use it when we compute our function.
-
-```javascript
-var jiff_instance;
-
-function connect() {
-
-  var hostname = "http://localhost:8080";
-
-  var computation_id = 'stand_dev';
-  var options = {party_count: 3};
-
-  // TODO: is this necessary if we're using npm?
-  if (node) {
-    jiff = require('../../lib/jiff-client');
-    $ = require('jquery-deferred');
-  }
-
-  jiff_instance = jiff.make_jiff(hostname, computation_id, options);
-}
-```
-
 ## Computing the standard deviation
 
 Say there are *n* parties in your computation, each with input *x_i*. Let *m* be the mean of the inputs *x_i*. Recall
