@@ -53,7 +53,7 @@ total_votes.then(function (result) {
 });
 ```
 
-# Voting for several choices
+## Voting for several choices
 Now let's have several options to vote for instead of a yes/no:
 
 ```javascript
@@ -127,7 +127,7 @@ options.onConnect = function (jiff_instance) {
 var jiff_instance = jiff.make_jiff('http://localhost:8080', 'vote', options);
 ```
 
-# With sanity/honesty checks
+## With sanity/honesty checks
 In our previous example, someone could have maliciously put a value greater than 1 in any of their votes, giving them an unfair say. Let's add some checks to make sure that everyone only votes once, and that their votes are not greater than 1:
 ```javascript
 // Check 1
