@@ -35,23 +35,9 @@ var min = comparison.if_else(mine, yours);
 ```
 
 
-The `if_else` implementation in the JIFF library is very concise:
+The `if_else` implementation in the JIFF library boils down to this:
 ```javascript
-if_else = function (trueVal, falseVal, op_id) {
-      if (op_id == null) {
-        op_id = self.jiff.counters.gen_op_id('ifelse', self.holders);
-      }
-
-      var const1 = self.isConstant(trueVal);
-      var const2 = self.isConstant(falseVal);
-      if (const1 && const2) {
-        return self.icmult(trueVal).isadd(self.inot().icmult(falseVal));
-      } else if (const1) {
-        return self.inot().ismult(falseVal.icsub(trueVal), op_id).icadd(trueVal);
-      } else if (const2) {
-        return self.ismult(trueVal.icsub(falseVal), op_id).icadd(falseVal);
-      } else {
-        return self.ismult(trueVal.issub(falseVal), op_id).isadd(falseVal);
-      }
+if_else = function (trueVal, falseVal) {
+  return self.ismult(trueVal.issub(falseVal), op_id).isadd(falseVal);
   };
 ```
