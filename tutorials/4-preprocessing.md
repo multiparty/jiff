@@ -77,6 +77,8 @@ jiff_instance.preprocessing('smult', 5);
 // provide a parameters object which specifies the namespace as the 'base' jiff client
 jiff_instance.preprocessing('cdiv', 1, _, _, _, _, _, {'namespace': 'base'});
 
+jiff_instance.preprocessing('open', 1);
+
 jiff_instance.finish_preprocessing();
 ```
 We specify the namespace as 'base' for the cdiv operation because we are using `.legacy.cdiv()` which refers to the original jiff-client functionality, as opposed to the `cdiv` function defined in the fixed-point extension.
