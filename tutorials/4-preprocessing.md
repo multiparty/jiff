@@ -11,9 +11,15 @@ For example, if we are going to compute a global average on a large dataset - we
 ```javascript
 jiff.preprocessing('cdiv', 1);
 ```
-The preprocessing function takes many more optional parameters, but for our very example that is all it needs. After we've dealt with all the operations we anticipate performing, we need to tell JIFF we've finished:
+The preprocessing function takes many more optional parameters, but for our very example that is all it needs. After we've dealt with all the operations we anticipate performing, we need to tell JIFF what to do - likely the main phase of computation:
 ```javascript
-jiff.finish_preprocessing();
+jiff.onFinishPreprocessing(start_compute);
+
+var start_compute = function() {
+/*
+ * Main phase of computation...
+ */
+};
 ```
 This is important for synchronization during the online-phase of computation, to ensure allparties are using the same pre-processed values for the same operations.
 Later, when we perform the secure division, any values that it relies on will be pulled from the table which stores preprocessed values:
@@ -52,7 +58,7 @@ Because we know the length of the input (5), we can preprocess for exactly this 
 jiff_instance.preprocessing('smult', 5);
 
 // call before the online phase of computation
-jiff_instance.finish_preprocessing();
+jiff_instance.onFinishPreprocessing(start_compute);
 ```
 
 Later in the inner product tutorial we added support for fixed-point numbers, which usually uses one division per call to `smult` to account for the magnitude of the numbers. We optimized this by ignoring magnitude until the last step, where we account for it with a single division:
@@ -79,7 +85,7 @@ jiff_instance.preprocessing('cdiv', 1, _, _, _, _, _, {'namespace': 'base'});
 
 jiff_instance.preprocessing('open', 1);
 
-jiff_instance.finish_preprocessing();
+jiff_instance.onFinishPreprocessing(start_compute);
 ```
 We specify the namespace as 'base' for the cdiv operation because we are using `.legacy.cdiv()` which refers to the original jiff-client functionality, as opposed to the `cdiv` function defined in the fixed-point extension.
 
@@ -107,7 +113,7 @@ for (var op in operations) {
   // and let JIFF use the defaults
   jiff_instance.preprocessing(op, operations[op], null, null, null, receivers, compute_parties)
 }
-jiff._instancefinish_preprocessing();
+jiff_instance.onFinishPreprocessing(start_compute);
 ```
 This way, all of the values that multiplications and comparisons rely on will be created and distributed before the start of any computation.
 
