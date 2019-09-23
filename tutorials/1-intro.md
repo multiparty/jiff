@@ -60,7 +60,6 @@ We save the fully configured `jiff_instance` in a global variable, so we can use
 We also need to tell the client where the JIFF client code is kept.
 
 ```javascript
-// TODO: is this necessary if we're using npm?
 var jiff = require('../../lib/jiff-client');
 var jiff_instance = jiff.make_jiff('localhost:8080', 'vacation');
 ```

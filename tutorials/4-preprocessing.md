@@ -22,7 +22,7 @@ Later, when we perform the secure division, any values that it relies on will be
 var number_of_inputs = 100;
 var average = sum.div(number_of_inputs)
 ```
-Calling `div()` as opposed to `cdiv` is okay here, as JIFF will recognize that `number_of_inputs` is a public constant and internally use the logic for constant division. You can almost always use the generic arithemtic operators (e.g. div, mult, add, sub) and JIFF will decide whether to use the protocol for operations by a secret share or by a constant.
+Calling `div()` as opposed to `cdiv` is okay here, as JIFF will recognize that `number_of_inputs` is a public constant and internally use the logic for constant division. You can almost always use the generic arithemtic operators (e.g. div, mult, add, sub) and JIFF will decide whether to use the protocol for operations by a secret share or by a constant. BUT it's important that the call to `preprocessing()` uses the precise function name (`sdiv` or `cdiv`) because it will not know the inputs in advance.
 
 It's common for JIFF computations to end with a call to `jiff.open()` to reveal a final result, the open protocol also requires preprocessing:
 ```javascript
