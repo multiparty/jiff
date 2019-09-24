@@ -4,7 +4,7 @@ Branching (e.g. via an if-else statement) can often leak information. This is ap
 JIFF has a convenient function for exactly this scenario, instead of writing a traditional if/else block like this:
 ```javascript
 var comparison = share.lt(other_share);
-// comparison is a secret share, this will fail!!
+// comparison is a secret share, this behaves unexpectedly!!
 if (comparison) {
     result = 1;
 } else {
