@@ -32,7 +32,7 @@
     },
     "/Zp127": {
       "alias": "/",
-      "count": 6,
+      "count": 1,
       "parallel": 3,
       "options": {
         "Zp": 127,
@@ -41,7 +41,7 @@
     },
     "/Zp2039": {
       "alias": "/",
-      "count": 3,
+      "count": 1,
       "parallel": 3,
       "options": {
         "Zp": 2039,

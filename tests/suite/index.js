@@ -1,4 +1,15 @@
 /* global describe it */
+var helpers = require('./config/bigNumber/helpers.js');
+
+// Catch and log any uncaught exceptions
+process.on('uncaughtException', function (err) {
+  console.log('Uncaught Exception!');
+  console.log(err);
+  throw err;
+});
+process.on('unhandledRejection', function (reason) {
+  console.log('Unhandled Rejection', reason);
+});
 
 // Parameters
 var name = process.env['JIFF_TEST_NAME']; // the extension(s) to test
@@ -46,13 +57,26 @@ describe(name + ': ' + suite, function () {
         var alias = testConfig.alias != null ? testConfig.alias : test;
 
         // figure out computation inputs
-        var generation = require('./' + config['suiteConf']['generation']['file']);
-        var inputs;
-        try {
-          inputs = generation[config['suiteConf']['generation']['function']](test, testCount, options);
-        } catch (error) {
-          console.log('Input generation error ', error);
-          done(error);
+        var inputs = [];
+        if (testConfig['inputs'] != null) {
+          inputs = testConfig['inputs'];
+        }
+
+        // Generate random inputs
+        if (testCount != null && testCount > inputs.length) {
+          testCount = testCount - inputs.length;
+          var generation = require('./' + config['suiteConf']['generation']['file']);
+          try {
+            inputs = inputs.concat(generation[config['suiteConf']['generation']['function']](test, testCount, options));
+          } catch (error) {
+            console.log('Input generation error ', error);
+            done(error);
+          }
+        }
+
+        // Make sure inputs are bignumbers for tests with BigNumber extension
+        if (extensions != null && extensions.indexOf('bigNumber') > -1) {
+          inputs = helpers.toBigNumber(suite, test, inputs);
         }
 
         // figure out computation
@@ -64,7 +88,7 @@ describe(name + ': ' + suite, function () {
 
         // Create and run instances
         options.onConnect = function (jiff_instance) {
-          computation(jiff_instance, alias, inputs, testParallel, done);
+          computation(jiff_instance, alias, inputs, testParallel, done, testConfig);
         };
         init.createInstances(party_count, port, computation_id, options, extensions);
       });

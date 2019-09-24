@@ -62,5 +62,5 @@ baseComputations.openInterpreter['!'] = function (operand1, _) {
 // Default Computation Scheme
 exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done) {
   Zp = jiff_instance.Zp;
-  return baseComputations.compute(jiff_instance, _test, _inputs, _testParallel, _done);
+  return baseComputations.compute.apply(baseComputations, arguments);
 };

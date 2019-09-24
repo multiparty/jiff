@@ -5,6 +5,7 @@
   this.mpc = {
     connect: function (hostname, computation_id, options) {
       var opt = Object.assign({}, options);
+      opt.crypto_provider = true;
       opt['initialization'] = { role: 'input' };
 
       // eslint-disable-next-line no-undef

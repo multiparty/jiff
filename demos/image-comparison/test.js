@@ -43,11 +43,8 @@ function generateInputs(party_count) {
 function computeResults(inputs) {
   var results = [];
 
-  for (var j = 0; j < n; j++) {
-    var eq = 0;
-    for (var i = 1; i <= party_count; i++) {
-      eq = (eq === inputs[i][j] ? 1: 0);
-    }
+  for (var i = 0; i < n; i++) {
+    var eq = (inputs[1][i] === inputs[2][i]) ? 1 : 0;
     results.push(eq);
   }
 
@@ -120,7 +117,7 @@ describe('Test', function () {
       })(0);
     };
 
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp };
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp, crypto_provider: true };
     for (var i = 0; i < party_count; i++) {
       mpc.connect('http://localhost:8080', 'mocha-test', options);
     }

@@ -1,5 +1,5 @@
 {
-  "tests": [ "+", "-", "*", "|", "^", "cdivfac", "/Zp127" ],
+  "tests": [ "+", "-", "*", "|", "^", "cdivfac", "/Zp127", "/Zp2039" ],
   "suiteConf": {
     "port": 3001,
     "extensions": [ "restAPI" ],
@@ -28,6 +28,17 @@
       "parallel": 2,
       "options": {
         "Zp": 127,
+        "party_count": 3,
+        "flushInterval": 50
+      }
+    },
+    "/Zp2039": {
+      "alias": "/",
+      "ondemand": false,
+      "count": 4,
+      "parallel": 2,
+      "options": {
+        "Zp": 2039,
         "party_count": 3,
         "flushInterval": 50
       }

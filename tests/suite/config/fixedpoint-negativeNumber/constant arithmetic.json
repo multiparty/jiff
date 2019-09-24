@@ -34,27 +34,41 @@
         "decimal_digits": 1,
         "integer_digits": 1,
         "warn": false
-      }
+      },
+      "inputs": [
+        {"1": 1.6, "constant": 0.8},
+        {"1": -8, "constant": 2},
+        {"1": 6.6, "constant": -2.2},
+        {"1": -6.4, "constant": -3.2}
+      ]
     },
     "*": {
-      "count": 10,
+      "count": 6,
       "parallel": 3,
       "options": {
         "Zp": "262139",
         "party_count": 3,
         "decimal_digits": 1,
         "integer_digits": 3
-      }
+      },
+      "inputs": [
+        {"1": 311.2, "constant": 2},
+        {"1": 81.9, "constant": -12},
+        {"1": -63.5, "constant": -10}
+      ]
     },
     "/": {
-      "count": 8,
-      "parallel": 3,
+      "count": 3,
+      "parallel": 1,
       "options": {
         "Zp": "2097143",
         "party_count": 3,
         "integer_digits": 2,
         "decimal_digits": 2
-      }
+      },
+      "inputs": [
+        {"1": 81.89 ,"constant": -11}
+      ]
     }
   }
 }
