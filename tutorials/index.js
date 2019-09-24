@@ -1,7 +1,8 @@
 const Neptune = require('neptune-notebook');
 
-const jsDependencies = ['../lib/jiff-client.js', '../lib/ext/jiff-client-bignumber.js', '../lib/ext/jiff-client-fixedpoint.js'];
+const jsDependencies = ['../node_modules/socket.io-client/dist/socket.io.js', '../lib/sodium.js', '../lib/jiff-client.js', '../lib/ext/jiff-client-bignumber.js', '../lib/ext/jiff-client-fixedpoint.js'];
 const plotly = ['static/plotly-latest.min.js'];
+
 
 const neptune = new Neptune();
 neptune.addDocument('MPC', '0-intro-to-mpc.md', true, jsDependencies.concat(plotly));
@@ -14,3 +15,6 @@ neptune.addDocument('voting', '6-voting.md', true, jsDependencies);
 neptune.addDocument('ifelse', '7-ifelse.md', true, jsDependencies);
 
 neptune.start(9111);
+
+global.neptune = neptune;
+global.server = neptune.server;

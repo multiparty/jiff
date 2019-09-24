@@ -79,7 +79,7 @@ function share(x, n) {
 }
 
 function open(shares) {
-  return shares.reduce((sum, share) => sum + share, 0);
+  return shares.reduce(function (sum, share) { return sum + share }, 0);
 }
 
 var shares = share(5, 3);
@@ -111,7 +111,7 @@ function share(x, n) {
 }
 
 function open(shares, prime) {
-  return shares.reduce((sum, share) => mod(sum + share), 0);
+  return shares.reduce(function (sum, share) { return mod(sum + share) }, 0);
 }
 
 var shares = share(5, 3);
@@ -127,16 +127,16 @@ var input1 = 10;
 var input2 = 13;
 var input3 = 22;
 
-var shares1 = share(input1);
-var shares2 = share(input2);
-var shares3 = share(input3);
+var shares1 = share(input1, 3);
+var shares2 = share(input2, 3);
+var shares3 = share(input3, 3);
 
 Console.log(shares1, shares2, shares3);
 
-var sum1 = shares1.map((v, i) => mod(v + shares2[i]));
+var sum1 = shares1.map(function (v, i) { return mod(v + shares2[i]) });
 Console.log(sum1, open(sum1));
 
-var sum2 = sum1.map((v, i) => mod(v + shares3[i]));
+var sum2 = sum1.map(function (v, i) { return mod(v + shares3[i]) });
 Console.log(sum2, open(sum2));
 ```
 
@@ -238,8 +238,8 @@ function __plot(points, coefficients, index) {
 }
 
 function plot(pointsArr, coefficientsArr, id) {
-  var traces = pointsArr.map((_, i) => __plot(pointsArr[i], coefficientsArr[i], i));
-  traces = traces.reduce((arr, tra) => arr.concat(tra), []);
+  var traces = pointsArr.map(function (_, i) { return __plot(pointsArr[i], coefficientsArr[i], i) });
+  traces = traces.reduce(function (arr, tra) { return arr.concat(tra) }, []);
   document.getElementById(id).innerHTML = '';
   document.getElementById(id).style.height = '500px';
   Plotly.newPlot(id, traces);
@@ -296,8 +296,8 @@ var shares1 = share(5, 3);
 var shares2 = share(2, 3);
 
 var result = {
-  shares: shares1.shares.map((_, i) => mod(shares1.shares[i] + shares2.shares[i])),
-  polynomial: shares1.polynomial.map((_, i) => mod(shares1.polynomial[i] + shares2.polynomial[i]))
+  shares: shares1.shares.map(function (_, i) { return mod(shares1.shares[i] + shares2.shares[i]) }),
+  polynomial: shares1.polynomial.map(function (_, i) { return mod(shares1.polynomial[i] + shares2.polynomial[i]) })
 };
 
 Console.log(polynomialPrint(shares1.polynomial));
@@ -316,8 +316,8 @@ var shares1 = share(5, 3);
 var shares2 = share(2, 3);
 
 var result = {
-  shares: shares1.shares.map((_, i) => mod(shares1.shares[i] + shares2.shares[i])),
-  polynomial: shares1.polynomial.map((_, i) => mod(shares1.polynomial[i] + shares2.polynomial[i]))
+  shares: shares1.shares.map(function (_, i) { return mod(shares1.shares[i] + shares2.shares[i]) }),
+  polynomial: shares1.polynomial.map(function (_, i) { return mod(shares1.polynomial[i] + shares2.polynomial[i]) })
 };
 
 Console.log(polynomialPrint(shares1.polynomial));
@@ -346,7 +346,7 @@ var shares1 = share(5, 2);
 var shares2 = share(2, 2);
 
 var result = {
-  shares: shares1.shares.map((_, i) => mod(shares1.shares[i] * shares2.shares[i])),
+  shares: shares1.shares.map(function (_, i) { return mod(shares1.shares[i] * shares2.shares[i]) }),
   polynomial: polynomialMult(shares1.polynomial, shares2.polynomial)
 };
 
@@ -379,7 +379,7 @@ var shares1 = share(5, 3, 2);
 var shares2 = share(2, 3, 2);
 
 var result = {
-  shares: shares1.shares.map((_, i) => mod(shares1.shares[i] * shares2.shares[i])),
+  shares: shares1.shares.map(function (_, i) { return mod(shares1.shares[i] * shares2.shares[i]) }),
   polynomial: polynomialMult(shares1.polynomial, shares2.polynomial)
 };
 
@@ -388,6 +388,58 @@ Console.log(polynomialPrint(shares2.polynomial));
 Console.log(polynomialPrint(result.polynomial));
 plot([shares1.shares, shares2.shares, result.shares], [shares1.polynomial, shares2.polynomial, result.polynomial], 'plot6');
 ```
+
+# What does MPC code look like traditionally?
+
+Traditionally, parties in MPC perform identical instructions dictated by the MPC protocol on the shares they possess. In such scenarios,
+MPC is very similar to the Single Instruction Multiple Data (SIMD) paradigm from parallel programming (e.g. Message Passing Interface (MPI)). 
+The main difference being that the data is shared in MPC (as opposed to split), for the purpose of security (as opposed to parallelization).
+
+Below is an example of such code written in JIFF, where three parties and a server carry out an MPC computation that computes the sum of their inputs.
+JIFF API and the role of the server in JIFF is explained in more details in later tutorials.
+
+```neptune[frame=jiff,scope=jiff,title=Server,env=server]
+var jiff = require('../../../../../lib/jiff-server.js');
+var jiff_instance = jiff.make_jiff(global.server, { logs:true });
+Console.log('Started jiff server on port 9111');
+```
+
+```neptune[frame=jiff,scope=jiff,title=Party&nbsp;1]
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'first-mpc-computation', {party_count: 3, crypto_provider: true});
+
+jiff_instance.wait_for([1, 2, 3], function () {
+  var shares = jiff_instance.share(10);
+  var resultShare = shares[1].sadd(shares[2]).sadd(shares[3]);
+
+  jiff_instance.open(resultShare).then(Console.log);
+});
+```
+
+```neptune[frame=jiff,scope=jiff,title=Party&nbsp;2]
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'first-mpc-computation', {party_count: 3, crypto_provider: true});
+
+jiff_instance.wait_for([1, 2, 3], function () {
+  var shares = jiff_instance.share(30);
+  var resultShare = shares[1].sadd(shares[2]).sadd(shares[3]);
+
+  jiff_instance.open(resultShare).then(Console.log);
+});
+```
+
+```neptune[frame=jiff,scope=jiff,title=Party&nbsp;3]
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'first-mpc-computation', {party_count: 3, crypto_provider: true});
+
+jiff_instance.wait_for([1, 2, 3], function () {
+  var shares = jiff_instance.share(50);
+  var resultShare = shares[1].sadd(shares[2]).sadd(shares[3]);
+
+  jiff_instance.open(resultShare).then(Console.log);
+});
+```
+
+
+We will see later how JIFF supports more flexible and asymmetric computations, so that different parties can perform different instructions
+for purposes of performance, reliability, or security.
 
 ```neptune[inject=true,language=html]
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
