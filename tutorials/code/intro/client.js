@@ -1,9 +1,9 @@
-var jiff = require('../lib/jiff-client');
+var jiff = require('../../../lib/jiff-client');
 
 var my_budget = parseInt(process.argv[2], 10);
 console.log(my_budget);
 
-var options = {party_count: 3};
+var options = {party_count: 3, crypto_provider: true};
 options.onConnect = function (my_jiff_instance) {
 
   var shares = my_jiff_instance.share(my_budget);
