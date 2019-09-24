@@ -30,6 +30,7 @@ if (process.argv[3] != null) {
 var jiff = require('../../lib/jiff-client.js');
 
 var options = {
+  cypto_provider: true,
   party_count: config.party_count,
   initialization: {role: 'compute'} // indicate to the server that this is a compute party
 };

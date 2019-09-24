@@ -185,8 +185,9 @@ describe('Test', function () {
 
           // assert results are accurate
           try {
+            var within_margin = Math.abs(testResults[i].p - realResults[i].p) < 0.1;
+            assert.deepEqual(within_margin, true, msg + ' yINTERCEPT!');
             assert.deepEqual(testResults[i].m.toString(), realResults[i].m.toString(), msg + ' SLOPE!');
-            assert.deepEqual(testResults[i].p.toString(), realResults[i].p.toString(), msg + ' yINTERCEPT!');
           } catch (assertionError) {
             done(assertionError);
             done = function () { };
@@ -200,7 +201,7 @@ describe('Test', function () {
       })(0);
     };
 
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp, integer_digits: integer_digits, decimal_digits: decimal_digits };
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp, integer_digits: integer_digits, decimal_digits: decimal_digits, crypto_provider: true };
     for (var i = 0; i < party_count; i++) {
       mpc.connect('http://localhost:8080', 'mocha-test', options);
     }

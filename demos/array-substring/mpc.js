@@ -1,5 +1,6 @@
 (function (exports, node) {
   var saved_instance;
+  var seeds = {};
 
   /**
    * Connect to the server and initialize the jiff instance
@@ -7,6 +8,7 @@
   exports.connect = function (hostname, computation_id, options) {
     // Added options goes here
     var opt = Object.assign({}, options);
+    opt.crypto_provider = true;
 
     if (node) {
       // eslint-disable-next-line no-undef
@@ -30,6 +32,12 @@
       jiff_instance = saved_instance;
     }
 
+    // Unique prefix seed for op_ids
+    if (seeds[jiff_instance.id] == null) {
+      seeds[jiff_instance.id] = 0;
+    }
+    var seed = seeds[jiff_instance.id]++;
+
     // The MPC implementation should go *HERE*
     var final_deferred = $.Deferred(); // this will resolve to the final result
     var final_promise = final_deferred.promise(); // which is an array of 0/1 values for every index in the haystack
@@ -45,6 +53,8 @@
 
     // Perform the computation
     inputPromise.then(function (shares) {
+      jiff_instance.seed_ids(seed);
+
       // Party 1 provides the haystack in which to look
       var haystack = shares[1];
 

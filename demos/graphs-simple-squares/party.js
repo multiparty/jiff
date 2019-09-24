@@ -19,7 +19,7 @@ for (var i = 0; i < input.length; i += 2) {
     return;
   }
   if (input[i] <= -5 || input[i] >= 5 || input[i+1] <= -5 || input[i+1] >= 5) {
-    console.log('all coordinates must be between -10 and 10 exclusive.');
+    console.log('all coordinates must be between -5 and 5 exclusive.');
     return;
   }
   if (Math.floor(input[i] * 100) !== input[i] * 100 || Math.floor(input[i+1] * 100) !== input[i+1] * 100) {

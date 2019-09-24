@@ -41,7 +41,7 @@ options.onConnect = function (jiff_instance) {
 
   promise.then(function (v) {
     console.log(v.toString(10));
-    jiff_instance.disconnect(true);
+    jiff_instance.disconnect(false, true);
   });
 };
 

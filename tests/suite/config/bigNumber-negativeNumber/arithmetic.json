@@ -15,7 +15,7 @@
 
   "testConf": {
     "default": {
-      "count": 100,
+      "count": 30,
       "parallel": 25,
       "options": {
         "Zp": 15485867,
@@ -23,7 +23,7 @@
       }
     },
     "*bgw": {
-      "count": 100,
+      "count": 30,
       "parallel": 25,
       "options": {
         "Zp": 15485867,
@@ -42,15 +42,15 @@
       "count": 6,
       "parallel": 3,
       "options": {
-        "Zp": 127,
+        "Zp": 31,
         "party_count": 3
       }
     },
     "%": {
-      "count": 6,
+      "count": 3,
       "parallel": 3,
       "options": {
-        "Zp": 127,
+        "Zp": 31,
         "party_count": 3
       }
     }

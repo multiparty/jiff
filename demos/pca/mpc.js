@@ -1,5 +1,7 @@
+/* global numeric, $, math */
 (function (exports, node) {
   var saved_instance;
+  var seeds = {};
 
   /**
    * Connect to the server and initialize the jiff instance
@@ -7,6 +9,7 @@
   exports.connect = function (hostname, computation_id, options) {
     // Added options goes here
     var opt = Object.assign({}, options);
+    opt.crypto_provider = true;
 
     // if you need any extensions, put them here
     if (node) {
@@ -20,11 +23,10 @@
       jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber');
       // eslint-disable-next-line no-undef,no-global-assign
       $ = require('jquery-deferred');
-      // eslint-disable-next-line no-undef
+      // eslint-disable-next-line no-undef,no-global-assign
       numeric = require('numeric/numeric-1.2.6');
       // eslint-disable-next-line no-undef,no-global-assign
       math = require('mathjs');
-      // eslint-disable-next-line no-undef
       math.import(numeric, {wrap: true, silent: true});
     }
 
@@ -57,12 +59,20 @@
       jiff_instance = saved_instance;
     }
 
+    // Unique prefix seed for op_ids
+    if (seeds[jiff_instance.id] == null) {
+      seeds[jiff_instance.id] = 0;
+    }
+    var seed = seeds[jiff_instance.id]++;
+
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
 
-    console.log('About to share array')
+    console.log('About to share array');
     // SHARE VECTOR & SECRET ADD
     jiff_instance.share_array(arr).then(function (shares_2d) {
+      jiff_instance.seed_ids(seed);
+
       var results = [];
       for (var i = 0; i < shares_2d[1].length; i++) {
         var sum = shares_2d[1][i];
@@ -76,6 +86,8 @@
 
       // COMPUTE MEAN VECTOR
       Promise.all(results).then(function (results) {
+        jiff_instance.seed_ids(seed);
+
         var mean = results.map(function (item) {
           return item.div(jiff_instance.party_count);
         });
@@ -86,35 +98,31 @@
         // SCATTER MATRIX
         var diff = [subtractArrays(arr, mean)];
 
-        // eslint-disable-next-line no-undef
         var diff_T = numeric.transpose(diff);
         console.log('arr = ' + arr);
         console.log('mean = ' + mean);
         console.log(diff);
         console.log(diff_T);
 
-        // eslint-disable-next-line no-undef
         var scatter = numeric.dot(diff_T, diff);
-
         console.log('local scatter:');
         console.log(scatter);
 
-        console.log('begin calculating scatter sum')
+        console.log('begin calculating scatter sum');
         var scatter_sum = [];
         scatter.map(function (row) {
-
           // SECURE SCATTER SUM (AGGREGATE SCATTER MATRIX)
-          scatter_sum.push(new Promise(function (resolve, reject) {
+          scatter_sum.push(new Promise(function (resolve) {
             console.log('sharing row = ' + row);
             var row_sum = [];
             row.map(function (item) {
-              console.log('sharing item = ' + item)
+              console.log('sharing item = ' + item);
               var shares = jiff_instance.share(item);
               var sum = shares[1];
               for (var k = 2; k <= jiff_instance.party_count; k++) {
                 sum = sum.sadd(shares[k]);
               }
-              row_sum.push(sum.open());//.then(successCallback, failureCallback));
+              row_sum.push(sum.open());
             });
 
             Promise.all(row_sum).then(function (results) {
@@ -122,12 +130,10 @@
               resolve(results);
             });
 
-          }));//.then(successCallback, failureCallback));
-
+          }));
         });
 
         Promise.all(scatter_sum).then(function (results) {
-
           console.log(results);
           for (var i = 0; i < results.length; i++) {
             for (var j = 0; j < results[i].length; j++) {
@@ -137,11 +143,9 @@
 
           console.log('scatter_sum computed = ');
           console.log(results);
-
           console.log('scatter_sum eig = ');
 
           try {
-            // eslint-disable-next-line no-undef
             var eig = numeric.eig(results);
           } catch (err) {
             console.log(err) // zero mat, etc
@@ -155,11 +159,13 @@
           // Fix sorting 6/11
           // The fact that the wrong eigenvalues are returned doesn't affect PCA. Only need the vectors,
           // which seem to be correct.
-          var sorted_eigen_values = eig.lambda.x.sort((a,b) => b - a).slice(0, 2);
+          var sorted_eigen_values = eig.lambda.x.sort(function (a, b) {
+            return b - a;
+          }).slice(0, 2);
+
           console.log('two largest eigen values = ' + sorted_eigen_values);
-          var corresponding_largest_eigenvectors = []
+          var corresponding_largest_eigenvectors = [];
           sorted_eigen_values.map(function (item) {
-            // eslint-disable-next-line no-undef
             var eigenvecs = numeric.transpose(eig.E.x); // to get one eigenvec per row
             // Fix incorrect transpose of eigenvector 6/12
             // (eig.E.x[0]); // NOT the eigenvector of lambda[0]. incorrect indexing
@@ -167,7 +173,6 @@
             // corresponding_largest_eigenvectors.push(eig.E.x[eig.lambda.x.indexOf(item)])
           });
 
-          // eslint-disable-next-line no-undef
           corresponding_largest_eigenvectors = numeric.transpose(corresponding_largest_eigenvectors);
           console.log('corresponding eigenvectors:');
           console.log(corresponding_largest_eigenvectors);
@@ -177,15 +182,13 @@
           // dim: 1x3 * 3x2 = 1x2
           // var result = numeric.dot(numeric.transpose(corresponding_largest_eigenvectors), arr);
 
-          // eslint-disable-next-line no-undef
           var result = numeric.dot(arr, corresponding_largest_eigenvectors);
           console.log('transpose of corr eigenvec for 2 largest eigenvalues (W matrix):');
-          // eslint-disable-next-line no-undef
           console.log(numeric.transpose(corresponding_largest_eigenvectors));
           final_deferred.resolve(result);
         });
 
-      }); //failureCallback);
+      });
     });
     return final_promise;
   };

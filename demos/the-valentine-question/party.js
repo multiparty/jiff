@@ -28,6 +28,7 @@ if (party_id != null) {
   party_id = parseInt(party_id, 10);
 }
 
+
 // JIFF options
 var options = {party_count: party_count, party_id: party_id};
 options.onConnect = function (jiff_instance) {
@@ -35,7 +36,7 @@ options.onConnect = function (jiff_instance) {
 
   promise.then(function (v) {
     console.log(v);
-    jiff_instance.disconnect(true);
+    jiff_instance.disconnect(false, true);
   });
 };
 
