@@ -1,7 +1,8 @@
+const express = require('express');
 const Neptune = require('neptune-notebook');
 
 const jsDependencies = ['../node_modules/socket.io-client/dist/socket.io.js', '../lib/sodium.js', '../lib/jiff-client.js', '../lib/ext/jiff-client-bignumber.js', '../lib/ext/jiff-client-fixedpoint.js'];
-const plotly = ['static/plotly-latest.min.js'];
+const plotly = ['static/js/plotly-latest.min.js'];
 
 
 const neptune = new Neptune();
@@ -17,4 +18,8 @@ neptune.addDocument('ifelse', '7-ifelse.md', true, jsDependencies);
 neptune.start(9111);
 
 global.neptune = neptune;
+global.app = neptune.app;
 global.server = neptune.server;
+
+app.use('/static', express.static('static/'));
+app.use('/lib', express.static('../lib/'));
