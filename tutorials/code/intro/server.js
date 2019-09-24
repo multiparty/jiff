@@ -3,7 +3,7 @@ var app = express();
 var http = require('http').Server(app);
 
 // Set up server jiff instance
-require('../lib/jiff-server').make_jiff(http, { logs:true });
+require('../../../lib/jiff-server').make_jiff(http, { logs:true });
 
 // Run app
 try {
