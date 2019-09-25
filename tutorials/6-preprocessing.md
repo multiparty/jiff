@@ -3,6 +3,12 @@ In general, MPC is much slower than standard computation - mostly due to communi
 
 While preprocessing still incurs communication costs, it can ideally be executed before data is ready to be shared or before all parties online, which leads to a faster online phase.
 
+#### Tutorial content:
+1. Basic pre-processing workflow
+2. Pre-processing for an inner product (based on previous tutorial)
+4. Delegating preprocessing to a subset of parties
+5. Consequences of not preprocessing
+6. List of JIFF primitives that require pre-processing
 
 # How to Use Preprocessing in JIFF
 The `jiff.preprocessing()` exists to preprocess any values needed for later computation. All preprocessing needs to know is which operations will be performed and how many times, so the programmer does not need to know what other protocols or values those depend on.
@@ -23,7 +29,7 @@ var start_compute = function() {
 Now let's look at a concrete example:
 
 ## Preprocessing for an inner product
-The inner product computation we wrote earlier looks like this:
+The inner product computation we wrote in an earlier tutorial looks like this:
 
 ```neptune[title=Inner&nbsp;Product,frame=frame2,scope=1]
 var input = [ 1.32, 10.22, 5.67]
@@ -83,7 +89,7 @@ var start_compute = function () {
       });
 }
 
-//preprocessing happens firt
+//preprocessing happens first
 jiff_instance.preprocessing('smult', 3);
 jiff_instance.preprocessing('open', 1);
 
