@@ -1,225 +1,208 @@
-In this tutorial, we'll look at an example implementation of the inner product. We'll start with a basic version, then extend it to support fixed-point numbers, optimize it under the constraints of MPC, and prepare to scale better. This tutorial implements the 2-party version for simplicity, but the techniques exend to aribtrary parties.
+# Inner Product and fixedpoint numbers
 
-# Setting up a server
-We're going to stick with our simple server-as-message-router model from before. The server.js file will look the same as in the [intro tutorial](/tutorials/1-intro.md).
+In this tutorial, we will look at an example implementation of inner product that supports fixed-point numbers.
+We optimize the implementation by lazyily reducing the precision only at the end. This tutorial implements
+the 2-party version for simplicity, but the techniques exend to aribtrary many parties.
 
-# Implementing client code
-In this setting, we want to compute an inner product. Each party has an input vector, and will receive an integer as output. As before, the client program has two jobs: they connect to the server, and they work together to compute the inner product under MPC.
+#### Tutorial content:
+1. Setting up the fixedpoint numbers extension.
+2. Basic inner product implementation.
+3. How the fixedpoint numbers extension work.
+4. Efficient inner product implementation.
 
-## Connecting to the server
-In the file `client.js`, we start by connecting to the server. First, we define the `hostname` that the server above is running on. Second, since this is a multi-party computation, we need to tell the server how many parties there are (`party_count`), and the name of our computation(`computation_id`).
+# Setup: fixedpoint numbers extension
 
-The `make_jiff` function uses this information to set up a new JIFF object.
-We save the fully configured `jiff_instance` in a global variable, so we can use it when we compute our function.
+Fixedpoint numbers are effectively transformed into integers in the desired field automatically by JIFF, by scaling them up
+by the magnitude. These means that even small fixedpoint numbers can turn into large integers in the actual implementation.
 
-```javascript
-var jiff_instance;
+Unfortunetly, Javascript is not very good with large numbers. The largest safe integer javascript can represent accurately is 53 bits long.
+This means that operating (specifically multiplying) on numbers that are 27 bits or more can result in unsafe (intermediate) results.
 
-function connect() {
+```neptune[title=Max&nbsp;Safe&nbsp;Number,scope=None,frame=frame1]
+var safe = Number.MAX_SAFE_INTEGER;
+Console.log(safe, safe.toString(2).length);
+var sqrt = Math.floor(Math.sqrt(safe));
+Console.log(sqrt, sqrt.toString(2).length);
+Console.log('Choosing a prime larger than the above safe number requires use of bignumber extensions');
+```
 
-  var hostname = "http://localhost:8080";
+JIFF supports handling infinite precision number based on the **bignumber.js** library. The fixedpoint extension requires that this
+bignumber extension is applied first. The bignumber extension should be applied at the server as well as clients.
 
-  var computation_id = 'inner_product';
-  var options = {party_count: 2};
+When using the fixedpoint numbers extension, one can specify how many digits after and before the decimal point to support.
+Note that these digits must fit within the given prime, otherwise JIFF will throw an error.
+If multiplication (or other primitives using it) should be supported, then there should at least as many free digits in the field
+as decimal digits. So that intermediate multiplication results fit in the field.
 
-  // TODO: is this necessary if we're using npm?
-  if (node) {
-    jiff = require('../../lib/jiff-client');
-    $ = require('jquery-deferred');
-  }
+```neptune[title=Server,frame=frame2,env=server]
+var jiff = require('../../../../../lib/jiff-server.js');
+var jiff_bignumber = require('../../../../../lib/ext/jiff-server-bignumber.js');
 
-  jiff_instance = jiff.make_jiff(hostname, computation_id, options);
+var jiff_instance = jiff.make_jiff(server, { logs:true });
+jiff_instance.apply_extension(jiff_bignumber);
+
+Console.log('Server is running on port 9111');
+```
+
+```neptune[title=Party&nbsp;1,frame=frame2,scope=1]
+function onConnect() {
+  Console.log('All parties connected!');
 }
+
+var options = { party_count: 2, party_id: 1, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+jiff_instance.apply_extension(jiff_bignumber, options);
+jiff_instance.apply_extension(jiff_fixedpoint, options);
+jiff_instance.connect();
 ```
-
-## Computing an inner product
-Once those details are taken care of, we can define the interesting part of the computation. The function outline shares our (hard-coded) input values, executes some computation, and logs the result when it is ready. Again, in `client.js`:
-
-```javascript
-function compute() {
-  var input = [1, 2, 3, 4, 5];
-
-  // share inputs
-  ...
-
-  // compute inner product
-  ...
-
-  // print results
-  ...
+```neptune[title=Party&nbsp;2,frame=frame2,scope=2]
+function onConnect() {
+  Console.log('All parties connected!');
 }
+
+var options = { party_count: 2, party_id: 2, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+jiff_instance.apply_extension(jiff_bignumber, options);
+jiff_instance.apply_extension(jiff_fixedpoint, options);
+jiff_instance.connect();
+```
+```neptune[title=Party&nbsp;1&nbsp;Incorrect,frame=frame2,scope=None]
+function onConnect() {
+  Console.log('All parties connected!');
+}
+
+var options = { party_count: 2, party_id: 1, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 5, decimal_digits: 5 };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+jiff_instance.apply_extension(jiff_bignumber, options);
+jiff_instance.apply_extension(jiff_fixedpoint, options);
+jiff_instance.connect();
 ```
 
-The first step is to share our input with the rest of the parties. We use our saved and configured `jiff_instance` to do so. This operation is asynchronous—it requires communicating with every party to secret share the data—so it returns a promise.
 
-We pass our input array and the length. In this case, all party inputs have the same, public length, and they're all providing the same type of input. These items are customizable; we'll look at an example later. TODO: link tutorial with different inputs or something
+## Basic inner product
+Once the setup details are taken care of, we can define the interesting part of the computation.
 
-```javascript
-  var array_promise = jiff_instance.share_array(input, input.length);
+```neptune[title=Party&nbsp;1,frame=frame3,scope=1]
+var input = [ 1.32, 10.22, 5.67]
+
+function innerprod(input) {
+  var promise = jiff_instance.share_array(input);
+  return promise.then(function (arrays) {
+    var array1 = arrays[1];
+    var array2 = arrays[2];
+
+    var result = array1[0].smult(array2[0]);
+    for (var i = 1; i < array1.length; i++) {
+      result = result.sadd(array1[i].smult(array2[i]));
+    }
+
+    return jiff_instance.open(result);
+  });
+}
+
+innerprod(input).then(function (result) {
+  Console.log('Inner product', result);
+  Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
+});
 ```
+```neptune[title=Party&nbsp;2,frame=frame3,scope=2]
+var input = [ 5.91, 3.73, 50.03]
 
-Once everyone's input is shared, we'll compute the inner product. The promise returns an object containing the shares from every party in an object. It has the form
-```
-{1 : [<party 1's array>], 2 : [<party 2's array>] }
-```
+function innerprod(input) {
+  var promise = jiff_instance.share_array(input);
+  return promise.then(function (arrays) {
+    var array1 = arrays[1];
+    var array2 = arrays[2];
 
-The inner product takes the sum of the pairwise product of array elements.
-```javascript
-array_promise.then( function (shares) {
+    var result = array1[0].smult(array2[0]);
+    for (var i = 1; i < array1.length; i++) {
+      result = result.sadd(array1[i].smult(array2[i]));
+    }
 
-  // pairwise product
-  var products = shares[1];
-  for (var i = 0; i < products.length; i++) {
-    products[i] = products[i].smult(shares[2][i]);
-  }
+    return jiff_instance.open(result);
+  });
+}
 
-  // sum
-  var sum = products[0];
-  for (var i = 1; i < products.length; i++) {
-    sum = sum.sadd(products[i]);
-  }
-
+innerprod(input).then(function (result) {
+  Console.log('Inner product', result);
 });
 ```
 
-Finally, we need to reveal the results to each party. We use the JQuery deferred function to resolve the results from all parties and reveal them correctly. We set this up before our promise and return it afterward. Our complete `compute` function looks like this:
+# Internals of fixedpoint numbers extension
 
-```javascript
-function compute() {
+The inner product above is very easy to implement, but it does take a long amount of time for how little it seems to be doing. Let us look at the implementation of fixedpoint extenion smult.
 
-  // share inputs
-  var input = [1, 2, 3, 4, 5];
-  var array_promise = jiff_instance.share_array(input, input.length);
+```neptune[title=Fixedpoint&nbsp;Numbers&nbsp;Extenion,frame=frame4,scope=1]
+var dummy = jiff_instance.secret_share(jiff_instance, true, undefined, 10, [1], 1, jiff_instance.Zp); // creating a dummy share for debugging
+var code = dummy.smult.toString().split('\n');
+var relavent = [code[0]].concat(code.slice(10, 15)).concat(code.slice(35)).join('\n');
+Console.log(relavent);
+```
 
-  var deferred = $.Deferred();
+The variable magnitude represents the magnitude of the decimal precision, since our example supports two decimal digits, magnitude is 100.
 
-  array_promise.then( function (shares) {
+The reason for the slowdown is the final call to cdiv inside smult. While JIFF has a pretty efficient (original) cdiv protocol, it still is a lot more expensive than a plain multiplication.
+This last call to cdiv is important in general, since the result of the multiplication may be used arbitrarily by user code, including using it for other multiplications. It is important
+that all intermediate shares exposed to the user have consistent decimal point position, so that operations on these shares produce correct results. Hence, smult moves the decimal point
+back to its original place after multiplication.
 
-    // compute inner product
-    var products = shares[1];
-    for (var i = 0; i < products.length; i++) {
-      products[i] = products[i].smult(shares[2][i]);
+Note that cdiv is integer division by a public constant, so it is equivalent to dropping the least significant precision-many bits from the value.
+
+# Efficient inner product
+
+Looking at our code carefully, we realize that our program has a nice property. The result of multiplication is never used in another multiplication.
+Addition operations are only performed on results of multiplications.
+
+This means that we can make do without having to shift the decimal point after every multiplication. Instead, we can delay the shift until all multiplications
+are computed and then summed. We can acheive this by setting the *div* parameter to false.
+
+Further examination of the code will show that such a shift (i.e. division by a public constant) is reversible, since we are revealing
+its output, and it can be performed outside of MPC all together. This is true only because our final output is the inner product. In cases
+where the inner product is a secret intermediate value needed for computing the actual output, we must perform the division under MPC.
+
+```neptune[title=Party&nbsp;1,frame=frame5,scope=1]
+var input = [ 1.32, 10.22, 5.67]
+
+function innerprod(input) {
+  var promise = jiff_instance.share_array(input);
+  return promise.then(function (arrays) {
+    var array1 = arrays[1];
+    var array2 = arrays[2];
+
+    var result = array1[0].smult(array2[0], null, false);
+    for (var i = 1; i < array1.length; i++) {
+      result = result.sadd(array1[i].smult(array2[i], null, false));
     }
 
-    var sum = products[0];
-    for (var i = 1; i < products.length; i++) {
-      sum = sum.sadd(products[i]);
+    return jiff_instance.open(result);
+  });
+}
+
+innerprod(input).then(function (result) {
+  Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
+  Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
+});
+```
+```neptune[title=Party&nbsp;2,frame=frame5,scope=2]
+var input = [ 5.91, 3.73, 50.03]
+
+function innerprod(input) {
+  var promise = jiff_instance.share_array(input);
+  return promise.then(function (arrays) {
+    var array1 = arrays[1];
+    var array2 = arrays[2];
+
+    var result = array1[0].smult(array2[0], null, false);
+    for (var i = 1; i < array1.length; i++) {
+      result = result.sadd(array1[i].smult(array2[i], null, false));
     }
 
-    // open the array
-    jiff_instance.open(sum).then(function (results) {
-      deferred.resolve(results);
-    });
-  });
-
-  // print results
-  deferred.promise().then( function (result) {
-    console.log("inner product: ", result);
+    return jiff_instance.open(result);
   });
 }
+
+innerprod(input).then(function (result) {
+  Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
+});
 ```
-
-# Using the fixed point extension
-Our inner product code works fine with integers. However, many interesting applications in statistics, machine learning, and other domains require operations on real numbers.
-The JIFF framework includes extensions which provide additional functionality. We'll use the `fixedpoint` extension (which extends the client behavior), and which depends on `bignumber`s (which extend both client and server behavior).
-
-We need to tell both the server and the client where to find the extension code. On the `server.js` side, we'll save our JIFF `base_instance`, then apply the `bignumber` extension. We'll also tell the server where to find the correct JIFF files. We update `server.js`:
-
-```javascript
-var base_instance = require('../../lib/jiff-server').make_jiff(http, { logs:true });
-
-var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
-base_instance.apply_extension(jiffBigNumberServer);
-
-app.use('/bignumber.js', express.static('node_modules/bignumber.js'));
-```
-
-On the client side, we need to include and apply both `fixedpoint` and `bignumber`. In `client.js`:
-
-```javascript
-exports.connect = function () {
-  // set up hostname, computation id, options
-  ...
-  // find and apply extensions
-  if (node) {
-    jiff = require('../../lib/jiff-client');
-    jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
-    jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
-  }
-
-  opt.autoConnect = false;
-  jiff_instance = jiff.make_jiff(hostname, computation_id, opt);
-  jiff_instance.apply_extension(jiff_bignumber, opt);
-  jiff_instance.apply_extension(jiff_fixedpoint, opt);
-  jiff_instance.connect();
-
-  return jiff_instance;
-};
-```
-
-Happily, the fixed point extension reimplements the existing `sadd` and `smult` functions, so the client `compute` function doesn't change at all.
-TODO is this correct?
-
-Now we can run the inner product with fixed point (or a mix of fixed point and integer) inputs!
-
-## Under the hood: optimizing for MPC
-Our computation works great with fixed point data, but maybe it's running a litle slower than we'd like. By optimizing the MPC operations, we can reduce the total amount of work being performed.
-
-For example, the inner product requires many multiplications of fixed point numbers. In JIFF, to multiply two fixed point numbers `a` and `b`, we multiply them normally, then divide by the total magnitude `m`.
-
-1. `result` = `a` * `b`
-2. `result` = `result` / `m`
-
-Since `m` is a constant, we need to use the constant division `cdiv` function. This is relatively expensive: it takes `2*(bits+3) + 5` rounds of communication and 3 elements of preprocessing data. (Compare this in the [cost of operations](https://github.com/multiparty/jiff#costs-of-operations) table).
-TODO update this to new table location
-
-The inner product is the sum of a large number of pairwise fixed-point multiplications. We can use the associative property to "pull out" the division step. Let `m` be the magnitude and `[a1,...an]`, `[b1,...,bn]` be our two parties' input values.
-```
-(a1 * b1) / m + (a2 * b2) / m + ... + (an * bn) / m = (a1 * b1 + a2 * b2 + ... + an * bn) / m
-```
-
-Let's look at the current version of the inner product:
-```javascript
-var products = shares[1];
-for (var i = 0; i < products.length; i++) {
-  products[i] = products[i].smult(shares[2][i]);
-}
-
-var sum = products[0];
-for (var i = 1; i < products.length; i++) {
-  sum = sum.sadd(products[i]);
-}
-```
-
-The `smult` operation has an optional second parameter. If we set it to false, it will skip the division step.
-
-```javascript
-var products = shares[1];
-for (var i = 0; i < products.length; i++) {
-  products[i] = products[i].smult(shares[2][i], false);
-}
-```
-
-Then we can compute the magnitude and divide after the addition. We use the legacy `cdiv` function, since we're using it to manually move the location of the decimal point—we don't want to use the special fixed-point version of `cdiv`, which will move the decimal for us.
-```javascript
-var sum = products[0];
-for (var i = 1; i < products.length; i++) {
-  sum = sum.sadd(products[i]);
-}
-
-var magnitude = sum.jiff.helpers.magnitude(sum.jiff.decimal_digits);
-sum = sum.legacy.cdiv(magnitude);
-```
-
-This reduces the number of `cdiv` operations by an order of magnitude!
-
-TODO: I haven't been able to test this becasue every line with an `smult(..., false)` throws a million errors with mocha.
-
-## Scaling up: controlling memory usage
-TODO: Not sure what kinan wants here
-
-# Next steps
-There are a few messy things here. Client-specific variables, like our private input values, are hardcoded in, so each party will have to manually change the code. In the XXX tutorial, we'll show how to connect the client to a webpage, which makes it much easier for clients to change these data.
-
-
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const Neptune = require('neptune-notebook');
 
-const jsDependencies = ['../node_modules/socket.io-client/dist/socket.io.js', '../lib/sodium.js', '../lib/jiff-client.js', '../lib/ext/jiff-client-bignumber.js', '../lib/ext/jiff-client-fixedpoint.js', '../lib/ext/jiff-client-negativenumber.js'];
+const jsDependencies = ['../node_modules/bignumber.js/bignumber.min.js', '../node_modules/socket.io-client/dist/socket.io.js', '../lib/sodium.js', '../lib/jiff-client.js', '../lib/ext/jiff-client-bignumber.js', '../lib/ext/jiff-client-fixedpoint.js', '../lib/ext/jiff-client-negativenumber.js'];
 const plotly = ['static/js/plotly-latest.min.js'];
 
 

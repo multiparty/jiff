@@ -12,7 +12,7 @@ deviation under MPC, without leaking anything else.
 3. Selecting the appropriate protocol for standard deviation.
 4. Standard deviation under MPC
 
-# Setup: negative number extension
+# Setup: negative numbers extension
 
 By default, JIFF operates over numbers in the domain [0, prime). JIFF provides extensions for dealing
 with negative numbers, fixedpoint numbers, and both.
