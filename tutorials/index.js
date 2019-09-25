@@ -13,6 +13,7 @@ neptune.addDocument('binary-search', '3-binarysearch.md', true, jsDependencies);
 neptune.addDocument('standard-deviation', '4-standarddev.md', true, jsDependencies);
 neptune.addDocument('inner-product', '5-innerprod.md', true, jsDependencies);
 neptune.addDocument('preprocessing', '6-preprocessing.md', true, jsDependencies);
+neptune.addDocument('parallel', '7-parallel.md', true, jsDependencies);
 
 neptune.start(9111);
 
