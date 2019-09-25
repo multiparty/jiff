@@ -25,7 +25,7 @@ function onConnect() {
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect, Zp: 11 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'voting-application', options);
 ```
 
 ```neptune[title=Party&nbsp;2,frame=frame1,scope=2]
@@ -34,7 +34,7 @@ function onConnect() {
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect, Zp: 11 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'voting-application', options);
 ```
 
 ```neptune[title=Party&nbsp;3,frame=frame1,scope=3]
@@ -43,7 +43,7 @@ function onConnect() {
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect, Zp: 11 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'voting-application', options);
 ```
 
 # Input sanitization

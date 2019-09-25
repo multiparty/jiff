@@ -27,7 +27,7 @@ function onConnect() {
 }
 
 var options = { party_count: 2, party_id: 1, crypto_provider: true, onConnect: onConnect, Zp: 31 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'search-application', options);
 ```
 
 ```neptune[title=Party&nbsp;2,frame=frame1,scope=2]
@@ -36,7 +36,7 @@ function onConnect() {
 }
 
 var options = { party_count: 2, party_id: 2, crypto_provider: true, onConnect: onConnect, Zp: 31 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'search-application', options);
 ```
 
 # Linear search
