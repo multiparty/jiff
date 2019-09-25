@@ -1,183 +1,283 @@
 # Standard Deviation under MPC
-Say you and your friends have just gotten back a brutal exam. Everyone says they did terribly on it, and you want to
-commiserate together. But some of your friends are huge over-achievers, and probably would say that they did poorly if
-they got an A-. You got a failing grade, and don't want to tell anyone else unless their grades were sufficiently close
-to yours. So, everyone decides to compute the standard deviations of your grades under MPC. Then, based on that
-standard deviation, you can decide whether or not you want to share your grades with each other.
 
-In this tutorial, we'll look at an efficient implementation of the standard deviation for floating-point numbers. We will focus on the client-side code. For details on the server side, check out the complete files in the /demos/standard-deviation directory.
+This tutorial gives some intuition on how to select the best protocol for a given task. In particular, how to optimize
+an MPC application by **doing less MPC**.
 
-# Implementing client code
-In this setting, we want to compute a standard deviation, assume each individual has a single input value. Each party's
-input, which in the trivial implementation will be an integer. As before, the client program has two jobs: they connect
-to the server, and they work together to compute the standard deviation under MPC. In the initial implementation, which
-only supports integer operations, there will be some accuracy loss due to rounding to integers throughout the
-computation. These accuracy losses will be minimized with the extension to floating point arithmetic.o
+In this tutorial, we have several parties, each possessing a number. The parties want to compute the average and standard
+deviation under MPC, without leaking anything else.
+
+#### Tutorial content:
+1. Handling negative numbers.
+2. Computing the average under MPC.
+3. Selecting the appropriate protocol for standard deviation.
+4. Standard deviation under MPC
+
+# Setup: negative number extension
+
+By default, JIFF operates over numbers in the domain [0, prime). JIFF provides extensions for dealing
+with negative numbers, fixedpoint numbers, and both.
+
+We will setup our tutorial to use the negative number extension. This extension shifts the domain by floor(prime / 2),
+such that the domain becomes [-floor(prime)/2, floor(prime/2)). It is important that we choose a prime that is large enough
+to fit the desired output (and certain intermediate values). Otherwise, we will get a value that is equal to the desired output
+mod prime, not in actual value.
+
+Due to properties of finite field arithmetic mod prime, we do not have to worry about intermediate values getting too large, assuming
+our operations consists of additions, subtractions, and multiplications. However, other JIFF operations are not so nice over fields.
+All comparisons, bit operations, and integer division will give incorrect values if their intermediate inputs are too large.
 
 
-## Computing the standard deviation
+```neptune[title=Server,frame=frame1,env=server]
+var jiff = require('../../../../../lib/jiff-server.js'); // replace this with your actual path to jiff-server.js
+var jiff_instance = jiff.make_jiff(server, { logs:true });
+Console.log('Server is running on port 9111');
+```
 
-Say there are *n* parties in your computation, each with input *x_i*. Let *m* be the mean of the inputs *x_i*. Recall
-that the (population) variance of a series of values is defined to be the sum between *i=1* and *n* of
-*(1/n)(x_i - m)^2*. The standard deviation is then the square root of the variance.
-
-We could choose to compute this expression directly under MPC by secret-sharing the *x_i* values, subtracting the mean
-from them, and squaring this and then summing, normalizing by *n*, and taking the square root, all under MPC. However,
-this will be both messy to write and inefficient: any multiplication done under MPC is time-intensive, and here there
-are many.
-
-There are a few things we can do to cut down on the computational overhead. First, note that the variance is really what
-needs to be computed under MPC: the value of *n* is public so we can derive the standard deviation from the variance
-publicly without incurring any additional privacy loss.
-
-Secondly, one can recall that there is an alternate formulation of the variance, which is
-
-*E[X]^2 - E[X^2],*
-
-where *E* denotes the expected value, i.e. variance is equal to the difference between the square of the
-mean of the input values and the mean of the input values squared.
-
-We can make this slightly faster by moving some of the normalization to post-processing, i.e. writing variance as
-
-*(1/n)[(sum over X)^2/n - (sum over X^2)].*
-
-Thus, variance can be calculated by each user
-locally computing the square of their value, then secret sharing both their value and their value squared to compute the
-means of both. Since *n* is a constant, the multiplication by *1/n* to compute the means is computationally inexpensive,
-there is only one single secure multiplication that must take place, when *E[X]* is squared.
-
-In code, here is an outline of what we will do given each party's arbitrary input value *x_i* and number of parties *n*.
-
-```javascript
-function compute() {
-  var x_i; //input: will be passed into computation in final version
-  var n;   //number of parties: will be passed into computation in final version
-
-  // calculate x_i^2
-  ...
-  // share x_i and x_i^2
-  ...
-  // secretly compute sum of x_i's
-  ...
-  // secretly compute sum of x_i^2's
-  ...
-  // square the sum of x^i's
-  ...
-  // normalize the square of the sum of x_i's
-  ...
-  // subtract the sum of x_i^2's from this
-  ...
-  // open the results
-  ...
-  // normalize the result
-  ...
-  // Take the square root of this
-  ...
-  // print this final result
-  ...
+```neptune[title=Party&nbsp;1,frame=frame1,scope=1]
+function onConnect() {
+  Console.log('All parties connected!');
 }
+
+var options = { party_count: 4, party_id: 1, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+jiff_instance.apply_extension(jiff_negativenumber, options);
+jiff_instance.connect();
 ```
 
-The first step is to share our input and our input squared with the rest of the parties. We use our saved and configured
- `jiff_instance` to do so. This operation is asynchronous: it requires communicating with every party to secret share
- the data. It returns a promise.
+```neptune[title=Party&nbsp;2,frame=frame1,scope=2]
+function onConnect() {
+  Console.log('All parties connected!');
+}
 
-The sharing function is passed the input. In this case, all party inputs are length one, and they're all providing the
-same type of input. These items are customizable, but in this case the basic implementation is sufficient.
-
-```javascript
- var shares = jiff_instance.share(input);
- var in_squared = jiff_instance.share(input**2);
+var options = { party_count: 4, party_id: 2, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+jiff_instance.apply_extension(jiff_negativenumber, options);
+jiff_instance.connect();
 ```
 
-However, since the input squared might have more decimal points than the original input and we are restricted to some
-fixed number of decimal points depending on our settings, the `in_squared` variable first needs to have input**2
-truncated to that number of decimal points. Say we want to truncate to 2 decimal points. Then,
+```neptune[title=Party&nbsp;3,frame=frame1,scope=3]
+function onConnect() {
+  Console.log('All parties connected!');
+}
 
-```javascript
-var in_squared_fixed = Number.parseFloat((Math.pow(input, 2)).toFixed(2)); //convert input^2 to fixed point number
-var in_squared = jiff_instance.share(in_squared_fixed);
+var options = { party_count: 4, party_id: 3, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+jiff_instance.apply_extension(jiff_negativenumber, options);
+jiff_instance.connect();
 ```
 
-Once everyone's input is shared, we'll compute their sums. The promises that `shares` and `in_squared` return are
-objects containing the shares from every party in an object. They have the form
-```
-{1 : [<party 1's array>], 2 : [<party 2's array>], n: [<party n's array>]}
-```
+```neptune[title=Party&nbsp;4,frame=frame1,scope=4]
+function onConnect() {
+  Console.log('All parties connected!');
+}
 
-To sum the secret-shares, we use the secret addition function, `sadd`
-```javascript
-var in_sum = shares[1];
-var in_squared_sum = in_squared[1];
-
-for (var i = 2; i <= jiff_instance.party_count; i++) {    // sum all inputs and sum all inputs squared
-      in_sum = in_sum.sadd(shares[i]);
-      in_squared_sum = in_squared_sum.sadd(in_squared[i]);
-    }
-```
-Next, we need to normalize the sum of the inputs. Since *1/n* may as a floating point number have more values after the
-decimal than our settings can handle, we first truncate this to a fixed amount and then do a secret multiplication by this.
-
-```javascript
- var one_over_n = Number.parseFloat((1/jiff_instance.party_count).toFixed(2)); // convert 1/n to fixed point number
- var in_sum_squared = in_sum.smult(in_sum);
- var intermediary = in_sum_squared.cmult(one_over_n);
+var options = { party_count: 4, party_id: 4, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+jiff_instance.apply_extension(jiff_negativenumber, options);
+jiff_instance.connect();
 ```
 
-We can then compute the difference between this and the sum of inputs squared.
+# Computing the average
 
-```javascript
-var out = in_squared_sum.ssub(intermediary);
+In our scenario, to compute the average, we must sum the values and then divide by the number of parties.
+
+Note that the number of parties is public. Therefore, the division operation at the end is invertible. Any party can
+take the average, multiply it by the party count, and learn the sum of the inputs.
+
+This essentially means that the sum is leaked by the output itself, or put differently, leaking the sum **leaks no
+more information** than the average.
+
+This allows us to write our MPC program so that the sum is computed under MPC and revealed, while the division is carried
+out in the clear outside of MPC. This saves us a great deal in performance, since summing can be done with no communication!
+
+```neptune[title=Party&nbsp;1,frame=frame2,scope=1]
+var input = -5;
+
+function avg(input) {
+  var shares = jiff_instance.share(input);
+
+  var sum = shares[1];
+  for (var i = 2; i <= jiff_instance.party_count; i++) {
+    sum = sum.sadd(shares[i]);
+  }
+
+  return jiff_instance.open(sum).then(function (sum) {
+    return sum / jiff_instance.party_count;
+  });
+}
+
+avg(input).then(function (result) {
+  Console.log('Average', result);
+});
 ```
+```neptune[title=Party&nbsp;2,frame=frame2,scope=2]
+var input = -3;
 
-Finally, we need to reveal the results to each party. We use a promise to resolve the results
-from all parties, then do the final post-processing on this reveal.
+function avg(input) {
+  var shares = jiff_instance.share(input);
 
-```javascript
-//Create a promise of output
-var promise = jiff_instance.open(out);
+  var sum = shares[1];
+  for (var i = 2; i <= jiff_instance.party_count; i++) {
+    sum = sum.sadd(shares[i]);
+  }
 
-var promise2 = promise.then(function (v) {
-  var variance = v/(jiff_instance.party_count - 1);
-  return Math.sqrt(variance);       // Return standard deviation.
+  return jiff_instance.open(sum).then(function (sum) {
+    return sum / jiff_instance.party_count;
+  });
+}
+
+avg(input).then(function (result) {
+  Console.log('Average', result);
+});
+```
+```neptune[title=Party&nbsp;3,frame=frame2,scope=3]
+var input = 2;
+
+function avg(input) {
+  var shares = jiff_instance.share(input);
+
+  var sum = shares[1];
+  for (var i = 2; i <= jiff_instance.party_count; i++) {
+    sum = sum.sadd(shares[i]);
+  }
+
+  return jiff_instance.open(sum).then(function (sum) {
+    return sum / jiff_instance.party_count;
+  });
+}
+
+avg(input).then(function (result) {
+  Console.log('Average', result);
+});
+```
+```neptune[title=Party&nbsp;4,frame=frame2,scope=4]
+var input = 10;
+
+function avg(input) {
+  var shares = jiff_instance.share(input);
+
+  var sum = shares[1];
+  for (var i = 2; i <= jiff_instance.party_count; i++) {
+    sum = sum.sadd(shares[i]);
+  }
+
+  return jiff_instance.open(sum).then(function (sum) {
+    return sum / jiff_instance.party_count;
+  });
+}
+
+avg(input).then(function (result) {
+  Console.log('Average', result);
 });
 ```
 
-The `compute` function looks like this:
+# Choosing the standard deviation protocol
 
-```javascript
-function compute() {
-    var shares = jiff_instance.share(input);
-    var in_sum = shares[1];
-    var in_squared_fixed = Number.parseFloat((Math.pow(input, 2)).toFixed(2)); //convert input^2 to fixed point number
-    var in_squared = jiff_instance.share(in_squared_fixed);
-    var in_squared_sum = in_squared[1];
+Standard deviation of a given dataset can be computed in several ways. Below are two equivalent formulations:
 
-    for (var i = 2; i <= jiff_instance.party_count; i++) {    // sum all inputs and sum all inputs squared
-      in_sum = in_sum.sadd(shares[i]);
-      in_squared_sum = in_squared_sum.sadd(in_squared[i]);
-    }
-
-    var one_over_n = Number.parseFloat((1/jiff_instance.party_count).toFixed(2)); // convert 1/n to fixed point number
-    var in_sum_squared = in_sum.smult(in_sum);
-    var intermediary = in_sum_squared.cmult(one_over_n);
-    var out = in_squared_sum.ssub(intermediary);
-
-
-    //Create a promise of output
-    var promise = jiff_instance.open(out);
-
-    var promise2 = promise.then(function (v) {
-      var variance = v/(jiff_instance.party_count - 1);
-      return Math.sqrt(variance);       // Return standard deviation.
-    });
-
-    return promise2;
-
-}
+```neptune[inject=true,language=html]
+<h2 style="text-align: center;">
+s = &radic; (&Sigma; (x<sub>i</sub> - E[x])<sup>2</sup> / (N - 1)) <br>
+s = &radic; (E[x<sup>2</sup>] - E[x]<sup>2</sup>)
+</h2>
 ```
 
+First, note that the square root function is reversible, and therefore, can be computed outside of MPC. This leaves us with
+the task of computing the variance under MPC.
+
+At first glance, the two formulations seem comparable. In the first operation, the division by a public constant is reversible,
+and thus can be executed outside of MPC after the sum is evaluated. However, we have as many multiplications (squares) as parties.
+
+On the other hand, the second formulation seems similar, since it requires computing the average of the squares of the inputs, which
+gives the same number of multiplications as the first formulation.
+
+However, carefuly examination of the second formulation concludes that it is indeed efficient. E\[x]<sup>2</sup> can be
+computed outside of MPC, since the average is revealed by our computation. While E\[x<sup>2</sup>] can be computed efficiently 
+by having all the parties share the square of their input in addition to their input, and then reusing
+our average protocol above.
+
+This is an example of when a portion of our desired function is only dependent on inputs from a single party, and therefore, that party
+can perform that portion locally before entering MPC.
+
+In complex protocols, it is likely that optimizations can be made by triming out portions of the computation before or after the MPC
+part, as well as intermediate computations.
+
+# Standard deviation under MPC
+
+Using the observations made above, we provide this implementation of standard deviation.
+
+```neptune[title=Party&nbsp;1,frame=frame3,scope=1]
+var input = -10;
+
+function stdDev(input) {
+  var promise1 = avg(input); // average
+  var promise2 = avg(input * input); // average of the squares
+
+  Promise.all([promise1, promise2]).then(function (results) {
+    var squaredAvg = results[0] * results[0]; // square of the average
+    var avgOfSquares = results[1];
+    Console.log(results[0], Math.sqrt(avgOfSquares - squaredAvg));
+  });
+}
+
+stdDev(input);
+```
+```neptune[title=Party&nbsp;2,frame=frame3,scope=2]
+var input = -5;
+
+function stdDev(input) {
+  var promise1 = avg(input); // average
+  var promise2 = avg(input * input); // average of the squares
+
+  Promise.all([promise1, promise2]).then(function (results) {
+    var squaredAvg = results[0] * results[0]; // square of the average
+    var avgOfSquares = results[1];
+    Console.log(results[0], Math.sqrt(avgOfSquares - squaredAvg));
+  });
+}
+
+stdDev(input);
+```
+```neptune[title=Party&nbsp;3,frame=frame3,scope=3]
+var input = 5;
+
+function stdDev(input) {
+  var promise1 = avg(input); // average
+  var promise2 = avg(input * input); // average of the squares
+
+  Promise.all([promise1, promise2]).then(function (results) {
+    var squaredAvg = results[0] * results[0]; // square of the average
+    var avgOfSquares = results[1];
+    Console.log(results[0], Math.sqrt(avgOfSquares - squaredAvg));
+  });
+}
+
+stdDev(input);
+```
+```neptune[title=Party&nbsp;4,frame=frame3,scope=4]
+var input = 10;
+
+function stdDev(input) {
+  var promise1 = avg(input); // average
+  var promise2 = avg(input * input); // average of the squares
+
+  Promise.all([promise1, promise2]).then(function (results) {
+    var squaredAvg = results[0] * results[0]; // square of the average
+    var avgOfSquares = results[1];
+    Console.log(results[0], Math.sqrt(avgOfSquares - squaredAvg));
+  });
+}
+
+stdDev(input);
+```
+
+The result can be verified with [Wolframalpha](https://www.wolframalpha.com/input/?i=population+standard+deviation+of+-10%2C-5%2C5%2C10) for inputs
+-10, -5, 5, and 10.
 
 # Complete Files
 
 For complete files and running instructions, navigate to /demos/standard-deviation.
+
+```neptune[inject=true,language=html]
+<br><br><br><br><br><br><br><br><br><br><br>
+```

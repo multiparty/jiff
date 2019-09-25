@@ -442,6 +442,6 @@ We will see later how JIFF supports more flexible and asymmetric computations, s
 for purposes of performance, reliability, or security.
 
 ```neptune[inject=true,language=html]
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br>
 ```
 
