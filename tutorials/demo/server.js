@@ -21,7 +21,7 @@ app.use('/lib/ext', express.static('../../lib/ext'));
 
 var jiff = require('../../lib/jiff-server');
 var jiff_instance = jiff.make_jiff(http, { logs: true });
-jiff_instance.totalparty_map['secdev'] = 300; // max 300 parties
+jiff_instance.totalparty_map['secdev'] = 80; // max 80 parties
 
 // Serve static files.
 http.listen(80, function () {
