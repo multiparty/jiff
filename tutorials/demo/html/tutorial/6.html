@@ -361,7 +361,7 @@ pre[class*="language-"].line-numbers > code {
 <h4 id="tutorialcontent">Tutorial content:</h4>
 <ol>
 <li>Basic pre-processing workflow</li>
-<li>Pre-processing for an inner product (based on previous tutorial)</li>
+<li>Pre-processing for an inner product (based on the previous tutorial)</li>
 <li>Delegating preprocessing to a subset of parties</li>
 <li>Consequences of not preprocessing</li>
 <li>List of JIFF primitives that require pre-processing</li>
@@ -381,8 +381,11 @@ var start_compute = function() {
 };
 </code></pre>
 <p>Now let's look at a concrete example:</p>
-<h2 id="serversetup">Server setup</h2>
-<p>First we setup a JIFF server on top of our running http server (similar to the inner product tutorial).</p>
+<h1 id="setup">Setup</h1>
+<p>Most our preprocessing protocols assume an honest majority (i.e. based on BGW). Therefore, we cannot provide meaningful security
+for two parties, and we must have three or more parties. In the case where we have only two parties, the use of the server as a crypto_provider
+is equivalent to having an honest majority computation between three parties, one of which is the server.</p>
+<p>Our setup is similar to previous tutorials.</p>
 <pre><code class="neptune[title=Server,frame=frame1,env=server] language-neptune[title=Server,frame=frame1,env=server]">var jiff = require('../../../../../lib/jiff-server.js');
 var jiff_bignumber = require('../../../../../lib/ext/jiff-server-bignumber.js');
 
@@ -391,33 +394,40 @@ jiff_instance.apply_extension(jiff_bignumber);
 
 Console.log('Server is running on port 9111');
 </code></pre>
-<h2 id="jiffclientsetup">JIFF client setup</h2>
-<pre><code class="neptune[title=Party&nbsp;1,frame=frame2,scope=1] language-neptune[title=Party&nbsp;1,frame=frame2,scope=1]">function onConnect() {
+<pre><code class="neptune[title=Party&nbsp;1,frame=frame1,scope=1] language-neptune[title=Party&nbsp;1,frame=frame1,scope=1]">function onConnect() {
   Console.log('All parties connected!');
 }
 
-var options = { party_count: 2, party_id: 1, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+var options = { party_count: 3, party_id: 1, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'preprocessing-application', options);
 jiff_instance.apply_extension(jiff_bignumber, options);
 jiff_instance.apply_extension(jiff_fixedpoint, options);
 jiff_instance.connect();
 </code></pre>
-<pre><code class="neptune[title=Party&nbsp;2,frame=frame2,scope=2] language-neptune[title=Party&nbsp;2,frame=frame2,scope=2]">function onConnect() {
+<pre><code class="neptune[title=Party&nbsp;2,frame=frame1,scope=2] language-neptune[title=Party&nbsp;2,frame=frame1,scope=2]">function onConnect() {
   Console.log('All parties connected!');
 }
 
-var options = { party_count: 2, party_id: 2, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+var options = { party_count: 3, party_id: 2, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'preprocessing-application', options);
 jiff_instance.apply_extension(jiff_bignumber, options);
 jiff_instance.apply_extension(jiff_fixedpoint, options);
 jiff_instance.connect();
 </code></pre>
-<h2 id="preprocessingforaninnerproduct">Preprocessing for an inner product</h2>
-<p>The inner product computation we wrote in an earlier tutorial looks like this:</p>
-<pre><code class="javascript language-javascript">var input = [ 1.32, 10.22, 5.67]
+<pre><code class="neptune[title=Party&nbsp;3,frame=frame1,scope=3] language-neptune[title=Party&nbsp;3,frame=frame1,scope=3]">function onConnect() {
+  Console.log('All parties connected!');
+}
 
-function innerprod(input) {
-  var promise = jiff_instance.share_array(input);
+var options = { party_count: 3, party_id: 3, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'preprocessing-application', options);
+jiff_instance.apply_extension(jiff_bignumber, options);
+jiff_instance.apply_extension(jiff_fixedpoint, options);
+jiff_instance.connect();
+</code></pre>
+<h1 id="preprocessingforinnerproduct">Preprocessing for inner product</h1>
+<p>Remember our efficient inner product protcol from the previous tutorial.</p>
+<pre><code class="neptune[title=Party&nbsp;1,scope=1,frame=frame2] language-neptune[title=Party&nbsp;1,scope=1,frame=frame2]">function innerprod(input) {
+  var promise = jiff_instance.share_array(input, null, 3, [1, 2, 3], [1, 2]);
   return promise.then(function (arrays) {
     var array1 = arrays[1];
     var array2 = arrays[2];
@@ -430,77 +440,82 @@ function innerprod(input) {
     return jiff_instance.open(result);
   });
 }
+</code></pre>
+<pre><code class="neptune[title=Party&nbsp;2,scope=2,frame=frame2] language-neptune[title=Party&nbsp;2,scope=2,frame=frame2]">function innerprod(input) {
+  var promise = jiff_instance.share_array(input, null, 3, [1, 2, 3], [1, 2]);
+  return promise.then(function (arrays) {
+    var array1 = arrays[1];
+    var array2 = arrays[2];
 
-innerprod(input).then(function (result) {
-  Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
-  Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
+    var result = array1[0].smult(array2[0], null, false);
+    for (var i = 1; i &lt; array1.length; i++) {
+      result = result.sadd(array1[i].smult(array2[i], null, false));
+    }
+
+    return jiff_instance.open(result);
+  });
+}
+</code></pre>
+<pre><code class="neptune[title=Party&nbsp;3,scope=3,frame=frame2] language-neptune[title=Party&nbsp;3,scope=3,frame=frame2]">function innerprod(input) {
+  var promise = jiff_instance.share_array(input, null, 3, [1, 2, 3], [1, 2]);
+  return promise.then(function (arrays) {
+    var array1 = arrays[1];
+    var array2 = arrays[2];
+
+    var result = array1[0].smult(array2[0], null, false);
+    for (var i = 1; i &lt; array1.length; i++) {
+      result = result.sadd(array1[i].smult(array2[i], null, false));
+    }
+
+    return jiff_instance.open(result);
+  });
+}
+</code></pre>
+<p>Note that we have n multiplications and additions under MPC, as well as a single open at the end. Additions do not require preprocessing as they do not need communication. But
+the other primitives do too.</p>
+<p>Additionally, if we use the default parameters, JIFF will assume that the multiplications we are attempting to preprocess for include a constant division at the end, since that
+is the default behavior. However, we can customize that using the extra optional parameters.</p>
+<pre><code class="neptune[title=Party&nbsp;1,frame=frame3,scope=1] language-neptune[title=Party&nbsp;1,frame=frame3,scope=1]">var input = [1.32, 10.22, 5.67];
+
+// preprocessing happens first
+jiff_instance.preprocessing('smult', input.length, null, null, null, null, null, null, null, {div: false});
+jiff_instance.preprocessing('open', 1);
+
+// call main phase of computation
+jiff_instance.onFinishPreprocessing(function () {
+  innerprod(input).then(function (result) {
+    Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
+    Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
+  });
 });
 </code></pre>
-<p>After the optimizations we made, it looks like we are going to perform only 3 multiplications and 3 additions under MPC. Additions of secret shares only require local computation, so we say they are free, and don't require any preprocessing. We will just prepare for 3 secure multiplications, as well as the <code>open()</code> call:</p>
-<pre><code class="javascript language-javascript">jiff_instance.preprocessing('smult', 3);
-jiff_instance.preprocessing('open', 1);
+<pre><code class="neptune[title=Party&nbsp;2,frame=frame3,scope=2] language-neptune[title=Party&nbsp;2,frame=frame3,scope=2]">var input = [5.91, 3.73, 50.03];
 
-jiff_instance.onFinishPreprocessing(start_compute);
-</code></pre>
-<p>The whole process would look like this:</p>
-<pre><code class="neptune[title=Party&nbsp;1,frame=frame3,scope=1] language-neptune[title=Party&nbsp;1,frame=frame3,scope=1]">function innerprod(input) {
-  var promise = jiff_instance.share_array(input);
-  return promise.then(function (arrays) {
-      var array1 = arrays[1];
-      var array2 = arrays[2];
-
-      var result = array1[0].smult(array2[0], null, false);
-      for (var i = 1; i &lt; array1.length; i++) {
-      result = result.sadd(array1[i].smult(array2[i], null, false));
-      }
-
-      return jiff_instance.open(result);
-      });
-}
-
-function start_compute() {
-  var input = [ 1.32, 10.22, 5.67]
-    innerprod(input).then(function (result) {
-        Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
-        Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
-        });
-}
-//preprocessing happens first
-jiff_instance.preprocessing('smult', 3);
+// preprocessing happens first
+jiff_instance.preprocessing('smult', input.length, null, null, null, null, null, null, null, {div: false});
 jiff_instance.preprocessing('open', 1);
 
 // call main phase of computation
-jiff_instance.onFinishPreprocessing(start_compute);
-</code></pre>
-<pre><code class="neptune[title=Party&nbsp;2,frame=frame3,scope=2] language-neptune[title=Party&nbsp;2,frame=frame3,scope=2]">function innerprod(input) {
-  var promise = jiff_instance.share_array(input);
-  return promise.then(function (arrays) {
-      var array1 = arrays[1];
-      var array2 = arrays[2];
-
-      var result = array1[0].smult(array2[0], null, false);
-      for (var i = 1; i &lt; array1.length; i++) {
-      result = result.sadd(array1[i].smult(array2[i], null, false));
-      }
-
-      return jiff_instance.open(result);
-      });
-}
-
-function start_compute() {
-  var input = [ 1.32, 10.22, 5.67]
-  console.log('Main Computation');
+jiff_instance.onFinishPreprocessing(function () {
   innerprod(input).then(function (result) {
-      Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
-      Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
-      });
-}
-//preprocessing happens first
-jiff_instance.preprocessing('smult', 3);
+    Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
+    Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
+  });
+});
+</code></pre>
+<pre><code class="neptune[title=Party&nbsp;3,frame=frame3,scope=3] language-neptune[title=Party&nbsp;3,frame=frame3,scope=3]">var input = [null, null, null]; // 3rd party has no input
+
+// preprocessing happens first
+jiff_instance.preprocessing('smult', input.length, null, null, null, null, null, null, null, {div: false});
 jiff_instance.preprocessing('open', 1);
 
 // call main phase of computation
-jiff_instance.onFinishPreprocessing(start_compute);
+jiff_instance.onFinishPreprocessing(function () {
+  innerprod(input).then(function (result) {
+    Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
+    Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
+  });
+});
 </code></pre>
 <h1 id="asymmetricpreprocessing">Asymmetric preprocessing</h1>
 <p>In the example above, all parties are involved in preprocessing as well as main computation, this is not always going to be the case.</p>
@@ -527,27 +542,32 @@ jiff_instance.onFinishPreprocessing(start_compute);
 </code></pre>
 <p>This way, all of the values that multiplications and comparisons rely on will be created and distributed before the start of any computation.</p>
 <p>By specifying the receivers as all parties, we tell JIFF to reshare all the helper values at the end with everyone, not just the three servers that helped generate the values.</p>
-<p>While we can definitely handle preprocessing for 100 multiplications and 100 comparisons, if we are doing thousands of each we may run out of memory from passing and storing so many messages and promises. Depending on the memory constraints of the systems we are using - we can configure JIFF preprocessing to batch the preprocessing computation to avoid any memory issues. This is what the <code>batch</code> parameter is for, we specify the number of operations to preprocess for concurrently before stopping and cleaning up the promises and messages to save memory.
-Let's say we are preparing for 5000 multiplications, we may want to perform this in batches of 100:</p>
-<pre><code class="neptune[title=Batching,frame=frame6,env=server] language-neptune[title=Batching,frame=frame6,env=server]">var operations = {'smult': 5000};
-for (var op in operations) {
-  jiff.preprocessing(op, operations[op], 100, null, null, receivers, compute_parties)
-}
-</code></pre>
+<p>While we can definitely handle preprocessing for 100 multiplications and 100 comparisons, if we are doing thousands of each we may run out of memory from passing and
+storing so many messages and promises. Depending on the memory constraints of the systems we are using - we can configure JIFF preprocessing to batch the preprocessing
+computation to avoid any memory issues. This is what the <code>batch</code> parameter is for, we specify the number of operations to preprocess for concurrently before stopping and
+cleaning up the promises and messages to save memory.</p>
 <p>Generally memory and performance constraints are much tighter when running in a browser, if all parties are running JIFF in node.js you are less likely to run out of memory.</p>
+<p>Let's say we are preparing for 5000 multiplications, we may want to perform this in batches of 100:</p>
+<pre><code class="neptune[title=Batching,frame=frame6,env=NONE] language-neptune[title=Batching,frame=frame6,env=NONE]">jiff_instance.preprocessing('smult', 5000, 100, null, null, receivers, compute_parties)
+</code></pre>
 <h1 id="whatifwedontpreprocessanything">What If We Don't Preprocess anything?</h1>
 <p>In the case that JIFF tries to perform an operation which needs preprocessing, but none has been performed - the default behavior is to fail:</p>
 <pre><code class="sh language-sh"> UnhandledPromiseRejectionWarning: Error: No preprocessed value(s)
 that correspond to the op_id "smult:1,2:0:triplet"
 </code></pre>
-<p>The other option is to have the server (which may also be a part of the computation) provide values to all parties for the operations, which happens at the time of computation. This can be configured when creating a jiff instance by setting the <code>crypto_provider</code> option to true:</p>
+<p>The other option is to have the server (which may also be a part of the computation) provide values to all parties for the operations, which happens at the time of computation.
+This can be configured when creating a jiff instance by setting the <code>crypto_provider</code> option to true:</p>
 <pre><code class="neptune[title=Crypto&nbsp;Provider,frame=frame7,env=server] language-neptune[title=Crypto&nbsp;Provider,frame=frame7,env=server]">var jiff_instance = jiff.make_jiff(server_address, 'comp_id', {'crypto_provider': true} );
 </code></pre>
-<p>If no operations preprocessed for, the server will be queried for anything that requires it. If some operations were specified for preprocessing, but later more operations were added and there are not enough preprocessed values, the server will be queried for any operations that happen after the parties have run out of preprocessed values.</p>
-<p>While this allows you to get values such as beaver triples just-in-time, it also requires that you trust the coordinating server to generate these values fairly and honestly, which may or may not be part of your logistical assumptions. It is recommended that you pre-process for all operations that you anticipate performing.
-It also requires extra communication with the server during the main phase of computation.</p>
+<p>If no operations preprocessed for, the server will be queried for anything that requires it. If some operations were specified for preprocessing,
+but later more operations were added and there are not enough preprocessed values, the server will be queried for any operations that happen after
+the parties have run out of preprocessed values.</p>
+<p>While this allows you to get values such as beaver triples just-in-time, it also requires that you trust the coordinating server to generate
+these values fairly and honestly, which may or may not be part of your logistical assumptions. It is recommended that you pre-process for
+all operations that you anticipate performing.</p>
 <h1 id="whichoperationsrequirepreprocessing">Which Operations Require Preprocessing</h1>
-<p>As mentioned earlier, not all operations on secret shares require pre-processing. For example, secure addition and secure subtraction require only local computation and don't need any helper values. Below is a table of all JIFF secret-share protocols that require preprocessing:</p>
+<p>As mentioned earlier, not all operations on secret shares require pre-processing. For example, secure addition and secure subtraction require
+only local computation and don't need any helper values. Below is a table of all JIFF secret-share protocols that require preprocessing:</p>
 <p><em>smult</em>,
 <em>sdiv</em>,
 <em>sxor<em>bit</em>,
