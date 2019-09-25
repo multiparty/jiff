@@ -15,6 +15,15 @@ neptune.addDocument('inner-product', '5-innerprod.md', true, jsDependencies);
 neptune.addDocument('preprocessing', '6-preprocessing.md', true, jsDependencies);
 neptune.addDocument('parallel', '7-parallel.md', true, jsDependencies);
 
+neptune.writeHTML('MPC', 'demo/html/tutorial/0.html');
+neptune.writeHTML('intro', 'demo/html/tutorial/1.html');
+neptune.writeHTML('voting', 'demo/html/tutorial/2.html');
+neptune.writeHTML('binary-search', 'demo/html/tutorial/3.html');
+neptune.writeHTML('standard-deviation', 'demo/html/tutorial/4.html');
+neptune.writeHTML('inner-product', 'demo/html/tutorial/5.html');
+neptune.writeHTML('preprocessing', 'demo/html/tutorial/6.html');
+neptune.writeHTML('parallel', 'demo/html/tutorial/7.html');
+
 neptune.start(9111);
 
 global.neptune = neptune;

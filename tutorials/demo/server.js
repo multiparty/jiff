@@ -26,8 +26,7 @@ jiff_instance.totalparty_map['secdev'] = 80; // max 80 parties
 // Serve static files.
 http.listen(80, function () {
   console.log('listening on *:80');
-  console.log('go to http://localhost/output.html to manage session');
-  console.log('go to http://localhost to vote');
+  console.log('routes: / /demo /output');
 });
 
 // Compute function
