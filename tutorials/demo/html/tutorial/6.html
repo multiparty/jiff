@@ -358,6 +358,14 @@ pre[class*="language-"].line-numbers > code {
     <h1 id="whatispreprocessing">What is Preprocessing?</h1>
 <p>In general, MPC is much slower than standard computation - mostly due to communication costs between parties. While some operations are free (meaning they only rely on local computation), such as secure addition, other operations (e.g. secure multiplication) incur high communication costs. Specifically for multiplication, the protocol used in JIFF relies on helper values of a certain form, called beaver triples (a,b,c such that a*b=c). In JIFF, preprocessing of beaver triples is accomplished via multiplication with the BGW protocol.</p>
 <p>While preprocessing still incurs communication costs, it can ideally be executed before data is ready to be shared or before all parties online, which leads to a faster online phase.</p>
+<h4 id="tutorialcontent">Tutorial content:</h4>
+<ol>
+<li>Basic pre-processing workflow</li>
+<li>Pre-processing for an inner product (based on previous tutorial)</li>
+<li>Delegating preprocessing to a subset of parties</li>
+<li>Consequences of not preprocessing</li>
+<li>List of JIFF primitives that require pre-processing</li>
+</ol>
 <h1 id="howtousepreprocessinginjiff">How to Use Preprocessing in JIFF</h1>
 <p>The <code>jiff.preprocessing()</code> exists to preprocess any values needed for later computation. All preprocessing needs to know is which operations will be performed and how many times, so the programmer does not need to know what other protocols or values those depend on.</p>
 <p>The basic preprocessing workflow looks like this</p>
@@ -374,7 +382,7 @@ var start_compute = function() {
 </code></pre>
 <p>Now let's look at a concrete example:</p>
 <h2 id="preprocessingforaninnerproduct">Preprocessing for an inner product</h2>
-<p>The inner product computation we wrote earlier looks like this:</p>
+<p>The inner product computation we wrote in an earlier tutorial looks like this:</p>
 <pre><code class="neptune[title=Inner&nbsp;Product,frame=frame2,scope=1] language-neptune[title=Inner&nbsp;Product,frame=frame2,scope=1]">var input = [ 1.32, 10.22, 5.67]
 
 function innerprod(input) {
@@ -428,7 +436,7 @@ jiff_instance.onFinishPreprocessing(start_compute);
       });
 }
 
-//preprocessing happens firt
+//preprocessing happens first
 jiff_instance.preprocessing('smult', 3);
 jiff_instance.preprocessing('open', 1);
 
