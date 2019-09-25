@@ -7,12 +7,11 @@ While preprocessing still incurs communication costs, it can ideally be executed
 # How to Use Preprocessing in JIFF
 The `jiff.preprocessing()` exists to preprocess any values needed for later computation. All preprocessing needs to know is which operations will be performed and how many times, so the programmer does not need to know what other protocols or values those depend on.
 
-For example, if we are going to compute a global average on a large dataset - we may not know the number of input rows, but we know there will be one division at the end. So, no matter how many additions we are performing, there will only ever be one secure division. To preprocess for this case in JIFF we call preprocessing and pass it `cdiv` (division of a secret share by a constant) as the dependent operation. We use cdiv because the number of inputs is likely public:
-```javascript
-jiff.preprocessing('cdiv', 1);
-```
-The preprocessing function takes many more optional parameters, but for our very example that is all it needs. After we've dealt with all the operations we anticipate performing, we need to tell JIFF what to do - likely the main phase of computation:
-```javascript
+The basic preprocessing workflow looks like this
+```neptune[title=Basic&nbsp;Workflow,scope=None,frame=frame1]
+jiff.preprocessing(<operation>, <number of calls>, <optional params>);
+
+// this takes a callback to the main phase of computation
 jiff.onFinishPreprocessing(start_compute);
 
 var start_compute = function() {
@@ -21,80 +20,113 @@ var start_compute = function() {
  */
 };
 ```
-This is important for synchronization during the online-phase of computation, to ensure allparties are using the same pre-processed values for the same operations.
-Later, when we perform the secure division, any values that it relies on will be pulled from the table which stores preprocessed values:
-```javascript
-// let's assume the number of inputs is public
-var number_of_inputs = 100;
-var average = sum.div(number_of_inputs)
-```
-Calling `div()` as opposed to `cdiv` is okay here, as JIFF will recognize that `number_of_inputs` is a public constant and internally use the logic for constant division. You can almost always use the generic arithemtic operators (e.g. div, mult, add, sub) and JIFF will decide whether to use the protocol for operations by a secret share or by a constant. BUT it's important that the call to `preprocessing()` uses the precise function name (`sdiv` or `cdiv`) because it will not know the inputs in advance.
-
-It's common for JIFF computations to end with a call to `jiff.open()` to reveal a final result, the open protocol also requires preprocessing:
-```javascript
-jiff.preprocessing('open', 1);
-```
+Now let's look at a concrete example:
 
 ## Preprocessing for an inner product
-Now let's take what we know about preprocessing in jiff and apply it to the inner-product computation we wrote in a [previous tutorial](/tutorials/2-innerprod.md).
+The inner product computation we wrote earlier looks like this:
 
-Let's look at the current version of the inner product:
-```javascript
-var input = [1, 2, 3, 4, 5];
-var shares = jiff_instance.share_array(input, input.length);
+```neptune[title=Inner&nbsp;Product,frame=frame2,scope=1]
+var input = [ 1.32, 10.22, 5.67]
 
-var products = shares[1];
-for (var i = 0; i < products.length; i++) {
-  products[i] = products[i].smult(shares[2][i]);
+function innerprod(input) {
+  var promise = jiff_instance.share_array(input);
+  return promise.then(function (arrays) {
+    var array1 = arrays[1];
+    var array2 = arrays[2];
+
+    var result = array1[0].smult(array2[0], null, false);
+    for (var i = 1; i < array1.length; i++) {
+      result = result.sadd(array1[i].smult(array2[i], null, false));
+    }
+
+    return jiff_instance.open(result);
+  });
 }
 
-var sum = products[0];
-for (var i = 1; i < products.length; i++) {
-  sum = sum.sadd(products[i]);
-}
+innerprod(input).then(function (result) {
+  Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
+  Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
+});
 ```
-Because we know the length of the input (5), we can preprocess for exactly this many multiplications (addition of secret shares does not require any preprocessing):
-```javascript
-jiff_instance.preprocessing('smult', 5);
+After the optimizations we made, it looks like we are going to perform only 3 multiplications and 3 additions under MPC. Additions of secret shares only require local computation, so we say they are free, and don't require any preprocessing. We will just prepare for 3 secure multiplications, as well as the `open()` call:
 
-// call before the online phase of computation
-jiff_instance.onFinishPreprocessing(start_compute);
-```
-
-Later in the inner product tutorial we added support for fixed-point numbers, which usually uses one division per call to `smult` to account for the magnitude of the numbers. We optimized this by ignoring magnitude until the last step, where we account for it with a single division:
-```javascript
-var products = shares[1];
-for (var i = 0; i < products.length; i++) {
-  products[i] = products[i].smult(shares[2][i], false);
-}
-
-var sum = products[0];
-for (var i = 1; i < products.length; i++) {
-  sum = sum.sadd(products[i]);
-}
-
-var magnitude = sum.jiff.helpers.magnitude(sum.jiff.decimal_digits);
-sum = sum.legacy.cdiv(magnitude);
-```
-Preprocessing for the above code would look like this:
-```javascript
-jiff_instance.preprocessing('smult', 5);
-
-// provide a parameters object which specifies the namespace as the 'base' jiff client
-jiff_instance.preprocessing('cdiv', 1, _, _, _, _, _, {'namespace': 'base'});
-
+```neptune[title=Callling&nbsp;Preprocessing,frame=frame3,scope=None]
+jiff_instance.preprocessing('smult', 3);
 jiff_instance.preprocessing('open', 1);
 
 jiff_instance.onFinishPreprocessing(start_compute);
 ```
-We specify the namespace as 'base' for the cdiv operation because we are using `.legacy.cdiv()` which refers to the original jiff-client functionality, as opposed to the `cdiv` function defined in the fixed-point extension.
 
+The whole process would look like this:
+```neptune[title=Party&nbsp;1,frame=frame4,scope=1]
+var start_compute = function () {
+  var input = [ 1.32, 10.22, 5.67]
+
+    function innerprod(input) {
+      var promise = jiff_instance.share_array(input);
+      return promise.then(function (arrays) {
+          var array1 = arrays[1];
+          var array2 = arrays[2];
+
+          var result = array1[0].smult(array2[0], null, false);
+          for (var i = 1; i < array1.length; i++) {
+          result = result.sadd(array1[i].smult(array2[i], null, false));
+          }
+
+          return jiff_instance.open(result);
+          });
+    }
+
+  innerprod(input).then(function (result) {
+      Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
+      Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
+      });
+}
+
+//preprocessing happens firt
+jiff_instance.preprocessing('smult', 3);
+jiff_instance.preprocessing('open', 1);
+
+// call main phase of computation
+jiff_instance.onFinishPreprocessing(start_compute);
+
+```
+```neptune[title=Party&nbsp;2,frame=frame4,scope=2]
+var start_compute = function () {
+  var input = [ 5.91, 3.73, 50.03]
+
+    function innerprod(input) {
+      var promise = jiff_instance.share_array(input);
+      return promise.then(function (arrays) {
+          var array1 = arrays[1];
+          var array2 = arrays[2];
+
+          var result = array1[0].smult(array2[0], null, false);
+          for (var i = 1; i < array1.length; i++) {
+          result = result.sadd(array1[i].smult(array2[i], null, false));
+          }
+
+          return jiff_instance.open(result);
+          });
+    }
+
+  innerprod(input).then(function (result) {
+      Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
+      });
+}
+//preprocessing happens firt
+jiff_instance.preprocessing('smult', 3);
+jiff_instance.preprocessing('open', 1);
+
+// call main phase of computation
+jiff_instance.onFinishPreprocessing(start_compute);
+```
 
 # Asymmetric preprocessing
 In the example above, all parties are involved in preprocessing as well as main computation, this is not always going to be the case.
 
 Some of the machines may always be online, but others may come online just before a computation starts. In this case we can have the group of servers that is always online perform all the necessary pre-processing before the other servers come online and then share the values as soon as they connect.
-```javascript
+```neptune[title=Asymmetry,frame=frame5,env=server]
 // define what operations we need to preprocess for, and how many of each
 var operations = {'smult': 100, 'slt': 100};
 
@@ -121,7 +153,7 @@ By specifying the receivers as all parties, we tell JIFF to reshare all the help
 
 While we can definitely handle preprocessing for 100 multiplications and 100 comparisons, if we are doing thousands of each we may run out of memory from passing and storing so many messages and promises. Depending on the memory constraints of the systems we are using - we can configure JIFF preprocessing to batch the preprocessing computation to avoid any memory issues. This is what the `batch` parameter is for, we specify the number of operations to preprocess for concurrently before stopping and cleaning up the promises and messages to save memory.
 Let's say we are preparing for 5000 multiplications, we may want to perform this in batches of 100:
-```javascript
+```neptune[title=Batching,frame=frame6,env=server]
 var operations = {'smult': 5000};
 for (var op in operations) {
   jiff.preprocessing(op, operations[op], 100, null, null, receivers, compute_parties)
@@ -137,7 +169,7 @@ that correspond to the op_id "smult:1,2:0:triplet"
 ```
 
 The other option is to have the server (which may also be a part of the computation) provide values to all parties for the operations, which happens at the time of computation. This can be configured when creating a jiff instance by setting the `crypto_provider` option to true:
-```javascript
+```neptune[title=Crypto&nbsp;Provider,frame=frame7,env=server]
 var jiff_instance = jiff.make_jiff(server_address, 'comp_id', {'crypto_provider': true} );
 ```
 If no operations preprocessed for, the server will be queried for anything that requires it. If some operations were specified for preprocessing, but later more operations were added and there are not enough preprocessed values, the server will be queried for any operations that happen after the parties have run out of preprocessed values.
@@ -149,28 +181,26 @@ It also requires extra communication with the server during the main phase of co
 # Which Operations Require Preprocessing
 As mentioned earlier, not all operations on secret shares require pre-processing. For example, secure addition and secure subtraction require only local computation and don't need any helper values. Below is a table of all JIFF secret-share protocols that require preprocessing:
 
-| Protocol |
-|----------|
-| smult    |
-| sdiv     |
-| sxor_bit |
-| slt      |
-| cgt      |
-| clt      |
-| clt_bits |
-| cdiv     |
-| smod     |
-| if_else  |
-| sor_bit  |
-| slteq    |
-| sgteq    |
-| sgt      |
-| clteq    |
-| cgteq    |
-| seq      |
-| sneq     |
-| ceq      |
-| cneq     |
-| open     |
-| if_else  |
+*smult*,
+*sdiv*,
+*sxor_bit*,
+*slt*,
+*cgt*,
+*clt*,
+*clt_bits*,
+*cdiv*,
+*smod*,
+*if_else*,
+*sor_bit*,
+*slteq*,
+*sgteq*,
+*sgt*,
+*clteq*,
+*cgteq*,
+*seq*,
+*sneq*,
+*ceq*,
+*cneq*,
+*open*,
+*if_else*
 
