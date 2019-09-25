@@ -14,7 +14,7 @@ While preprocessing still incurs communication costs, it can ideally be executed
 The `jiff.preprocessing()` exists to preprocess any values needed for later computation. All preprocessing needs to know is which operations will be performed and how many times, so the programmer does not need to know what other protocols or values those depend on.
 
 The basic preprocessing workflow looks like this
-```neptune[title=Basic&nbsp;Workflow,scope=None,frame=frame1]
+```javascript
 jiff.preprocessing(<operation>, <number of calls>, <optional params>);
 
 // this takes a callback to the main phase of computation
@@ -28,10 +28,47 @@ var start_compute = function() {
 ```
 Now let's look at a concrete example:
 
+## Server setup
+
+First we setup a JIFF server on top of our running http server (similar to the inner product tutorial).
+```neptune[title=Server,frame=frame1,env=server]
+var jiff = require('../../../../../lib/jiff-server.js');
+var jiff_bignumber = require('../../../../../lib/ext/jiff-server-bignumber.js');
+
+var jiff_instance = jiff.make_jiff(server, { logs:true });
+jiff_instance.apply_extension(jiff_bignumber);
+
+Console.log('Server is running on port 9111');
+```
+
+## JIFF client setup
+```neptune[title=Party&nbsp;1,frame=frame2,scope=1]
+function onConnect() {
+  Console.log('All parties connected!');
+}
+
+var options = { party_count: 2, party_id: 1, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+jiff_instance.apply_extension(jiff_bignumber, options);
+jiff_instance.apply_extension(jiff_fixedpoint, options);
+jiff_instance.connect();
+```
+```neptune[title=Party&nbsp;2,frame=frame2,scope=2]
+function onConnect() {
+  Console.log('All parties connected!');
+}
+
+var options = { party_count: 2, party_id: 2, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+jiff_instance.apply_extension(jiff_bignumber, options);
+jiff_instance.apply_extension(jiff_fixedpoint, options);
+jiff_instance.connect();
+```
+
 ## Preprocessing for an inner product
 The inner product computation we wrote in an earlier tutorial looks like this:
 
-```neptune[title=Inner&nbsp;Product,frame=frame2,scope=1]
+```javascript
 var input = [ 1.32, 10.22, 5.67]
 
 function innerprod(input) {
@@ -56,7 +93,7 @@ innerprod(input).then(function (result) {
 ```
 After the optimizations we made, it looks like we are going to perform only 3 multiplications and 3 additions under MPC. Additions of secret shares only require local computation, so we say they are free, and don't require any preprocessing. We will just prepare for 3 secure multiplications, as well as the `open()` call:
 
-```neptune[title=Callling&nbsp;Preprocessing,frame=frame3,scope=None]
+```javascript
 jiff_instance.preprocessing('smult', 3);
 jiff_instance.preprocessing('open', 1);
 
@@ -64,31 +101,30 @@ jiff_instance.onFinishPreprocessing(start_compute);
 ```
 
 The whole process would look like this:
-```neptune[title=Party&nbsp;1,frame=frame4,scope=1]
-var start_compute = function () {
-  var input = [ 1.32, 10.22, 5.67]
+```neptune[title=Party&nbsp;1,frame=frame3,scope=1]
 
-    function innerprod(input) {
-      var promise = jiff_instance.share_array(input);
-      return promise.then(function (arrays) {
-          var array1 = arrays[1];
-          var array2 = arrays[2];
+function innerprod(input) {
+  var promise = jiff_instance.share_array(input);
+  return promise.then(function (arrays) {
+      var array1 = arrays[1];
+      var array2 = arrays[2];
 
-          var result = array1[0].smult(array2[0], null, false);
-          for (var i = 1; i < array1.length; i++) {
-          result = result.sadd(array1[i].smult(array2[i], null, false));
-          }
+      var result = array1[0].smult(array2[0], null, false);
+      for (var i = 1; i < array1.length; i++) {
+      result = result.sadd(array1[i].smult(array2[i], null, false));
+      }
 
-          return jiff_instance.open(result);
-          });
-    }
-
-  innerprod(input).then(function (result) {
-      Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
-      Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
+      return jiff_instance.open(result);
       });
 }
 
+function start_compute() {
+  var input = [ 1.32, 10.22, 5.67]
+    innerprod(input).then(function (result) {
+        Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
+        Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
+        });
+}
 //preprocessing happens first
 jiff_instance.preprocessing('smult', 3);
 jiff_instance.preprocessing('open', 1);
@@ -97,30 +133,32 @@ jiff_instance.preprocessing('open', 1);
 jiff_instance.onFinishPreprocessing(start_compute);
 
 ```
-```neptune[title=Party&nbsp;2,frame=frame4,scope=2]
-var start_compute = function () {
-  var input = [ 5.91, 3.73, 50.03]
+```neptune[title=Party&nbsp;2,frame=frame3,scope=1]
 
-    function innerprod(input) {
-      var promise = jiff_instance.share_array(input);
-      return promise.then(function (arrays) {
-          var array1 = arrays[1];
-          var array2 = arrays[2];
+function innerprod(input) {
+  var promise = jiff_instance.share_array(input);
+  return promise.then(function (arrays) {
+      var array1 = arrays[1];
+      var array2 = arrays[2];
 
-          var result = array1[0].smult(array2[0], null, false);
-          for (var i = 1; i < array1.length; i++) {
-          result = result.sadd(array1[i].smult(array2[i], null, false));
-          }
+      var result = array1[0].smult(array2[0], null, false);
+      for (var i = 1; i < array1.length; i++) {
+      result = result.sadd(array1[i].smult(array2[i], null, false));
+      }
 
-          return jiff_instance.open(result);
-          });
-    }
-
-  innerprod(input).then(function (result) {
-      Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
+      return jiff_instance.open(result);
       });
 }
-//preprocessing happens firt
+
+function start_compute() {
+  var input = [ 1.32, 10.22, 5.67]
+  console.log('Main Computation');
+  innerprod(input).then(function (result) {
+      Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
+      Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
+      });
+}
+//preprocessing happens first
 jiff_instance.preprocessing('smult', 3);
 jiff_instance.preprocessing('open', 1);
 
@@ -128,11 +166,12 @@ jiff_instance.preprocessing('open', 1);
 jiff_instance.onFinishPreprocessing(start_compute);
 ```
 
+
 # Asymmetric preprocessing
 In the example above, all parties are involved in preprocessing as well as main computation, this is not always going to be the case.
 
 Some of the machines may always be online, but others may come online just before a computation starts. In this case we can have the group of servers that is always online perform all the necessary pre-processing before the other servers come online and then share the values as soon as they connect.
-```neptune[title=Asymmetry,frame=frame5,env=server]
+```neptune[title=Asymmetry,frame=frame5,env=None]
 // define what operations we need to preprocess for, and how many of each
 var operations = {'smult': 100, 'slt': 100};
 
