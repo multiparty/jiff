@@ -7,8 +7,8 @@ require('../../../lib/jiff-server').make_jiff(http, { logs:true });
 
 // Run app
 try {
-  http.listen(8080, function () {
-    console.log('listening on *:8080');
+  http.listen(9111, function () {
+    console.log('listening on *:9111');
   });
 } catch (err) {
   console.log('ERROR:'+err.message)

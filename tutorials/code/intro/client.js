@@ -1,26 +1,34 @@
 var jiff = require('../../../lib/jiff-client');
-
-var my_budget = parseInt(process.argv[2], 10);
-console.log(my_budget);
-
 var options = {party_count: 3, crypto_provider: true};
-options.onConnect = function (my_jiff_instance) {
 
-  var shares = my_jiff_instance.share(my_budget);
+try {
+  var input = JSON.parse(process.argv[2]);
+  if (input.length !== 4) {
+    console.log('Input should be a JSON of length 4, with no spaces (e.g. [0,1,0,0])');
+    process.exit(1);
+  }
+} catch (e) {
+  console.log('Input should be a JSON of length 4, with no spaces (e.g. [0,1,0,0])');
+  process.exit();
+}
+options.onConnect = function (jiff_instance) {
 
-  var total_budget = shares[1].add(shares[2]).add(shares[3]);
-  var is_enough = total_budget.gteq(5000);
-  var result = my_jiff_instance.open(is_enough);
+  var options = ['IPA', 'Lager', 'Stout', 'Pilsner'];
 
-  result.then(function (result) {
-    if (result) {
-      console.log("We're going on vacation!");
-    } else {
-      console.log("We can't afford to go :( ");
+  jiff_instance.wait_for([1, 2, 3], function () {
+    var results = [];
+    for (var i = 0; i < options.length; i++) {
+      var ithOptionShares = jiff_instance.share(input[i]);
+      var ithOptionResult = ithOptionShares[1].sadd(ithOptionShares[2]).sadd(ithOptionShares[3]);
+      results.push(jiff_instance.open(ithOptionResult));
     }
 
-    my_jiff_instance.disconnect();
+    Promise.all(results).then(function (results) {
+      console.log('options', options);
+      console.log('results', results);
+      jiff_instance.disconnect();
+    });
   });
 };
 
-var my_jiff_instance = jiff.make_jiff('http://localhost:8080', 'vacation', options);
+var my_jiff_instance = jiff.make_jiff('http://localhost:9111', 'voting-tutorial', options);
