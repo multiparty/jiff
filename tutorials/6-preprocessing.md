@@ -133,7 +133,7 @@ jiff_instance.preprocessing('open', 1);
 jiff_instance.onFinishPreprocessing(start_compute);
 
 ```
-```neptune[title=Party&nbsp;2,frame=frame3,scope=1]
+```neptune[title=Party&nbsp;2,frame=frame3,scope=2]
 
 function innerprod(input) {
   var promise = jiff_instance.share_array(input);
