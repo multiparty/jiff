@@ -377,21 +377,21 @@ Console.log('Server is running on port 9111');
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect, Zp: 11 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'voting-application', options);
 </code></pre>
 <pre><code class="neptune[title=Party&nbsp;2,frame=frame1,scope=2] language-neptune[title=Party&nbsp;2,frame=frame1,scope=2]">function onConnect() {
   Console.log('All parties connected!');
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect, Zp: 11 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'voting-application', options);
 </code></pre>
 <pre><code class="neptune[title=Party&nbsp;3,frame=frame1,scope=3] language-neptune[title=Party&nbsp;3,frame=frame1,scope=3]">function onConnect() {
   Console.log('All parties connected!');
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect, Zp: 11 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'voting-application', options);
 </code></pre>
 <h1 id="inputsanitization">Input sanitization</h1>
 <p>Note that a valid input to our voting application satisifies these two constraints:</p>
