@@ -20,28 +20,33 @@ Secret shares of a value can be decoded to that value. However, a secret share i
 At a high level, MPC can be thought of as a **secret sharing scheme** with a collection of **attached protocols** that compute functions over shares produced by the sharing scheme.
 
 Over the past decade, a number of general and special-purpose MPC software frameworks have been developed, that provide users with builtin sharing schemes and protocols. You can view
-an overview of some of the most noteable one at this [MPC frameworks SOK repository](https://github.com/MPC-SoK/frameworks/wiki).
+an overview of some of the most noteable ones at this [MPC frameworks SOK repository](https://github.com/MPC-SoK/frameworks/wiki).
 
 ## Security Guarantees
-MPC frameworks and protocols provide two important security guarantees relative to some underlying assumptions:
+MPC frameworks and protocols provide two important security guarantees relative to some underlying assumptions.
+
+Security Guarantees:
 1. Confidentiality: the execution of the protocol, all initial and intermediate secret shares, and any side effect, reveal nothing more than the final result of the protocol.
 
 2. Integrity: the final result of a protocol corresponding to some desired function is indeed the output of that function.
 
 **Note:** Sometimes the final result can itself reveal information about the inputs even if MPC is used. For example, if two parties jointly compute the sum of their inputs securely, each of them can learn the input
-of the other, by simplfy subtracting their input out of the final output. In such case, it is recommended that output privacy mechanisms (such as [differential privacy](https://privacytools.seas.harvard.edu/differential-privacy)) are used in conjunction with MPC.
+of the other, by simply subtracting their input out of the final output. In such case, it is recommended that output privacy mechanisms (such as [differential privacy](https://privacytools.seas.harvard.edu/differential-privacy)) are used in conjunction with MPC.
 
 Common underlying assumptions can be split into two main categories:
-1. Behavior: MPC protocols frequently make assumptions about what participating parties will and will not do. Parties that do not abide by these restrictions can cause the protocol to lose Confidentiality, Integrity, or both.
-   Two common behavior models are: **semi-honest security** where parties abide by the protocol but may try to learn private information by analyzing their messages or colluding with other parties, and **malicious security** where
-   parties may deviate arbitrarily from the protocols. Choosing the appropriate security model for an application depends on what incitives exists between the participating parties, and can introduce performance tradeoffs.
+1. Behavior: MPC protocols frequently make assumptions about what participating parties will and will not do. Parties that do not abide by these restrictions can cause the protocol to lose Confidentiality, Integrity, or both. Two common behavior models are: 
+     - **semi-honest security** where parties abide by the protocol but may try to learn private information by analyzing their messages or colluding with other parties.
+     - **malicious security** where parties may deviate arbitrarily from the protocols.
 
-2. Coalitions: MPC protocols may make assumptions about how many parties in the computation are **honest** (e.g. abide by the protocol or do not collude with others), or the size of the largest coalitions of parties. Two common assumptions are
-  **honest majority** where the largest coalitions must be less than half of the parties, and **dishonest majority** where coalitions may include all parties except one.
+   Choosing the appropriate security model for an application depends on the incentives between the participating parties and can involve performance tradeoffs.
+
+2. Coalitions: MPC protocols may make assumptions about how many parties in the computation are **honest** (e.g. abide by the protocol or do not collude with others) or the size of the largest coalitions of parties. Two common assumptions are:
+    - **honest majority**: the largest coalitions must be less than half of the parties
+    - **dishonest majority**: coalitions may include all parties except one.
 
 There are a variety of interesting theoretical results in the literature about what can be and cannot be done in any of these settings.
 
-We focus on **semi-honest** security in these tutorials, since JIFF operates in the **semi-honest** model.
+We focus on **semi-honest security** in these tutorials, since JIFF operates in the **semi-honest security** model.
 
 ## When should MPC be used?
 MPC allows computation of functions over sensitive data. MPC is particularly useful in the following scenarios:
