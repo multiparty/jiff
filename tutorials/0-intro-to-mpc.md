@@ -59,14 +59,14 @@ MPC allows computation of functions over sensitive data. MPC is particularly use
    having to move or share the data.
 
 # How does it work?
-Secret sharing is the backbone of MPC. A secret sharing scheme consists of two functions: a **share** function that creates seemingly-random shares from an input, and a reconstruct or **open**
+Secret sharing is the backbone of MPC. A secret sharing scheme consists of two functions: a **share** function that creates seemingly-random shares from an input and a reconstruct or **open**
 function that reconstructs the input from the shares.
 
 There are a variety of secret sharing schemes, we will start with the simplest.
 
 ## Additive secret sharing
 
-Given an input x, choose n random values x1, ..., xn such that their sum is equal to x.
+Given an input x, choose n random values x<sub>1</sub>, ..., x<sub>n</sub> such that their sum is equal to x.
 
 ```neptune[frame=1,title=Insecure&nbsp;Scheme]
 function share(x, n) {
@@ -152,7 +152,7 @@ We achieve this cyclicity in the first scheme above by allowing shares to be eit
 outside the domain. We fix these issues by setting our domain to be a field, as is shown in the second scheme above.
 
 Additive secret sharing is interesting because it allows to efficiently compute at least one function over shares, namely addition! Given two secret shared inputs between n parties,
-with each party possessing a share of each inputs. When every party adds its two shares together (mod prime), this result in a new sharing of the sum of original inputs.
+with each party possessing a share of each inputs. When every party adds its two shares together (mod prime), this results in a new sharing of the sum of original inputs.
 
 ## Shamir secret sharing
 
