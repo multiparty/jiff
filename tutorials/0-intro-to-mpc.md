@@ -301,7 +301,7 @@ plot([result.shares], [result.polynomial], 'plot2');
 
 ## Operations on Shamir secret sharing
 
-Shamir secret sharing directly supports both addition and multiplication, and allows the number of required shares to reconstruct the value to be configurable.
+Shamir secret sharing directly supports both addition and multiplication and allows the number of required shares to reconstruct the value to be configurable.
 
 Addition is direct, due to properties of polynomials. Adding two polynomials point-wise gives a new set of points that define a polynomial of the same degree
 that is equivalent to the sum of the original polynomials.
@@ -343,15 +343,14 @@ Console.log(polynomialPrint(result.polynomial));
 plot([shares1.shares, shares2.shares, result.shares], [shares1.polynomial, shares2.polynomial, result.polynomial], 'plot4');
 ```
 
-Multiplication is trickier: multiplying two polynomials point wise does yield a polynomial with the correct values, whoever, the resulting
-polynomial is of a higher degree, which means that we need more shares to reconstruct that value than we original possessed.
+Multiplication is trickier: multiplying two polynomials point wise does yield a polynomial with the correct values, however, the resulting
+polynomial is of a higher degree. This means that we need more shares to reconstruct that value than we original possessed.
 
 One way to avoid this problem is to secret share the original inputs using a polynomial of lower degree, so that the after multiplication, the
-degree remains smaller than the number of parties, and thus less than the number of availabe shares. The bgw protocol provides a way to then
-reduce the degree of a polynomial represented by secret shares under MPC, at the cost of a single round of communication, so that unlimited
-many multiplications can be performed consecutively.
+degree remains smaller than the number of parties, and thus less than the number of availabe shares. The BGW protocol provides a way to then
+reduce the degree of a polynomial represented by secret shares under MPC, at the cost of a single round of communication, so that an unlimited number of multiplications can be performed consecutively.
 
-The bgw protocol is an example of an **honest-majority** scheme, as all secrets can be reconstructed
+The BGW protocol is an example of an **honest-majority** scheme, as all secrets can be reconstructed
 by a majority coalition due to the low degree of the underlying polynomials. JIFF uses BGW protocol for certain
 pre-processing tasks by default, making the preprocessing phase of JIFF secure only against honest-majority. This behavior
 can be customized. More on this later.
@@ -413,7 +412,7 @@ MPC is very similar to the Single Instruction Multiple Data (SIMD) paradigm from
 The main difference being that the data is shared in MPC (as opposed to split), for the purpose of security (as opposed to parallelization).
 
 Below is an example of such code written in JIFF, where three parties and a server carry out an MPC computation that computes the sum of their inputs.
-JIFF API and the role of the server in JIFF is explained in more details in later tutorials.
+The JIFF API and the role of the server in JIFF is explained in more details in later tutorials.
 
 ```neptune[frame=jiff,scope=jiff,title=Server,env=server]
 var jiff = require('../../../../../lib/jiff-server.js');
