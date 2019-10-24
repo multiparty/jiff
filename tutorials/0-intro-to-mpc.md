@@ -128,21 +128,33 @@ Console.log(shares, open(shares));
 ```
 
 ```neptune[frame=1,title=Addition&nbsp;under&nbsp;MPC]
-var input1 = 10;
-var input2 = 13;
-var input3 = 22;
+// A simple demo of addition under MPC using additive secret sharing!
 
-var shares1 = share(input1, 3);
-var shares2 = share(input2, 3);
-var shares3 = share(input3, 3);
+// Each party's inputs
+var input_party_0 = 10;
+var input_party_1 = 13;
+var input_party_2 = 22;
 
-Console.log(shares1, shares2, shares3);
+// Each party creates Secret Shares of their inputs
+var shares_party_0 = share(input_party_0, 3);
+var shares_party_1 = share(input_party_1, 3);
+var shares_party_2 = share(input_party_2, 3);
+Console.log(shares_party_0, shares_party_1, shares_party_2);
 
-var sum1 = shares1.map(function (v, i) { return mod(v + shares2[i]) });
-Console.log(sum1, open(sum1));
+// Each party sends their ith share to the ith party
+var received_shares_party_0 = [shares_party_0[0], shares_party_1[0], shares_party_2[0]]
+var received_shares_party_1 = [shares_party_0[1], shares_party_1[1], shares_party_2[1]]
+var received_shares_party_2 = [shares_party_0[2], shares_party_1[2], shares_party_2[2]]
 
-var sum2 = sum1.map(function (v, i) { return mod(v + shares3[i]) });
-Console.log(sum2, open(sum2));
+// Each party computes the sum of their received shares and broadcasts this value to the other parties.
+// These sums of received shares, neither individually nor in pairs, reveal nothing about any party's inputs.
+var sum_received_shares_party_0 = received_shares_party_0.reduce((sum, share) => mod(sum + share), 0);
+var sum_received_shares_party_1 = received_shares_party_1.reduce((sum, share) => mod(sum + share), 0);
+var sum_received_shares_party_2 = received_shares_party_2.reduce((sum, share) => mod(sum + share), 0);
+
+// When each party adds these sums with each other, they get the sum over all their original inputs!
+Console.log(mod(sum_received_shares_party_0+sum_received_shares_party_1+sum_received_shares_party_2));
+
 ```
 
 It is important that the domain of the shares exihibt some sort of _cyclicity_, so that knowing a single share cannot be used to determine some bound on the input, and that given a
@@ -151,7 +163,7 @@ set of shares, it is equally likely (with respect to the coins of the share func
 We achieve this cyclicity in the first scheme above by allowing shares to be either positive or negative. However, this causes another issue. The last share may fall
 outside the domain. We fix these issues by setting our domain to be a field, as is shown in the second scheme above.
 
-Additive secret sharing is interesting because it allows to efficiently compute at least one function over shares, namely addition! Given two secret shared inputs between n parties,
+Additive secret sharing is interesting because it allows us to efficiently compute at least one function over shares, namely addition! Given two secret shared inputs between n parties,
 with each party possessing a share of each inputs. When every party adds its two shares together (mod prime), this results in a new sharing of the sum of original inputs.
 
 ## Shamir secret sharing
