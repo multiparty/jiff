@@ -22,6 +22,7 @@
         "party_count": 3,
         "decimal_digits": 49,
         "integer_digits": 50,
+        "inspectorInterval": 300000,
         "warn": false
       }
     },
@@ -32,6 +33,7 @@
         "Zp": "1021",
         "party_count": 3,
         "decimal_digits": 1,
+        "inspectorInterval": 300000,
         "integer_digits": 1
       }
     },
@@ -42,6 +44,7 @@
         "Zp": "1021",
         "party_count": 3,
         "decimal_digits": 1,
+        "inspectorInterval": 300000,
         "integer_digits": 1
       }
     },
@@ -52,6 +55,7 @@
         "Zp": "16381",
         "party_count": 3,
         "integer_digits": 2,
+        "inspectorInterval": 300000,
         "decimal_digits": 1
       }
     },
@@ -63,17 +67,19 @@
         "party_count": 3,
         "integer_digits": 2,
         "decimal_digits": 1,
+        "inspectorInterval": 300000,
         "warn": false
       }
     },
     "floor": {
-      "count": 4,
-      "parallel": 2,
+      "count": 6,
+      "parallel": 3,
       "options": {
         "Zp": 127,
         "party_count": 3,
         "integer_digits": 1,
         "decimal_digits": 1,
+        "inspectorInterval": 300000,
         "warn": false
       }
     }
