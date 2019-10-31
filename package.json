@@ -46,7 +46,8 @@
     "gen-docs": "./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/CONTRIBUTING.md/CONTRIBUTING.html/g' docs/jsdoc/*.html",
     "test-demo": "./demos/run-test.sh",
     "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit",
-    "lint": "./node_modules/.bin/eslint ."
+    "lint": "./node_modules/.bin/eslint .",
+    "tutorial": "npm install && cd tutorials && node index.js"
   },
   "dependencies": {
     "bignumber.js": "^5.0.0",
@@ -69,6 +70,7 @@
     "jsdoc": "^3.6.3",
     "marked": "^0.7.0",
     "minimist": "^1.2.0",
-    "mocha": "^4.0.1"
+    "mocha": "^4.0.1",
+    "neptune-notebook": "^1.0.2"
   }
 }

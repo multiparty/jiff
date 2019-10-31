@@ -1,197 +1,331 @@
-# Why Use JIFF?
-My group of friends and I are planning a vacation together. We want to see if we can afford a certain trip (let's say total it would cost $5000) but none of us want to reveal how much we are willing to pay (maybe not the greatest friends...). Hey, I have an idea! Let's use JIFF to compute our total budget without sharing how much any individual is willing to pay. Then we can see if we can afford the trip and no one has to reveal their personal budget.
+# Introduction to JIFF
 
-The JIFF workflow looks like this. As a group, we will
-1. Install JIFF
-2. Set up a central server to coordinate and communicate
-3. Define the function we'd like to compute. In this case, we'll sum our personal budgets and compare to the $5000 threshold.
+This tutorial assumes that you are familiar with MPC to some extent, if you need a quick primer on MPC, look at the previous tutorial!
 
-Then, we individually
-4. Input our personal budgets. Input to JIFF is secret shared, which means that no other participants will know the value of our input.
-5. Execute the function and reveal the result. We'll communicate via the server, but again, nobody will learn anything until we all coordinate to publicly reveal the answer.
+#### Tutorial content:
 
-If the result of the computation says that our group budget is at least $5000, then we can go on vacation!
+1. An overview of JIFF's computation model and security guarantees.
+2. Basic setup of JIFF in browser or node.js applications.
+3. A simple voting application using JIFF.
 
-We'll walk through this process step-by-step. We need to define two software artifacts: a server that coordinates the communication between each party, and a client, which defines the function we want to execute and is run by each friend individually.
+# Overview of JIFF
 
-# Installing JIFF
-First, we'll install JIFF via `npm` on the command line:
-```sh
-$ npm install jiff-mpc
+JIFF is a **semi-honest** MPC framework with customizable primitives and behavior. Parties performing an MPC computation with JIFF (called JIFF clients)
+can run browser or node.js based applications. JIFF ships built in with a variety of basic primitives, as well as extensions for advanced features.
+JIFF provides hooks that allow developers to integrate JIFF MPC application within large non-MPC workflows and applications.
+
+JIFF build in primitives run in the pre-processing model, where a configurable set of parties perform some computation ahead of time, before inputs
+are known or any computation is run, to produce some correlated randomness and other cryptographic material, that is consumed during the online computation.
+This allows the online computation to be more efficient.
+
+JIFF's default preprocessing protocols require an **honest majority** to be secure (partically, the beaver triples generation protocol which is based on BGW).
+While the default online primitives are secure against a **dishonest majority** provided access to secure and correct preprocessing material.
+
+JIFF aims to support dynamic and asynchronous computation, where parties may have unreliable connectivity, and can join and leave the computation
+dynamically. JIFF makes uses of a centeralized logistics server that acts as a message broker and provide a layer of reliability and fault tolerance.
+By default, the server does not participate in the computation, and only sees encrypted traffic. However, the server may be configured
+to fully participate in the computation as a party, or act as a **crypto provider** that provides materials needed by the online primitives.
+
+The server performs some orchestration tasks, such as notifying parties when other parties join or leave, and facilitate initial exchange of public
+keys, this behavior can be customized by developers.
+
+This consists a paradigm shift compared to the traditional _peer-to-peer_ view of MPC, where all parties behave symmetrically and execute similar instructions.
+
+```neptune[inject=true,language=html]
+<img src="/static/images/jiff-server.png" alt="JIFF computation model" style="width: 80%; max-width: 1400px; margin-left: auto; margin-right: auto; display: block;"/>
 ```
 
+# Why Use JIFF?
+Good reasons to use JIFF:
+
+1. You want to use MPC, but you want your application to run in a web stack (on browsers, servers, and/or mobile phones).
+2. You want to use MPC, but you do not want to re-write all primitives from scratch!
+3. You want to use MPC with many many parties.
+4. You want to use MPC without becoming a cryptography expert or learning a bunch of domain specific languages.
+5. Because it is cool!
+
+Do not use JIFF if:
+1. You do not need MPC.
+2. If your desired output leaks a lot of sensitive information about the inputs! Use JIFF with differential privacy!
+
+# Basic JIFF Setup
+
+# Installing JIFF
+We have not published the recent version of JIFF to NPM yet. Expect v1.0 to be released in October 2019!
+
+Until JIFF is on NPM, you will have to clone the JIFF repo, and install all dependencies.
+```command-line
+git clone https://github.com/multiparty/jiff
+cd jiff
+git checkout PF_documentation_updates # to use the documentation branch!
+npm install # to install all dependencies
+```
 
 # Setting up the Server
-We need to set up a server to pass messages between all the friends. The server hosts an `http` page and a message router. When computation parties need to communicate, they send their messages to the server, which forwards them to the final recipient.
+First, we must setup a JIFF server. We use the standard **http** node.js module, with **express** on top, but other libraries will work too!
 
-This communication logic is all defined in JIFF's server code. To run a computation, we need to set up an `http` server and initialize a JIFF instance.
-This can be defined in a single file, which we call `server.js`.
+The same server can be re-used to serve the application and static files if desired.
 
-The `express` package provides a web framework, which we use over `http`.
 ```javascript
 var express = require('express');
 var app = express();
-var http = require('http').Server(app);
-```
+var server = require('http').Server(app);
 
-We tell the server where our libraries live.
-```javascript
-require('../../lib/jiff-server').make_jiff(http, { logs:true });
-app.use('/demos', express.static('demos'));
-app.use('/lib', express.static('lib'));
-app.use('/lib/ext', express.static('lib/ext'));
-```
+app.use('/lib', express.static('/path/to/jiff/lib'));
+app.use('/', express.static('/path/to/application/index'));
+...
 
-Then we can set the server to run locally on an open port 8080.
-```javascript
-http.listen(8080, function() {
-  console.log('listening on localhost:8080');
+http.listen(9111, function() {
+  console.log('listening on 9111');
 });
+```
+
+Then we setup a JIFF server on top of our running http server.
+```neptune[title=Server,env=server]
+var jiff = require('../../../../../lib/jiff-server.js'); // replace this with your actual path to jiff-server.js
+var jiff_instance = jiff.make_jiff(server, { logs:true });
+Console.log('Server is running on port 9111');
 ```
 
 ## Defining a JIFF Client
-First, each friend will run a JIFF client to participate in the computation. The client exports two main functionalities: connecting to the server and executing the computation. The client logic is in the file `party.js`:
+Next, we define our JIFF clients. These clients can be either browser-based or node.js-based.
 
-We start by connecting to the server. We fill in the `hostname` that the server above is running on and the name of our computation (`computation_id`). We'll call this computation `'vacation'`.
+First, we must include the appropriate JIFF client library and dependencies. The tutorial already has these files
+included.
 
-The `make_jiff` function uses this information to set up a new JIFF object.
-We save the fully configured `jiff_instance` in a global variable, so we can use it when we compute our function.
+```neptune[title=Browser,language=html,frame=frame1]
+<script src="/socket.io/socket.io.js"></script>
+<script src="/lib/sodium.js"></script> <!-- WASM libsodium -->
+<script src="/lib/jiff-client.js"></script> <!-- exposes global object 'jiff' -->
+```
 
-We also need to tell the client where the JIFF client code is kept.
-
-```javascript
+```neptune[title=Node,frame=frame1]
 var jiff = require('../../lib/jiff-client');
-var jiff_instance = jiff.make_jiff('localhost:8080', 'vacation');
 ```
 
-## Implementing our vacation function
-Now we get to the fun part: defining the function we wish to securely evaluate. The `jiff_instance` contains all the primitives we need to securely share and operate on our data.
-
-We start by sharing our individual budgets. This is done with the `jiff.share()` method. Since each party runs this separately, they will each define the `my_budget` variable to an appropriate amount.
-
-```javascript
-var my_budget = 1000;
-var shares = my_jiff_instance.share(my_budget);
-
+```neptune[inject=true]
+setTimeout(function () {
+  var icon = document.getElementById('frame1').getElementsByClassName('fa-play')[0];
+  icon.parentNode.removeChild(icon);
+}, 2000);
 ```
-By default, the `share` function assumes that every party will provide an input. It returns an object that contains secret shares of everyone's values. This is the JSON encoding of this object:
-```
-{ 1: <SecretShare>, 2: <SecretShare>, ..., n: <SecretShare> }
-```
-Each `SecretShare` object contains a fragment of the input associated with that party and defines [other useful functions](https://multiparty.org/jiff/docs/jsdoc/SecretShare.html) for arithmetic operations and comparisons.
 
-We sum everybody's budget together to determine how much money we have to spend. For now, we'll assume there are only three of us planning the vacation (we can invite more people later!)
+Next, the client must connect to the server. This requires passing three parameters: the server's URL, the computation id (which identifies the computation
+in case multiple computations are served by the same server), and any additional options.
 
-```javascript
-var total_budget = shares[1].add(shares[2]).add(shares[3]);
-```
-We'll use a comparison to check if our total budget meets the cost of the vaction:
-```javascript
-var is_enough = sum.gteq(5000);
-```
-The `gteq` is short-hand for 'greater than or equal', JIFF provides this and many other functions for comparing secret-shared values.
-The result, which we'll store in the variable`is_enough`, is also a secret share, but we know it must be a boolean value--either 0 or 1--depending on the result of the comparison.
+Several options can be provided to JIFF to customize the created client instance, computation, or connection. Noteably, client code can provide
+the total expected party count, the preferred party id, as well as public keys for any subset of parties if known.
+All these are optional. The server will attempt to fill in any unprovided options dynamically.
 
-Finally, we reveal the result of our computation by opening the value contained in `is_enough`. This operation has all parties combine their individual secret shares to determine the true value.
-```javascript
-var result = my_jiff_instance.open(is_enough);
-```
-Since we might have to wait for other people to `open` their shares, `result` is actually a promise to a value. We'll wait for the promise to be resolved before printing our final result:
 
-```javascript
-result.then(function (result) {
-  if (result) console.log("We're going on vacation!");
-  else console.log("We can't afford to go :(");
+```neptune[title=Party&nbsp;1,frame=frame2,scope=1]
+function onConnect() {
+  Console.log('All parties connected!');
+}
+
+var options = { party_count: 3, crypto_provider: true, onConnect: onConnect };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+```
+
+```neptune[title=Party&nbsp;2,frame=frame2,scope=2]
+function onConnect() {
+  Console.log('All parties connected!');
+}
+
+var options = { party_count: 3, crypto_provider: true, onConnect: onConnect };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+```
+
+```neptune[title=Party&nbsp;3,frame=frame2,scope=3]
+function onConnect() {
+  Console.log('All parties connected!');
+}
+
+var options = { party_count: 3, crypto_provider: true, onConnect: onConnect };
+var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+```
+
+## Our first application: voting
+
+Now that all the parties are setup, they can perform some interesting computation.
+
+We will use voting as a running example in this tutorial.
+
+Assume the three parties are friends that want to see what their favorite type of beer is, without revealing which one is their individual preference.
+
+Let us assume we have 4 options: IPA, Lager, Stout, and Pilsner. (It is the opinion of JIFF that these are the only 4 legitimate types of beer)
+
+We can think of this voting program as a sum over each option, where the input of every party is a 1 for the prefered option, and 0 for all other options.
+
+```neptune[title=Party&nbsp;1,frame=frame3,scope=1]
+var options = ['IPA', 'Lager', 'Stout', 'Pilsner'];
+var input = [1, 0, 0, 0];
+
+jiff_instance.wait_for([1, 2, 3], function () {
+  var results = [];
+  for (var i = 0; i < options.length; i++) {
+    var ithOptionShares = jiff_instance.share(input[i]);
+    var ithOptionResult = ithOptionShares[1].sadd(ithOptionShares[2]).sadd(ithOptionShares[3]);
+    results.push(jiff_instance.open(ithOptionResult));
+  }
+
+  Promise.all(results).then(function (results) {
+    Console.log('options', options);
+    Console.log('results', results);
+  });
 });
 ```
 
-# Running the Whole Computation
-Now that we know how to use the different features of JIFF, let's do some refactoring to make our program a bit more robust.
+```neptune[title=Party&nbsp;2,frame=frame3,scope=2]
+var options = ['IPA', 'Lager', 'Stout', 'Pilsner'];
+var input = [1, 0, 0, 0];
 
-First we'll take input from the command line for our budget instead of hardcoding it. This way, parties don't have to change the `party.js` file.
-```javascript
-var my_budget = parseInt(process.argv[2], 10);
-```
-We can build an object with to define JIFF options and pass it to `make_jiff`. This is more readable if we want to add [custom options](https://multiparty.org/jiff/docs/jsdoc/jiff.html#.make_jiff) in the future:
-```javascript
-var options = {'party_count': 3};
-```
-To make sure the client waits to connect before doing anything, we'll wrap our computation in a function and pass it to the JIFF instance as the `onConnect` option:
-```javascript
-options.onConnect = function(my_jiff_instance) {
+jiff_instance.wait_for([1, 2, 3], function () {
+  var results = [];
+  for (var i = 0; i < options.length; i++) {
+    var ithOptionShares = jiff_instance.share(input[i]);
+    var ithOptionResult = ithOptionShares[1].sadd(ithOptionShares[2]).sadd(ithOptionShares[3]);
+    results.push(jiff_instance.open(ithOptionResult));
+  }
 
-  var shares = my_jiff_instance.share(my_budget);
-
-  var total_budget = shares[1].add(shares[2]).add(shares[3]);
-  var is_enough = sum.gteq(5000);
-  var result = my_jiff_instance.open(is_enough);
-
-  result.then(function (result) {
-    if (result) console.log("We're going on vacation!");
-    else console.log("We can't afford to go :( ");
-
-    jiff_instance.disconnect();
+  Promise.all(results).then(function (results) {
+    Console.log('options', options);
+    Console.log('results', results);
   });
-};
+});
 ```
-Now when we make our JIFF instance, we'll pass it everything it needs in the `options` parameter:
-```javascript
-var my_jiff_instance = jiff.make_jiff('localhost:8080', 'vacation', options);
-```
-And that's it!
-When we connect to the server, our `onConnect` function will automatically execute. We'll send shares to the other parties as they connect, jointly run our computation and get the result, then disconnect from the server.
 
-Remember you'll need someone else (or another shell) to run `party.js` as well, since it wouldn't be multi-party computation with just one person! The party.js file below expects 3 people to participate.
+```neptune[title=Party&nbsp;3,frame=frame3,scope=3]
+var options = ['IPA', 'Lager', 'Stout', 'Pilsner'];
+var input = [0, 1, 0, 0];
 
-## Complete Files
-### party.js
-```javascript
-var jiff = require('../lib/jiff-client');
+jiff_instance.wait_for([1, 2, 3], function () {
+  var results = [];
+  for (var i = 0; i < options.length; i++) {
+    var ithOptionShares = jiff_instance.share(input[i]);
+    var ithOptionResult = ithOptionShares[1].sadd(ithOptionShares[2]).sadd(ithOptionShares[3]);
+    results.push(jiff_instance.open(ithOptionResult));
+  }
 
-var my_budget = parseInt(process.argv[2], 10);
-console.log(my_budget);
-
-var options = {party_count: 3};
-options.onConnect = function (my_jiff_instance) {
-
-  var shares = my_jiff_instance.share(my_budget);
-
-  var total_budget = shares[1].add(shares[2]).add(shares[3]);
-  var is_enough = total_budget.gteq(5000);
-  var result = my_jiff_instance.open(is_enough);
-
-  result.then(function (result) {
-    if (result) {
-      console.log("We're going on vacation!");
-    } else {
-      console.log("We can't afford to go :( ");
-    }
-
-    my_jiff_instance.disconnect();
+  Promise.all(results).then(function (results) {
+    Console.log('options', options);
+    Console.log('results', results);
   });
-};
-
-var my_jiff_instance = jiff.make_jiff('http://localhost:8080', 'vacation', options);
+});
 ```
 
-### server.js
-```javascript
-var express = require('express');
-var app = express();
-var http = require('http').Server(app);
+Let us dive a bit deeper into this code. There are three jiff functions of interest that were used: *share*, *sadd*, and *open*.
 
+The first and last function are JIFF's built in implementation of Shamir secret sharing share and reconstruct function from the previous tutorial.
 
-// Set up server jiff instance
-require('../../lib/jiff-server').make_jiff(http, { logs:true });
+### The _share_ function
 
-// Run app
-try {
-  http.listen(8080, function () {
-    console.log('listening on *:8080');
-  });
-} catch (err) {
-  console.log('ERROR:'+err.message)
-}
+The share function serves two purposes: (1) sharing the given input using shamir secret share with the parties (2) receiving a share from each party for its input.
+Therefore, it corresponds to a share synchronization point between all parties. This design choice is inspired by our experience, demonstrating that a share operation
+rarely involves one party.
 
-console.log('To run a node.js based party: node party <input>');
+The share function takes several optional parameters that can help customize its behavior.
+
+```neptune[title=Share,scope=1,frame=frame4]
+Console.log(jiff_instance.share.toString().split('\n')[0]);
 ```
+
+JIFF's documentation explain what these parameters mean.
+
+```neptune[inject=true,language=html]
+<img src="/static/images/share-docs.png" alt="JIFF documentation for the share function" style="width: 100%; margin-left: auto; margin-right: auto; display: block;"></img>
+```
+
+### JIFF's _SecretShare_ objects
+
+The share function returns a map between party id and an object representing its share. These objects are called **SecretShare** objects. They wrap
+the value of the share, and provide primitives to operate on it, such as _.sadd_ function for adding shares.
+
+Additionally, because a share typically requires communication to be created, and because Javascript is single-threaded, the communication must be done asynchronously.
+Hence, the value of the share cannot be accessed until later on. SecretShare objects include a promise that gets resolved when that value is available.
+All operations on that SecretShare are scheduled to execute after the promise is resolved.
+
+```neptune[title=Party&nbsp;1,frame=frame5,scope=1]
+var shares = jiff_instance.share(10, 2, [1, 2], [1, 2]);
+Console.log(Object.keys(shares));
+Console.log(shares[1].toString());
+Console.log(shares[2].toString(), shares[2].promise.toString());
+shares[2].wThen(function (value) {
+  Console.log('share resolved with value', value);
+});
+```
+```neptune[title=Party&nbsp;2,frame=frame5,scope=2]
+var shares = jiff_instance.share(5, 2, [1, 2], [1, 2]);
+```
+
+### The _open_ function
+
+Similar to share, the open function represents another synchronization point between parties. By default, a call to open refreshes (e.g. rerandomizes)
+the SecretShare, and broadcasts it to all parties that holds an instance of that share. This can be customized as the open function also takes optional
+arguments.
+
+Because open involves asynchronous communication, a promise to the actual result is returned, which will be resolved when the result is available.
+
+```neptune[title=Party&nbsp;1,frame=frame6,scope=1]
+Console.log(jiff_instance.open.toString().split('\n')[0]);
+var promise = jiff_instance.open(shares[1], [1, 3]);
+Console.log(promise.toString());
+promise.then(function (result) {
+  Console.log(result);
+});
+```
+```neptune[title=Party&nbsp;2,frame=frame6,scope=2]
+var promise = jiff_instance.open(shares[1], [1, 3]);
+Console.log(promise == null);
+```
+```neptune[title=Party&nbsp;3,frame=frame6,scope=3]
+// party 3 did not receive a share of this input, but it can still receive the output
+// by calling receive_open!
+var promise = jiff_instance.receive_open([1, 2], [1, 3]);
+Console.log(promise.toString());
+promise.then(function (result) {
+  Console.log(result);
+});
+```
+
+### Asymmetry and Tradeoffs
+In the last few code snippets, we already began to see how JIFF can be used asymmetrically. As input shares may be shared between
+different subsets of parties, and parties code can be different acording to their role and capabilities. JIFF provides more highlevel
+supports for asymmetry through some of its orchestration APIs (e.g. wait_for), synchronization ids, and high level protocols.
+
+JIFF automatically matches synchronization points between different parties, even when their code may be radically different, using code
+and message counters. The automatic ids are sufficient to synchronize correctly when any party's instructions can only be executed in one
+possible order (no nesting of promises). For more complex scenarios, developers can manually synchronize by providing unique tags or synchronization
+ids to operations that cause communication. The last optional parameter to the *share* function above is an example of such a id.
+
+JIFF attempts to make the code look and feel synchronous, even when the actual implementation is very asynchronous, by using promises and scheduling
+callbacks. A side effect of this is having unrestricted parallelism: operations are executed as soon as their promises are resolved, even when that
+may cause operations to run in an order different to that of the code. This ensures minimal rounds of communication.
+
+However, in the worst case, this may lead to the construction of a promises-dependence graph (e.g. promise circuit) of size equal to the
+actual computation (as opposed to its code). All these promises and callbacks are stored in memory, which can lead to extreme use of memory
+in large computations. In cases like that, a tradeoff must be made between space and time, by building parts of the graph only after previous parts
+are completed, reducing the parallelism and memory usage.
+
+### JIFF API Documentation
+
+All of the public API of JIFF is documented using jsdocs. Including explanation of when and how to use the API, and example usage.
+
+The docs are available in the /docs directory within the JIFF repo. Documentation for a specific version or branch of JIFF can be automatically generated,
+by running the following command inside the repository in the desired branch or version commit.
+```command-line
+npm run gen-docs
+```
+
+# What's next?
+
+The voting example demonstrated above has several problems: a cheating party can provide bad inputs, for example it may vote for multiple options,
+or provide more than a single vote for one options. This is a common problem with MPC, as inputs are kept private. Any input sanitization code must be
+implemented under MPC so that input privacy is preserved.
+
+Additionally, the output of the vote itself leaks a lot of information. Consider the view of the third party. It knows the value of its vote ('Lager'), and
+it knows the output, in particular, that two votes were cast for 'IPA'. Therefore, the two other parties must have voted for IPA. This is not the cases
+for the first two parties, as they cannot be sure which party voted for 'Lager', as all possibilites are equally likely with their view, by MPC's security guarantees.
+
+We address these two issues in the next tutorial.
+

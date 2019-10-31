@@ -1,0 +1,116 @@
+<!-- Basic UI for running the demo in the browser -->
+
+<html>
+  <head>
+    <title>Vote under MPC</title>
+    <style>
+      .error {
+        color: #FF0000;
+      }
+    </style>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+    
+    <script type="text/javascript">
+      function error(err) {
+        alert('Your browser is not supported!');
+        console.log(err);
+      }
+      
+      function hostname() {
+        var hostname = window.location.hostname.trim();
+        var port = window.location.port;
+        if (port == null || port === '') {
+          port = '80';
+        }
+        if (!(hostname.startsWith('http://') || hostname.startsWith('https://'))) {
+          hostname = 'http://' + hostname;
+        }
+        if (hostname.endsWith('/')) {
+          hostname = hostname.substring(0, hostname.length-1);
+        }
+        if (hostname.indexOf(':') > -1 && hostname.lastIndexOf(':') > hostname.indexOf(':')) {
+          hostname = hostname.substring(0, hostname.lastIndexOf(':'));
+        }
+        return hostname + ':' + port;
+      }
+    
+      // connect JIFF
+      var _hostname = hostname();
+      var jiff_instance = jiff.make_jiff(_hostname, 'secdev', { party_id: 1 });
+      jiff_instance.wait_for(['s1'], function () {
+        document.getElementById('output').innerHTML = 'Connected!';
+      });
+
+      // orchestrate start of computation with server
+      function main() {
+        jiff_instance.listen('compute', function (_, msg) {
+          try {
+            console.log(msg);
+            var numberOfSubmitters = parseInt(msg);
+            if (numberOfSubmitters < 1) {
+              document.getElementById('output').innerHTML = 'Nobody submitted!';
+              return;
+            }
+            compute(numberOfSubmitters);
+          } catch (err) {
+            error(err);
+          }
+        });
+        jiff_instance.emit('compute', ['s1'], '', false);
+      }
+
+      // Create Jiff instance and share input
+      function compute(numberOfSubmitters) {
+        var senders = [];
+        for (var i = 2; i <= jiff_instance.party_count; i++) {
+          senders.push(i);
+        }
+
+        // get all shares (plus dummy shares from non-existing parties)
+        var shares1 = jiff_instance.share(null, 2, [1, 's1'], senders);
+        var shares2 = jiff_instance.share(null, 2, [1, 's1'], senders);
+
+        // sum
+        var option1 = shares1[2];
+        var option2 = shares2[2];
+        for (var p = 3; p < numberOfSubmitters + 2; p++) {
+          option1 = option1.sadd(shares1[p]);
+          option2 = option2.sadd(shares2[p]);
+        }
+
+        option1.refresh = function () { return option1; };
+        option2.refresh = function () { return option2; };
+
+        // reveal results
+        var promise1 = jiff_instance.open(option1, [1]);
+        var promise2 = jiff_instance.open(option2, [1]);
+        Promise.all([promise1, promise2]).then(function (results) {
+          document.getElementById('output').innerHTML = '<h4>Results:</h4>';
+          document.getElementById('output').innerHTML += '<i>Yes: </i>' + results[0] + '<br>';
+          document.getElementById('output').innerHTML += '<i>No: </i>' + results[1] + '<br>';
+        });
+      }
+      
+      function submit() {
+        try {
+          var obj = Object.assign({}, {t: 'test'}); // test browser support for Object.assign
+          document.getElementById('button').setAttribute('disabled', 'disabled'); // disable submission forever
+          document.getElementById('output').innerHTML = 'Working...';
+          main();
+        } catch (err) {
+          error(err);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Vote demo under MPC - Secdev 2019</h1>
+    <h1>Control Computation</h1>
+    <br>
+    <button onclick="submit();" id="button">Reveal!</button><br/>
+    <div id="output"></div>
+  </body>
+</html>
