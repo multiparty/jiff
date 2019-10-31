@@ -20,28 +20,33 @@ Secret shares of a value can be decoded to that value. However, a secret share i
 At a high level, MPC can be thought of as a **secret sharing scheme** with a collection of **attached protocols** that compute functions over shares produced by the sharing scheme.
 
 Over the past decade, a number of general and special-purpose MPC software frameworks have been developed, that provide users with builtin sharing schemes and protocols. You can view
-an overview of some of the most noteable one at this [MPC frameworks SOK repository](https://github.com/MPC-SoK/frameworks/wiki).
+an overview of some of the most noteable ones at this [MPC frameworks SOK repository](https://github.com/MPC-SoK/frameworks/wiki).
 
 ## Security Guarantees
-MPC frameworks and protocols provide two important security guarantees relative to some underlying assumptions:
+MPC frameworks and protocols provide two important security guarantees relative to some underlying assumptions.
+
+Security Guarantees:
 1. Confidentiality: the execution of the protocol, all initial and intermediate secret shares, and any side effect, reveal nothing more than the final result of the protocol.
 
 2. Integrity: the final result of a protocol corresponding to some desired function is indeed the output of that function.
 
 **Note:** Sometimes the final result can itself reveal information about the inputs even if MPC is used. For example, if two parties jointly compute the sum of their inputs securely, each of them can learn the input
-of the other, by simplfy subtracting their input out of the final output. In such case, it is recommended that output privacy mechanisms (such as [differential privacy](https://privacytools.seas.harvard.edu/differential-privacy)) are used in conjunction with MPC.
+of the other, by simply subtracting their input out of the final output. In such case, it is recommended that output privacy mechanisms (such as [differential privacy](https://privacytools.seas.harvard.edu/differential-privacy)) are used in conjunction with MPC.
 
 Common underlying assumptions can be split into two main categories:
-1. Behavior: MPC protocols frequently make assumptions about what participating parties will and will not do. Parties that do not abide by these restrictions can cause the protocol to lose Confidentiality, Integrity, or both.
-   Two common behavior models are: **semi-honest security** where parties abide by the protocol but may try to learn private information by analyzing their messages or colluding with other parties, and **malicious security** where
-   parties may deviate arbitrarily from the protocols. Choosing the appropriate security model for an application depends on what incitives exists between the participating parties, and can introduce performance tradeoffs.
+1. Behavior: MPC protocols frequently make assumptions about what participating parties will and will not do. Parties that do not abide by these restrictions can cause the protocol to lose Confidentiality, Integrity, or both. Two common behavior models are: 
+     - **semi-honest security** where parties abide by the protocol but may try to learn private information by analyzing their messages or colluding with other parties.
+     - **malicious security** where parties may deviate arbitrarily from the protocols.
 
-2. Coalitions: MPC protocols may make assumptions about how many parties in the computation are **honest** (e.g. abide by the protocol or do not collude with others), or the size of the largest coalitions of parties. Two common assumptions are
-  **honest majority** where the largest coalitions must be less than half of the parties, and **dishonest majority** where coalitions may include all parties except one.
+   Choosing the appropriate security model for an application depends on the incentives between the participating parties and can involve performance tradeoffs.
+
+2. Coalitions: MPC protocols may make assumptions about how many parties in the computation are **honest** (e.g. abide by the protocol or do not collude with others) or the size of the largest coalitions of parties. Two common assumptions are:
+    - **honest majority**: the largest coalitions must be less than half of the parties
+    - **dishonest majority**: coalitions may include all parties except one.
 
 There are a variety of interesting theoretical results in the literature about what can be and cannot be done in any of these settings.
 
-We focus on **semi-honest** security in these tutorials, since JIFF operates in the **semi-honest** model.
+We focus on **semi-honest security** in these tutorials, since JIFF operates in the **semi-honest security** model.
 
 ## When should MPC be used?
 MPC allows computation of functions over sensitive data. MPC is particularly useful in the following scenarios:
@@ -54,14 +59,14 @@ MPC allows computation of functions over sensitive data. MPC is particularly use
    having to move or share the data.
 
 # How does it work?
-Secret sharing is the backbone of MPC. A secret sharing scheme consists of two functions: a **share** function that creates seemingly-random shares from an input, and a reconstruct or **open**
+Secret sharing is the backbone of MPC. A secret sharing scheme consists of two functions: a **share** function that creates seemingly-random shares from an input and a reconstruct or **open**
 function that reconstructs the input from the shares.
 
 There are a variety of secret sharing schemes, we will start with the simplest.
 
 ## Additive secret sharing
 
-Given an input x, choose n random values x1, ..., xn such that their sum is equal to x.
+Given an input x, choose n random values x<sub>1</sub>, ..., x<sub>n</sub> such that their sum is equal to x.
 
 ```neptune[frame=1,title=Insecure&nbsp;Scheme]
 function share(x, n) {
@@ -123,21 +128,33 @@ Console.log(shares, open(shares));
 ```
 
 ```neptune[frame=1,title=Addition&nbsp;under&nbsp;MPC]
-var input1 = 10;
-var input2 = 13;
-var input3 = 22;
+// A simple demo of addition under MPC using additive secret sharing!
 
-var shares1 = share(input1, 3);
-var shares2 = share(input2, 3);
-var shares3 = share(input3, 3);
+// Each party's inputs
+var input_party_0 = 10;
+var input_party_1 = 13;
+var input_party_2 = 22;
 
-Console.log(shares1, shares2, shares3);
+// Each party creates Secret Shares of their inputs
+var shares_party_0 = share(input_party_0, 3);
+var shares_party_1 = share(input_party_1, 3);
+var shares_party_2 = share(input_party_2, 3);
+Console.log(shares_party_0, shares_party_1, shares_party_2);
 
-var sum1 = shares1.map(function (v, i) { return mod(v + shares2[i]) });
-Console.log(sum1, open(sum1));
+// Each party sends their ith share to the ith party
+var received_shares_party_0 = [shares_party_0[0], shares_party_1[0], shares_party_2[0]]
+var received_shares_party_1 = [shares_party_0[1], shares_party_1[1], shares_party_2[1]]
+var received_shares_party_2 = [shares_party_0[2], shares_party_1[2], shares_party_2[2]]
 
-var sum2 = sum1.map(function (v, i) { return mod(v + shares3[i]) });
-Console.log(sum2, open(sum2));
+// Each party computes the sum of their received shares and broadcasts this value to the other parties.
+// These sums of received shares, neither individually nor in pairs, reveal nothing about any party's inputs.
+var sum_received_shares_party_0 = received_shares_party_0.reduce((sum, share) => mod(sum + share), 0);
+var sum_received_shares_party_1 = received_shares_party_1.reduce((sum, share) => mod(sum + share), 0);
+var sum_received_shares_party_2 = received_shares_party_2.reduce((sum, share) => mod(sum + share), 0);
+
+// When each party adds these sums with each other, they get the sum over all their original inputs!
+Console.log(mod(sum_received_shares_party_0+sum_received_shares_party_1+sum_received_shares_party_2));
+
 ```
 
 It is important that the domain of the shares exihibt some sort of _cyclicity_, so that knowing a single share cannot be used to determine some bound on the input, and that given a
@@ -146,8 +163,8 @@ set of shares, it is equally likely (with respect to the coins of the share func
 We achieve this cyclicity in the first scheme above by allowing shares to be either positive or negative. However, this causes another issue. The last share may fall
 outside the domain. We fix these issues by setting our domain to be a field, as is shown in the second scheme above.
 
-Additive secret sharing is interesting because it allows to efficiently compute at least one function over shares, namely addition! Given two secret shared inputs between n parties,
-with each party possessing a share of each inputs. When every party adds its two shares together (mod prime), this result in a new sharing of the sum of original inputs.
+Additive secret sharing is interesting because it allows us to efficiently compute at least one function over shares, namely addition! Given two secret shared inputs between n parties,
+with each party possessing a share of each inputs. When every party adds its two shares together (mod prime), this results in a new sharing of the sum of original inputs.
 
 ## Shamir secret sharing
 
@@ -284,7 +301,7 @@ plot([result.shares], [result.polynomial], 'plot2');
 
 ## Operations on Shamir secret sharing
 
-Shamir secret sharing directly supports both addition and multiplication, and allows the number of required shares to reconstruct the value to be configurable.
+Shamir secret sharing directly supports both addition and multiplication and allows the number of required shares to reconstruct the value to be configurable.
 
 Addition is direct, due to properties of polynomials. Adding two polynomials point-wise gives a new set of points that define a polynomial of the same degree
 that is equivalent to the sum of the original polynomials.
@@ -326,15 +343,14 @@ Console.log(polynomialPrint(result.polynomial));
 plot([shares1.shares, shares2.shares, result.shares], [shares1.polynomial, shares2.polynomial, result.polynomial], 'plot4');
 ```
 
-Multiplication is trickier: multiplying two polynomials point wise does yield a polynomial with the correct values, whoever, the resulting
-polynomial is of a higher degree, which means that we need more shares to reconstruct that value than we original possessed.
+Multiplication is trickier: multiplying two polynomials point wise does yield a polynomial with the correct values, however, the resulting
+polynomial is of a higher degree. This means that we need more shares to reconstruct that value than we original possessed.
 
 One way to avoid this problem is to secret share the original inputs using a polynomial of lower degree, so that the after multiplication, the
-degree remains smaller than the number of parties, and thus less than the number of availabe shares. The bgw protocol provides a way to then
-reduce the degree of a polynomial represented by secret shares under MPC, at the cost of a single round of communication, so that unlimited
-many multiplications can be performed consecutively.
+degree remains smaller than the number of parties, and thus less than the number of availabe shares. The BGW protocol provides a way to then
+reduce the degree of a polynomial represented by secret shares under MPC, at the cost of a single round of communication, so that an unlimited number of multiplications can be performed consecutively.
 
-The bgw protocol is an example of an **honest-majority** scheme, as all secrets can be reconstructed
+The BGW protocol is an example of an **honest-majority** scheme, as all secrets can be reconstructed
 by a majority coalition due to the low degree of the underlying polynomials. JIFF uses BGW protocol for certain
 pre-processing tasks by default, making the preprocessing phase of JIFF secure only against honest-majority. This behavior
 can be customized. More on this later.
@@ -396,7 +412,7 @@ MPC is very similar to the Single Instruction Multiple Data (SIMD) paradigm from
 The main difference being that the data is shared in MPC (as opposed to split), for the purpose of security (as opposed to parallelization).
 
 Below is an example of such code written in JIFF, where three parties and a server carry out an MPC computation that computes the sum of their inputs.
-JIFF API and the role of the server in JIFF is explained in more details in later tutorials.
+The JIFF API and the role of the server in JIFF is explained in more details in later tutorials.
 
 ```neptune[frame=jiff,scope=jiff,title=Server,env=server]
 var jiff = require('../../../../../lib/jiff-server.js');
