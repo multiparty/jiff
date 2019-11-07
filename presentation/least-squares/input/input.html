@@ -1,0 +1,78 @@
+<!-- Basic UI for running the demo in the browser -->
+
+<html>
+  <head>
+    <title>Linear Least Squares</title>
+    <style>
+      .error {
+        color: #FF0000;
+      }
+
+      table {
+        margin-left: -4px;
+      }
+
+      .party4 th {
+        border: dashed 4px darkgray;
+      }
+
+      .party5 th {
+        border: dashed 4px #222222;
+      }
+
+      td {
+        padding: 4px;
+      }
+
+      th input, td input {
+        width: 70px;
+      }
+
+      .break {
+        border: none;
+        height: 5px;
+      }
+
+      .party4 {
+        background-color: #1e499f;
+        color: #FFFFFF;
+      }
+      .party5 {
+        background-color: #bec4bc;
+        color: #000000;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/bignumber.js/bignumber.min.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+    <script src="/lib/ext/jiff-client-bignumber.js"></script>
+    <script src="/lib/ext/jiff-client-fixedpoint.js"></script>
+    <script src="/lib/ext/jiff-client-negativenumber.js"></script>
+
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="/static/input/input.js"></script>
+
+    <!-- Contains the MPC implementation -->
+    <script type="text/javascript" src="/static/input/mpc.js"></script>
+  </head>
+  <body class="party{{id}}">
+    <h1>Input party {{ id - config.compute - 1}}</h1>
+    <h3>Linear Least Squares</h3>
+
+    <label for="points">Enter the number of points</label> <input id="points" pattern="[0-9]+"> <br/>
+    <button id="generate" onclick="generateTable(document.getElementById('points').value, {{id}})">Input</button>
+    <br/><br/>
+
+    <div id="input_area">
+
+    </div>
+    <button onclick="submit();" disabled="disabled" id="submit">Submit</button><br/>
+    <div id="output"></div>
+  </body>
+
+  <script type="text/javascript">
+    connect({{id}}, {{config.total}}, {{config.compute}}, '{{ config.computation_id }}');
+  </script>
+</html>

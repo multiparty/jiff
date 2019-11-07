@@ -1,0 +1,57 @@
+<!-- Basic UI for running the demo in the browser -->
+
+<html>
+  <head>
+    <title>Relational MPC Workflow</title>
+    <style>
+      .error {
+        color: #FF0000;
+      }
+
+      td, th {
+        border: solid 1px darkgray;
+      }
+
+      th input, td input {
+        width: 70px;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/bignumber.js/bignumber.min.js"></script>
+    <script src="/lib/sodium.js"></script>
+    <script src="/lib/jiff-client.js"></script>
+    <script src="/lib/ext/jiff-client-bignumber.js"></script>
+    <script src="/lib/ext/jiff-client-fixedpoint.js"></script>
+
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="/static/analyst/analyst.js"></script>
+
+    <!-- Contains the MPC implementation -->
+    <script type="text/javascript" src="/static/analyst/mpc.js"></script>
+  </head>
+  <body>
+    <h1>Analyst</h1>
+    <h3>Input Parties Schemas:</h3>
+    <div id="schema"></div>
+
+    <h3>Analysis:</h3>
+    <textarea rows="9" cols="75">SELECT
+  4.GROUP, AVG(1:2.VALUE)
+FROM
+  1:2 join 3 on ID join 4 on ID
+WHERE
+  3.FILTER = True
+GROUP BY
+  4.GROUP</textarea>
+    <br/>
+    <button onclick="submit();" id="submit">Query</button>
+    <br/>
+    <h3>Output:</h3>
+    <div id="output"></div>
+  </body>
+
+  <script type="text/javascript">
+    connect({{config.compute + 1}}, {{config.total}}, {{config.compute}}, '{{ config.computation_id }}');
+  </script>
+</html>
