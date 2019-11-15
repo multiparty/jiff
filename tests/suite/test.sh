@@ -17,9 +17,9 @@ else
   echo "NEW TEST $(date)" >> "${logs}"
   echo "====================" >> "${logs}"
 
-  node --inspect-brk=5858 tests/suite/server.js >> "${logs}" &
+  node tests/suite/server.js >> "${logs}" &
 
-  ./node_modules/.bin/mocha --inspect-brk=6666 --max-old-space-size=8192 --reporter spec tests/suite/index.js
+  ./node_modules/.bin/mocha --max-old-space-size=8192 --reporter spec tests/suite/index.js
   CODE=$?
   kill $(ps aux | grep "node tests/suite/server\.js" | awk '{ print $2}')
   exit "$CODE"
