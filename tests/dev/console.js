@@ -55,7 +55,7 @@ exports.init = function (p, serverOptions) {
   var app = express();
   var http = require('http').Server(app);
 
-  var instance = jiffServer.make_jiff(http, serverOptions);
+  var instance = new jiffServer(http, serverOptions);
   for (var i = 0; i < serverExtensions.length; i++) {
     instance.apply_extension(serverExtensions[i], serverOptions);
   }
