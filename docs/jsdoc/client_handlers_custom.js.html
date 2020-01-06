@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>client/handlers/custom.js - JIFF Library Documentation</title>
+    
+    
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/multiparty/jiff" target="_blank" class="menu-item" id="github_link" >Github Repo</a></h2><h2><a href="./intro.html" target="_self" class="menu-item" id="github_link" >Tutorial</a></h2><h2><a href="./contributing.html" target="_self" class="menu-item" id="github_link" >Contributing to JIFF</a></h2><h3>Classes</h3><ul><li><a href="module-jiff-client-JIFFClient.html">JIFFClient</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient.html#apply_extension">apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#can_apply_extension">can_apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#connect">connect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#extension_applied">extension_applied</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id">gen_op_id</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2">gen_op_id2</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_extension">has_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isInitialized">isInitialized</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isReady">isReady</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#secret_share">secret_share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#seed_ids">seed_ids</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-jiff-client.html">jiff-client</a></li></ul><h3>Namespaces</h3><ul><li><a href="handlers.html">handlers</a><ul class='methods'><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_custom">jiffClient.handlers.receive_custom</a></li></ul></li><li><a href="hooks.html">hooks</a><ul class='methods'><li data-type='method'><a href="hooks.html#.computeShares">computeShares</a></li><li data-type='method'><a href="hooks.html#.execute_array_hooks">execute_array_hooks</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">client/handlers/custom.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>module.exports = function (jiffClient) {
+  /**
+   * Called when this party receives a custom tag message from any party (including itself).
+   * If a custom listener was setup to listen to the tag, the message is passed to the listener.
+   * Otherwise, the message is stored until such a listener is provided.
+   * @method
+   * @memberof handlers
+   * @param {object} json_msg - the parsed json message as received by the custom event.
+   */
+  jiffClient.handlers.receive_custom = function (json_msg) {
+    if (json_msg['party_id'] !== jiffClient.id) {
+      if (json_msg['encrypted'] === true) {
+        json_msg['message'] = jiffClient.hooks.decryptSign(jiffClient, json_msg['message'], jiffClient.secret_key, jiffClient.keymap[json_msg['party_id']]);
+      }
+
+      json_msg = jiffClient.execute_array_hooks('afterOperation', [jiffClient, 'custom', json_msg], 2);
+    }
+
+    var sender_id = json_msg['party_id'];
+    var tag = json_msg['tag'];
+    var message = json_msg['message'];
+
+    if (jiffClient.listeners[tag] != null) {
+      jiffClient.listeners[tag](sender_id, message);
+    } else {
+      // Store message until listener is provided
+      var stored_messages = jiffClient.custom_messages_mailbox[tag];
+      if (stored_messages == null) {
+        stored_messages = [];
+        jiffClient.custom_messages_mailbox[tag] = stored_messages;
+      }
+
+      stored_messages.push({sender_id: sender_id, message: message});
+    }
+  }
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jan 06 2020 01:23:42 GMT-0500 (Eastern Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>

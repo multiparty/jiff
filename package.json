@@ -63,6 +63,7 @@
     "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
+    "browserify": "^16.5.0",
     "chai": "^4.1.2",
     "eslint": "^4.19.1",
     "eslint-plugin-requirejs": "^2.0.1",

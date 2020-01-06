@@ -1,23 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="utf-8">
-    <title>JSDoc: Global</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <title>Global - JIFF Library Documentation</title>
+    
+    
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/multiparty/jiff" target="_blank" class="menu-item" id="github_link" >Github Repo</a></h2><h2><a href="./intro.html" target="_self" class="menu-item" id="github_link" >Tutorial</a></h2><h2><a href="./contributing.html" target="_self" class="menu-item" id="github_link" >Contributing to JIFF</a></h2><h3>Modules</h3><ul><li><a href="module-JIFFClient.html">JIFFClient</a></li></ul><h3>Namespaces</h3><ul><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="jiff-instance.protocols.html">protocols</a></li><li><a href="jiff-instance.protocols.bits.html">bits</a></li></ul><h3>Global</h3><ul><li><a href="global.html#JIFFClient">JIFFClient</a></li></ul>
+</nav>
+
+<div id="main">
+    
     <h1 class="page-title">Global</h1>
+    
 
     
 
@@ -28,18 +49,18 @@
 
 <header>
     
-        <h2></h2>
+        <h2>
+        
+        </h2>
         
     
 </header>
 
 <article>
-    <div class="container-overview">
     
+        <div class="container-overview">
         
-
-        
-
+            
 
 <dl class="details">
 
@@ -77,201 +98,33 @@
 </dl>
 
 
-        
-    
-    </div>
 
-    
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
             
 
-    
-
-    
-    <h4 class="name" id="if_else"><span class="type-signature"></span>if_else<span class="signature">(trueVal, falseVal, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="SecretShare.html">SecretShare</a>}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Simulate an oblivious If-else statement with a single return value.
-Should be called on a secret share of a bit: 0 representing false, and 1 representing true
-If this is a share of 1, a new sharing of the element represented by the first parameter is returned,
-otherwise, a new sharing of the second is returned.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
+            
         
-        <th>Name</th>
-        
+        </div>
+    
 
-        <th>Type</th>
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
 
         
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
             
-                <td class="name"><code>trueVal</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="SecretShare.html">SecretShare</a></span>
-|
-
-<span class="param-type">constant</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the value/share to return if this is a sharing of 1.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>falseVal</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="SecretShare.html">SecretShare</a></span>
-|
-
-<span class="param-type">constant</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the value/share to return if this is a sharing of 0.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>op_id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    auto_gen()
-                
-                </td>
-            
-
-            <td class="description last">the operation id which is used to identify this operation.
-                        This id must be unique, and must be passed by all parties to the same instruction, to
-                        ensure that corresponding instructions across different parties are matched correctly.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
+<h4 class="name" id="JIFFClient"><span class="type-signature"></span>JIFFClient<span class="type-signature"></span></h4>
 
 
 
@@ -280,33 +133,9 @@ otherwise, a new sharing of the second is returned.
 <dl class="details">
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line2748">line 2748</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line65">line 65</a>
     </li></ul></dd>
     
 
@@ -315,48 +144,58 @@ otherwise, a new sharing of the second is returned.
     
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dl>
 
 
 
 
 
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    a new sharing of the result of the if.
+<div class="description">
+    <p>Creates a new jiff client instance.</p>
 </div>
 
 
 
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>var JIFFClient = require('jiffClient'); // only for node.js
+&lt;script src="jiff-client.js">&lt;/script> // for the browser
+// build a jiff instance which will connect to a server running on the local machine
+var instance = new JIFFClient('http://localhost:8080', 'computation-1', {party_count: 2});</code></pre>
+
+
+
         
-<span class="param-type"><a href="SecretShare.html">SecretShare</a></span>
-
-
-    </dd>
-</dl>
-
     
 
-
-
-
-
-        
     
 
     
@@ -369,19 +208,23 @@ otherwise, a new sharing of the second is returned.
 
 
 
+    
+    
 </div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="jiff.html">jiff</a></li><li><a href="jiff.sharing_schemes.html">sharing_schemes</a></li><li><a href="jiff.utils.html">utils</a></li><li><a href="jiff-instance.html">jiff-instance</a></li><li><a href="jiff-instance.helpers.html">helpers</a></li><li><a href="jiff-instance.protocols.html">protocols</a></li><li><a href="SecretShare.html">SecretShare</a></li></ul><h3>Global</h3><ul><li><a href="global.html">if_else</a></li></ul>
-</nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Nov 13 2018 23:03:15 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Sun Jan 05 2020 16:15:55 GMT-0500 (Eastern Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
 </body>
 </html>

@@ -17,6 +17,7 @@
   },
   "templates": {
     "cleverLinks": false,
+    "useShortNamesInLinks": true,
     "monospaceLinks": false
   },
   "opts": {
