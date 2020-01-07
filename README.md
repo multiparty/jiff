@@ -14,19 +14,9 @@ Running the server requires [Node](https://nodejs.org/en/) and [npm](https://www
 
 ### Client
 
-Make sure to use the `sockets.io.js` script file that **matches exactly** the version **used by the server**.
+For browsers, we provide a bundle including the base client side library and its dependencies ([libsodium-wrappers](https://www.npmjs.com/package/libsodium-wrappers) and socket.io). Extensions have to be imported separately.
 
-If the client code is to be served by the server, use:
-```html
-<script src="/socket.io/socket.io.js"></script>
-```
-If the client code is served independently, fetch the matching version of socket.io.js from a CDN, or use the file found in `<server_dir>/node_modules/socket.io-client/dist`.
-
-Additionally, the [libsodium-wrappers](https://www.npmjs.com/package/libsodium-wrappers) WebAssembly library is used for fast crypto (encryption). You must include the appropriate sodium wrapper js file. If the client code is to be server by the server, use:
-```html
-<script src="/lib/sodium.js"></script>
-```
-The libsodium-wrappers requirement can be removed as long as alternate implementation for encryption/decryption and signing is provided to JIFF through the appropriate hooks. Check out the hooks section below for additional info.
+For node.js clients, npm install should install all the required dependencies.
 
 ## Installation
 
@@ -37,30 +27,51 @@ Run npm from inside the project directory to automatically install the dependenc
 npm install
 ```
 
-### Client
+### Client - Browser
 
-Make sure to include the library **after** socket.io and libsodium:
+Make sure to include the library bundle:
 ```html
-<script src="/lib/jiff-client.js"></script>
+<!-- exposes JIFFClient to the global scope -->
+<script src="/dist/jiff-client.js"></script>
 ```
 Then inside a script tag (and after the page loads), initialize a JIFF object and set up a computation:
 ```javascript
-var instance = jiff.make_jiff("http://localhost:8080", "<computation_id>", parties)
+var instance = new JIFFClient("http://localhost:8080", "<computation_id>", parties);
 ```
 The instance object provides methods for sharing, opening, and performing operations on shares.
 
+### Client - node.js
+
+In node.js you must include the library (either the bundle or the source) and then use it:
+```javascript
+var JIFFClient = require('./dist/jiff-client.js');
+var instance = new JIFFClient("http://localhost:8000", "<computation_id>", parties);
+```
+
 ## Project Layout
 
-    ├─ demos/           Example of common jiff use-cases and functionality
-    ├─ docs/            JSDoc config and generated docs
-    ├─ lib/             Libraries for both client and server-side jiff instances
-    │  ├─ ext/          Extended functionality for use cases (e.g. negative numbers)
-    │  └─ server/       server-side specific helpers
-    ├─ test/            Unit testing for base Jiff, demos, and extensions
-    │  ├─ dev/          Limited tests for testing some features under development
-    │  ├─ live/         Template and setup for live coding with JIFF with nodejs's command line shell (REPL)
-    │  └─ suite/        Base Jiff and extension tests (See test/suite/README.md)
+    ├─ demos/               Example of common jiff use-cases and functionality
+    ├─ docs/                JSDoc config and generated docs
+    ├─ lib/                 Libraries for both client and server-side jiff instances
+    │  ├─ client/           Implementation of the client side library
+    │  ├─ server/           Implementation of the server side library
+    │  ├─ ext/              Extended functionality for use cases (e.g. negative numbers): Includes server and client extensions
+    │  ├─ common/           Some common helpers between both client and server code
+    │  ├─ jiff-client.js    Main module for the client side library, include this (or the bundle under dist/) in your projects
+    │  └─ jiff-server.js    Main module for the server side library, include this in your server code
+    ├─ test/                Unit testing for base Jiff, demos, and extensions
+    │  ├─ dev/              Limited tests for testing some features under development
+    │  ├─ live/             Template and setup for live coding with JIFF with nodejs's command line shell (REPL)
+    │  └─ suite/            Base Jiff and extension tests (See test/suite/README.md)
+    ├─ tutorial/            Contains interactive tutorial files that can be run locally to learn JIFF!
 
+## Running Tutorials
+
+Clone the github repo, and run `npm run tutorial` inside its root directory.
+
+On your terminal, you will see a list of "Routes/Documents". Open either document in your browser to go through the tutorial.
+
+Each document is an independent tutorial. However, beginners are encouraged to view them in order.
 
 ## Running Demos and Examples
 
@@ -82,24 +93,25 @@ node demos/<demo-name>/party.js <input-value>
 
 The latest documentation can be viewed on the [project page](https://multiparty.org/jiff/). The documentation can be generated using [JSDoc](http://usejsdoc.org/); you will find these docs in `docs/jsdocs/`:
 ```shell
-./node_modules/.bin/jsdoc -c docs/jsdoc.conf.json
+./node_modules/.bin/jsdoc -r -c docs/jsdoc.conf.json
 npm run-script gen-docs # shortcut
 ```
 ### Where to Look in the Docs
-The documentation is separated into the distinct namespaces in JIFF:
+
+The documentation for the client side library is separated into the distinct modules, namespaces, and classes:
 
 
-    ├─ jiff                   The exposed API for the client-side JIFF library, used to create a new JIFF instance
-    │  ├─ sharing_schemes     The default sharing protocols used internally by JIFF (Shamir Secret Sharing)
-    │  ├─ utils               Functions used internally by JIFF, but may be useful outside of the instance code (e.g. encryption/decryption)
-    ├─ jiff-instance          The interface defined by an instance of JIFF (created via `jiff.make_jiff()`)
-    │  │                        contains `share()` which secret-shares a value that can then be securely computed on,
-    │  │                        and `open()` which reveals the value of a secret
-    │  ├─ helpers             Mathematical helper functions (e.g. modulus) which are used internally
-    │  ├─ protocols           Functions used during computation and/or preprocessing. Extensions will likely add common functionality here.
-    ├─ SecretShare            Provides API to securely operate over shared values (e.g. multiplying numbers shared between parties).
-    │  │                        Operations are executed asynchronously and do not requre the developer to manage promises or synchronization.
-
+    ├─ modules
+    │  └─ jiff-client            Parent module: represents the exposed JIFFClient global variable
+    ├─ classes
+    │  ├─ JIFFClient             Represents a client side jiff instance including the main API of JIFF
+    │  ├─ SecretShare            Contains the API for SecretShare objects
+    │  ├─ GuardedSocket          Internal wrapper around socket.io for added reliability
+    │  └─ Deferred               Polyfill to construct deferred from native Promises
+    ├─ namespaces
+    │  ├─ protocols              Common protocols exposed by jiff client instances, suitable for preprocessing
+    │  ├─ bits                   Primitives for operating on bit-wise shared secrets (hybrid protocols)
+    │  └─ hooks                  Available hooks that can be used by users to customize behavior
 
 ## Running Tests
 
@@ -164,7 +176,7 @@ against a dishonest majority of non-server parties, but insecure against coaliti
 reduces to more traditional models in certain cases. For example, if the computation is made out of two parties and a server, this becomes
 equivalent to 3-party computation with honest majority.
 
-## Costs of Operations:
+## Costs of Operations: [OUTDATED]
 Below is a table of the current costs of operations in the *base* jiff with no extensions:
 
 
