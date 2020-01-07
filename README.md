@@ -4,8 +4,6 @@
 
 JIFF is a JavaScript library for building applications that rely on secure multi-party computation. JIFF is built to be highly flexible with a focus on usability, with the ability to be run in the browser, on mobile phones, or via Node.js. JIFF is designed so that developers need not be familiar with MPC techniques or know the details of cryptographic protocols in order to build secure applications.
 
-# For Developers
-
 ## Requirements
 
 ### Server
@@ -184,7 +182,7 @@ reduces to more traditional models in certain cases. For example, if the computa
 equivalent to 3-party computation with honest majority.
 
 ## Costs of Operations: [OUTDATED]
-Below is a table of the current costs of operations in the *base* jiff with no extensions:
+Below is a table of the current costs of operations in the *base* JIFF without extensions:
 
 
 | Operation         | Rounds            | Total Messages                    | Preprocessing Rounds | Preprocessing Total Messages                 | Dependenices |
