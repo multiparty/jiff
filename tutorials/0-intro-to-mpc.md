@@ -415,13 +415,13 @@ Below is an example of such code written in JIFF, where three parties and a serv
 The JIFF API and the role of the server in JIFF is explained in more details in later tutorials.
 
 ```neptune[frame=jiff,scope=jiff,title=Server,env=server]
-var jiff = require('../../../../../lib/jiff-server.js');
-var jiff_instance = jiff.make_jiff(global.server, { logs:true });
+var JIFFServer = require('../../../../../lib/jiff-server.js');
+var jiffServer = new JIFFServer(global.server, { logs:true });
 Console.log('Started jiff server on port 9111');
 ```
 
 ```neptune[frame=jiff,scope=jiff,title=Party&nbsp;1]
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'first-mpc-computation', {party_count: 3, crypto_provider: true});
+var jiff_instance = new JIFFClient('http://localhost:9111', 'first-mpc-computation', {party_count: 3, crypto_provider: true});
 
 jiff_instance.wait_for([1, 2, 3], function () {
   var shares = jiff_instance.share(10);
@@ -432,7 +432,7 @@ jiff_instance.wait_for([1, 2, 3], function () {
 ```
 
 ```neptune[frame=jiff,scope=jiff,title=Party&nbsp;2]
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'first-mpc-computation', {party_count: 3, crypto_provider: true});
+var jiff_instance = new JIFFClient('http://localhost:9111', 'first-mpc-computation', {party_count: 3, crypto_provider: true});
 
 jiff_instance.wait_for([1, 2, 3], function () {
   var shares = jiff_instance.share(30);
@@ -443,7 +443,7 @@ jiff_instance.wait_for([1, 2, 3], function () {
 ```
 
 ```neptune[frame=jiff,scope=jiff,title=Party&nbsp;3]
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'first-mpc-computation', {party_count: 3, crypto_provider: true});
+var jiff_instance = new JIFFClient('http://localhost:9111', 'first-mpc-computation', {party_count: 3, crypto_provider: true});
 
 jiff_instance.wait_for([1, 2, 3], function () {
   var shares = jiff_instance.share(50);

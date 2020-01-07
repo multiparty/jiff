@@ -30,7 +30,7 @@ baseComputations.shareHook = function (jiff_instance, test, testInputs, input, t
     // re-share all shares according to new holders and threshold
     for (var si = 0; si < senders.length; si++) {
       var sender = senders[si];
-      shares[sender] = jiff_instance.protocols.reshare(shares[sender], shareParameters.threshold, shareParameters.receivers, receivers)
+      shares[sender] = jiff_instance.reshare(shares[sender], shareParameters.threshold, shareParameters.receivers, receivers)
     }
   }
 

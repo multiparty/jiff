@@ -47,7 +47,8 @@
     "test-demo": "./demos/run-test.sh",
     "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit",
     "lint": "./node_modules/.bin/eslint .",
-    "tutorial": "npm install && cd tutorials && node index.js"
+    "tutorial": "npm install && cd tutorials && node index.js",
+    "build": "./node_modules/.bin/browserify lib/jiff-client.js --debug -s JIFFClient -o dist/jiff-client.js"
   },
   "dependencies": {
     "bignumber.js": "^5.0.0",

@@ -82,25 +82,23 @@ http.listen(9111, function() {
 
 Then we setup a JIFF server on top of our running http server.
 ```neptune[title=Server,env=server]
-var jiff = require('../../../../../lib/jiff-server.js'); // replace this with your actual path to jiff-server.js
-var jiff_instance = jiff.make_jiff(server, { logs:true });
+var JIFFServer = require('../../../../../lib/jiff-server.js'); // replace this with your actual path to jiff-server.js
+var jiffServer = new JIFFServer(server, { logs:true });
 Console.log('Server is running on port 9111');
 ```
 
 ## Defining a JIFF Client
 Next, we define our JIFF clients. These clients can be either browser-based or node.js-based.
 
-First, we must include the appropriate JIFF client library and dependencies. The tutorial already has these files
-included.
+First, we must include the appropriate JIFF client library. All its dependencies (sockets.io and libsodium-wrappers) are 
+bundled within it. The tutorial already has these files included.
 
 ```neptune[title=Browser,language=html,frame=frame1]
-<script src="/socket.io/socket.io.js"></script>
-<script src="/lib/sodium.js"></script> <!-- WASM libsodium -->
-<script src="/lib/jiff-client.js"></script> <!-- exposes global object 'jiff' -->
+<script src="/dist/jiff-client.js"></script> <!-- exposes global object 'JIFFClient' -->
 ```
 
 ```neptune[title=Node,frame=frame1]
-var jiff = require('../../lib/jiff-client');
+var JIFFClient = require('../../lib/jiff-client');
 ```
 
 ```neptune[inject=true]
@@ -124,7 +122,7 @@ function onConnect() {
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+var jiffClient = new JIFFClient('http://localhost:9111', 'our-setup-application', options);
 ```
 
 ```neptune[title=Party&nbsp;2,frame=frame2,scope=2]
@@ -133,7 +131,7 @@ function onConnect() {
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+var jiffClient = new JIFFClient('http://localhost:9111', 'our-setup-application', options);
 ```
 
 ```neptune[title=Party&nbsp;3,frame=frame2,scope=3]
@@ -142,7 +140,7 @@ function onConnect() {
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'our-setup-application', options);
+var jiffClient = new JIFFClient('http://localhost:9111', 'our-setup-application', options);
 ```
 
 ## Our first application: voting
@@ -161,12 +159,12 @@ We can think of this voting program as a sum over each option, where the input o
 var options = ['IPA', 'Lager', 'Stout', 'Pilsner'];
 var input = [1, 0, 0, 0];
 
-jiff_instance.wait_for([1, 2, 3], function () {
+jiffClient.wait_for([1, 2, 3], function () {
   var results = [];
   for (var i = 0; i < options.length; i++) {
-    var ithOptionShares = jiff_instance.share(input[i]);
+    var ithOptionShares = jiffClient.share(input[i]);
     var ithOptionResult = ithOptionShares[1].sadd(ithOptionShares[2]).sadd(ithOptionShares[3]);
-    results.push(jiff_instance.open(ithOptionResult));
+    results.push(jiffClient.open(ithOptionResult));
   }
 
   Promise.all(results).then(function (results) {
@@ -180,12 +178,12 @@ jiff_instance.wait_for([1, 2, 3], function () {
 var options = ['IPA', 'Lager', 'Stout', 'Pilsner'];
 var input = [1, 0, 0, 0];
 
-jiff_instance.wait_for([1, 2, 3], function () {
+jiffClient.wait_for([1, 2, 3], function () {
   var results = [];
   for (var i = 0; i < options.length; i++) {
-    var ithOptionShares = jiff_instance.share(input[i]);
+    var ithOptionShares = jiffClient.share(input[i]);
     var ithOptionResult = ithOptionShares[1].sadd(ithOptionShares[2]).sadd(ithOptionShares[3]);
-    results.push(jiff_instance.open(ithOptionResult));
+    results.push(jiffClient.open(ithOptionResult));
   }
 
   Promise.all(results).then(function (results) {
@@ -199,12 +197,12 @@ jiff_instance.wait_for([1, 2, 3], function () {
 var options = ['IPA', 'Lager', 'Stout', 'Pilsner'];
 var input = [0, 1, 0, 0];
 
-jiff_instance.wait_for([1, 2, 3], function () {
+jiffClient.wait_for([1, 2, 3], function () {
   var results = [];
   for (var i = 0; i < options.length; i++) {
-    var ithOptionShares = jiff_instance.share(input[i]);
+    var ithOptionShares = jiffClient.share(input[i]);
     var ithOptionResult = ithOptionShares[1].sadd(ithOptionShares[2]).sadd(ithOptionShares[3]);
-    results.push(jiff_instance.open(ithOptionResult));
+    results.push(jiffClient.open(ithOptionResult));
   }
 
   Promise.all(results).then(function (results) {
@@ -227,7 +225,7 @@ rarely involves one party.
 The share function takes several optional parameters that can help customize its behavior.
 
 ```neptune[title=Share,scope=1,frame=frame4]
-Console.log(jiff_instance.share.toString().split('\n')[0]);
+Console.log(jiffClient.share.toString().split('\n')[0]);
 ```
 
 JIFF's documentation explain what these parameters mean.
@@ -246,16 +244,16 @@ Hence, the value of the share cannot be accessed until later on. SecretShare obj
 All operations on that SecretShare are scheduled to execute after the promise is resolved.
 
 ```neptune[title=Party&nbsp;1,frame=frame5,scope=1]
-var shares = jiff_instance.share(10, 2, [1, 2], [1, 2]);
+var shares = jiffClient.share(10, 2, [1, 2], [1, 2]);
 Console.log(Object.keys(shares));
 Console.log(shares[1].toString());
-Console.log(shares[2].toString(), shares[2].promise.toString());
+Console.log(shares[2].toString(), shares[2].value.toString());
 shares[2].wThen(function (value) {
   Console.log('share resolved with value', value);
 });
 ```
 ```neptune[title=Party&nbsp;2,frame=frame5,scope=2]
-var shares = jiff_instance.share(5, 2, [1, 2], [1, 2]);
+var shares = jiffClient.share(5, 2, [1, 2], [1, 2]);
 ```
 
 ### The _open_ function
@@ -267,21 +265,21 @@ arguments.
 Because open involves asynchronous communication, a promise to the actual result is returned, which will be resolved when the result is available.
 
 ```neptune[title=Party&nbsp;1,frame=frame6,scope=1]
-Console.log(jiff_instance.open.toString().split('\n')[0]);
-var promise = jiff_instance.open(shares[1], [1, 3]);
+Console.log(jiffClient.open.toString().split('\n')[0]);
+var promise = jiffClient.open(shares[1], [1, 3]);
 Console.log(promise.toString());
 promise.then(function (result) {
   Console.log(result);
 });
 ```
 ```neptune[title=Party&nbsp;2,frame=frame6,scope=2]
-var promise = jiff_instance.open(shares[1], [1, 3]);
+var promise = jiffClient.open(shares[1], [1, 3]);
 Console.log(promise == null);
 ```
 ```neptune[title=Party&nbsp;3,frame=frame6,scope=3]
 // party 3 did not receive a share of this input, but it can still receive the output
 // by calling receive_open!
-var promise = jiff_instance.receive_open([1, 2], [1, 3]);
+var promise = jiffClient.receive_open([1, 2], [1, 3]);
 Console.log(promise.toString());
 promise.then(function (result) {
   Console.log(result);
