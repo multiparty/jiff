@@ -1,3 +1,11 @@
+```neptune[language=javascript,inject=true]
+(function () {
+  var script = document.createElement('script');
+  script.setAttribute('src', '/dist/jiff-client.js');
+  document.head.appendChild(script);
+}());
+```
+
 # Inner Product and fixedpoint numbers
 
 In this tutorial, we will look at an example implementation of inner product that supports fixed-point numbers.
@@ -35,10 +43,10 @@ If multiplication (or other primitives using it) should be supported, then there
 as decimal digits. So that intermediate multiplication results fit in the field.
 
 ```neptune[title=Server,frame=frame2,env=server]
-var jiff = require('../../../../../lib/jiff-server.js');
+var JIFFServer = require('../../../../../lib/jiff-server.js');
 var jiff_bignumber = require('../../../../../lib/ext/jiff-server-bignumber.js');
 
-var jiff_instance = jiff.make_jiff(server, { logs:true });
+var jiff_instance = new JIFFServer(server, { logs:true });
 jiff_instance.apply_extension(jiff_bignumber);
 
 Console.log('Server is running on port 9111');
@@ -50,7 +58,7 @@ function onConnect() {
 }
 
 var options = { party_count: 2, party_id: 1, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'product-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'product-application', options);
 jiff_instance.apply_extension(jiff_bignumber, options);
 jiff_instance.apply_extension(jiff_fixedpoint, options);
 jiff_instance.connect();
@@ -61,7 +69,7 @@ function onConnect() {
 }
 
 var options = { party_count: 2, party_id: 2, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'product-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'product-application', options);
 jiff_instance.apply_extension(jiff_bignumber, options);
 jiff_instance.apply_extension(jiff_fixedpoint, options);
 jiff_instance.connect();
@@ -72,7 +80,7 @@ function onConnect() {
 }
 
 var options = { party_count: 2, party_id: 1, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 5, decimal_digits: 5 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'product-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'product-application', options);
 jiff_instance.apply_extension(jiff_bignumber, options);
 jiff_instance.apply_extension(jiff_fixedpoint, options);
 jiff_instance.connect();

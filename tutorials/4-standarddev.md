@@ -1,3 +1,11 @@
+```neptune[language=javascript,inject=true]
+(function () {
+  var script = document.createElement('script');
+  script.setAttribute('src', '/dist/jiff-client.js');
+  document.head.appendChild(script);
+}());
+```
+
 # Standard Deviation under MPC
 
 This tutorial gives some intuition on how to select the best protocol for a given task. In particular, how to optimize
@@ -28,8 +36,8 @@ All comparisons, bit operations, and integer division will give incorrect values
 
 
 ```neptune[title=Server,frame=frame1,env=server]
-var jiff = require('../../../../../lib/jiff-server.js'); // replace this with your actual path to jiff-server.js
-var jiff_instance = jiff.make_jiff(server, { logs:true });
+var JIFFServer = require('../../../../../lib/jiff-server.js'); // replace this with your actual path to jiff-server.js
+var jiff_instance = new JIFFServer(server, { logs:true });
 Console.log('Server is running on port 9111');
 ```
 
@@ -39,7 +47,7 @@ function onConnect() {
 }
 
 var options = { party_count: 4, party_id: 1, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'deviation-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'deviation-application', options);
 jiff_instance.apply_extension(jiff_negativenumber, options);
 jiff_instance.connect();
 ```
@@ -50,7 +58,7 @@ function onConnect() {
 }
 
 var options = { party_count: 4, party_id: 2, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'deviation-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'deviation-application', options);
 jiff_instance.apply_extension(jiff_negativenumber, options);
 jiff_instance.connect();
 ```
@@ -61,7 +69,7 @@ function onConnect() {
 }
 
 var options = { party_count: 4, party_id: 3, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'deviation-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'deviation-application', options);
 jiff_instance.apply_extension(jiff_negativenumber, options);
 jiff_instance.connect();
 ```
@@ -72,7 +80,7 @@ function onConnect() {
 }
 
 var options = { party_count: 4, party_id: 4, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'deviation-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'deviation-application', options);
 jiff_instance.apply_extension(jiff_negativenumber, options);
 jiff_instance.connect();
 ```

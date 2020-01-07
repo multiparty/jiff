@@ -1,3 +1,11 @@
+```neptune[language=javascript,inject=true]
+(function () {
+  var script = document.createElement('script');
+  script.setAttribute('src', '/dist/jiff-client.js');
+  document.head.appendChild(script);
+}());
+```
+
 # Intermediate Programming with JIFF
 
 In the last tutorial, we saw how we can write a simple MPC voting application in JIFF. However, we left a few issues unresolved:
@@ -14,8 +22,8 @@ In the last tutorial, we saw how we can write a simple MPC voting application in
 Our setup is similar to the one from the previous tutorial.
 
 ```neptune[title=Server,frame=frame1,env=server]
-var jiff = require('../../../../../lib/jiff-server.js'); // replace this with your actual path to jiff-server.js
-var jiff_instance = jiff.make_jiff(server, { logs:true });
+var JIFFServer = require('../../../../../lib/jiff-server.js'); // replace this with your actual path to jiff-server.js
+var jiff_instance = new JIFFServer(server, { logs:true });
 Console.log('Server is running on port 9111');
 ```
 
@@ -25,7 +33,7 @@ function onConnect() {
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect, Zp: 11 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'voting-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'voting-application', options);
 ```
 
 ```neptune[title=Party&nbsp;2,frame=frame1,scope=2]
@@ -34,7 +42,7 @@ function onConnect() {
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect, Zp: 11 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'voting-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'voting-application', options);
 ```
 
 ```neptune[title=Party&nbsp;3,frame=frame1,scope=3]
@@ -43,7 +51,7 @@ function onConnect() {
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect, Zp: 11 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'voting-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'voting-application', options);
 ```
 
 # Input sanitization

@@ -1,3 +1,11 @@
+```neptune[language=javascript,inject=true]
+(function () {
+  var script = document.createElement('script');
+  script.setAttribute('src', '/dist/jiff-client.js');
+  document.head.appendChild(script);
+}());
+```
+
 # Secure Multiparty Computation (MPC)
 
 This tutorial includes a brief introduction to Secure Multiparty Computation (MPC) and its security guarantees.

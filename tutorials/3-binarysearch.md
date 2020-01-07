@@ -1,3 +1,11 @@
+```neptune[language=javascript,inject=true]
+(function () {
+  var script = document.createElement('script');
+  script.setAttribute('src', '/dist/jiff-client.js');
+  document.head.appendChild(script);
+}());
+```
+
 # Binary Search under MPC
 
 The tutorial demonstrates how certain MPC tradeoffs can influence the algorithmic choices made when designing a protocol.
@@ -16,8 +24,8 @@ without revealing any other information.
 Our setup is very similar to the previous tutorials, except we only have two parties.
 
 ```neptune[title=Server,frame=frame1,env=server]
-var jiff = require('../../../../../lib/jiff-server.js'); // replace this with your actual path to jiff-server.js
-var jiff_instance = jiff.make_jiff(server, { logs:true });
+var JIFFServer = require('../../../../../lib/jiff-server.js'); // replace this with your actual path to jiff-server.js
+var jiff_instance = new JIFFServer(server, { logs:true });
 Console.log('Server is running on port 9111');
 ```
 
@@ -27,7 +35,7 @@ function onConnect() {
 }
 
 var options = { party_count: 2, party_id: 1, crypto_provider: true, onConnect: onConnect, Zp: 31 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'search-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'search-application', options);
 ```
 
 ```neptune[title=Party&nbsp;2,frame=frame1,scope=2]
@@ -36,7 +44,7 @@ function onConnect() {
 }
 
 var options = { party_count: 2, party_id: 2, crypto_provider: true, onConnect: onConnect, Zp: 31 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'search-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'search-application', options);
 ```
 
 # Linear search

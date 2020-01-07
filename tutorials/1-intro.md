@@ -1,3 +1,11 @@
+```neptune[language=javascript,inject=true]
+(function () {
+  var script = document.createElement('script');
+  script.setAttribute('src', '/dist/jiff-client.js');
+  document.head.appendChild(script);
+}());
+```
+
 # Introduction to JIFF
 
 This tutorial assumes that you are familiar with MPC to some extent, if you need a quick primer on MPC, look at the previous tutorial!

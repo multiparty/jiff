@@ -1,3 +1,11 @@
+```neptune[language=javascript,inject=true]
+(function () {
+  var script = document.createElement('script');
+  script.setAttribute('src', '/dist/jiff-client.js');
+  document.head.appendChild(script);
+}());
+```
+
 # What is Preprocessing?
 In general, MPC is much slower than standard computation - mostly due to communication costs between parties. While some operations are free (meaning they only rely on local computation), such as secure addition, other operations (e.g. secure multiplication) incur high communication costs. Specifically for multiplication, the protocol used in JIFF relies on helper values of a certain form, called beaver triples (a,b,c such that a\*b=c). In JIFF, preprocessing of beaver triples is accomplished via multiplication with the BGW protocol.
 
@@ -37,10 +45,10 @@ is equivalent to having an honest majority computation between three parties, on
 Our setup is similar to previous tutorials.
 
 ```neptune[title=Server,frame=frame1,env=server]
-var jiff = require('../../../../../lib/jiff-server.js');
+var JIFFServer = require('../../../../../lib/jiff-server.js');
 var jiff_bignumber = require('../../../../../lib/ext/jiff-server-bignumber.js');
 
-var jiff_instance = jiff.make_jiff(server, { logs:true });
+var jiff_instance = new JIFFServer(server, { logs:true });
 jiff_instance.apply_extension(jiff_bignumber);
 
 Console.log('Server is running on port 9111');
@@ -52,7 +60,7 @@ function onConnect() {
 }
 
 var options = { party_count: 3, party_id: 1, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'preprocessing-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'preprocessing-application', options);
 jiff_instance.apply_extension(jiff_bignumber, options);
 jiff_instance.apply_extension(jiff_fixedpoint, options);
 jiff_instance.connect();
@@ -64,7 +72,7 @@ function onConnect() {
 }
 
 var options = { party_count: 3, party_id: 2, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'preprocessing-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'preprocessing-application', options);
 jiff_instance.apply_extension(jiff_bignumber, options);
 jiff_instance.apply_extension(jiff_fixedpoint, options);
 jiff_instance.connect();
@@ -76,7 +84,7 @@ function onConnect() {
 }
 
 var options = { party_count: 3, party_id: 3, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'preprocessing-application', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'preprocessing-application', options);
 jiff_instance.apply_extension(jiff_bignumber, options);
 jiff_instance.apply_extension(jiff_fixedpoint, options);
 jiff_instance.connect();
@@ -250,7 +258,7 @@ that correspond to the op_id "smult:1,2:0:triplet"
 The other option is to have the server (which may also be a part of the computation) provide values to all parties for the operations, which happens at the time of computation.
 This can be configured when creating a jiff instance by setting the `crypto_provider` option to true:
 ```neptune[title=Crypto&nbsp;Provider,frame=frame7,env=server]
-var jiff_instance = jiff.make_jiff(server_address, 'comp_id', {'crypto_provider': true} );
+var jiff_instance = new JIFFServer(server_address, 'comp_id', {'crypto_provider': true} );
 ```
 
 If no operations preprocessed for, the server will be queried for anything that requires it. If some operations were specified for preprocessing,

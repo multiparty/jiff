@@ -1,3 +1,11 @@
+```neptune[language=javascript,inject=true]
+(function () {
+  var script = document.createElement('script');
+  script.setAttribute('src', '/dist/jiff-client.js');
+  document.head.appendChild(script);
+}());
+```
+
 # Parallelizing MPC protocols
 
 This tutorial demonstrates how MPC can be sped up via parallelization.
@@ -51,8 +59,8 @@ is highly asymmetric, or where the different parties has very unequal computatio
 For simplicity, we assume we have two parties, each possessing two machines.
 
 ```neptune[title=Server,frame=frame1,env=server]
-var jiff = require('../../../../../lib/jiff-server.js'); // replace this with your actual path to jiff-server.js
-var jiff_instance = jiff.make_jiff(server, { logs:true });
+var JIFFServer = require('../../../../../lib/jiff-server.js'); // replace this with your actual path to jiff-server.js
+var jiff_instance = new JIFFServer(server, { logs:true });
 Console.log('Server is running on port 9111');
 ```
 
@@ -64,7 +72,7 @@ function onConnect() {
 // party count is really machine count here
 // our code logically understands that party ids 1 and 2 belong to the same party, and the same for 3 and 4.
 var options = { party_count: 4, party_id: 1, crypto_provider: true, onConnect: onConnect, Zp: 31 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'parralel-mpc', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'parralel-mpc', options);
 ```
 
 ```neptune[title=Party&nbsp;1-2,frame=frame1,scope=2]
@@ -73,7 +81,7 @@ function onConnect() {
 }
 
 var options = { party_count: 4, party_id: 2, crypto_provider: true, onConnect: onConnect, Zp: 31 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'parralel-mpc', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'parralel-mpc', options);
 ```
 
 ```neptune[title=Party&nbsp;2-1,frame=frame1,scope=3]
@@ -82,7 +90,7 @@ function onConnect() {
 }
 
 var options = { party_count: 4, party_id: 3, crypto_provider: true, onConnect: onConnect, Zp: 31 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'parralel-mpc', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'parralel-mpc', options);
 ```
 
 ```neptune[title=Party&nbsp;2-2,frame=frame1,scope=4]
@@ -91,7 +99,7 @@ function onConnect() {
 }
 
 var options = { party_count: 4, party_id: 4, crypto_provider: true, onConnect: onConnect, Zp: 31 };
-var jiff_instance = jiff.make_jiff('http://localhost:9111', 'parralel-mpc', options);
+var jiff_instance = new JIFFClient('http://localhost:9111', 'parralel-mpc', options);
 ```
 
 ## Linear search
