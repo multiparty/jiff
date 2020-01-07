@@ -1,7 +1,8 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var jiff_instance = require('../../lib/jiff-server').make_jiff(http, {logs:true});
+var JIFFServer = require('../../lib/jiff-server');
+var jiff_instance = new JIFFServer(http, {logs:true});
 
 var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
 jiff_instance.apply_extension(jiffBigNumberServer);
@@ -9,7 +10,7 @@ jiff_instance.apply_extension(jiffBigNumberServer);
 
 // Serve static files.
 app.use('/demos', express.static('demos'));
-app.use('/lib', express.static('lib'));
+app.use('/dist', express.static('dist'));
 app.use('/lib/ext', express.static('lib/ext'));
 app.use('/bignumber.js', express.static('node_modules/bignumber.js'));
 app.use('/numeric.js', express.static('node_modules/numeric/numeric-1.2.6.js'));

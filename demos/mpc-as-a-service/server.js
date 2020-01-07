@@ -59,7 +59,8 @@ var options = {
 };
 
 // Create the server
-require('../../lib/jiff-server').make_jiff(http, options);
+var JIFFServer = require('../../lib/jiff-server');
+new JIFFServer(http, options);
 
 // Serve static files.
 app.get('/config.js', function (req, res) {
@@ -69,7 +70,7 @@ app.get('/config.js', function (req, res) {
 });
 
 app.use('/demos', express.static('demos'));
-app.use('/lib', express.static('lib'));
+app.use('/dist', express.static('dist'));
 app.use('/lib/ext', express.static('lib/ext'));
 http.listen(8080, function () {
   console.log('listening on *:8080');

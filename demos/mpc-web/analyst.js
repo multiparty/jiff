@@ -1,4 +1,4 @@
-var jiff = require('../../lib/jiff-client');
+var JIFFClient = require('../../lib/jiff-client');
 var fs = require('fs');
 var readline = require('readline');
 var rl = readline.createInterface({
@@ -11,7 +11,7 @@ var options = { party_id: 1, party_count: 100000 };
 var keys = load_keys();
 options.public_key = keys.public_key;
 options.secret_key = keys.secret_key;
-var jiff_instance = jiff.make_jiff('http://localhost:8080', '1', options);
+var jiff_instance = new JIFFClient('http://localhost:8080', '1', options);
 
 // Wait for server to connect
 jiff_instance.wait_for(['s1'], function () {

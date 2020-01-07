@@ -6,8 +6,8 @@ if (id != null) {
   id = parseInt(id, 10);
 }
 
-var jiff = require('../../lib/jiff-client');
-var jiff_instance = jiff.make_jiff('http://localhost:8080', '1', { party_id: id });
+var JIFFClient = require('../../lib/jiff-client');
+var jiff_instance = new JIFFClient('http://localhost:8080', '1', { party_id: id });
 
 // Wait for server to connect
 jiff_instance.wait_for([1, 's1'], function () {

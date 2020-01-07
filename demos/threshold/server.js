@@ -1,11 +1,12 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-require('../../lib/jiff-server').make_jiff(http, { logs:false });
+var JIFFServer = require('../../lib/jiff-server');
+new JIFFServer(http, { logs:false });
 
 // Serve static files.
 app.use('/demos', express.static('demos'));
-app.use('/lib', express.static('lib'));
+app.use('/dist', express.static('dist'));
 app.use('/lib/ext', express.static('lib/ext'));
 http.listen(8080, function () {
   if (process.argv[2] !== 'suppress') {

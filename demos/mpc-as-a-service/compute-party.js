@@ -27,7 +27,7 @@ if (process.argv[3] != null) {
 }
 
 // Initialize JIFF
-var jiff = require('../../lib/jiff-client.js');
+var JIFFClient = require('../../lib/jiff-client.js');
 
 var options = {
   cypto_provider: true,
@@ -53,4 +53,4 @@ options.onConnect = function (jiff_instance) {
   });
 };
 
-jiff.make_jiff('http://localhost:8080', computation_id, options);
+new JIFFClient('http://localhost:8080', computation_id, options);

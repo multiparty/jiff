@@ -9,7 +9,7 @@
       opt['initialization'] = { role: 'input' };
 
       // eslint-disable-next-line no-undef
-      return jiff_instance = jiff.make_jiff(hostname, computation_id, opt);
+      return jiff_instance = new JIFFClient(hostname, computation_id, opt);
     },
     compute: function (input) {
       // Share with compute parties
