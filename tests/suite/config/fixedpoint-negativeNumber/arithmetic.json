@@ -62,7 +62,7 @@
       "count": 3,
       "parallel": 2,
       "options": {
-        "Zp": "2040",
+        "Zp": "2039",
         "party_count": 3,
         "integer_digits": 1,
         "decimal_digits": 1,
@@ -73,7 +73,7 @@
       "count": 2,
       "parallel": 2,
       "options": {
-        "Zp": "2040",
+        "Zp": "2039",
         "party_count": 3,
         "integer_digits": 2,
         "decimal_digits": 1,
