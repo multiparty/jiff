@@ -188,13 +188,13 @@ baseComputations.shareHook = function (jiff_instance, test, testInputs, input, t
     }
   }
 
-  if (testConfig['share'] === 'share_bits') {
+  if (testConfig['share'] === 'bits.share') {
     var bitLength = testConfig['options']['max'] || jiff_instance.Zp;
     bitLength = bitLength.toString(2).length;
-    shares = jiff_instance.protocols.bits.share_bits(input, bitLength, threshold, receivers, senders);
+    shares = jiff_instance.protocols.bits.share(input, bitLength, threshold, receivers, senders);
   }
 
-  if (testConfig['share'] === 'share_bits_lengths') {
+  if (testConfig['share'] === 'bits.share_lengths') {
     for (i = 0; i < senders.length; i++) {
       var sender = senders[i];
       input = testInputs[sender];
@@ -202,7 +202,7 @@ baseComputations.shareHook = function (jiff_instance, test, testInputs, input, t
       if (bitLength == null) {
         bitLength = input.toString(2).length;
       }
-      shares[sender] = jiff_instance.protocols.bits.share_bits(input, bitLength, threshold, receivers, [sender])[sender];
+      shares[sender] = jiff_instance.protocols.bits.share(input, bitLength, threshold, receivers, [sender])[sender];
     }
   }
   return shares;
@@ -255,7 +255,7 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
   }
 
   // special case: test for varying lengths
-  if (testConfig['share'] === 'share_bits_lengths') {
+  if (testConfig['share'] === 'bits.share_lengths') {
     var paramsList = [];
     for (var t = 0; t < inputs.length; t++) {
       var bitLengthLeft = inputs[t]['_length1'];
@@ -290,7 +290,7 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
     params['bitLength'] = jiff_instance.Zp.toString(2).length;
     decomposition_count = inputs.length * Object.keys(inputs[0]).length;
   }
-  if (testConfig['share'] === 'share_bits') {
+  if (testConfig['share'] === 'bits.share') {
     var max = testConfig['options']['max'] || jiff_instance.Zp;
     params['bitLength'] = max.toString(2).length;
     if (max.toString(2).lastIndexOf(1) === 0) { // power of 2

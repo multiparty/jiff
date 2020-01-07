@@ -14,7 +14,7 @@
 
   "testConf": {
     "default": {
-      "share": "share_bits",
+      "share": "bits.share",
       "open": "bits.open",
       "output_length": 11,
       "count": 10,
@@ -26,7 +26,7 @@
       }
     },
     "*": {
-      "share": "share_bits",
+      "share": "bits.share",
       "open": "bits.open",
       "output_length": 8,
       "count": 10,
@@ -38,7 +38,7 @@
       }
     },
     "/": {
-      "share": "share_bits",
+      "share": "bits.share",
       "open": "composition",
       "count": 5,
       "parallel": 3,

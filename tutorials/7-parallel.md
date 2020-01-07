@@ -158,7 +158,7 @@ function parallelSearch() {
   var promise = jiff_instance.share_array(partition, null, 2, [1, 3], [1]);
   promise.then(function (array) {
     var intermediate1 = linear_search(array[1], elementShare[3]);
-    var intermediate2 = jiff_instance.protocols.reshare(null, 2, [1, 3], [2, 4]);
+    var intermediate2 = jiff_instance.reshare(null, 2, [1, 3], [2, 4]);
     aggregateOr([intermediate1, intermediate2]);
   });
 }
@@ -175,7 +175,7 @@ function parallelSearch() {
   var promise = jiff_instance.share_array(partition, null, 2, [2, 4], [2]);
   promise.then(function (array) {
     var intermediate = linear_search(array[2], elementShare[4]);
-    jiff_instance.protocols.reshare(intermediate, 2, [1, 3], [2, 4]);
+    jiff_instance.reshare(intermediate, 2, [1, 3], [2, 4]);
   });
 }
 ```
@@ -190,7 +190,7 @@ function parallelSearch() {
   var promise = jiff_instance.share_array(null, null, 2, [1, 3], [1]);
   promise.then(function (array) {
     var intermediate1 = linear_search(array[1], elementShare[3]);
-    var intermediate2 = jiff_instance.protocols.reshare(null, 2, [1, 3], [2, 4]);
+    var intermediate2 = jiff_instance.reshare(null, 2, [1, 3], [2, 4]);
     aggregateOr([intermediate1, intermediate2]);
   });
 }
@@ -206,7 +206,7 @@ function parallelSearch() {
   var promise = jiff_instance.share_array(null, null, 2, [2, 4], [2]);
   promise.then(function (array) {
     var intermediate = linear_search(array[2], elementShare[4]);
-    jiff_instance.protocols.reshare(intermediate, 2, [1, 3], [2, 4]);
+    jiff_instance.reshare(intermediate, 2, [1, 3], [2, 4]);
   });
 }
 ```

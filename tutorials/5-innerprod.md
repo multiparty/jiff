@@ -133,7 +133,7 @@ innerprod(input).then(function (result) {
 The inner product above is very easy to implement, but it does take a long amount of time for how little it seems to be doing. Let us look at the implementation of fixedpoint extenion smult.
 
 ```neptune[title=Fixedpoint&nbsp;Numbers&nbsp;Extenion,frame=frame4,scope=1]
-var dummy = jiff_instance.secret_share(jiff_instance, true, undefined, 10, [1], 1, jiff_instance.Zp); // creating a dummy share for debugging
+var dummy = new jiff_instance.SecretShare(10, [1], 1, jiff_instance.Zp); // creating a dummy share for debugging
 var code = dummy.smult.toString().split('\n');
 var relavent = [code[0]].concat(code.slice(10, 15)).concat(code.slice(35)).join('\n');
 Console.log(relavent);

@@ -14,7 +14,7 @@
 
   "testConf": {
     "default": {
-      "share": "share_bits_lengths",
+      "share": "bits.share_length",
       "count": 15,
       "parallel": 3,
       "options": {
