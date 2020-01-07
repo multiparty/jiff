@@ -61,7 +61,7 @@
       "count": 6,
       "parallel": 2,
       "options": {
-        "Zp": 63,
+        "Zp": 61,
         "cmax": 127,
         "party_count": 3
       },
@@ -92,7 +92,7 @@
       "count": 5,
       "parallel": 2,
       "options": {
-        "Zp": 63,
+        "Zp":61,
         "cmax": 127,
         "party_count": 3
       },

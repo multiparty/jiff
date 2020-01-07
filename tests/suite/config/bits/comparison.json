@@ -17,7 +17,7 @@
       "count": 10,
       "parallel": 5,
       "options": {
-        "Zp": 63,
+        "Zp": 61,
         "party_count": 3
       }
     }
