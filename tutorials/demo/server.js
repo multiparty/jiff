@@ -16,21 +16,21 @@ process.on('unhandledRejection', function (reason) {
 //Serve static files
 //Configure App
 app.use('/', express.static('html/'));
-app.use('/lib', express.static('../../lib'));
+app.use('/dist', express.static('../../dist'));
 app.use('/lib/ext', express.static('../../lib/ext'));
 
-var jiff = require('../../lib/jiff-server');
-var jiff_instance = jiff.make_jiff(http, { logs: true });
-jiff_instance.totalparty_map['secdev'] = 80; // max 80 parties
+var JIFFServer = require('../../lib/jiff-server');
+var jiff_instance =  new JIFFServer(http, { logs: true });
+jiff_instance.computationMaps.maxCount['tutorial-demo'] = 80; // max 80 parties
 
 // Serve static files.
 http.listen(80, function () {
   console.log('listening on *:80');
-  console.log('routes: / /demo /output');
+  console.log('routes: /demo /output');
 });
 
 // Compute function
-var computation_instance = jiff_instance.compute('secdev');
+var computation_instance = jiff_instance.compute('tutorial-demo');
 
 function compute(numberOfSubmitters) {
   if (numberOfSubmitters < 1) {
@@ -64,8 +64,8 @@ function compute(numberOfSubmitters) {
 }
 
 computation_instance.listen('compute', function (_, msg) {
-  var numberOfSubmitters = jiff_instance.client_map['secdev'].length - 2; // 's1' and 1 are part of the map
-  console.log(numberOfSubmitters, jiff_instance.client_map['secdev']);
+  var numberOfSubmitters = jiff_instance.computationMaps.clientIds['tutorial-demo'].length - 2; // 's1' and 1 are part of the map
+  console.log(numberOfSubmitters, jiff_instance.computationMaps.clientIds['tutorial-demo']);
   computation_instance.emit('compute', [1], numberOfSubmitters.toString(), false);
   compute(numberOfSubmitters);
 });

@@ -1,4 +1,4 @@
-var jiff = require('../../../lib/jiff-client');
+var JIFFClient = require('../../../lib/jiff-client');
 var options = {party_count: 3, crypto_provider: true};
 
 try {
@@ -11,8 +11,8 @@ try {
   console.log('Input should be a JSON of length 4, with no spaces (e.g. [0,1,0,0])');
   process.exit();
 }
-options.onConnect = function (jiff_instance) {
 
+options.onConnect = function (jiff_instance) {
   var options = ['IPA', 'Lager', 'Stout', 'Pilsner'];
 
   jiff_instance.wait_for([1, 2, 3], function () {
@@ -31,4 +31,4 @@ options.onConnect = function (jiff_instance) {
   });
 };
 
-var my_jiff_instance = jiff.make_jiff('http://localhost:9111', 'voting-tutorial', options);
+new JIFFClient('http://localhost:9111', 'voting-tutorial', options);

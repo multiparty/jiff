@@ -9,9 +9,7 @@
       }
     </style>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/lib/sodium.js"></script>
-    <script src="/lib/jiff-client.js"></script>
+    <script src="/dist/jiff-client.js"></script>
     
     <script type="text/javascript">
       function error(err) {
@@ -39,7 +37,7 @@
     
       // connect JIFF
       var _hostname = hostname();
-      var jiff_instance = jiff.make_jiff(_hostname, 'secdev', { party_id: 1 });
+      var jiff_instance = new JIFFClient(_hostname, 'secdev', { party_id: 1 });
       jiff_instance.wait_for(['s1'], function () {
         document.getElementById('output').innerHTML = 'Connected!';
       });
