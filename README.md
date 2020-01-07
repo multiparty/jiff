@@ -129,6 +129,13 @@ See demos/run-test.sh for instructions on running test cases located in differen
 
 See the [testing suite framework documentation](tests/suite/README.md) for more details on running and creating tests for the JIFF library.
 
+## Bundling
+
+If you made changes to the library and would like to bundle it again into a single browser-friendly file, you can run this command:
+```shell
+npm run-script build # will override dist/jiff-client.js
+```
+
 ## Development
 
 The JIFF libraries allow developers to customize or extend their functionality by introducing new *hooks*. Multiple hooks can be combined to form a library *extension*.
