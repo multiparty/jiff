@@ -22,7 +22,8 @@
         "party_count": 3,
         "decimal_digits": 49,
         "integer_digits": 50,
-        "warn": false
+        "warn": false,
+        "safemod": false
       }
     },
     "*": {
@@ -52,7 +53,8 @@
         "Zp": "16381",
         "party_count": 3,
         "integer_digits": 2,
-        "decimal_digits": 1
+        "decimal_digits": 1,
+        "crypto_provider": true
       }
     },
     "%": {
@@ -63,7 +65,8 @@
         "party_count": 3,
         "integer_digits": 2,
         "decimal_digits": 1,
-        "warn": false
+        "warn": false,
+        "crypto_provider": true
       }
     },
     "floor": {
@@ -74,7 +77,8 @@
         "party_count": 3,
         "integer_digits": 1,
         "decimal_digits": 1,
-        "warn": false
+        "warn": false,
+        "crypto_provider": true
       }
     }
   }

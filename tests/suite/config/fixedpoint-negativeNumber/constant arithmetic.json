@@ -22,7 +22,8 @@
         "party_count": 3,
         "decimal_digits": 49,
         "integer_digits": 50,
-        "warn": false
+        "warn": false,
+        "safemod": false
       }
     },
     "cdivfac": {
@@ -64,7 +65,8 @@
         "Zp": "2097143",
         "party_count": 3,
         "integer_digits": 2,
-        "decimal_digits": 2
+        "decimal_digits": 2,
+        "crypto_provider": true
       },
       "inputs": [
         {"1": 81.89 ,"constant": -11}

@@ -13085,7 +13085,7 @@ innerprod(input).then(function (result) {
   }
 
   // modify secret share implementations to use BigNumber
-  function createSecretShare(jiff, share, share_helpers) {
+  function createSecretShare(jiff, share) {
     var self = share;
 
     var oldIsConstant = self.isConstant;
@@ -13093,54 +13093,55 @@ innerprod(input).then(function (result) {
       return oldIsConstant(o) || o.isBigNumber === true;
     };
 
-    // Avoid having to rewrite all the primitives: just override the helpers with bignumber equivalent!
-    share_helpers['+'] = function (v1, v2) {
+    return self;
+  }
+
+  function customizeShareHelpers(jiff) {
+    jiff.share_helpers['+'] = function (v1, v2) {
       return v1.plus(v2);
     };
-    share_helpers['-'] = function (v1, v2) {
+    jiff.share_helpers['-'] = function (v1, v2) {
       return v1.minus(v2);
     };
-    share_helpers['*'] = function (v1, v2) {
+    jiff.share_helpers['*'] = function (v1, v2) {
       return v1.times(v2);
     };
-    share_helpers['/'] = function (v1, v2) {
+    jiff.share_helpers['/'] = function (v1, v2) {
       return v1.div(v2);
     };
-    share_helpers['<'] = function (v1, v2) {
+    jiff.share_helpers['<'] = function (v1, v2) {
       return jiff.helpers.BigNumber(v1).lt(v2);
     };
-    share_helpers['<='] = function (v1, v2) {
+    jiff.share_helpers['<='] = function (v1, v2) {
       return jiff.helpers.BigNumber(v1).lte(v2);
     };
-    share_helpers['=='] = function (v1, v2) {
+    jiff.share_helpers['=='] = function (v1, v2) {
       return jiff.helpers.BigNumber(v1).eq(v2);
     };
-    share_helpers['floor/'] = function (v1, v2) {
+    jiff.share_helpers['floor/'] = function (v1, v2) {
       return v1.div(v2).floor();
     };
-    share_helpers['pow'] = function (v1, v2) {
+    jiff.share_helpers['pow'] = function (v1, v2) {
       return self.jiff.helpers.BigNumber(v1).pow(v2);
     };
-    share_helpers['binary'] = function (v) {
+    jiff.share_helpers['binary'] = function (v) {
       return v.toString() === '1' || v.toString() === '0';
     };
-    share_helpers['floor'] = function (v) {
+    jiff.share_helpers['floor'] = function (v) {
       if (typeof(v) === 'number') {
         return Math.floor(v);
       }
       return v.floor();
     };
-    share_helpers['ceil'] = function (v) {
+    jiff.share_helpers['ceil'] = function (v) {
       if (typeof(v) === 'number') {
         return Math.ceil(v);
       }
       return v.ceil();
     };
-    share_helpers['abs'] = function (v) {
+    jiff.share_helpers['abs'] = function (v) {
       return v.abs();
     };
-
-    return self;
   }
 
   // Take the jiff-client base instance and options for this extension, and use them
@@ -13148,13 +13149,15 @@ innerprod(input).then(function (result) {
   function make_jiff(base_instance, options) {
     var jiff = base_instance;
 
+    customizeShareHelpers(jiff);
+
     // Parse options
     if (options == null) {
       options = {};
     }
     if (options.Zp != null) {
       jiff.Zp = options.Zp;
-      if (options.safemod === true && !is_prime(options.Zp)) {
+      if (options.safemod !== false && !is_prime(options.Zp)) {
         throw new Error('Zp = ' + options.Zp.toString() + ' is not prime.  Please use a prime number for the modulus or set safemod to false.');
       }
     }
@@ -13248,7 +13251,7 @@ innerprod(input).then(function (result) {
     jiff.Zp = jiff.helpers.BigNumber(jiff.Zp);
 
     /* SUB-PROTOCOLS */
-    jiff.protocols.bit_composition = function (bits) {
+    jiff.protocols.bits.bit_composition = function (bits) {
       var result = bits[0];
       var pow = jiff.helpers.BigNumber(1);
       for (var i = 1; i < bits.length; i++) {
@@ -13327,7 +13330,7 @@ innerprod(input).then(function (result) {
    */
   exports.name = 'fixedpoint';
 
-  function createFixedpointSecretShare(jiff_instance, share, share_helpers) {
+  function createFixedpointSecretShare(jiff_instance, share) {
     share.legacy = {};
     var internals = ['cadd', 'csub', 'cmult',
       'sadd', 'ssub', 'smult', 'smult_bgw',
@@ -13338,7 +13341,7 @@ innerprod(input).then(function (result) {
       'lt_halfprime', 'if_else' ];
     for (var i = 0; i < internals.length; i++) {
       var key = internals[i];
-      share.legacy[key] = share[key];
+      share.legacy[key] = share[key].bind(share);
     }
 
     var magnitude = share.jiff.helpers.magnitude(share.jiff.decimal_digits);
@@ -13358,7 +13361,7 @@ innerprod(input).then(function (result) {
       }
 
       cst = share.jiff.helpers.BigNumber(cst);
-      cst = share_helpers['floor'](share_helpers['*'](cst, magnitude));
+      cst = share.jiff.share_helpers['floor'](share.jiff.share_helpers['*'](cst, magnitude));
       return share.legacy.cadd(cst);
     };
     share.csub = function (cst) {
@@ -13367,7 +13370,7 @@ innerprod(input).then(function (result) {
       }
 
       cst = share.jiff.helpers.BigNumber(cst);
-      cst = share_helpers['floor'](share_helpers['*'](cst, magnitude));
+      cst = share.jiff.share_helpers['floor'](share.jiff.share_helpers['*'](cst, magnitude));
       return share.legacy.csub(cst);
     };
     share.cmult = function (cst, op_id, div) {
@@ -13381,7 +13384,7 @@ innerprod(input).then(function (result) {
       // turn to big number and multiply by magnitude
       cst = share.jiff.helpers.BigNumber(cst);
       var isInteger = cst.toString().indexOf('.') === -1;
-      var cstDecimal = share_helpers['floor'](share_helpers['*'](cst, magnitude));
+      var cstDecimal = share.jiff.share_helpers['floor'](share.jiff.share_helpers['*'](cst, magnitude));
 
       // Different offset fixes if negative number is applied
       if (!share.jiff.has_extension('negativenumber')) {
@@ -13445,7 +13448,7 @@ innerprod(input).then(function (result) {
 
       // Negative number composing
       if (share.jiff.has_extension('negativenumber')) {
-        var offset = share_helpers['*'](magnitude, share.jiff.offset);
+        var offset = share.jiff.share_helpers['*'](magnitude, share.jiff.offset);
 
         // Subtract x*offset*mag^2, y*offset*mag^2, offset^2*mag^2
         var subshare1 = share.icsub(offset).icmult(offset);
@@ -13487,7 +13490,7 @@ innerprod(input).then(function (result) {
 
       // Negative number composing
       if (share.jiff.has_extension('negativenumber')) {
-        var offset = share_helpers['*'](magnitude, share.jiff.offset);
+        var offset = share.jiff.share_helpers['*'](magnitude, share.jiff.offset);
 
         // Subtract x*offset*mag^2, y*offset*mag^2, offset^2*mag^2
         var subshare1 = share.icsub(offset).icmult(offset);
@@ -13523,7 +13526,7 @@ innerprod(input).then(function (result) {
       if (!(share.isConstant(cst))) {
         throw new Error('parameter should be a number (^)');
       }
-      if (!share_helpers['binary'](cst)) {
+      if (!share.jiff.share_helpers['binary'](cst)) {
         throw new Error('parameter should be binary (^)');
       }
 
@@ -13537,7 +13540,7 @@ innerprod(input).then(function (result) {
       if (!(share.isConstant(cst))) {
         throw new Error('parameter should be a number (|)');
       }
-      if (!share_helpers['binary'](cst)) {
+      if (!share.jiff.share_helpers['binary'](cst)) {
         throw new Error('parameter should be binary (|)');
       }
 
@@ -13608,7 +13611,7 @@ innerprod(input).then(function (result) {
               throw new Error('Parameter should be a number (' + key + ')');
             }
             arguments[0] = share.jiff.helpers.BigNumber(arguments[0]);
-            arguments[0] = share_helpers['floor'](share_helpers['*'](arguments[0], magnitude));
+            arguments[0] = share.jiff.share_helpers['floor'](share.jiff.share_helpers['*'](arguments[0], magnitude));
           }
           var result = share.legacy[key].apply(share, arguments);
           return result.legacy.cmult(magnitude);
@@ -13634,7 +13637,7 @@ innerprod(input).then(function (result) {
       var increased = share.legacy.cmult(magnitude);
 
       if (l != null) {
-        l = l + share_helpers['ceil'](share.jiff.helpers.bLog(magnitude));
+        l = l + share.jiff.share_helpers['ceil'](share.jiff.helpers.bLog(magnitude));
       }
       return increased.legacy.sdiv(o, l, op_id);
     };
@@ -13652,7 +13655,7 @@ innerprod(input).then(function (result) {
       }
 
       cst = share.jiff.helpers.BigNumber(cst);
-      cst = share_helpers['floor'](share_helpers['*'](cst, magnitude));
+      cst = share.jiff.share_helpers['floor'](share.jiff.share_helpers['*'](cst, magnitude));
 
       var increased = share.legacy.cmult(magnitude);
       return increased.legacy.cdiv(cst, op_id);
@@ -13775,11 +13778,6 @@ innerprod(input).then(function (result) {
       }
       return promise.then(base_instance.helpers.format_as_float);
     };
-    var old_receive_open = base_instance.receive_open;
-    base_instance.receive_open = function () {
-      var promise = old_receive_open.apply(base_instance, arguments);
-      return promise.then(base_instance.helpers.format_as_float);
-    };
 
     /* SHARE */
     var old_share = base_instance.share;
@@ -13857,7 +13855,7 @@ innerprod(input).then(function (result) {
   exports.name = 'negativenumber';
 
   // secret share implementation
-  function createNegativeNumberSecretShare(jiff, share, share_helpers) {
+  function createNegativeNumberSecretShare(jiff, share) {
     var hasBigNumber = jiff.has_extension('bignumber');
     var hasFixedPoint = jiff.has_extension('fixedpoint');
     var offset = share.jiff.offset;
@@ -13873,7 +13871,7 @@ innerprod(input).then(function (result) {
       'lt_halfprime', 'if_else' ];
     for (var i = 0; i < internals.length; i++) {
       var key = internals[i];
-      share.negative_legacy[key] = share[key];
+      share.negative_legacy[key] = share[key].bind(share);
     }
 
     // Constant arithmetic and boolean operations
@@ -13887,7 +13885,7 @@ innerprod(input).then(function (result) {
         return result;
       }
       // Works for regular and bigNumbers
-      result = result.negative_legacy.csub(share_helpers['*'](offset, cst));
+      result = result.negative_legacy.csub(jiff.share_helpers['*'](offset, cst));
       return result.negative_legacy.cadd(offset);
     };
 
@@ -13991,7 +13989,7 @@ innerprod(input).then(function (result) {
             if (!(share.isConstant(arguments[0]))) {
               throw new Error('Parameter should be a number (' + key + ')');
             }
-            arguments[0] = share_helpers['+'](offset, arguments[0]);
+            arguments[0] = jiff.share_helpers['+'](offset, arguments[0]);
           }
           var result = share.negative_legacy[key].apply(share, arguments);
           return result.negative_legacy.cadd(offset);
@@ -14026,8 +14024,8 @@ innerprod(input).then(function (result) {
       shareAbs = shareAbs.result.negative_legacy.csub(offset);
 
       cst = hasBigNumber ? share.jiff.helpers.BigNumber(cst) : cst;
-      var otherNegative = share_helpers['<'](cst, 0);
-      cst = share_helpers['abs'](cst);
+      var otherNegative = jiff.share_helpers['<'](cst, 0);
+      cst = jiff.share_helpers['abs'](cst);
 
       // This is the result assuming both share and o are non-negative
       var result = shareAbs.negative_legacy.cdivfac(cst);
@@ -14060,8 +14058,8 @@ innerprod(input).then(function (result) {
       shareAbs = shareAbs.result.negative_legacy.csub(offset);
 
       cst = hasBigNumber ? share.jiff.helpers.BigNumber(cst) : cst;
-      var otherNegative = share_helpers['<'](cst, 0);
-      var cstAbs = share_helpers['abs'](cst);
+      var otherNegative = jiff.share_helpers['<'](cst, 0);
+      var cstAbs = jiff.share_helpers['abs'](cst);
 
       // This is the result assuming both share and o are non-negative
       var resultAbs = shareAbs.negative_legacy.cdiv(cstAbs, op_id + ':cdiv');
@@ -14084,7 +14082,7 @@ innerprod(input).then(function (result) {
         var magnitude = hasFixedPoint ? share.jiff.helpers.magnitude(share.jiff.decimal_digits) : 1;
         magnitude = cstAbs.toString().indexOf('.') > -1 ? magnitude : 1;
         magnitude = hasBigNumber ? share.jiff.helpers.BigNumber(magnitude) : magnitude;
-        cstAbs = share_helpers['floor'](share_helpers['*'](magnitude, cstAbs));
+        cstAbs = jiff.share_helpers['floor'](jiff.share_helpers['*'](magnitude, cstAbs));
 
         var need_round = resultAbs.icmult(cstAbs).isneq(shareAbs.icmult(magnitude), op_id + ':floor:sneq');
         var xorNegative = selfNegative.icxor_bit(otherNegative ? 1 : 0);
@@ -14162,7 +14160,7 @@ innerprod(input).then(function (result) {
       var _offset = offset;
       if (hasFixedPoint) {
         var magnitude = share.jiff.helpers.magnitude(share.jiff.decimal_digits);
-        _offset = share_helpers['*'](magnitude, _offset);
+        _offset = jiff.share_helpers['*'](magnitude, _offset);
       }
 
       var isNegative = share.iclt(_offset, op_id + ':clt'); // 0 or 1, no offset or magnitude
@@ -14183,10 +14181,10 @@ innerprod(input).then(function (result) {
     // optimized if_else
     share.if_else = function (val1, val2, op_id) {
       if (share.isConstant(val1)) {
-        val1 = share_helpers['+'](offset, val1);
+        val1 = jiff.share_helpers['+'](offset, val1);
       }
       if (share.isConstant(val2)) {
-        val2 = share_helpers['+'](offset, val2);
+        val2 = jiff.share_helpers['+'](offset, val2);
       }
 
       var reduce_share = share.negative_legacy.csub(offset);
@@ -14225,10 +14223,8 @@ innerprod(input).then(function (result) {
           warnMsg += 'Need Zp >= ' +maxWithMult.toString();
           console.log(warnMsg);
         }
-      } else if (jiff.has_extension('bignumber')) {
-        jiff.offset = jiff.Zp.div(2).floor();
       } else {
-        jiff.offset = Math.floor(jiff.Zp / 2);
+        jiff.offset = jiff.share_helpers['floor'](jiff.share_helpers['/'](jiff.Zp, 2));
       }
     }
 
@@ -14238,41 +14234,17 @@ innerprod(input).then(function (result) {
       if (promise == null) {
         return null;
       } else {
-        return promise.then(
-          function (v) {
-            if (jiff.has_extension('bignumber')) {
-              return v.minus(jiff.offset);
-            } else {
-              return v - jiff.offset;
-            }
-          }
-        );
+        return promise.then(function (v) {
+          return jiff.share_helpers['-'](v, jiff.offset);
+        });
       }
-    };
-
-    var old_receive_open = jiff.receive_open;
-    jiff.receive_open = function () {
-      var promise = old_receive_open.apply(jiff, arguments);
-      return promise.then(
-        function (v) {
-          if (jiff.has_extension('bignumber')) {
-            return v.minus(jiff.offset);
-          } else {
-            return v - jiff.offset;
-          }
-        }
-      );
     };
 
     /* SHARE */
     var old_share = jiff.share;
     jiff.share = function (secret, threshold, receivers_list, senders_list, Zp, share_id) {
       if (secret != null) {
-        if (jiff.has_extension('bignumber')) {
-          secret = jiff.offset.plus(secret);
-        } else {
-          secret = secret + jiff.offset;
-        }
+        secret = jiff.share_helpers['+'](secret, jiff.offset);
       }
       return old_share(secret, threshold, receivers_list, senders_list, Zp, share_id);
     };

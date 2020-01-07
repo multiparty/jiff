@@ -19,7 +19,8 @@
       "parallel": 25,
       "options": {
         "Zp": "2425967623052370772757633156976982469681",
-        "party_count": 3
+        "party_count": 3,
+        "safemod": false
       }
     },
     "*bgw": {
@@ -27,7 +28,8 @@
       "parallel": 25,
       "options": {
         "Zp": "2425967623052370772757633156976982469681",
-        "party_count": 4
+        "party_count": 4,
+        "safemod": false
       }
     },
     "/": {
