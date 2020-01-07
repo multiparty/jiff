@@ -53,7 +53,7 @@
       // I am a lower party, I have an input that I submit to the upper parties,
       // and they send me back a result at the end.
       jiff_instance.share(input, upper_parties.length, upper_parties, lower_parties);
-      return jiff_instance.receive_open(upper_parties);
+      return jiff_instance.receive_open(upper_parties, all_parties);
     } else {
       // I am an upper party, I have no input, but I receive all the lower parties inputs,
       // I count how many of these inputs are above the threshold.
@@ -64,7 +64,7 @@
         result = result.sadd(shares[p].cgt(threshold));
       }
 
-      return result.open();
+      return jiff_instance.open(result, all_parties);
     }
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
