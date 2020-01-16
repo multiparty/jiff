@@ -113,7 +113,7 @@ baseComputations.preprocess = function (jiff_instance, test, inputs, testParalle
   }
 
   return new Promise(function (resolve) {
-    jiff_instance.onFinishPreprocessing(function () {
+    jiff_instance.finishPreprocessing(function () {
       baseComputations.preprocess_done(test);
       resolve();
     });
