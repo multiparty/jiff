@@ -26,7 +26,9 @@ The basic preprocessing workflow looks like this
 jiff.preprocessing(<operation>, <number of calls>, <optional params>);
 
 // this takes a callback to the main phase of computation
-jiff.onFinishPreprocessing(start_compute);
+// it must be called AFTER all preprocessing tasks have
+// been assigned using jiff.preprocessing
+jiff.finishPreprocessing(start_compute);
 
 var start_compute = function() {
 /*
@@ -154,11 +156,11 @@ is the default behavior. However, we can customize that using the extra optional
 var input = [1.32, 10.22, 5.67];
 
 // preprocessing happens first
-jiff_instance.preprocessing('smult', input.length, null, null, null, null, null, null, null, {div: false});
+jiff_instance.preprocessing('smult', input.length, null, null, null, null, null, null, {div: false});
 jiff_instance.preprocessing('open', 1);
 
 // call main phase of computation
-jiff_instance.onFinishPreprocessing(function () {
+jiff_instance.finishPreprocessing(function () {
   innerprod(input).then(function (result) {
     Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
     Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
@@ -171,11 +173,11 @@ jiff_instance.onFinishPreprocessing(function () {
 var input = [5.91, 3.73, 50.03];
 
 // preprocessing happens first
-jiff_instance.preprocessing('smult', input.length, null, null, null, null, null, null, null, {div: false});
+jiff_instance.preprocessing('smult', input.length, null, null, null, null, null, null, {div: false});
 jiff_instance.preprocessing('open', 1);
 
 // call main phase of computation
-jiff_instance.onFinishPreprocessing(function () {
+jiff_instance.finishPreprocessing(function () {
   innerprod(input).then(function (result) {
     Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
     Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
@@ -188,11 +190,11 @@ jiff_instance.onFinishPreprocessing(function () {
 var input = [null, null, null]; // 3rd party has no input
 
 // preprocessing happens first
-jiff_instance.preprocessing('smult', input.length, null, null, null, null, null, null, null, {div: false});
+jiff_instance.preprocessing('smult', input.length, null, null, null, null, null, null, {div: false});
 jiff_instance.preprocessing('open', 1);
 
 // call main phase of computation
-jiff_instance.onFinishPreprocessing(function () {
+jiff_instance.finishPreprocessing(function () {
   innerprod(input).then(function (result) {
     Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
     Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
@@ -222,11 +224,11 @@ for (var p = 1; p <= jiff_instance.party_count; p++) {
 var compute_parties = ['1', '2', '3']
 
 for (var op in operations) {
-  // we'll leave the 'batch', 'protocols', and 'threshold' parameters null for now
+  // we'll leave the 'protocols', and 'threshold' parameters null for now
   // and let JIFF use the defaults
-  jiff_instance.preprocessing(op, operations[op], null, null, null, receivers, compute_parties)
+  jiff_instance.preprocessing(op, operations[op], null, null, receivers, compute_parties)
 }
-jiff_instance.onFinishPreprocessing(start_compute);
+jiff_instance.finishPreprocessing(start_compute);
 ```
 
 This way, all of the values that multiplications and comparisons rely on will be created and distributed before the start of any computation.
@@ -235,15 +237,15 @@ By specifying the receivers as all parties, we tell JIFF to reshare all the help
 
 While we can definitely handle preprocessing for 100 multiplications and 100 comparisons, if we are doing thousands of each we may run out of memory from passing and
 storing so many messages and promises. Depending on the memory constraints of the systems we are using - we can configure JIFF preprocessing to batch the preprocessing
-computation to avoid any memory issues. This is what the `batch` parameter is for, we specify the number of operations to preprocess for concurrently before stopping and
-cleaning up the promises and messages to save memory.
+computation to avoid any memory issues. This is what the `preprocessingBatchSize` option is for, this option can be passed to the JIFFClient constructor,
+to specify the number of operations to preprocess for concurrently before stopping and cleaning up the promises and messages to save memory.
 
 Generally memory and performance constraints are much tighter when running in a browser, if all parties are running JIFF in node.js you are less likely to run out of memory.
 
-Let's say we are preparing for 5000 multiplications, we may want to perform this in batches of 100:
+Let's say we are preparing for 5000 multiplications, this will be performed with the default batch size:
 
 ```neptune[title=Batching,frame=frame6,env=NONE]
-jiff_instance.preprocessing('smult', 5000, 100, null, null, receivers, compute_parties)
+jiff_instance.preprocessing('smult', 5000, null, null, receivers, compute_parties)
 ```
 
 # What If We Don't Preprocess anything?

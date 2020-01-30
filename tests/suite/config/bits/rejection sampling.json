@@ -1,5 +1,5 @@
 {
-  "tests": [ "rejection(3)-127", "rejection(3)-128", "rejection(3)-129", "rejection(3)-161", "rejection(3)-100-200", "rejection(2)-2048", "rejection(2)-1-2049", "rejection(2)-5-1000000", "rejection(2)-15485867", "rejection(2)-1", "rejection(5)-1" ],
+  "tests": [ "rejection(3)-127", "rejection(3)-128", "rejection(3)-129", "rejection(3)-161-provider", "rejection(3)-100-200", "rejection(2)-2048", "rejection(2)-1-2049", "rejection(2)-5-1000000", "rejection(2)-15485867", "rejection(2)-15485867-provider", "rejection(2)-1", "rejection(2)-1-provider", "rejection(5)-1", "rejection(5)-1-provider" ],
   "suiteConf": {
     "port": 3001,
     "computation": {
@@ -69,21 +69,15 @@
         {"upper": 129}
       ]
     },
-    "rejection(3)-161": {
+    "rejection(3)-161-provider": {
       "alias": "rejection",
-      "parallel": 3,
+      "parallel": 2,
       "options": {
         "Zp": 11,
-        "party_count": 3
+        "party_count": 3,
+        "crypto_provider": true
       },
       "inputs": [
-        {"upper": 161},
-        {"upper": 161},
-        {"upper": 161},
-        {"upper": 161},
-        {"upper": 161},
-        {"upper": 161},
-        {"upper": 161},
         {"upper": 161},
         {"upper": 161},
         {"upper": 161}
@@ -180,6 +174,19 @@
         {},
         {},
         {},
+        {}
+      ]
+    },
+    "rejection(2)-15485867-provider": {
+      "alias": "rejection",
+      "parallel": 2,
+      "options": {
+        "Zp": 15485867,
+        "party_count": 2,
+        "crypto_provider": true
+      },
+      "inputs": [
+        {},
         {},
         {}
       ]
@@ -197,12 +204,40 @@
         {"upper": 1, "lower": 0}
       ]
     },
+    "rejection(2)-1-provider": {
+      "alias": "rejection",
+      "parallel": 2,
+      "options": {
+        "Zp": 15485867,
+        "party_count": 2,
+        "crypto_provider": true
+      },
+      "inputs": [
+        {"upper": 500, "lower": 499},
+        {"upper": 2, "lower": 1},
+        {"upper": 1, "lower": 0}
+      ]
+    },
     "rejection(5)-1": {
       "alias": "rejection",
       "parallel": 2,
       "options": {
         "Zp": 15485867,
         "party_count": 5
+      },
+      "inputs": [
+        {"upper": 500, "lower": 499},
+        {"upper": 2, "lower": 1},
+        {"upper": 1, "lower": 0}
+      ]
+    },
+    "rejection(5)-1-provider": {
+      "alias": "rejection",
+      "parallel": 2,
+      "options": {
+        "Zp": 15485867,
+        "party_count": 5,
+        "crypto_provider": true
       },
       "inputs": [
         {"upper": 500, "lower": 499},

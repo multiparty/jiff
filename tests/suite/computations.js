@@ -303,7 +303,7 @@ exports.batch = async function (jiff_instance, test, testParallel, inputs, done,
 };
 
 // handles any pre-processing
-exports.preProcessingParams = function (jiff_instance, test, inputs, testParallel, testConfig) {
+exports.preProcessingParams = function (jiff_instance, test, inputs, testConfig) {
   if (testConfig['options']['crypto_provider'] === true) {
     return null;
   }
@@ -336,7 +336,6 @@ exports.preProcessingParams = function (jiff_instance, test, inputs, testParalle
   return {
     operation: op,
     op_count: op_count,
-    batch: testParallel,
     threshold: threshold,
     open_count: open_count,
     params: params
@@ -345,7 +344,7 @@ exports.preProcessingParams = function (jiff_instance, test, inputs, testParalle
 
 exports.started = 0;
 
-exports.preprocess = function (jiff_instance, test, inputs, testParallel, testConfig, preprocessingParams) {
+exports.preprocess = function (jiff_instance, test, inputs, testConfig, preprocessingParams) {
   exports.preprocess_start(test);
 
   if (preprocessingParams['params'] == null) {
@@ -356,14 +355,14 @@ exports.preprocess = function (jiff_instance, test, inputs, testParallel, testCo
   if (preprocessingParams['operation'] != null) {
     for (var i = 0; i < preprocessingParams['params'].length; i++) {
       jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['op_count'],
-        preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+        preprocessingParams['protocols'], preprocessingParams['threshold'],
         preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
         preprocessingParams['id_list'], preprocessingParams['params'][i]);
     }
   }
 
   jiff_instance.preprocessing('open', preprocessingParams['open_count'],
-    preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+    preprocessingParams['protocols'], preprocessingParams['threshold'],
     preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
     preprocessingParams['id_list'], preprocessingParams['open_params']);
 
@@ -398,9 +397,9 @@ exports.compute = function (jiff_instance, test, inputs, testParallel, done, tes
 
   // Global variables
   Zp = jiff_instance.Zp;
-  var preProcessingParams = exports.preProcessingParams(jiff_instance, test, inputs, testParallel, testConfig);
+  var preProcessingParams = exports.preProcessingParams(jiff_instance, test, inputs, testConfig);
   if (preProcessingParams != null) {
-    var promise = exports.preprocess(jiff_instance, test, inputs, testParallel, testConfig, preProcessingParams);
+    var promise = exports.preprocess(jiff_instance, test, inputs, testConfig, preProcessingParams);
     promise.then(function () {
       exports.batch(jiff_instance, test, testParallel, inputs, done, testConfig);
     });
