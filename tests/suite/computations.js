@@ -367,7 +367,7 @@ exports.preprocess = function (jiff_instance, test, inputs, testConfig, preproce
     preprocessingParams['id_list'], preprocessingParams['open_params']);
 
   return new Promise(function (resolve) {
-    jiff_instance.finishPreprocessing(function () {
+    jiff_instance.executePreprocessing(function () {
       exports.preprocess_done(test);
       resolve();
     });

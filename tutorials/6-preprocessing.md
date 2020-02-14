@@ -28,7 +28,7 @@ jiff.preprocessing(<operation>, <number of calls>, <optional params>);
 // this takes a callback to the main phase of computation
 // it must be called AFTER all preprocessing tasks have
 // been assigned using jiff.preprocessing
-jiff.finishPreprocessing(start_compute);
+jiff.executePreprocessing(start_compute);
 
 var start_compute = function() {
 /*
@@ -160,7 +160,7 @@ jiff_instance.preprocessing('smult', input.length, null, null, null, null, null,
 jiff_instance.preprocessing('open', 1);
 
 // call main phase of computation
-jiff_instance.finishPreprocessing(function () {
+jiff_instance.executePreprocessing(function () {
   innerprod(input).then(function (result) {
     Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
     Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
@@ -177,7 +177,7 @@ jiff_instance.preprocessing('smult', input.length, null, null, null, null, null,
 jiff_instance.preprocessing('open', 1);
 
 // call main phase of computation
-jiff_instance.finishPreprocessing(function () {
+jiff_instance.executePreprocessing(function () {
   innerprod(input).then(function (result) {
     Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
     Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
@@ -194,7 +194,7 @@ jiff_instance.preprocessing('smult', input.length, null, null, null, null, null,
 jiff_instance.preprocessing('open', 1);
 
 // call main phase of computation
-jiff_instance.finishPreprocessing(function () {
+jiff_instance.executePreprocessing(function () {
   innerprod(input).then(function (result) {
     Console.log('Inner product', result.div(100)); // shift decimal point outside of MPC
     Console.log('Verify', 1.32*5.91 + 10.22*3.73 + 5.67*50.03);
@@ -228,7 +228,7 @@ for (var op in operations) {
   // and let JIFF use the defaults
   jiff_instance.preprocessing(op, operations[op], null, null, receivers, compute_parties)
 }
-jiff_instance.finishPreprocessing(start_compute);
+jiff_instance.executePreprocessing(start_compute);
 ```
 
 This way, all of the values that multiplications and comparisons rely on will be created and distributed before the start of any computation.

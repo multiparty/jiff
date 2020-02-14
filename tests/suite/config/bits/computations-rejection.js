@@ -85,7 +85,7 @@ baseComputations.preprocess = function (jiff_instance, test, inputs, testConfig,
     preprocessingParams['id_list'], preprocessingParams['open_params']);
 
   return new Promise(function (resolve) {
-    jiff_instance.finishPreprocessing(function () {
+    jiff_instance.executePreprocessing(function () {
       baseComputations.preprocess_done(test);
       resolve();
     });
