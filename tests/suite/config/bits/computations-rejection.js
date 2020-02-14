@@ -54,10 +54,15 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
 
   var params = [];
   for (var i = 0; i < inputs.length; i++) {
-    params.push({
-      lower_bound: inputs[i].lower,
-      upper_bound: inputs[i].upper
-    });
+    if (testConfig['options']['ondemand'] !== true) {
+      params.push({
+        lower_bound: inputs[i].lower,
+        upper_bound: inputs[i].upper,
+        defaultBounds: true
+      });
+    } else {
+      params.push([]);
+    }
   }
 
   return {
