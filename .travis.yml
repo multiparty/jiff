@@ -10,47 +10,52 @@ before_install:
 # End submodules fix
 node_js:
   - '10'
+# Make sure setup runs before test stage
+# Test stage is implicitly defined and makes use of matrix expansion
+stages:
+  - setup
+  - test
+  - report
+env:
+  - DEMOS="TRUE"
+  - TEST_NAME='base' TEST_SUITE=''
+  - TEST_NAME='bigNumber' TEST_SUITE=''
+  - TEST_NAME='negativeNumber' TEST_SUITE=''
+  - TEST_NAME='bigNumber-negativeNumber' TEST_SUITE=''
+  - TEST_NAME='restAPI' TEST_SUITE=''
+  - TEST_NAME='bits' TEST_SUITE=''
+  - TEST_NAME='fixedpoint' TEST_SUITE='share'
+  - TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
+  - TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
+  - TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
+  - TEST_NAME='fixedpoint' TEST_SUITE='comparison'
+  - TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
+  - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='share'
+  - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='arithmetic'
+  - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant arithmetic'
+  - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant comparison'
+  - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='comparison'
+  - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
+script:
+  - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
+  - if [ "$DEMOS" == "TRUE" ]; then npm run-script test-demo -- \*; else npm run coverage -- "$TEST_NAME" "$TEST_SUITE"; fi
+  - kill %1
+  workspaces:
+    use: coverage
+
 jobs:
   include:
-    - stage: SETUP
+    - stage: setup
       script: mkdir .nyc_output
       workspaces:
         create:
           name: coverage
           paths:
             - ./.nyc_output
-    - stage: TEST
-      env:
-        - DEMOS="TRUE"
-        - TEST_NAME='base' TEST_SUITE=''
-        - TEST_NAME='bigNumber' TEST_SUITE=''
-        - TEST_NAME='negativeNumber' TEST_SUITE=''
-        - TEST_NAME='bigNumber-negativeNumber' TEST_SUITE=''
-        - TEST_NAME='restAPI' TEST_SUITE=''
-        - TEST_NAME='bits' TEST_SUITE=''
-        - TEST_NAME='fixedpoint' TEST_SUITE='share'
-        - TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
-        - TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
-        - TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
-        - TEST_NAME='fixedpoint' TEST_SUITE='comparison'
-        - TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
-        - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='share'
-        - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='arithmetic'
-        - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant arithmetic'
-        - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant comparison'
-        - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='comparison'
-        - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
-      script:
-        - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
-        - if [ "$DEMOS" == "TRUE" ]; then npm run-script test-demo -- \*; else npm run coverage -- "$TEST_NAME" "$TEST_SUITE"; fi
-        - kill %1
-      workspaces:
-        use: coverage
-    - stage: REPORT
+    - stage: report
       script: npm run coverage:report
       workspaces:
         use: coverage
-
 
 notifications:
   slack:
