@@ -40,8 +40,8 @@ script:
   - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
   - if [ "$DEMOS" == "TRUE" ]; then npm run-script test-demo -- \*; else npm run coverage -- "$TEST_NAME" "$TEST_SUITE"; fi
   - kill %1
-  workspaces:
-    use: coverage
+workspaces:
+  use: coverage
 
 jobs:
   include:
