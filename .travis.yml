@@ -9,35 +9,156 @@ before_install:
     - git submodule update --init --recursive
 # End submodules fix
 node_js:
-- '10'
-env:
-- DEMOS="TRUE"
-- TEST_NAME='base' TEST_SUITE=''
-- TEST_NAME='bigNumber' TEST_SUITE=''
-- TEST_NAME='negativeNumber' TEST_SUITE=''
-- TEST_NAME='bigNumber-negativeNumber' TEST_SUITE=''
-- TEST_NAME='restAPI' TEST_SUITE=''
-- TEST_NAME='jiff_websockets' TEST_SUITE=''
-- TEST_NAME='bits' TEST_SUITE=''
-- TEST_NAME='fixedpoint' TEST_SUITE='share'
-- TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
-- TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
-- TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
-- TEST_NAME='fixedpoint' TEST_SUITE='comparison'
-- TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
-- TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='share'
-- TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='arithmetic'
-- TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant arithmetic'
-- TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant comparison'
-- TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='comparison'
-- TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
+  - '10'
 script:
-- while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
-- if [ "$DEMOS" == "TRUE" ]; then npm run-script test-demo -- \*; else npm run test -- "$TEST_NAME" "$TEST_SUITE"; fi
-- kill %1
-cache:
-  directories:
-  - node_modules
+  - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
+  - if [ "$DEMOS" == "TRUE" ]; then npm run-script test-demo -- \*; else npm run coverage -- "$TEST_NAME" "$TEST_SUITE"; fi
+  - kill %1
+
+jobs:
+  include:
+    - stage: test
+      env: DEMOS="TRUE"
+    - env: TEST_NAME='base' TEST_SUITE=''
+      workspaces:
+        create:
+          name: 2
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='bigNumber' TEST_SUITE=''
+      workspaces:
+        create:
+          name: 3
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='negativeNumber' TEST_SUITE=''
+      workspaces:
+        create:
+          name: 4
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='bigNumber-negativeNumber' TEST_SUITE=''
+      workspaces:
+        create:
+          name: 5
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='restAPI' TEST_SUITE=''
+      workspaces:
+        create:
+          name: 6
+          paths:
+            - .nyc_output
+    - name: TEST_NAME='jiff_websockets' TEST_SUITE=''
+      env: TEST_NAME='jiff_websockets' TEST_SUITE=''
+      workspaces:
+        create:
+          name: 7
+          paths:
+            - .nyc_output
+    - name: TEST_NAME='bits' TEST_SUITE=''
+      env: TEST_NAME='bits' TEST_SUITE=''
+      workspaces:
+        create:
+          name: 8
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='fixedpoint' TEST_SUITE='share'
+      workspaces:
+        create:
+          name: 9
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
+      workspaces:
+        create:
+          name: 10
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
+      workspaces:
+        create:
+          name: 11
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
+      workspaces:
+        create:
+          name: 12
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='fixedpoint' TEST_SUITE='comparison'
+      workspaces:
+        create:
+          name: 13
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
+      workspaces:
+        create:
+          name: 14
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='share'
+      workspaces:
+        create:
+          name: 15
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='arithmetic'
+      workspaces:
+        create:
+          name: 16
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant arithmetic'
+      workspaces:
+        create:
+          name: 17
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant comparison'
+      workspaces:
+        create:
+          name: 18
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='comparison'
+      workspaces:
+        create:
+          name: 19
+          paths:
+            - .nyc_output
+    - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
+      workspaces:
+        create:
+          name: 20
+          paths:
+            - .nyc_output
+    - stage: report
+      script: npm run coverage:report
+      workspaces:
+        use:
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+          - 13
+          - 14
+          - 15
+          - 16
+          - 17
+          - 18
+          - 19
+          - 20
+
 notifications:
   slack:
     secure: DuaE/q/B/la8rNGXsn/p3owtWZmn6th1rAJUXTIUUU48OjE86ehzMD40JMLMyAty3f/NHYOPufS7//AfpaIf4cGE6/4wHcTVoLOzRv6aP7WM0SvMy1WS5QgP7ryIjciyXFczknQ+JSMcXlxQDKtMCT7wBIwQO1WrB+T8e617y575t/ofO39k9Za1NA81MlrdWxTIWTDGMo17T+Pd/zz4ImHGYoifUzXi9DdH/4Zgy9SJxWQJ3PO/5RWef4qu1mBGXdanIEd63mYjIIQh8nJLn3pvWp7rQnChmwRqURDc6hpwdPJqeWO5knqhNlu/u7/TJI985rvTOPYljXfReXdF1OEHuq+prWGhv4VbxJzTpQ9PJZ42Ac1k6nCaMCJfCphpsUL48+qgeRY9IyBoqARw4Ne8hTerc7P0T/iQxgZk8zVVahdf0C27sPD0B563gMWvFKxW41YbvHwku7CpReaCt+pcGTd77p+v0mGZGlWNv/kV6KXMBHmQXGYEdVSpscEdlFbByZKagY8lrsadyZtaAaUCdD4VRGaYCWPh/+eBsVdS94r7XRHXBceiSd3ZY093r7lMO9yGnyDwqSydL7JgncO/GxWMhsEz2vRV+bgZlLU2yo60H8Kg1jvmpVP3o0d8wfkDUyLVOkJiSDZ+LuhQZ10f1MnP3AtVrMJFEKITmqw=
