@@ -31,6 +31,7 @@ workspaces:
 jobs:
   include:
     - stage: setup
+      script: ls -la
       workspaces:
         create:
           name: coverage
