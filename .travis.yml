@@ -31,7 +31,6 @@ workspaces:
 jobs:
   include:
     - stage: setup
-      script: mkdir .nyc_output
       workspaces:
         create:
           name: coverage
