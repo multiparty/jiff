@@ -23,6 +23,8 @@ script:
   - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
   - if [ "$DEMOS" == "TRUE" ]; then npm run-script test-demo -- \*; else npm run coverage -- "$TEST_NAME" "$TEST_SUITE"; fi
   - kill %1
+  - ls -la
+  - ls -la .nyc_output
 workspaces:
   use: coverage
 
@@ -34,7 +36,7 @@ jobs:
         create:
           name: coverage
           paths:
-            - ./.nyc_output
+            - .nyc_output
     - stage: report
       script:
         - ls -la
