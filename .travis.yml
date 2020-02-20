@@ -17,24 +17,7 @@ stages:
   - test
   - report
 env:
-  - DEMOS="TRUE"
-  - TEST_NAME='base' TEST_SUITE=''
-  - TEST_NAME='bigNumber' TEST_SUITE=''
-  - TEST_NAME='negativeNumber' TEST_SUITE=''
-  - TEST_NAME='bigNumber-negativeNumber' TEST_SUITE=''
-  - TEST_NAME='restAPI' TEST_SUITE=''
-  - TEST_NAME='bits' TEST_SUITE=''
-  - TEST_NAME='fixedpoint' TEST_SUITE='share'
-  - TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
-  - TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
-  - TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
-  - TEST_NAME='fixedpoint' TEST_SUITE='comparison'
   - TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
-  - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='share'
-  - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='arithmetic'
-  - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant arithmetic'
-  - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant comparison'
-  - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='comparison'
   - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
 script:
   - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
@@ -53,7 +36,10 @@ jobs:
           paths:
             - ./.nyc_output
     - stage: report
-      script: npm run coverage:report
+      script:
+        - ls -la
+        - ls -la .nyc_output
+        - npm run coverage:report
       workspaces:
         use: coverage
 
