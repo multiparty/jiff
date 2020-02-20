@@ -26,7 +26,10 @@ script:
   - ls -la
   - ls -la .nyc_output
 workspaces:
-  use: coverage
+  create:
+    name: coverage
+    paths:
+      - .nyc_output
 
 jobs:
   include:
