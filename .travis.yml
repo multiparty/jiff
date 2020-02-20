@@ -31,7 +31,7 @@ workspaces:
 jobs:
   include:
     - stage: setup
-      script: ls -la
+      script: mkdir .nyc_output && touch .nyc_output/file
       workspaces:
         create:
           name: coverage
