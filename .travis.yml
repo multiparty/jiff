@@ -34,17 +34,136 @@ jobs:
             - .nyc_output
     - stage: test
       name: 1
-      env: TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
+      env: DEMOS="TRUE"
       workspaces:
         create:
           name: 1
           paths:
             - .nyc_output
     - name: 2
-      env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
+      env: TEST_NAME='base' TEST_SUITE=''
       workspaces:
         create:
           name: 2
+          paths:
+            - .nyc_output
+    - name: 3
+      env: TEST_NAME='bigNumber' TEST_SUITE=''
+      workspaces:
+        create:
+          name: 3
+          paths:
+            - .nyc_output
+    - name: 4
+      env: TEST_NAME='negativeNumber' TEST_SUITE=''
+      workspaces:
+        create:
+          name: 4
+          paths:
+            - .nyc_output
+    - name: 5
+      env: TEST_NAME='bigNumber-negativeNumber' TEST_SUITE=''
+      workspaces:
+        create:
+          name: 5
+          paths:
+            - .nyc_output
+    - name: 6
+      env: TEST_NAME='restAPI' TEST_SUITE=''
+      workspaces:
+        create:
+          name: 6
+          paths:
+            - .nyc_output
+    - name: 7
+      env: TEST_NAME='bits' TEST_SUITE=''
+      workspaces:
+        create:
+          name: 7
+          paths:
+            - .nyc_output
+    - name: 8
+      env: TEST_NAME='fixedpoint' TEST_SUITE='share'
+      workspaces:
+        create:
+          name: 8
+          paths:
+            - .nyc_output
+    - name: 9
+      env: TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
+      workspaces:
+        create:
+          name: 9
+          paths:
+            - .nyc_output
+    - name: 10
+      env: TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
+      workspaces:
+        create:
+          name: 10
+          paths:
+            - .nyc_output
+    - name: 11
+      env: TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
+      workspaces:
+        create:
+          name: 11
+          paths:
+            - .nyc_output
+    - name: 12
+      env: TEST_NAME='fixedpoint' TEST_SUITE='comparison'
+      workspaces:
+        create:
+          name: 12
+          paths:
+            - .nyc_output
+    - name: 13
+      env: TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
+      workspaces:
+        create:
+          name: 13
+          paths:
+            - .nyc_output
+    - name: 14
+      env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='share'
+      workspaces:
+        create:
+          name: 14
+          paths:
+            - .nyc_output
+    - name: 15
+      env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='arithmetic'
+      workspaces:
+        create:
+          name: 15
+          paths:
+            - .nyc_output
+    - name: 16
+      env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant arithmetic'
+      workspaces:
+        create:
+          name: 16
+          paths:
+            - .nyc_output
+    - name: 17
+      env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant comparison'
+      workspaces:
+        create:
+          name: 17
+          paths:
+            - .nyc_output
+    - name: 18
+      env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='comparison'
+      workspaces:
+        create:
+          name: 18
+          paths:
+            - .nyc_output
+    - name: 19
+      env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
+      workspaces:
+        create:
+          name: 19
           paths:
             - .nyc_output
     - stage: report
@@ -56,6 +175,23 @@ jobs:
         use:
           - 1
           - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+          - 13
+          - 14
+          - 15
+          - 16
+          - 17
+          - 18
+          - 19
 
 notifications:
   slack:
