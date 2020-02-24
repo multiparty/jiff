@@ -10,156 +10,141 @@ before_install:
 # End submodules fix
 node_js:
   - '10'
-# Make sure setup runs before test stage
-# Test stage is implicitly defined and makes use of matrix expansion
-stages:
-  - setup
-  - test
-  - report
 script:
   - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
   - if [ "$DEMOS" == "TRUE" ]; then npm run-script test-demo -- \*; else npm run coverage -- "$TEST_NAME" "$TEST_SUITE"; fi
   - kill %1
-  - ls -la
-  - ls -la .nyc_output
 
 jobs:
   include:
-    - stage: setup
-      script: mkdir .nyc_output && touch .nyc_output/file
-      workspaces:
-        create:
-          name: coverage
-          paths:
-            - .nyc_output
     - stage: test
-      name: 1
+      name: DEMOS="TRUE"
       env: DEMOS="TRUE"
       workspaces:
         create:
           name: 1
           paths:
             - .nyc_output
-    - name: 2
+    - name: TEST_NAME='base' TEST_SUITE=''
       env: TEST_NAME='base' TEST_SUITE=''
       workspaces:
         create:
           name: 2
           paths:
             - .nyc_output
-    - name: 3
+    - name: TEST_NAME='bigNumber' TEST_SUITE=''
       env: TEST_NAME='bigNumber' TEST_SUITE=''
       workspaces:
         create:
           name: 3
           paths:
             - .nyc_output
-    - name: 4
+    - name: TEST_NAME='negativeNumber' TEST_SUITE=''
       env: TEST_NAME='negativeNumber' TEST_SUITE=''
       workspaces:
         create:
           name: 4
           paths:
             - .nyc_output
-    - name: 5
+    - name: TEST_NAME='bigNumber-negativeNumber' TEST_SUITE=''
       env: TEST_NAME='bigNumber-negativeNumber' TEST_SUITE=''
       workspaces:
         create:
           name: 5
           paths:
             - .nyc_output
-    - name: 6
+    - name: TEST_NAME='restAPI' TEST_SUITE=''
       env: TEST_NAME='restAPI' TEST_SUITE=''
       workspaces:
         create:
           name: 6
           paths:
             - .nyc_output
-    - name: 7
+    - name: TEST_NAME='bits' TEST_SUITE=''
       env: TEST_NAME='bits' TEST_SUITE=''
       workspaces:
         create:
           name: 7
           paths:
             - .nyc_output
-    - name: 8
+    - name: TEST_NAME='fixedpoint' TEST_SUITE='share'
       env: TEST_NAME='fixedpoint' TEST_SUITE='share'
       workspaces:
         create:
           name: 8
           paths:
             - .nyc_output
-    - name: 9
+    - name: TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
       env: TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
       workspaces:
         create:
           name: 9
           paths:
             - .nyc_output
-    - name: 10
+    - name: TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
       env: TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
       workspaces:
         create:
           name: 10
           paths:
             - .nyc_output
-    - name: 11
+    - name: TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
       env: TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
       workspaces:
         create:
           name: 11
           paths:
             - .nyc_output
-    - name: 12
+    - name: TEST_NAME='fixedpoint' TEST_SUITE='comparison'
       env: TEST_NAME='fixedpoint' TEST_SUITE='comparison'
       workspaces:
         create:
           name: 12
           paths:
             - .nyc_output
-    - name: 13
+    - name: TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
       env: TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
       workspaces:
         create:
           name: 13
           paths:
             - .nyc_output
-    - name: 14
+    - name: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='share'
       env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='share'
       workspaces:
         create:
           name: 14
           paths:
             - .nyc_output
-    - name: 15
+    - name: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='arithmetic'
       env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='arithmetic'
       workspaces:
         create:
           name: 15
           paths:
             - .nyc_output
-    - name: 16
+    - name: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant arithmetic'
       env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant arithmetic'
       workspaces:
         create:
           name: 16
           paths:
             - .nyc_output
-    - name: 17
+    - name: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant comparison'
       env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant comparison'
       workspaces:
         create:
           name: 17
           paths:
             - .nyc_output
-    - name: 18
+    - name: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='comparison'
       env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='comparison'
       workspaces:
         create:
           name: 18
           paths:
             - .nyc_output
-    - name: 19
+    - name: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
       env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
       workspaces:
         create:
@@ -167,10 +152,7 @@ jobs:
           paths:
             - .nyc_output
     - stage: report
-      script:
-        - ls -la
-        - ls -la .nyc_output
-        - npm run coverage:report
+      script: npm run coverage:report
       workspaces:
         use:
           - 1
