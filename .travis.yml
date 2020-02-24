@@ -40,7 +40,7 @@ jobs:
           name: 1
           paths:
             - .nyc_output
-      name: 2
+    - name: 2
       env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
       workspaces:
         create:
