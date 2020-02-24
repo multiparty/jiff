@@ -16,20 +16,12 @@ stages:
   - setup
   - test
   - report
-env:
-  - TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
-  - TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
 script:
   - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
   - if [ "$DEMOS" == "TRUE" ]; then npm run-script test-demo -- \*; else npm run coverage -- "$TEST_NAME" "$TEST_SUITE"; fi
   - kill %1
   - ls -la
   - ls -la .nyc_output
-workspaces:
-  create:
-    name: coverage
-    paths:
-      - .nyc_output
 
 jobs:
   include:
@@ -40,13 +32,30 @@ jobs:
           name: coverage
           paths:
             - .nyc_output
+    - stage: test
+      name: 1
+      env: TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
+      workspaces:
+        create:
+          name: 1
+          paths:
+            - .nyc_output
+      name: 2
+      env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
+      workspaces:
+        create:
+          name: 2
+          paths:
+            - .nyc_output
     - stage: report
       script:
         - ls -la
         - ls -la .nyc_output
         - npm run coverage:report
       workspaces:
-        use: coverage
+        use:
+          - 1
+          - 2
 
 notifications:
   slack:
