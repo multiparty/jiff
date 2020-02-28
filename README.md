@@ -1,7 +1,7 @@
 # JIFF
 
 [![Build Status](https://travis-ci.org/multiparty/jiff.svg?branch=master)](https://travis-ci.org/multiparty/jiff)
-[![Coverage Status](https://coveralls.io/repos/github/multiparty/jiff/badge.svg?branch=coveralls)](https://coveralls.io/github/multiparty/jiff?branch=coveralls)
+[![Coverage Status](https://coveralls.io/repos/github/multiparty/jiff/badge.svg)](https://coveralls.io/github/multiparty/jiff)
 
 JIFF is a JavaScript library for building applications that rely on secure multi-party computation. JIFF is built to be highly flexible with a focus on usability, with the ability to be run in the browser, on mobile phones, or via Node.js. JIFF is designed so that developers need not be familiar with MPC techniques or know the details of cryptographic protocols in order to build secure applications.
 
