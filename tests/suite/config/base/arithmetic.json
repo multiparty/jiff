@@ -33,7 +33,7 @@
       "count": 8,
       "parallel": 3,
       "options": {
-        "Zp": 31,
+        "Zp": 23,
         "party_count": 3
       }
     },

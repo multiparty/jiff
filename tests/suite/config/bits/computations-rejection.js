@@ -26,8 +26,7 @@ baseComputations.singleCompute = function (jiff_instance, shareParameters, test,
     return values;
   }
 
-  var params = {lower_bound: values['lower'], upper_bound: values['upper']};
-  return jiff_instance.protocols.bits.rejection_sampling(null, null, null, null, params, null).share;
+  return jiff_instance.protocols.bits.rejection_sampling(values['lower'], values['upper']);
 };
 
 // Opening bits
@@ -43,7 +42,7 @@ baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
 };
 
 // Pre-processing
-baseComputations.preProcessingParams = function (jiff_instance, test, inputs, testParallel, testConfig) {
+baseComputations.preProcessingParams = function (jiff_instance, test, inputs, testConfig) {
   if (testConfig['options']['crypto_provider'] === true) {
     return null;
   }
@@ -53,25 +52,45 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
     bitLength = inputs[0].upper.toString(2).length;
   }
 
+  var params = [];
+  for (var i = 0; i < inputs.length; i++) {
+    if (testConfig['options']['ondemand'] !== true) {
+      params.push({
+        lower_bound: inputs[i].lower,
+        upper_bound: inputs[i].upper,
+        defaultBounds: true
+      });
+    } else {
+      params.push([]);
+    }
+  }
+
   return {
     open_count: inputs.length,
-    batch: testParallel,
-    params: {
+    params: params,
+    open_params: {
       bitLength: bitLength
     }
   };
 };
 
-baseComputations.preprocess = function (jiff_instance, test, inputs, testParallel, testConfig, preprocessingParams) {
+baseComputations.preprocess = function (jiff_instance, test, inputs, testConfig, preprocessingParams) {
   baseComputations.preprocess_start(test);
 
+  for (var i = 0; i < preprocessingParams['params'].length; i++) {
+    jiff_instance.preprocessing('rejection_sampling', 1,
+      preprocessingParams['protocols'], preprocessingParams['threshold'],
+      preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+      preprocessingParams['id_list'], preprocessingParams['params'][i]);
+  }
+
   jiff_instance.preprocessing('bits.open', preprocessingParams['open_count'],
-    preprocessingParams['batch'], preprocessingParams['protocols'], preprocessingParams['threshold'],
+    preprocessingParams['protocols'], preprocessingParams['threshold'],
     preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-    preprocessingParams['id_list'], preprocessingParams['params']);
+    preprocessingParams['id_list'], preprocessingParams['open_params']);
 
   return new Promise(function (resolve) {
-    jiff_instance.onFinishPreprocessing(function () {
+    jiff_instance.executePreprocessing(function () {
       baseComputations.preprocess_done(test);
       resolve();
     });
