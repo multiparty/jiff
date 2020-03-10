@@ -1,40 +1,65 @@
-```neptune[language=javascript,inject=true]
-(function () {
-  var script = document.createElement('script');
-  script.setAttribute('src', '/dist/jiff-client.js');
-  document.head.appendChild(script);
-}());
-```
-
 # What is Preprocessing?
-In general, MPC is much slower than standard computation - mostly due to communication costs between parties. While some operations are free (meaning they only rely on local computation), such as secure addition, other operations (e.g. secure multiplication) incur high communication costs. Specifically for multiplication, the protocol used in JIFF relies on helper values of a certain form, called beaver triples (a,b,c such that a\*b=c). In JIFF, preprocessing of beaver triples is accomplished via multiplication with the BGW protocol.
+In general, MPC is much slower than standard computation - mostly due to communication costs between parties. While some operations are free (meaning they only rely on local computation), such as secure addition, other operations (e.g. secure multiplication) incur high communication costs.
+One approach to reduce this communication cost is to rely on preprocessing: the idea that certain tasks can be performed ahead of time (even without knowing the inputs) to speed up
+the actual online computation.
+
+JIFF relies on the preprocessing model to speed up many primitives. JIFF uses preprocessing to generate a variety of helper values and correlated randomness
+that is consumed online by the respective primitives. For example, secure multiplication relies beaver triples: three uniformly-random secret shared numbers
+a, b, and c, such that a*b = c.
 
 While preprocessing still incurs communication costs, it can ideally be executed before data is ready to be shared or before all parties online, which leads to a faster online phase.
+Protocols used in preprcoessing typically do not require preprocessing themselves. For example, preprocessing of beaver triples is accomplished via multiplication with the BGW protocol.
+
+JIFF allows users to gain variable levels of control over the preprocessing stage. For most workflows, it is sufficient for users to specify what operations
+their online computations execute, and JIFF can preprocess required helper values for these operations automatically. Additionally, users can specify which parties
+should perform which piece of the preprocessing. Advanced users can specify which preprocessing protocols to use, or can provide their own custom ones.
+
+Online operations for which preprocessing was not performed will attempt to get their needed correlated randomness from the server only if crypto provider is enabled.
+Otherwise, an exception will be thrown indicating that preprocessing must be performed for that operation.
 
 #### Tutorial content:
 1. Basic pre-processing workflow
 2. Pre-processing for an inner product (based on the previous tutorial)
 4. Delegating preprocessing to a subset of parties
 5. Consequences of not preprocessing
-6. List of JIFF primitives that require pre-processing
+6. List of JIFF primitives that require pre-processing, and any protocol/primitive specific parameters
 
 # How to Use Preprocessing in JIFF
-The `jiff.preprocessing()` exists to preprocess any values needed for later computation. All preprocessing needs to know is which operations will be performed and how many times, so the programmer does not need to know what other protocols or values those depend on.
+The `jiffClient.preprocessing()` function is the main API call for specifying preprocessing tasks. All preprocessing needs to know is which operations will be performed and how many times, so the programmer does not need to know what other protocols or values those depend on.
 
-The basic preprocessing workflow looks like this
-```javascript
-jiff.preprocessing(<operation>, <number of calls>, <optional params>);
+The order of operations need not match the order preprocessing is called for them, only their counts.
 
+Additionally, preprocessing takes additional optional parameters that allow customization of the preprocessing execution.
+
+Each call to preprocessing returns a promise that is resolved when the preprocessing for the specified operation
+is done.
+
+```neptune[language=javascript,frame=norun1,run=false,title=Preprocessing&nbsp;Tasks]
+var promise1 = jiff.preprocessing(<operation>, <number of times operation is used>);
+var promise2 = jiff.preprocessing(<operation>, <number of times operation is used>,
+    // these are optional parameters
+    <custom protocols>,
+    <threshold>, <receivers list>, <compute list>, <Zp>,
+    <id list>, <protocol specific parameters>);
+```
+
+Calling jiffClient.preprocessing does not start the preprocessing for the given operations. It merely schedules a
+preprocessing task corresponding to the given parameters. Tasks scheduled so far can be run by calling jiffClient.executePreprocessing.
+
+calls to jiffClient.preprocessing and jiffClient.executePreprocessing can be interleaved. jiffClient.executePreprocessing
+takes a callback as a parameter, which is called when all the preprocessing tasks schedules prior to the call are completed.
+
+It is recommended to only run the online portion of the protocol when that callback is called, but not before.
+
+```neptune[language=javascript,frame=norun2,run=false,title=Preprocesing&nbsp;Execution]
 // this takes a callback to the main phase of computation
 // it must be called AFTER all preprocessing tasks have
 // been assigned using jiff.preprocessing
-jiff.executePreprocessing(start_compute);
-
-var start_compute = function() {
-/*
- * Main phase of computation...
- */
-};
+jiff.executePreprocessing(function() {
+    /*
+     * Main/online phase of computation...
+     */
+});
 ```
 Now let's look at a concrete example:
 
