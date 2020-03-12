@@ -12,12 +12,15 @@ console.log('Command line arguments: [/path/to/configuration/file.json]');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
+var path = require('path');
 
 // Read configuration
 var config = './config.json';
 if (process.argv[2] != null) {
   config = process.argv[2];
 }
+
+console.log('Using config file: ', path.join(__dirname, config));
 config = require(config);
 
 // Keep track of assigned ids
@@ -28,7 +31,6 @@ var options = {
   hooks: {
     beforeInitialization: [
       function (jiff, computation_id, msg, params) {
-        console.log(msg, params);
         if (params.party_id != null) {
           return params;
         }
@@ -46,9 +48,9 @@ var options = {
             continue;
           }
 
+          console.log('assigned', msg.role, 'party id', id);
           check[id] = true;
           params.party_id = id;
-          console.log(id);
           return params;
         }
 
@@ -71,7 +73,6 @@ app.get('/config.js', function (req, res) {
 
 app.use('/demos', express.static('demos'));
 app.use('/dist', express.static('dist'));
-app.use('/lib/ext', express.static('lib/ext'));
 http.listen(8080, function () {
   console.log('listening on *:8080');
 });

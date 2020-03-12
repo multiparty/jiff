@@ -340,6 +340,9 @@ id suffices for the vast majority of use cases.
 As mentioned earlier, not all operations on secret shares require pre-processing. For example, secure addition and secure subtraction require
 only local computation and don't need any helper values. These primitives are skipped below.
 
+Finally, note that some extensions make certain primitives support additional parameters. When composing extensions, all the parameters
+supported by either extension used (including base) are supported.
+
 Below is a complete table of all primitive specific extra parameters
 ```neptune[language=HTML,inject=true]
 <style>
@@ -369,10 +372,17 @@ Below is a complete table of all primitive specific extra parameters
         <th>Description</th>
     </tr>
     <tr>
-        <td rowspan="10">Base</td>
-        <td>open, refresh, smult, sxor_bit, sor_bit, if_else, clt, cgt, clteq, cgteq, ceq, cneq, lt_halfprime, sdiv, smod, bit_decomposition</td>
+        <td rowspan="11">Base</td>
+        <td>refresh, smult, sxor_bit, sor_bit, if_else, clt, cgt, clteq, cgteq, ceq, cneq, lt_halfprime, sdiv, smod, bit_decomposition</td>
         <td>N/A</td>
         <td>-</td>    
+    </tr>
+    <tr>
+        <td>open, bits.open</td>
+        <td>open_parties</td>
+        <td>a list containing the ids of parties that will receive the result of the associated open/bits.open operations, use this for open statements where the receivers
+            are different than the share holders. Defaults to the receivers_list provided to .preprocessing with this call <br> <i>Note: only holders
+            of the share(s) being open should receive the results of this preprocessing</i> </td>
     </tr>
     <tr>
         <td>cdiv</td>
