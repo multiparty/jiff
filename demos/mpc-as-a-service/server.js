@@ -1,3 +1,4 @@
+var path = require('path');
 /**
  * This is a server instance, it just routes communication
  * between different parties.
@@ -71,8 +72,8 @@ app.get('/config.js', function (req, res) {
   res.send(str);
 });
 
-app.use('/demos', express.static('demos'));
-app.use('/dist', express.static('dist'));
+app.use('/demos', express.static(path.join(__dirname, '..', '..', 'demos')));
+app.use('/dist', express.static(path.join(__dirname, '..', '..', 'dist')));
 http.listen(8080, function () {
   console.log('listening on *:8080');
 });
