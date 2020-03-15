@@ -16,7 +16,7 @@ http.listen(8080, function () {
 });
 
 if (process.argv[2] !== 'suppress') {
-  console.log('Direct your browser to *:8080/demos/threshold/client.html.');
+  console.log('Direct your browser to http://localhost:8080/demos/threshold/client.html.');
   console.log('To run a server-based party: node demos/threshold/party <input');
   console.log();
 }

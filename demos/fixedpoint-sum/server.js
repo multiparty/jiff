@@ -17,6 +17,6 @@ http.listen(8080, function () {
   console.log('listening on *:8080');
 });
 
-console.log('Direct your browser to *:8080/demos/fixedpoint-sum/client.html.');
+console.log('Direct your browser to http://localhost:8080/demos/fixedpoint-sum/client.html.');
 console.log('To run a server-based party: node demos/fixedpoint-sum/party <input');
 console.log();

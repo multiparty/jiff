@@ -77,7 +77,7 @@ http.listen(8080, function () {
   console.log('listening on *:8080');
 });
 
-console.log('** To provide inputs, direct your browser to *:8080/demos/mpc-as-a-service/client.html.');
+console.log('** To provide inputs, direct your browser to http://localhost:8080/demos/mpc-as-a-service/client.html.');
 console.log('** To run a compute party, use the command line and run node compute-party.js [configuration-file] [computation-id]');
 console.log('All compute parties must be running before input parties can connect, an input party can leave');
 console.log('any time after it submits its input.');

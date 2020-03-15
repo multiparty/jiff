@@ -13,6 +13,6 @@ http.listen(8080, function () {
   console.log('listening on *:8080');
 });
 
-console.log('Direct your browser to *:8080/demos/array-merge-sort/client.html.');
+console.log('Direct your browser to http://localhost:8080/demos/array-merge-sort/client.html.');
 console.log('To run a node.js based party: node demos/array-merge-sort/party <input>');
 console.log();
