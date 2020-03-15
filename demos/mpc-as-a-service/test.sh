@@ -9,7 +9,7 @@ for config in tests/*.json; do
   # run server
   node server.js $config > $logs &
   serverID=$!
-  sleep 2
+  sleep 1
 
   # run a bunch of compute parties
   count=$(sed '3q;d' $config | sed 's/,/\n/g' | wc -l)

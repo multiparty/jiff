@@ -36,6 +36,7 @@ else
       echo "NEW TEST $(date)" >> "${logs}"
       echo "====================" >> "${logs}"
       node ${TESTDIR}/server.js >> "${logs}" &
+      sleep 1
 
       # Run test
       ./node_modules/.bin/mocha --full-trace --reporter spec ${TESTDIR}/test.js

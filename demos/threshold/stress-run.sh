@@ -1,6 +1,7 @@
 #!/bin/bash
 
 node server.js "suppress" &
+sleep 1
 
 for (( i=1; i<=$1; i++ ))
 do
@@ -8,6 +9,7 @@ do
     pids[${i}]=$!
 done
 
+sleep 1
 for (( i=1; i<=$2; i++ ))
 do
     node party.js 0 $(( $1 / 2 )) $1 $2 "stress-test" $(( $1 + i )) &
