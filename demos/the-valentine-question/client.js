@@ -9,7 +9,7 @@ function connect() {
   var party_count = parseInt($('#count').val());
 
   var options = { party_count: party_count};
-  options.onError = function (error) {
+  options.onError = function (_, error) {
     $('#output').append("<p class='error'>"+error+'</p>');
   };
   options.onConnect = function () {
