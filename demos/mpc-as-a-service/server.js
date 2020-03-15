@@ -1,4 +1,3 @@
-var path = require('path');
 /**
  * This is a server instance, it just routes communication
  * between different parties.
@@ -18,7 +17,7 @@ var path = require('path');
 // Read configuration
 var config = './config.json';
 if (process.argv[2] != null) {
-  config = process.argv[2];
+  config = './' + process.argv[2];
 }
 
 console.log('Using config file: ', path.join(__dirname, config));
@@ -32,6 +31,7 @@ var options = {
   hooks: {
     beforeInitialization: [
       function (jiff, computation_id, msg, params) {
+        console.log('got called with', msg.role);
         if (params.party_id != null) {
           return params;
         }
@@ -49,7 +49,6 @@ var options = {
             continue;
           }
 
-          console.log('assigned', msg.role, 'party id', id);
           check[id] = true;
           params.party_id = id;
           return params;

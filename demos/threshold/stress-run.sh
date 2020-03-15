@@ -4,14 +4,14 @@ node server.js "suppress" &
 
 for (( i=1; i<=$1; i++ ))
 do
-    node party.js $i $(( $1 / 2 )) $1 $2 "stress-test" $i "suppress" &
+    node party.js $i $(( $1 / 2 )) $1 $2 "stress-test" $i &
     pids[${i}]=$!
 done
 
 for (( i=1; i<=$2; i++ ))
 do
-    node party.js 0 $(( $1 / 2 )) $1 $2 "stress-test" $(( $1 + i )) "suppress" &
-     pids[${i}]=$!
+    node party.js 0 $(( $1 / 2 )) $1 $2 "stress-test" $(( $1 + i )) &
+    pids[${i}]=$!
 done
 
 # wait for all parties

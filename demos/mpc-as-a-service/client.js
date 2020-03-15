@@ -11,7 +11,7 @@ function connect() {
   var computation_id = $('#computation_id').val();
 
   var options = { party_count: config.party_count };
-  options.onError = function (error) {
+  options.onError = function (_, error) {
     $('#output').append("<p class='error'>"+error+'</p>');
   };
 
@@ -32,9 +32,9 @@ function connect() {
 
   hostname = hostname + ':' + port;
   // eslint-disable-next-line no-undef
-  var jiff = mpc.connect(hostname, computation_id, options);
+  var jiff = mpc.connect(hostname, computation_id, options, config);
   jiff.wait_for(config.compute_parties, function () {
-    $('#button').attr('disabled', false); $('#output').append('<p>All parties Connected!</p>');
+    $('#button').attr('disabled', false); $('#output').append('<p>Connected to the compute parties!</p>');
   });
 }
 

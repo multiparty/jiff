@@ -14,24 +14,13 @@ console.log('Command line arguments: [/path/to/configuration/file.json] [computa
 // Read config
 var config = './config.json';
 if (process.argv[2] != null) {
-  config = process.argv[2];
+  config = './' + process.argv[2];
 }
 
 console.log('Using config file: ', path.join(__dirname, config));
 config = require(config);
 
 var all_parties = config.compute_parties.concat(config.input_parties);
-all_parties.sort();
-
-// Catch and log any uncaught exceptions
-process.on('uncaughtException', function (err) {
-  console.log('Uncaught Exception!');
-  console.log(err);
-  throw err;
-});
-process.on('unhandledRejection', function (reason) {
-  console.log('Unhandled Rejection', reason);
-});
 
 // Read command line args
 var computation_id = 'test';
@@ -41,39 +30,40 @@ if (process.argv[3] != null) {
 
 // Initialize JIFF
 var JIFFClient = require('../../lib/jiff-client.js');
-
-var options = {
-  crypto_provider: true, // comment this out if you want to use preprocessing
+var jiffClient = new JIFFClient('http://localhost:8080', computation_id, {
+  crypto_provider: config.preprocessing === false, // comment this out if you want to use preprocessing
   party_count: config.party_count,
   initialization: {role: 'compute'} // indicate to the server that this is a compute party
-};
+});
 
 // the computation code
-var compute = function (jiff_instance) {
-  // We are a compute party, we do not have any input (thus secret is null),
-  // we will receive shares of inputs from all the input_parties.
-  var shares = jiff_instance.share(null, null, config.compute_parties, config.input_parties);
+var compute = function () {
+  jiffClient.wait_for(all_parties, function () {
+    // We are a compute party, we do not have any input (thus secret is null),
+    // we will receive shares of inputs from all the input_parties.
+    var shares = jiffClient.share(null, null, config.compute_parties, config.input_parties);
 
-  var sum = shares[config.input_parties[0]];
-  for (var i = 1; i < config.input_parties.length; i++) {
-    var p = config.input_parties[i];
-    sum = sum.sadd(shares[p]);
-  }
+    var sum = shares[config.input_parties[0]];
+    for (var i = 1; i < config.input_parties.length; i++) {
+      var p = config.input_parties[i];
+      sum = sum.sadd(shares[p]);
+    }
 
-  jiff_instance.open(sum, all_parties).then(function (output) {
-    console.log('Final output is: ', output);
-    jiff_instance.disconnect(true, true);
+    jiffClient.open(sum, all_parties).then(function (output) {
+      console.log('Final output is: ', output);
+      jiffClient.disconnect(true, true);
+    });
   });
 };
 
-// This gets called when all parties are connected
-options.onConnect = function (jiff_instance) {
-  // if you want to use preprocessing, uncomment these two lines:
-  // jiff_instance.preprocessing('open', 1, null, 3, [1, 2, 3], [1, 2, 3], null, null, {open_parties: [1, 2, 3, 4, 5, 6]});
-  // jiff_instance.executePreprocessing(compute.bind(null, jiff_instance));
-
-  // comment this if you want preprocessing
-  compute(jiff_instance);
-};
-
-new JIFFClient('http://localhost:8080', computation_id, options);
+// wait only for the compute parties to preprocess
+jiffClient.wait_for(config.compute_parties, function () {
+  if (config.preprocessing !== false) {
+    // do not use crypto provider, perform preprocessing!
+    jiffClient.preprocessing('open', 1, null, null, config.compute_parties, config.compute_parties, null, null, {open_parties: all_parties});
+    jiffClient.executePreprocessing(compute.bind(null, jiffClient));
+  } else {
+    // no preprocessing: use server as crypto provider
+    compute();
+  }
+});
