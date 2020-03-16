@@ -6,7 +6,7 @@ if [ "$1" == "*" ]; then
     EXIT_CODE=0
     for i in demos/*; do
         if [ -f "$i/test.js" ] || [ -f "$i/test.sh" ]; then
-            if ! [[ "$i" =~ ^demos/(pca|mpc-web|template)$ ]]; then
+            if ! [[ "$i" =~ ^demos/(pca|web-mpc|template)$ ]]; then
                 npm run-script test-demo -- "$i"
                 CODE=$?
                 if [[ "${CODE}" != "0" ]]; then

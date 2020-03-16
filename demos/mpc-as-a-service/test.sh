@@ -4,8 +4,6 @@ mkdir -p ../../logs
 logs="../../logs/mpc-as-a-service.log"
 
 for config in tests/*.json; do
-  echo $config
-
   # run server
   node server.js $config > $logs &
   serverID=$!
