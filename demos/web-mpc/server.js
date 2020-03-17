@@ -9,14 +9,20 @@ var app = express();
 http = http.Server(app);
 
 // Create JIFF server
-var jiff_instance = new JIFFServer(http, {logs: false});
+var jiff_instance = new JIFFServer(http, {
+  logs: false,
+  socketOptions: {
+    pingTimeout: 1000,
+    pingInterval: 2000
+  }
+});
 jiff_instance.computationMaps.maxCount['web-mpc'] = 100000; // upper bound on how input parties can submit!
 
 // Specify the computation server code for this demo
 var computationClient = jiff_instance.compute('web-mpc', {
   crypto_provider: true
 });
-computationClient.wait_for(['1'], function () {
+computationClient.wait_for([1], function () {
   // Perform server-side computation.
   console.log('Computation initialized!');
 

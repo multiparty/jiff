@@ -6,7 +6,7 @@ if [ "$1" == "*" ]; then
     EXIT_CODE=0
     for i in demos/*; do
         if [ -f "$i/test.js" ] || [ -f "$i/test.sh" ]; then
-            if ! [[ "$i" =~ ^demos/(pca|web-mpc|template)$ ]]; then
+            if ! [[ "$i" =~ ^demos/(pca|template)$ ]]; then
                 npm run-script test-demo -- "$i"
                 CODE=$?
                 if [[ "${CODE}" != "0" ]]; then
@@ -31,12 +31,14 @@ else
       # genric demo, run genric tests
 
       # Run server
-      echo "====================" >> "${logs}"
-      echo "====================" >> "${logs}"
-      echo "NEW TEST $(date)" >> "${logs}"
-      echo "====================" >> "${logs}"
-      node ${TESTDIR}/server.js >> "${logs}" &
-      sleep 1
+      if [[ $NAME != "web-mpc" ]]; then
+        echo "====================" >> "${logs}"
+        echo "====================" >> "${logs}"
+        echo "NEW TEST $(date)" >> "${logs}"
+        echo "====================" >> "${logs}"
+        node ${TESTDIR}/server.js >> "${logs}" &
+        sleep 1
+      fi
 
       # Run test
       ./node_modules/.bin/mocha --full-trace --reporter spec ${TESTDIR}/test.js

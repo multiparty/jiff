@@ -36,7 +36,11 @@ var rl = readline.createInterface({
 // Options for creating the jiff instance
 var options = {
   crypto_provider: true, // do not bother with preprocessing for this demo
-  party_id: 1 // we are the analyst => we want party_id = 1
+  party_id: 1, // we are the analyst => we want party_id = 1
+  socketOptions: {
+    reconnectionDelay: 3000,
+    reconnectionDelayMax: 4000
+  }
 };
 
 // Load the keys in case they were previously saved (otherwise we get back nulls)
