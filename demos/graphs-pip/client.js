@@ -74,7 +74,7 @@ function connect() {
     integer_digits: 3,
     decimal_digits: 3
   };
-  options.onError = function (error) {
+  options.onError = function (_, error) {
     $('#output').append("<p class='error'>"+error+'</p>');
   };
   options.onConnect = function (jiff_instance) {

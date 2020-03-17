@@ -103,7 +103,7 @@ function connect() {
     integer_digits: 4,
     decimal_digits: 2
   };
-  options.onError = function (error) {
+  options.onError = function (_, error) {
     $('#output').append("<p class='error'>"+error+'</p>');
   };
   options.onConnect = function () {

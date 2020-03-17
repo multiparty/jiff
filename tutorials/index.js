@@ -1,7 +1,14 @@
 const express = require('express');
 const Neptune = require('neptune-notebook');
 
-const jsDependencies = ['../node_modules/bignumber.js/bignumber.min.js', '../lib/ext/jiff-client-bignumber.js', '../lib/ext/jiff-client-fixedpoint.js', '../lib/ext/jiff-client-negativenumber.js'];
+const jsDependencies = [
+  __dirname + '/../dist/jiff-client.js',
+  __dirname + '/../node_modules/bignumber.js/bignumber.min.js',
+  __dirname + '/../lib/ext/jiff-client-bignumber.js',
+  __dirname + '/../lib/ext/jiff-client-fixedpoint.js',
+  __dirname + '/../lib/ext/jiff-client-negativenumber.js'
+];
+
 const plotly = ['static/js/plotly-latest.min.js'];
 
 const neptune = new Neptune();

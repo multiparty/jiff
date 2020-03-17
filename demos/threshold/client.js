@@ -19,7 +19,7 @@ function connect() {
     $('#connectButton').prop('disabled', false);
   } else {
     var options = { party_count: upper_count+lower_count, party_id: party_id, Zp: 127 };
-    options.onError = function (error) {
+    options.onError = function (_, error) {
       $('#connectButton').attr('disabled', false);
       $('#output').append('<p class="error">'+error+'</p>');
     };
