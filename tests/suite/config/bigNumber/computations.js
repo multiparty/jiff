@@ -58,6 +58,9 @@ baseComputations.openInterpreter['!='] = function (operand1, operand2) {
 baseComputations.openInterpreter['!'] = function (operand1, _) {
   return new BigNumber(operand1).plus(1).mod(2);
 };
+baseComputations.openInterpreter['cpow'] = function (operand1, operand2) {
+  return new BigNumber(operand1).pow(operand2, Zp);
+};
 
 // Default Computation Scheme
 exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done) {

@@ -86,7 +86,7 @@ function onConnect() {
   Console.log('All parties connected!');
 }
 
-var options = { party_count: 3, party_id: 1, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
+var options = { party_count: 3, party_id: 1, onConnect: onConnect, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
 var jiff_instance = new JIFFClient('http://localhost:9111', 'preprocessing-application', options);
 jiff_instance.apply_extension(jiff_bignumber, options);
 jiff_instance.apply_extension(jiff_fixedpoint, options);
@@ -98,7 +98,7 @@ function onConnect() {
   Console.log('All parties connected!');
 }
 
-var options = { party_count: 3, party_id: 2, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
+var options = { party_count: 3, party_id: 2, onConnect: onConnect, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
 var jiff_instance = new JIFFClient('http://localhost:9111', 'preprocessing-application', options);
 jiff_instance.apply_extension(jiff_bignumber, options);
 jiff_instance.apply_extension(jiff_fixedpoint, options);
@@ -110,7 +110,7 @@ function onConnect() {
   Console.log('All parties connected!');
 }
 
-var options = { party_count: 3, party_id: 3, onConnect: onConnect, Zp: 15485867, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
+var options = { party_count: 3, party_id: 3, onConnect: onConnect, autoConnect: false, integer_digits: 3, decimal_digits: 2 };
 var jiff_instance = new JIFFClient('http://localhost:9111', 'preprocessing-application', options);
 jiff_instance.apply_extension(jiff_bignumber, options);
 jiff_instance.apply_extension(jiff_fixedpoint, options);
@@ -372,7 +372,7 @@ Below is a complete table of all primitive specific extra parameters
         <th>Description</th>
     </tr>
     <tr>
-        <td rowspan="11">Base</td>
+        <td rowspan="13">Base</td>
         <td>refresh, smult, sxor_bit, sor_bit, if_else, clt, cgt, clteq, cgteq, ceq, cneq, lt_halfprime, sdiv, smod, bit_decomposition</td>
         <td>N/A</td>
         <td>-</td>    
@@ -388,6 +388,16 @@ Below is a complete table of all primitive specific extra parameters
         <td>cdiv</td>
         <td>constant</td>
         <td>The constant to divide by, if passed, more of the cdiv operation can be performed during preprocessing, making the online cdiv call faster</td>    
+    </tr>
+    <tr>
+        <td rowspan="2">cpow</td>
+        <td>constant</td>
+        <td>The constant exponent, if passed, the preprocessing performs exactly the necessary multiplications, otherwise, the preprocessing assumes the worse case (an exponent with all ones)</td>
+    </tr>
+    <tr>
+        <td>constantBits</td>
+        <td>The number of bits in the constant exponent, this is ignored if "constant" is given, use this when the constant exponent is not known, but an upper bound for it is known, use the number of bits
+            of the upper bound <br> <i>Note: if the exponent is larger than Zp, either constant or constantBits must be provided to avoid errors
     </tr>
     <tr>
         <td rowspan="2">rejection_sampling</td>

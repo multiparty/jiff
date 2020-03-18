@@ -15,7 +15,8 @@ exports.preprocessing_function_map = {
     '!=': 'cneq',
     '/': 'cdiv',
     'cdivfac': 'cdivfac',
-    '*': 'cmult'
+    '*': 'cmult',
+    'cpow': 'cpow'
   },
   secret: {
     '*': 'smult',
@@ -120,6 +121,9 @@ exports.mpcInterpreter = {
   },
   '!': function (operand1) {
     return operand1.not();
+  },
+  'cpow': function (operand1, operand2) {
+    return operand1.cpow(operand2);
   }
 };
 
@@ -172,6 +176,13 @@ exports.openInterpreter = {
   },
   '!' : function (operand1) {
     return (operand1 + 1) % 2;
+  },
+  'cpow': function (operand1, operand2) {
+    var result = 1;
+    for (var i = 0; i < operand2; i++) {
+      result = exports.mod(result * operand1, Zp);
+    }
+    return result;
   }
 };
 
@@ -325,7 +336,7 @@ exports.preProcessingParams = function (jiff_instance, test, inputs, testConfig)
   }
 
   var params = null;
-  if (test === '/' && testConfig['ondemand'] === false) {
+  if ((test === '/' && testConfig['ondemand'] === false) || (test === 'cpow' && testConfig['accuratePreprocessing'])) {
     op_count = 1;
     params = [];
     for (var c = 0; c < inputs.length; c++) {
