@@ -50,6 +50,11 @@ baseGeneration.generateMultiple = function (test, options, max, factor) {
   var coef = Math.random() < 0.5 ? nat : nat.times(-1);
   return coef.times(factor);
 };
+baseGeneration.generateUniformNatural = function (test, options, max) {
+  max = new BigNumber(max);
+  return BigNumber.random().times(max).floor();
+};
+
 
 // Override entry points
 var oldArithmetic = baseGeneration.generateArithmeticInputs;

@@ -14,6 +14,9 @@ exports.generateMultiple = function (test, options, max, factor) {
 exports.generateDividend = function (test, options, max, divisor) {
   return exports.generateUniform(test, options, max);
 };
+exports.generateUniformNatural = function (test, options, max) {
+  return Math.floor(Math.random() * max);
+};
 
 // Generation API referred to from configuration JSON files
 
@@ -164,6 +167,14 @@ exports.generateConstantArithmeticInputs = function (test, count, options) {
       oneInput = {};
       oneInput[1] = exports.generateBit(test, options);
       oneInput['constant'] = exports.generateBit(test, options);
+      inputs.push(oneInput);
+    }
+  } else if (test.startsWith('cpow')) {
+    // power must be a non-negative integer
+    for (t = 0; t < count; t++) {
+      oneInput = {};
+      oneInput[1] = exports.generateUniform(test, options, max);
+      oneInput['constant'] = exports.generateUniformNatural(test, options, max);
       inputs.push(oneInput);
     }
   } else {

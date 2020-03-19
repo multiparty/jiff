@@ -21,5 +21,9 @@ baseGeneration.generateMultiple = function (test, options, max, factor) {
   var coef = baseGeneration.generateUniform(test, options, max.div(factor).floor());
   return coef.times(factor);
 };
+baseGeneration.generateUniformNatural = function (test, options, max) {
+  max = new BigNumber(max);
+  return BigNumber.random().times(max).floor();
+};
 
 module.exports = baseGeneration;

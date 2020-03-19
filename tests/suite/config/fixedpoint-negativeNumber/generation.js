@@ -62,6 +62,10 @@ baseGeneration.generateDividend = function (test, options, max, divisor) {
   var deciNum = wholeNum.div(new BigNumber(10).pow(options.decimal_digits));
   return Math.random() < 0.5 ? deciNum : deciNum.times(-1);
 };
+baseGeneration.generateUniformNatural = function (test, options, max) {
+  max = new BigNumber(max);
+  return BigNumber.random().times(max).floor();
+};
 
 // Override entry points
 var oldArithmetic = baseGeneration.generateArithmeticInputs;

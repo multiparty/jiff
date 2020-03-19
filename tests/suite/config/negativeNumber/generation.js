@@ -37,6 +37,9 @@ baseGeneration.generateMultiple = function (test, options, max, factor) {
   var nat = Math.floor(Math.random() * max);
   return factor * (Math.random() < 0.5 ? nat : -1 * nat);
 };
+baseGeneration.generateUniformNatural = function (test, options, max) {
+  return Math.floor(Math.random() * max);
+};
 
 
 // Override entry points
