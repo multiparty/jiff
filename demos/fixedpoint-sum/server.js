@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var JIFFServer = require('../../lib/jiff-server');
-var base_instance = new JIFFServer(http, { logs:true });
+var base_instance = new JIFFServer(http, { logs: true, sodium: false });
 
 var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
 base_instance.apply_extension(jiffBigNumberServer);

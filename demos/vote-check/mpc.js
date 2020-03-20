@@ -9,6 +9,7 @@
     // Added options goes here
     opt.Zp = 13;
     opt.crypto_provider = true;
+    opt.sodium = false;
 
     if (node) {
       // eslint-disable-next-line no-undef

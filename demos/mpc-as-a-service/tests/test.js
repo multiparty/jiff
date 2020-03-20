@@ -15,7 +15,7 @@ describe('MPC-as-a-service', function () {
     var output = 0;
     var promises = [];
     for (var i = 0; i < input_parties_count; i++) {
-      var jiffClient = clientMPC.connect('http://localhost:8080', 'test', {}, config);
+      var jiffClient = clientMPC.connect('http://localhost:8080/', 'test', {}, config);
 
       // generate input
       var input = Math.floor(Math.random() * jiffClient.Zp);
