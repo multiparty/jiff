@@ -14,6 +14,11 @@ var app = express();
 var http = require('http').Server(app);
 var path = require('path');
 
+// body parser to handle json data
+var bodyParser  = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 // Read configuration
 var config = './config.json';
 if (process.argv[2] != null) {
@@ -62,7 +67,9 @@ var options = {
 
 // Create the server
 var JIFFServer = require('../../lib/jiff-server');
-new JIFFServer(http, options);
+var jiffRestAPIServer = require('../../lib/ext/jiff-server-restful.js');
+var jiffServer = new JIFFServer(http, options);
+jiffServer.apply_extension(jiffRestAPIServer, {app: app});
 
 // Serve static files.
 app.get('/config.js', function (req, res) {
@@ -73,6 +80,7 @@ app.get('/config.js', function (req, res) {
 
 app.use('/demos', express.static(path.join(__dirname, '..', '..', 'demos')));
 app.use('/dist', express.static(path.join(__dirname, '..', '..', 'dist')));
+app.use('/lib/ext', express.static(path.join(__dirname, '..', '..', 'lib', 'ext')));
 http.listen(8080, function () {
   console.log('listening on *:8080');
 });
