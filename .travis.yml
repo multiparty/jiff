@@ -12,13 +12,18 @@ node_js:
   - '10'
 script:
   - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
-  - if [ "$DEMOS" == "TRUE" ]; then npm run-script test-demo -- \*; else npm run coverage -- "$TEST_NAME" "$TEST_SUITE"; fi
+  - if [ "$DEMOS" == "TRUE" ]; then npm run coverage-demo -- \*; else npm run coverage -- "$TEST_NAME" "$TEST_SUITE"; fi
   - kill %1
 
 jobs:
   include:
     - stage: test
       env: DEMOS="TRUE"
+      workspaces:
+        create:
+          name: 1
+          paths:
+            - .nyc_output
     - env: TEST_NAME='base' TEST_SUITE=''
       workspaces:
         create:
@@ -131,6 +136,7 @@ jobs:
       script: npm run coverage:report
       workspaces:
         use:
+          - 1
           - 2
           - 3
           - 4

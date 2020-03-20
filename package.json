@@ -47,6 +47,7 @@
     "coverage:report": "nyc report --reporter=text-lcov | coveralls",
     "gen-docs": "./node_modules/.bin/jsdoc -r -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/CONTRIBUTING.md/CONTRIBUTING.html/g' docs/jsdoc/*.html",
     "test-demo": "./demos/run-test.sh",
+    "coverage-demo": "nyc --no-clean npm run test-demo",
     "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit",
     "lint": "./node_modules/.bin/eslint .",
     "tutorial": "npm install && cd tutorials && node index.js",
