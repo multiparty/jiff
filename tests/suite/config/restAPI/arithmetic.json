@@ -18,7 +18,7 @@
       "count": 100,
       "parallel": 50,
       "options": {
-        "Zp": 15485867,
+        "Zp": 16777729,
         "party_count": 3
       }
     },
@@ -26,7 +26,7 @@
       "count": 100,
       "parallel": 50,
       "options": {
-        "Zp": 15485867,
+        "Zp": 16777729,
         "party_count": 4
       }
     },

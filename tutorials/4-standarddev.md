@@ -46,7 +46,7 @@ function onConnect() {
   Console.log('All parties connected!');
 }
 
-var options = { party_count: 4, party_id: 1, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false };
+var options = { party_count: 4, party_id: 1, crypto_provider: true, onConnect: onConnect, autoConnect: false };
 var jiff_instance = new JIFFClient('http://localhost:9111', 'deviation-application', options);
 jiff_instance.apply_extension(jiff_negativenumber, options);
 jiff_instance.connect();
@@ -57,7 +57,7 @@ function onConnect() {
   Console.log('All parties connected!');
 }
 
-var options = { party_count: 4, party_id: 2, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false };
+var options = { party_count: 4, party_id: 2, crypto_provider: true, onConnect: onConnect, autoConnect: false };
 var jiff_instance = new JIFFClient('http://localhost:9111', 'deviation-application', options);
 jiff_instance.apply_extension(jiff_negativenumber, options);
 jiff_instance.connect();
@@ -68,7 +68,7 @@ function onConnect() {
   Console.log('All parties connected!');
 }
 
-var options = { party_count: 4, party_id: 3, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false };
+var options = { party_count: 4, party_id: 3, crypto_provider: true, onConnect: onConnect, autoConnect: false };
 var jiff_instance = new JIFFClient('http://localhost:9111', 'deviation-application', options);
 jiff_instance.apply_extension(jiff_negativenumber, options);
 jiff_instance.connect();
@@ -79,7 +79,7 @@ function onConnect() {
   Console.log('All parties connected!');
 }
 
-var options = { party_count: 4, party_id: 4, crypto_provider: true, onConnect: onConnect, Zp: 15485867, autoConnect: false };
+var options = { party_count: 4, party_id: 4, crypto_provider: true, onConnect: onConnect, autoConnect: false };
 var jiff_instance = new JIFFClient('http://localhost:9111', 'deviation-application', options);
 jiff_instance.apply_extension(jiff_negativenumber, options);
 jiff_instance.connect();

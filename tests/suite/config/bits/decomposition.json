@@ -1,6 +1,6 @@
 {
-  "tests": [ "decomposition2-127", "decomposition2-15485867", "decomposition3-127", "decomposition3-15485867", "decomposition5-127", "decomposition5-2039",
-             "decomposition-open-2-15485867", "decomposition-open-3-15485867", "decomposition-open-5-2039" ],
+  "tests": [ "decomposition2-127", "decomposition2-16777729", "decomposition3-127", "decomposition3-16777729", "decomposition5-127", "decomposition5-2039",
+             "decomposition-open-2-16777729", "decomposition-open-3-16777729", "decomposition-open-5-2039" ],
   "suiteConf": {
     "port": 3001,
     "generation": {
@@ -23,12 +23,12 @@
         "party_count": 2
       }
     },
-    "decomposition2-15485867": {
+    "decomposition2-16777729": {
       "alias": "decomposition",
       "count": 5,
       "parallel": 3,
       "options": {
-        "Zp": 15485867,
+        "Zp": 16777729,
         "party_count": 2
       }
     },
@@ -41,12 +41,12 @@
         "party_count": 3
       }
     },
-    "decomposition3-15485867": {
+    "decomposition3-16777729": {
       "alias": "decomposition",
       "count": 5,
       "parallel": 3,
       "options": {
-        "Zp": 15485867,
+        "Zp": 16777729,
         "party_count": 3
       }
     },
@@ -68,23 +68,23 @@
         "party_count": 5
       }
     },
-    "decomposition-open-2-15485867": {
+    "decomposition-open-2-16777729": {
       "open": "bits.open",
       "alias": "decomposition",
       "count": 5,
       "parallel": 3,
       "options": {
-        "Zp": 15485867,
+        "Zp": 16777729,
         "party_count": 2
       }
     },
-    "decomposition-open-3-15485867": {
+    "decomposition-open-3-16777729": {
       "open": "bits.open",
       "alias": "decomposition",
       "count": 5,
       "parallel": 3,
       "options": {
-        "Zp": 15485867,
+        "Zp": 16777729,
         "party_count": 3
       }
     },
