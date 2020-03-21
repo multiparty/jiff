@@ -6,6 +6,8 @@ if [[ $DEMOS == "TRUE" ]]; then
   FAILED_LOGS=$(cat '.failedlogs')
   LAST_LOG=$(cat '.lastlog')
 
+  echo "Failed logs: $FAILED_LOGS"
+  echo "========================="
   for log in $FAILED_LOGS; do
     if [[ $log != "" ]]; then
       cat "Failed logs: $log"
@@ -15,7 +17,9 @@ if [[ $DEMOS == "TRUE" ]]; then
     fi
   done
 
-  for log in LAST_LOG; do
+  echo "Timed out logs: $LAST_LOG"
+  echo "========================="
+  for log in $LAST_LOG; do
     if [[ $log != "" ]]; then
       echo "Timedout logs:"
       cat $log
