@@ -8,6 +8,9 @@ before_install:
     - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
     - git submodule update --init --recursive
 # End submodules fix
+after_failure:
+  - ./.dump_log.sh
+
 node_js:
   - '10'
 script:
