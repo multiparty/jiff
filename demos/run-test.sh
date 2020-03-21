@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
-exit "1"
 
 mkdir -p logs
 
+LASTLOG='.lastlog'
+FAILEDLOGS='.failedlogs'
+
 if [ "$1" == "*" ]; then
+    rm -f FAILEDLOGS
+    touch FAILEDLOGS
+
     EXIT_CODE=0
     for i in demos/*; do
         if [ -f "$i/test.js" ] || [ -f "$i/test.sh" ]; then
@@ -22,7 +27,9 @@ else
     TESTDIR=${1%/}
     NAME=$(basename $TESTDIR)
     logs="logs/${NAME}.log"
+
     echo "Server logs at ${logs}"
+    echo "$logs" > $LASTLOG
 
     if [ -f "$TESTDIR/test.sh" ]; then
       # demo has custom test bash script, run it
@@ -46,6 +53,11 @@ else
       EXIT_CODE=$?
 
       kill $(ps aux | grep " ${TESTDIR}/server\.js" | awk '{ print $2}')
+
+      echo "" > $LASTLOG
+      if [[ $EXIT_CODE != "0" ]]; then
+        echo "$logs" >> $FAILEDLOGS
+      fi
       exit "$EXIT_CODE"
     fi
 fi

@@ -1,5 +1,4 @@
 /* global describe it */
-while (true) {};
 var helpers = require('./config/bigNumber/helpers.js');
 
 // Catch and log any uncaught exceptions

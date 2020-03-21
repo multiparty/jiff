@@ -56,7 +56,12 @@ var options = {
 
         return params;
       }
-    ]
+    ],
+    log: function (_, label) {
+      if (['share', 'open', 'crypto_provider'].indexOf(label) === -1) {
+        console.log.apply(console, Array.from(arguments).slice(1));
+      }
+    }
   }
 };
 

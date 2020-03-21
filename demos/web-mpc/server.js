@@ -14,6 +14,13 @@ var jiff_instance = new JIFFServer(http, {
   socketOptions: {
     pingTimeout: 1000,
     pingInterval: 2000
+  },
+  hooks: {
+    log: function (_, label) {
+      if (['share', 'open', 'crypto_provider'].indexOf(label) === -1) {
+        console.log.apply(console, Array.from(arguments).slice(1));
+      }
+    }
   }
 });
 jiff_instance.computationMaps.maxCount['web-mpc'] = 100000; // upper bound on how input parties can submit!
