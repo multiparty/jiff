@@ -9,7 +9,7 @@ before_install:
     - git submodule update --init --recursive
 # End submodules fix
 after_failure:
-  - ./.dumo_log.sh
+  - ./.dump_log.sh
 
 node_js:
   - '10'
