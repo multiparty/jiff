@@ -73,14 +73,10 @@
       var sorted = bubblesort(array);
 
       // Open the array
-      var allPromises = [];
-      for (var k = 0; k < sorted.length; k++) {
-        allPromises.push(jiff_instance.open(sorted[k]));
-      }
-
-      Promise.all(allPromises).then(function (results) {
+      jiff_instance.open_ND_array(sorted).then(function (results) {
         final_deferred.resolve(results);
       });
+
     });
 
     return final_promise;
