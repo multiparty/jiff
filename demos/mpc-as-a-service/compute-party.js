@@ -41,18 +41,24 @@ var compute = function () {
   jiffClient.wait_for(all_parties, function () {
     // We are a compute party, we do not have any input (thus secret is null),
     // we will receive shares of inputs from all the input_parties.
-    var shares = jiffClient.share(null, null, config.compute_parties, config.input_parties);
+    var shares = jiffClient.share_array([1,2,3], 3, null);// , config.compute_parties, config.input_parties);
 
-    var sum = shares[config.input_parties[0]];
-    for (var i = 1; i < config.input_parties.length; i++) {
-      var p = config.input_parties[i];
-      sum = sum.sadd(shares[p]);
-    }
+    /*
+     *var sum = shares[config.input_parties[0]];
+     *for (var i = 1; i < config.input_parties.length; i++) {
+     *  var p = config.input_parties[i];
+     *  sum = sum.sadd(shares[p]);
+     *}
+     */
 
-    jiffClient.open(sum, all_parties).then(function (output) {
-      console.log('Final output is: ', output);
-      jiffClient.disconnect(true, true);
-    });
+    shares.then(function (shares) {
+      console.log('shares promise resolved to: ', shares);
+
+      jiffClient.open(shares[config.input_parties[0]][0], all_parties).then(function (output) {
+        console.log('Final output is: ', output);
+        jiffClient.disconnect(true, true);
+      });
+    })
   });
 };
 

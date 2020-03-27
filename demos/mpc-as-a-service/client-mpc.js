@@ -30,7 +30,7 @@
     }
 
     // Share with compute parties
-    jiff_instance.share(input, null, config.compute_parties, config.input_parties);
+    jiff_instance.share_array(input, input.length);// , null, config.compute_parties, config.input_parties);
 
     // If this party is still connected after the compute parties are done, it will
     // receive the result.
