@@ -23,6 +23,7 @@
     // eslint-disable-next-line no-undef
     __jiff_instance.apply_extension(jiff_restAPI);
     __jiff_instance.connect();
+    console.log(__jiff_instance);
     return __jiff_instance;
   };
   exports.compute = function (input, jiff_instance_) {
@@ -32,32 +33,16 @@
     }
 
     // Share with compute parties
-    // jiff_instance.share_array(input, input.length, null, config.compute_parties, config.input_parties);
-    // shares = jiff_instance.share_ND_array(input);
     jiff_instance.share(input[2], null, config.compute_parties, config.input_parties);
 
     // If this party is still connected after the compute parties are done, it will
     // receive the result.
 
-    // shares.then(function (shares) {
-    //   console.log('shares promise resolved to: ', shares);
-    //   // shares[5][0].logLEAK('LEAK');
-    // });
-
-    var share = new jiff_instance.SecretShare({}, config.compute_parties, 3, 13);
-    console.log('share', share);
-    var shares = [share, share, share];
-
-    var promise = jiff_instance.open_ND_array(shares, all_parties);
-
-    // var promise = Promise.all([
-    //   jiff_instance.open(share, all_parties),
-    //   jiff_instance.open(share, all_parties),
-    //   jiff_instance.open(share, all_parties)
-    // ]);
+    var shares = [null, null, null];
+    var promise = jiff_instance.open_ND_array(shares, all_parties, config.compute_parties);
 
     promise.then(function (value) {
-      console.log('value\tresult', value);
+      console.log('result: ', value);
       jiff_instance.disconnect(true, true);
     });
 

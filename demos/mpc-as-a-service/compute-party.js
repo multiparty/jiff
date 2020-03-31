@@ -41,8 +41,7 @@ var compute = function () {
   jiffClient.wait_for(all_parties, function () {
     // We are a compute party, we do not have any input (thus secret is null),
     // we will receive shares of inputs from all the input_parties.
-    // var shares = jiffClient.share_ND_array([1,2,3]);//, 3, null, config.compute_parties, config.input_parties);
-    shares = jiffClient.share(null, null, config.compute_parties, config.input_parties);
+    var shares = jiffClient.share(null, null, config.compute_parties, config.input_parties);
 
     /*
      *var sum = shares[config.input_parties[0]];
@@ -52,26 +51,15 @@ var compute = function () {
      *}
      */
 
-    share = shares['4'].sadd(shares['5'])
+    shares = [shares['4'].sadd(shares['5']), shares['4'], shares['5']];
 
-    console.log('holders', share.holders);
-    // shares.then(function (shares) {
-    //
-    //   jiffClient.open(shares['1'][0], all_parties).then(function (output) {
-      var shares = [share, shares['4'], shares['5']];
+    // Send back the result to any parties that are still connected
+    var promise = jiffClient.open_ND_array(shares, all_parties, config.compute_parties);
 
-      var promise = jiffClient.open_ND_array(shares, all_parties);
-      // var promise = Promise.all([
-      //   jiffClient.open(share, all_parties),
-      //   jiffClient.open(share, all_parties),
-      //   jiffClient.open(share, all_parties)
-      // ]);
-
-      promise.then(function (output) {
-        console.log('Final output is: ', output);
-        jiffClient.disconnect(true, true);
-      });
-    // });
+    promise.then(function (output) {
+      console.log('Final output is: ', output);
+      // jiffClient.disconnect(true, true);
+    });
   });
 };
 
