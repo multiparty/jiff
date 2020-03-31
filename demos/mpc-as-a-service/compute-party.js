@@ -32,7 +32,7 @@ if (process.argv[3] != null) {
 var JIFFClient = require('../../lib/jiff-client.js');
 var jiffClient = new JIFFClient('http://localhost:8080', computation_id, {
   crypto_provider: config.preprocessing === false, // comment this out if you want to use preprocessing
-  party_count: config.party_count,
+  party_count: config.party_count, Zp: 13,
   initialization: {role: 'compute'} // indicate to the server that this is a compute party
 });
 
@@ -41,7 +41,8 @@ var compute = function () {
   jiffClient.wait_for(all_parties, function () {
     // We are a compute party, we do not have any input (thus secret is null),
     // we will receive shares of inputs from all the input_parties.
-    var shares = jiffClient.share_array([1,2,3], 3, null);// , config.compute_parties, config.input_parties);
+    // var shares = jiffClient.share_ND_array([1,2,3]);//, 3, null, config.compute_parties, config.input_parties);
+    shares = jiffClient.share(null, null, config.compute_parties, config.input_parties);
 
     /*
      *var sum = shares[config.input_parties[0]];
@@ -51,14 +52,26 @@ var compute = function () {
      *}
      */
 
-    shares.then(function (shares) {
-      console.log('shares promise resolved to: ', shares);
+    share = shares['4'].sadd(shares['5'])
 
-      jiffClient.open(shares[config.input_parties[0]][0], all_parties).then(function (output) {
+    console.log('holders', share.holders);
+    // shares.then(function (shares) {
+    //
+    //   jiffClient.open(shares['1'][0], all_parties).then(function (output) {
+      var shares = [share, shares['4'], shares['5']];
+
+      var promise = jiffClient.open_ND_array(shares, all_parties);
+      // var promise = Promise.all([
+      //   jiffClient.open(share, all_parties),
+      //   jiffClient.open(share, all_parties),
+      //   jiffClient.open(share, all_parties)
+      // ]);
+
+      promise.then(function (output) {
         console.log('Final output is: ', output);
         jiffClient.disconnect(true, true);
       });
-    })
+    // });
   });
 };
 
