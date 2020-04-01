@@ -51,7 +51,7 @@ var compute = function () {
      *}
      */
 
-    shares = [shares['4'].sadd(shares['5']), shares['4'], shares['5']];
+    shares = [shares['4'].sadd(shares['5']), shares[jiffClient.id === 1 ? '4' : '5'], shares['5']];
 
     // Send back the result to any parties that are still connected
     var promise = jiffClient.open_ND_array(shares, all_parties, config.compute_parties);
