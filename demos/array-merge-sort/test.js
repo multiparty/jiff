@@ -1,3 +1,13 @@
+// Catch and log any uncaught exceptions
+process.on('uncaughtException', function (err) {
+  console.log('Uncaught Exception!');
+  console.log(err);
+  throw err;
+});
+process.on('unhandledRejection', function (reason) {
+  console.log('Unhandled Rejection', reason);
+});
+
 // Chai
 var assert = require('chai').assert;
 var mpc = require('./mpc.js');
@@ -140,7 +150,7 @@ describe('Test', function () {
       })(0);
     };
 
-    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp };
+    var options = { party_count: party_count, onError: console.log, onConnect: onConnect, Zp: Zp, crypto_provider: true};
     for (var i = 0; i < party_count; i++) {
       mpc.connect('http://localhost:8080', 'mocha-test', options);
     }

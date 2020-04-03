@@ -14,6 +14,9 @@ exports.generateMultiple = function (test, options, max, factor) {
 exports.generateDividend = function (test, options, max, divisor) {
   return exports.generateUniform(test, options, max);
 };
+exports.generateUniformNatural = function (test, options, max) {
+  return Math.floor(Math.random() * max);
+};
 
 // Generation API referred to from configuration JSON files
 
@@ -31,6 +34,12 @@ exports.generateShareInputs = function (test, count, options) {
   // 2) sharing threshold
   // 3) array of senders
   // 4) array of receivers
+  //
+  // Variants of this are reshare tests that test the resharing of an existing share with a different set of parties
+  // and threshold. For this variant, the tests will additionally generate:
+  // 5) reshare_threshold: new/reshare threshold
+  // 6) reshare_holders: new/reshare holder parties
+
   var max = options.max || options.Zp;
   for (var t = 0; t < count; t++) {
     var oneTest = { numbers: {} };
@@ -56,8 +65,29 @@ exports.generateShareInputs = function (test, count, options) {
     while (receivers.length > rn) {
       receivers.splice(Math.floor(Math.random() * receivers.length), 1);
     }
+    senders.sort();
+    receivers.sort();
+
     oneTest['senders'] = senders;
     oneTest['receivers'] = receivers;
+
+    // reshare variant: only different threshold
+    if (test.startsWith('reshare-threshold')) {
+      oneTest['reshare_holders'] = receivers.slice();
+      oneTest['reshare_threshold'] = Math.floor(Math.random() * receivers.length) + 1; // 1 <= reshare_threshold <= length of receivers
+    }
+    // reshare variant: both different threshold and parties
+    if (test.startsWith('reshare-parties')) {
+      var hn = Math.floor(Math.random() * (all_parties.length - 1)) + 1; // 1 <= hn <= party_count
+      var reshare_holders = all_parties.slice();
+      while (reshare_holders.length > hn) {
+        reshare_holders.splice(Math.floor(Math.random() * reshare_holders.length), 1);
+      }
+      reshare_holders.sort();
+
+      oneTest['reshare_holders'] = reshare_holders;
+      oneTest['reshare_threshold'] = Math.floor(Math.random() * reshare_holders.length) + 1; // 1 <= reshare_threshold <= length of holders
+    }
 
     inputs.push(oneTest);
   }
@@ -89,7 +119,7 @@ exports.generateArithmeticInputs = function (test, count, options) {
       }
       inputs.push(oneInput);
     }
-  } else if (test === '!') {
+  } else if (test === '!' || test === 'floor' || test === 'abs') {
     for (t = 0; t < count; t++) {
       oneInput = {};
       oneInput[1] = exports.generateBit(test, options);
@@ -139,6 +169,14 @@ exports.generateConstantArithmeticInputs = function (test, count, options) {
       oneInput['constant'] = exports.generateBit(test, options);
       inputs.push(oneInput);
     }
+  } else if (test.startsWith('cpow')) {
+    // power must be a non-negative integer
+    for (t = 0; t < count; t++) {
+      oneInput = {};
+      oneInput[1] = exports.generateUniform(test, options, max);
+      oneInput['constant'] = exports.generateUniformNatural(test, options, max);
+      inputs.push(oneInput);
+    }
   } else {
     // otherwise no constraints
     for (t = 0; t < count; t++) {
@@ -152,7 +190,7 @@ exports.generateConstantArithmeticInputs = function (test, count, options) {
   return inputs;
 };
 
-// Constant Comparison inputs: two inputs for the first two parties only
+// Comparison inputs: two inputs for the first two parties only
 // if using random numbers and large Zp, inputs will be very unlikely to be equal
 // we must make it likely for the inputs to be equal manually for == and != checks
 exports.generateComparisonInputs = function (test, count, options) {
@@ -186,5 +224,20 @@ exports.generateConstantComparisonInputs = function (test, count, options) {
     inputs.push(oneInput);
   }
 
+  return inputs;
+};
+
+// If Else: generate random bit b and two random numbers x1, x2
+// Return {1: b, 2: x1, 3: x3}
+exports.generateIfElseInputs = function (test, count, options) {
+  var max = options.max || options.Zp;
+  var inputs = [];
+  for (var t = 0; t < count; t++) {
+    var oneInput = {};
+    oneInput[1] = exports.generateBit(test, options);
+    oneInput[2] = exports.generateUniform(test, options, max);
+    oneInput[3] = exports.generateUniform(test, options, max);
+    inputs.push(oneInput);
+  }
   return inputs;
 };

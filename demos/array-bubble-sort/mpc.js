@@ -1,5 +1,6 @@
 (function (exports, node) {
   var saved_instance;
+  var seeds = {};
 
   /**
    * Connect to the server and initialize the jiff instance
@@ -7,16 +8,17 @@
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
     // Added options goes here
+    opt.crypto_provider = true;
 
     if (node) {
       // eslint-disable-next-line no-undef
-      jiff = require('../../lib/jiff-client');
+      JIFFClient = require('../../lib/jiff-client');
       // eslint-disable-next-line no-undef,no-global-assign
       $ = require('jquery-deferred');
     }
 
     // eslint-disable-next-line no-undef
-    saved_instance = jiff.make_jiff(hostname, computation_id, opt);
+    saved_instance = new JIFFClient(hostname, computation_id, opt);
     exports.saved_instance = saved_instance;
     // if you need any extensions, put them here
 
@@ -46,11 +48,19 @@
       jiff_instance = saved_instance;
     }
 
+    // Unique prefix seed for op_ids
+    if (seeds[jiff_instance.id] == null) {
+      seeds[jiff_instance.id] = 0;
+    }
+    var seed = seeds[jiff_instance.id]++;
+
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
 
     // Share the arrays
     jiff_instance.share_array(input, input.length).then(function (shares) {
+      jiff_instance.seed_ids(seed);
+
       // sum all shared input arrays element wise
       var array = shares[1];
       for (var p = 2; p <= jiff_instance.party_count; p++) {

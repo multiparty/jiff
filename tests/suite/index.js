@@ -1,4 +1,5 @@
 /* global describe it */
+var helpers = require('./config/bigNumber/helpers.js');
 
 // Catch and log any uncaught exceptions
 process.on('uncaughtException', function (err) {
@@ -71,6 +72,11 @@ describe(name + ': ' + suite, function () {
             console.log('Input generation error ', error);
             done(error);
           }
+        }
+
+        // Make sure inputs are bignumbers for tests with BigNumber extension
+        if (extensions != null && extensions.indexOf('bigNumber') > -1) {
+          inputs = helpers.toBigNumber(suite, test, inputs);
         }
 
         // figure out computation

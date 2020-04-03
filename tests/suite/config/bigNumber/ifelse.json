@@ -1,0 +1,26 @@
+{
+  "tests": [ "sif_else", "s1if_else", "s2if_else", "cif_else" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "bigNumber" ],
+    "generation": {
+      "file": "config/bigNumber/generation.js",
+      "function": "generateIfElseInputs"
+    },
+    "computation": {
+      "file": "computations-ifelse.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 20,
+      "parallel": 5,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 3
+      }
+    }
+  }
+}

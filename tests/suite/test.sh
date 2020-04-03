@@ -19,7 +19,7 @@ else
 
   node tests/suite/server.js >> "${logs}" &
 
-  ./node_modules/.bin/mocha --reporter spec tests/suite/index.js
+  ./node_modules/.bin/mocha --max-old-space-size=8192 --reporter spec tests/suite/index.js
   CODE=$?
   kill $(ps aux | grep "node tests/suite/server\.js" | awk '{ print $2}')
   exit "$CODE"

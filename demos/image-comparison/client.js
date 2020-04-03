@@ -2,7 +2,7 @@
  * Do not modify this file unless you have too
  * This file has UI handlers.
  */
-var Zp = 15485867;
+var Zp = 16777729;
 
 // eslint-disable-next-line no-unused-vars
 function connect() {
@@ -15,7 +15,7 @@ function connect() {
     $('#connectButton').prop('disabled', false);
   } else {
     var options = { party_count: party_count, Zp: Zp };
-    options.onError = function (error) {
+    options.onError = function (_, error) {
       $('#output').append('<p class="error">'+error+'</p>');
     };
     options.onConnect = function () {

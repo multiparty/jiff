@@ -3,7 +3,7 @@ var BigNumber = require('bignumber.js');
 // Reuse base generation but with different underlying generation methods
 var baseGeneration = require('../base/generation.js');
 
-// functions specific to fixedpoint
+// functions specific to negative number
 var isConstant;
 function determineMax(test, party_count, Zp, max) {
   var maxZp = BigNumber(Zp).div(2).floor();
@@ -50,6 +50,11 @@ baseGeneration.generateMultiple = function (test, options, max, factor) {
   var coef = Math.random() < 0.5 ? nat : nat.times(-1);
   return coef.times(factor);
 };
+baseGeneration.generateUniformNatural = function (test, options, max) {
+  max = new BigNumber(max);
+  return BigNumber.random().times(max).floor();
+};
+
 
 // Override entry points
 var oldArithmetic = baseGeneration.generateArithmeticInputs;

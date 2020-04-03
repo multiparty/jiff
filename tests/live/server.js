@@ -1,4 +1,4 @@
-var jiffServer = require('../../lib/jiff-server');
+var JIFFServer = require('../../lib/jiff-server');
 // var jiffServerBigNumber = require('../../lib/ext/jiff-server-bignumber');
 
 var express = require('express');
@@ -7,11 +7,12 @@ var http = require('http').Server(app);
 
 app.use('/', express.static(__dirname));
 app.use('/lib', express.static(__dirname + '/../../lib'));
+app.use('/dist', express.static(__dirname + '/../../dist'));
 
 var serverOptions = {logs: true, sodium: false};
 
 // var instance =
-jiffServer.make_jiff(http, serverOptions);
+new JIFFServer(http, serverOptions);
 // instance.apply_extension(jiffServerBigNumber, serverOptions);
 
 http.listen(3000, function () {

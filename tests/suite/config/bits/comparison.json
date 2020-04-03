@@ -14,10 +14,10 @@
 
   "testConf": {
     "default": {
-      "count": 15,
+      "count": 10,
       "parallel": 5,
       "options": {
-        "Zp": 127,
+        "Zp": 61,
         "party_count": 3
       }
     }

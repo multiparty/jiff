@@ -6,7 +6,8 @@ var extensions = {
   bigNumber: require('../../lib/ext/jiff-client-bignumber'),
   fixedpoint: require('../../lib/ext/jiff-client-fixedpoint'),
   negativeNumber: require('../../lib/ext/jiff-client-negativenumber'),
-  restAPI: require('../../lib/ext/jiff-client-restful')
+  restAPI: require('../../lib/ext/jiff-client-restful'),
+  debugging: require('../../lib/ext/jiff-client-debugging.js')
 };
 
 // Create the jiff instances for tests
@@ -17,7 +18,7 @@ exports.createInstances = function (party_count, port, computation_id, options, 
   var instances = [];
   for (var i = 0; i < party_count; i++) {
     // Base instance
-    var instance = jiff.make_jiff('http://localhost:' + port, computation_id, options);
+    var instance = new jiff('http://localhost:' + port, computation_id, options);
 
     // Apply extensions in order
     if (ext == null) {

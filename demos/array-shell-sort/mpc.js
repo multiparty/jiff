@@ -6,16 +6,17 @@
    */
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
+    opt.crypto_provider = true;
 
     if (node) {
       // eslint-disable-next-line no-undef
-      jiff = require('../../lib/jiff-client');
+      JIFFClient = require('../../lib/jiff-client');
       // eslint-disable-next-line no-undef,no-global-assign
       $ = require('jquery-deferred');
     }
 
     // eslint-disable-next-line no-undef
-    saved_instance = jiff.make_jiff(hostname, computation_id, opt);
+    saved_instance = new JIFFClient(hostname, computation_id, opt);
     exports.saved_instance = saved_instance;
     return saved_instance;
   };
@@ -175,7 +176,7 @@
     // All parties listen for the message with offsets and permutation values, and store the information in it.
     jiff_instance.listen('preprocess' + this_count, function (sender_id, message) {
       jiff_instance.remove_listener('preprocess' + this_count);
-      jiff_instance.op_id_seed = this_count + ':';
+      jiff_instance.seed_ids(this_count);
 
       var received = JSON.parse(message);
       offsets = received[0];
@@ -183,6 +184,7 @@
 
       // Share the arrays
       jiff_instance.share_array(input, input.length).then(function (shares) {
+        jiff_instance.seed_ids(this_count);
         // sum all shared input arrays element wise
         var array = shares[1];
         for (var p = 2; p <= jiff_instance.party_count; p++) {

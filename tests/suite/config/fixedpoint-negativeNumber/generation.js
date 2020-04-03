@@ -5,7 +5,7 @@ BigNumber.config({ DECIMAL_PLACES: 131 });
 // Reuse base generation but with different underlying generation methods
 var baseGeneration = require('../base/generation.js');
 
-// functions specific to fixedpoint
+// functions specific to fixedpoint and negative number
 var isConstant;
 function determineMax(test, party_count, integer_digits, decimal_digits, max) {
   var operation_count = isConstant ? 2 : party_count;
@@ -61,6 +61,10 @@ baseGeneration.generateDividend = function (test, options, max, divisor) {
   var wholeNum = BigNumber.random().times(max).floor();
   var deciNum = wholeNum.div(new BigNumber(10).pow(options.decimal_digits));
   return Math.random() < 0.5 ? deciNum : deciNum.times(-1);
+};
+baseGeneration.generateUniformNatural = function (test, options, max) {
+  max = new BigNumber(max);
+  return BigNumber.random().times(max).floor();
 };
 
 // Override entry points

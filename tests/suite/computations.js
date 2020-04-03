@@ -5,6 +5,37 @@ var Zp;
 var errors = [];
 var successes = [];
 
+exports.preprocessing_function_map = {
+  constant: {
+    '<': 'clt',
+    '<=': 'clteq',
+    '>': 'cgt',
+    '>=': 'cgteq',
+    '==': 'ceq',
+    '!=': 'cneq',
+    '/': 'cdiv',
+    'cdivfac': 'cdivfac',
+    '*': 'cmult',
+    'cpow': 'cpow'
+  },
+  secret: {
+    '*': 'smult',
+    '*bgw': 'smult_bgw',
+    '|': 'sor_bit',
+    '<': 'slt',
+    '^': 'sxor_bit',
+    '<=': 'slteq',
+    '>': 'sgt',
+    '>=': 'sgteq',
+    '==': 'seq',
+    '!=': 'sneq',
+    '/': 'sdiv',
+    '%': 'smod',
+    'abs': 'abs',
+    'floor': 'floor'
+  }
+};
+
 // For logging purposes
 exports.myJoin = function (indices, values, sep) {
   var str = '';
@@ -90,6 +121,9 @@ exports.mpcInterpreter = {
   },
   '!': function (operand1) {
     return operand1.not();
+  },
+  'cpow': function (operand1, operand2) {
+    return operand1.cpow(operand2);
   }
 };
 
@@ -142,6 +176,13 @@ exports.openInterpreter = {
   },
   '!' : function (operand1) {
     return (operand1 + 1) % 2;
+  },
+  'cpow': function (operand1, operand2) {
+    var result = 1;
+    for (var i = 0; i < operand2; i++) {
+      result = exports.mod(result * operand1, Zp);
+    }
+    return result;
   }
 };
 
@@ -153,8 +194,8 @@ exports.shareHook = function (jiff_instance, test, testInputs, input, threshold,
   return jiff_instance.share(input, threshold, receivers, senders);
 };
 
-exports.openHook = async function (jiff_instance, test, share) {
-  return await share.open();
+exports.openHook = function (jiff_instance, test, share) {
+  return share.open();
 };
 
 exports.shareParameters = function (jiff_instance, test, testInputs) {
@@ -170,7 +211,7 @@ exports.shareParameters = function (jiff_instance, test, testInputs) {
   senders.sort();
 
   // Figure out threshold
-  var threshold = test === '*bgw' ? Math.floor(jiff_instance.party_count / 2) : jiff_instance.party_count;
+  var threshold = test === '*bgw' ? Math.floor((jiff_instance.party_count + 1) / 2) : jiff_instance.party_count;
   return { input: input, threshold: threshold, senders: senders, receivers: null, constant: testInputs['constant'] };
 };
 
@@ -207,17 +248,17 @@ exports.singleTest = async function (jiff_instance, test, testInputs) {
   try {
     // Share for MPC
     var shareParameters = exports.shareParameters(jiff_instance, test, testInputs);
-    var shares = await exports.shareHook(jiff_instance, test, testInputs, shareParameters.input, shareParameters.threshold, shareParameters.receivers, shareParameters.senders);
+    var shares = exports.shareHook(jiff_instance, test, testInputs, shareParameters.input, shareParameters.threshold, shareParameters.receivers, shareParameters.senders, shareParameters);
     if (shares == null) { // this party should not do anything
       return null;
     }
     shares['constant'] = shareParameters.constant;
 
     // Compute in the Open
-    var actualResult = await exports.singleCompute(jiff_instance, shareParameters, test, testInputs, exports.openInterpreter);
+    var actualResult = exports.singleCompute(jiff_instance, shareParameters, test, testInputs, exports.openInterpreter);
 
     // Compute under MPC
-    var mpcResult = await exports.singleCompute(jiff_instance, shareParameters, test, shares, exports.mpcInterpreter);
+    var mpcResult = exports.singleCompute(jiff_instance, shareParameters, test, shares, exports.mpcInterpreter);
     if (mpcResult == null) {
       return null;
     }
@@ -272,6 +313,93 @@ exports.batch = async function (jiff_instance, test, testParallel, inputs, done,
   }
 };
 
+// handles any pre-processing
+exports.preProcessingParams = function (jiff_instance, test, inputs, testConfig) {
+  if (testConfig['options']['crypto_provider'] === true) {
+    return null;
+  }
+
+  // Preprocessing for opens at the end of the computation
+  var open_count = inputs.length;
+
+  // Preprocessing for operations
+  var op = null;
+  var op_count = 0;
+
+  var isConstant = inputs[0]['constant'] == null ? 'secret' : 'constant';
+  var threshold = test === '*bgw' ? Math.floor((jiff_instance.party_count + 1) / 2) : jiff_instance.party_count;
+  var operation = exports.preprocessing_function_map[isConstant][test];
+  if (operation != null && jiff_instance.has_preprocessing(operation)) {
+    var singleTestCount = Object.keys(inputs[0]).length;
+    op_count = inputs.length * (singleTestCount > 1 ? singleTestCount - 1 : 1);
+    op = operation;
+  }
+
+  var params = null;
+  if ((test === '/' && testConfig['ondemand'] === false) || (test === 'cpow' && testConfig['accuratePreprocessing'])) {
+    op_count = 1;
+    params = [];
+    for (var c = 0; c < inputs.length; c++) {
+      params.push({ constant: inputs[c]['constant'] });
+    }
+  }
+
+  return {
+    operation: op,
+    op_count: op_count,
+    threshold: threshold,
+    open_count: open_count,
+    params: params
+  }
+};
+
+exports.started = 0;
+
+exports.preprocess = function (jiff_instance, test, inputs, testConfig, preprocessingParams) {
+  exports.preprocess_start(test);
+
+  if (preprocessingParams['params'] == null) {
+    preprocessingParams['params'] = [null];
+  }
+
+  // Perform preprocessing
+  if (preprocessingParams['operation'] != null) {
+    for (var i = 0; i < preprocessingParams['params'].length; i++) {
+      jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['op_count'],
+        preprocessingParams['protocols'], preprocessingParams['threshold'],
+        preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+        preprocessingParams['id_list'], preprocessingParams['params'][i]);
+    }
+  }
+
+  jiff_instance.preprocessing('open', preprocessingParams['open_count'],
+    preprocessingParams['protocols'], preprocessingParams['threshold'],
+    preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
+    preprocessingParams['id_list'], preprocessingParams['open_params']);
+
+  return new Promise(function (resolve) {
+    jiff_instance.executePreprocessing(function () {
+      exports.preprocess_done(test);
+      resolve();
+    });
+  });
+};
+
+exports.preprocess_start = function (test) {
+  // Benchmarking for preprocessing
+  if (exports.started === 0) {
+    console.time('Preprocessing ' + test);
+  }
+  exports.started++;
+};
+
+exports.preprocess_done = function (test) {
+  exports.started--;
+  if (exports.started === 0) {
+    console.timeEnd('Preprocessing ' + test);
+  }
+};
+
 // Default Computation Scheme
 exports.compute = function (jiff_instance, test, inputs, testParallel, done, testConfig) {
   // Reset errors
@@ -280,7 +408,13 @@ exports.compute = function (jiff_instance, test, inputs, testParallel, done, tes
 
   // Global variables
   Zp = jiff_instance.Zp;
-
-  // Perform tests asynchronously
-  exports.batch(jiff_instance, test, testParallel, inputs, done, testConfig);
+  var preProcessingParams = exports.preProcessingParams(jiff_instance, test, inputs, testConfig);
+  if (preProcessingParams != null) {
+    var promise = exports.preprocess(jiff_instance, test, inputs, testConfig, preProcessingParams);
+    promise.then(function () {
+      exports.batch(jiff_instance, test, testParallel, inputs, done, testConfig);
+    });
+  } else {
+    exports.batch(jiff_instance, test, testParallel, inputs, done, testConfig);
+  }
 };

@@ -59,6 +59,10 @@ $RECYCLE.BIN/
 ## File-based project format:
 *.iws
 
+## Vim-specific configs, workspaces, and swaps.
+*.vim
+*.swp
+
 ## Plugin-specific files:
 
 # IntelliJ
@@ -180,3 +184,4 @@ typings/
 .env
 
 logs/
+*.swp

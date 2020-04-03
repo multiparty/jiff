@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-require('../../../lib/jiff-server').make_jiff(http, { logs: true });
+new (require('../../../lib/jiff-server'))(http, { logs: true });
 
 // Serve static files.
 http.listen(8080, function () {
