@@ -7,16 +7,17 @@
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
     // Added options goes here
+    opt.crypto_provider = true;
 
     if (node) {
       // eslint-disable-next-line no-undef
-      jiff = require('../../lib/jiff-client');
+      JIFFClient = require('../../lib/jiff-client');
       // eslint-disable-next-line no-undef,no-global-assign
       $ = require('jquery-deferred');
     }
 
     // eslint-disable-next-line no-undef
-    saved_instance = jiff.make_jiff(hostname, computation_id, opt);
+    saved_instance = new JIFFClient(hostname, computation_id, opt);
     exports.saved_instance = saved_instance;
     // if you need any extensions, put them here
 
@@ -117,7 +118,7 @@
     element = cmp.if_else(element, element.csub(mid));
     var result = binary_swap(nArray, element, last);
 
-    for (var i = 0; i < mid; i++) {
+    for (i = 0; i < mid; i++) {
       array[i] = cmp.if_else(result[0][i], array[i]);
       array[mid+i] = cmp.if_else(array[mid+i], result[0][i]);
     }
