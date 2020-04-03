@@ -14,5 +14,5 @@ http.listen(8080, function () {
 });
 
 console.log('Direct your browser to *:8080/demos/shuffle-array/client.html.');
-console.log('To run a server-based party: node demos/shuffle-array/party <input');
+console.log('To run a server-based party: node demos/shuffle-array/party <input>');
 console.log();
