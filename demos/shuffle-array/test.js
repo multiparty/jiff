@@ -55,20 +55,16 @@ function generateInputs(party_count) {
 function computeResults(inputs) {
   var results = [];
 
+
   for (var t = 0; t < n; t++) {
-    var array = inputs[1][t].slice(); // Shallow copy, so that when modifying things are not changed!
-
-    for (var p = 2; p <= party_count; p++) {
-      var tmp = inputs[p][t];
-      for (var i = 0; i < array.length; i++) {
-        array[i] += tmp[i];
-      }
+    var full_array = [];
+    for (var p = 1; p <= party_count; p++) {
+      full_array = full_array.concat(inputs[p][t]);
     }
-
-    array.sort(function (a, b) {
+    full_array.sort(function (a, b) {
       return a - b;
     });
-    results.push(array);
+    results.push(full_array);
   }
 
   return results;
