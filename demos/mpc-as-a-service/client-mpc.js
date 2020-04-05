@@ -38,8 +38,7 @@
     // If this party is still connected after the compute parties are done, it will
     // receive the result.
 
-    var shares = [null, null, null];
-    var promise = jiff_instance.open_ND_array(shares, all_parties, config.compute_parties);
+    var promise = jiff_instance.open_ND_array(null, all_parties, config.compute_parties);
 
     promise.then(function (value) {
       console.log('result: ', value);
