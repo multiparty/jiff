@@ -10,7 +10,7 @@ function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
 
-  var options = { party_count: config.party_count, Zp: 13 };
+  var options = { party_count: config.party_count, Zp: 101 };
   options.onError = function (_, error) {
     $('#output').append("<p class='error'>"+error+'</p>');
   };
@@ -54,10 +54,16 @@ function submit() {
 
   // eslint-disable-next-line no-undef
   var promise = mpc.compute(arr);
-  promise.then(handleResult);
+  promise.then(function (opened_array) {
+    let results = {
+      sum: opened_array[0],
+      product: opened_array[1]
+    };
+    handleResult(results);
+  });
 }
 
-function handleResult(result) {
-  $('#output').append('<p>Result is: ' + result + '</p>');
+function handleResult(results) {
+  $('#output').append('<p>The sum is ' + results.sum + ' and the inner product is ' + results.product + '.</p>');
   $('#button').attr('disabled', false);
 }
