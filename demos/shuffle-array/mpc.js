@@ -1,5 +1,6 @@
 (function (exports, node) {
   var saved_instance;
+  var seeds = {};
 
   /**
    * Connect to the server and initialize the jiff instance
@@ -29,11 +30,19 @@
       jiff_instance = saved_instance;
     }
 
+    // Unique prefix seed for op_ids
+    if (seeds[jiff_instance.id] == null) {
+      seeds[jiff_instance.id] = 0;
+    }
+    var seed = seeds[jiff_instance.id]++;
+
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
 
     // Share the arrays
     jiff_instance.share_array(input, input.length).then(function (shares) {
+      jiff_instance.seed_ids(seed);
+
       // concatenate input arrays
       var full_array = [];
       for (var p = 1; p <= jiff_instance.party_count; p++) {
@@ -76,16 +85,6 @@
 
     result[0] = array[0];
     return result;
-  }
-
-  function search_and_swap(array, random, i) {
-    for (var j = 0; j < array.length; j++) {
-      var c1 = array[j];
-      var cmp = random.ceq(j);
-      array[j] = cmp.if_else(array[i], c1);
-      array[i] = cmp.if_else(c1, array[i]);
-    }
-    return array;
   }
 
   function binary_swap(array, element, last) {
