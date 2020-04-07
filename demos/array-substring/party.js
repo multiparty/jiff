@@ -41,10 +41,9 @@ options.onConnect = function (jiff_instance) {
       }
     }
 
-    jiff_instance.disconnect(true);
+    jiff_instance.disconnect(false, true);
   });
 };
 
 // Connect
 mpc.connect('http://localhost:8080', computation_id, options);
-

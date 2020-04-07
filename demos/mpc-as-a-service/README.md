@@ -11,34 +11,43 @@ inputs.
 ## Running Demo
 Unlike many of the other demos provided here, parameters such as party count are not specified as in-line arguments.
 Instead, this information as well as the information for which of the parties are input parties and which are compute 
-parties is set in config.json. Another different from the other demos is that here only the compute parties may be run
-through the terminal, while input parties must be run through a web browser. As currently configured in config.json,
-there are 3 compute parties and 3 input parties, and all compute parties must be running before the input parties
-provide their input. 
+parties is set in config.json.
 
-1. Running a server:
-    ```shell
-    node demos/mpc-as-a-service/server.js
-    ```
+Another different from the other demos is that here only the compute parties may be run through the terminal, while input
+parties must be run through a web browser.
 
-2. For the compute parties, open browser based parties by going to *http://localhost:8080/demos/mpc-as-a-service/client.html* in the 
-browser, or a node.js party by running 
-    ```shell
-    node demos/mpc-as-a-service/compute-party.js
+As currently configured in config.json, there are 3 compute parties and 3 input parties.
 
-3. For the input parties, run through the browser by going to *http://localhost:8080/demos/mpc-as-a-service/client.html*.
+Additionally, config.json specifies whether to use preprocessing or crypto provider. For more on this, please
+check the preprocessing tutorial.
+
+1. Running the server:
+```shell
+node demos/mpc-as-a-service/server.js
+```
+
+2. Running compute parties:
+```shell
+# run a single compute party
+node demos/mpc-as-a-service/compute-party.js
+```
+
+3. For the input parties, go to *http://localhost:8080/demos/mpc-as-a-service/client.html* in a web browser.
 
 ## File structure
 The demo consists of the following parts:
 1. Server script: *server.js*
-2. Web Based Party: Made from the following files:
+2. Web Based input parties:
     * *client.html*: UI for the browser.
     * *client.js*: Handlers for UI buttons and input validations.
-3. The MPC protocol:
-    * *compute-party.js*: MPC protocol for parties that help compute but do not receive output.
     * *client-mpc.js*: MPC protocol for parties that provide input of computation.
+3. Compute parties:
+    * *compute-party.js*: MPC protocol for parties that help compute but do not receive output.
 4. Configuration file:
     * *config.json* 
 5. Documentation:
     * This *README.md* file.
-
+6. Tests:
+    * *tests/config-*.json*: configuration files for various tests.
+    * *tests/test.js*: mocha testing suite.
+    * *test.sh*: entry point for tests.

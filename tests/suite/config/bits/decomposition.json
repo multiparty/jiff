@@ -1,0 +1,102 @@
+{
+  "tests": [ "decomposition2-127", "decomposition2-16777729", "decomposition3-127", "decomposition3-16777729", "decomposition5-127", "decomposition5-2039",
+             "decomposition-open-2-16777729", "decomposition-open-3-16777729", "decomposition-open-5-2039" ],
+  "suiteConf": {
+    "port": 3001,
+    "generation": {
+      "file": "config/bits/generation.js",
+      "function": "generateDecomposition"
+    },
+    "computation": {
+      "file": "config/bits/computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "decomposition2-127": {
+      "alias": "decomposition",
+      "count": 15,
+      "parallel": 5,
+      "options": {
+        "Zp": 127,
+        "party_count": 2
+      }
+    },
+    "decomposition2-16777729": {
+      "alias": "decomposition",
+      "count": 5,
+      "parallel": 3,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 2
+      }
+    },
+    "decomposition3-127": {
+      "alias": "decomposition",
+      "count": 10,
+      "parallel": 5,
+      "options": {
+        "Zp": 127,
+        "party_count": 3
+      }
+    },
+    "decomposition3-16777729": {
+      "alias": "decomposition",
+      "count": 5,
+      "parallel": 3,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 3
+      }
+    },
+    "decomposition5-127": {
+      "alias": "decomposition",
+      "count": 10,
+      "parallel": 5,
+      "options": {
+        "Zp": 127,
+        "party_count": 3
+      }
+    },
+    "decomposition5-2039": {
+      "alias": "decomposition",
+      "count": 5,
+      "parallel": 2,
+      "options": {
+        "Zp": 2039,
+        "party_count": 5
+      }
+    },
+    "decomposition-open-2-16777729": {
+      "open": "bits.open",
+      "alias": "decomposition",
+      "count": 5,
+      "parallel": 3,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 2
+      }
+    },
+    "decomposition-open-3-16777729": {
+      "open": "bits.open",
+      "alias": "decomposition",
+      "count": 5,
+      "parallel": 3,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 3
+      }
+    },
+    "decomposition-open-5-2039": {
+      "open": "bits.open",
+      "alias": "decomposition",
+      "count": 5,
+      "parallel": 3,
+      "options": {
+        "Zp": 2039,
+        "party_count": 5
+      }
+    }
+  }
+}

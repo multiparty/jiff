@@ -1,0 +1,25 @@
+{
+  "tests": [ "<", "<=", ">", ">=", "==", "!=" ],
+  "suiteConf": {
+    "port": 3001,
+    "generation": {
+      "file": "config/bits/generation.js",
+      "function": "generateComparisonInputs"
+    },
+    "computation": {
+      "file": "config/bits/computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 10,
+      "parallel": 5,
+      "options": {
+        "Zp": 61,
+        "party_count": 3
+      }
+    }
+  }
+}

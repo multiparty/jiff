@@ -1,0 +1,304 @@
+{
+  "tests": [ "rejection(3)-127", "rejection(3)-128", "rejection(3)-128-ondemand", "rejection(3)-129", "rejection(3)-161-provider", "rejection(3)-161-ondemand",
+             "rejection(3)-100-200", "rejection(2)-2048", "rejection(2)-1-2049", "rejection(2)-1-2049-ondemand", "rejection(2)-5-1000000", "rejection(2)-16777729",
+             "rejection(2)-16777729-provider", "rejection(2)-1", "rejection(2)-1-provider", "rejection(5)-1", "rejection(5)-1-provider", "rejection(5)-1-ondemand" ],
+  "suiteConf": {
+    "port": 3001,
+    "computation": {
+      "file": "config/bits/computations-rejection.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "rejection(3)-127": {
+      "alias": "rejection",
+      "parallel": 3,
+      "options": {
+        "Zp": 11,
+        "party_count": 3
+      },
+      "inputs": [
+        {"upper": 127},
+        {"upper": 127},
+        {"upper": 127},
+        {"upper": 127},
+        {"upper": 127},
+        {"upper": 127},
+        {"upper": 127},
+        {"upper": 127},
+        {"upper": 127},
+        {"upper": 127}
+      ]
+    },
+    "rejection(3)-128": {
+      "alias": "rejection",
+      "parallel": 3,
+      "options": {
+        "Zp": 11,
+        "party_count": 3
+      },
+      "inputs": [
+        {"upper": 128},
+        {"upper": 128},
+        {"upper": 128},
+        {"upper": 128},
+        {"upper": 128},
+        {"upper": 128},
+        {"upper": 128},
+        {"upper": 128},
+        {"upper": 128},
+        {"upper": 128}
+      ]
+    },
+    "rejection(3)-128-ondemand": {
+      "alias": "rejection",
+      "parallel": 3,
+      "options": {
+        "Zp": 11,
+        "party_count": 3,
+        "ondemand": true
+      },
+      "inputs": [
+        {"lower": 0, "upper": 128},
+        {"lower": 0, "upper": 128},
+        {"lower": 0, "upper": 128}
+      ]
+    },
+    "rejection(3)-129": {
+      "alias": "rejection",
+      "parallel": 3,
+      "options": {
+        "Zp": 11,
+        "party_count": 3
+      },
+      "inputs": [
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129},
+        {"upper": 129}
+      ]
+    },
+    "rejection(3)-161-provider": {
+      "alias": "rejection",
+      "parallel": 2,
+      "options": {
+        "Zp": 11,
+        "party_count": 3,
+        "crypto_provider": true
+      },
+      "inputs": [
+        {"upper": 161},
+        {"upper": 161},
+        {"upper": 161}
+      ]
+    },
+    "rejection(3)-161-ondemand": {
+      "alias": "rejection",
+      "parallel": 2,
+      "options": {
+        "Zp": 11,
+        "party_count": 3,
+        "ondemand": true
+      },
+      "inputs": [
+        {"lower": 0, "upper": 161},
+        {"lower": 0, "upper": 161},
+        {"lower": 0, "upper": 161}
+      ]
+    },
+    "rejection(3)-100-200": {
+      "alias": "rejection",
+      "parallel": 3,
+      "options": {
+        "Zp": 127,
+        "party_count": 3
+      },
+      "inputs": [
+        {"upper": 200, "lower": 100},
+        {"upper": 200, "lower": 100},
+        {"upper": 200, "lower": 100},
+        {"upper": 200, "lower": 100},
+        {"upper": 200, "lower": 100},
+        {"upper": 200, "lower": 100},
+        {"upper": 200, "lower": 100},
+        {"upper": 200, "lower": 100},
+        {"upper": 200, "lower": 100},
+        {"upper": 200, "lower": 100}
+      ]
+    },
+    "rejection(2)-2048": {
+      "alias": "rejection",
+      "parallel": 3,
+      "options": {
+        "Zp": 11,
+        "party_count": 2
+      },
+      "inputs": [
+        {"upper": 2048},
+        {"upper": 2048},
+        {"upper": 2048},
+        {"upper": 2048},
+        {"upper": 2048},
+        {"upper": 2048},
+        {"upper": 2048},
+        {"upper": 2048},
+        {"upper": 2048},
+        {"upper": 2048}
+      ]
+    },
+    "rejection(2)-1-2049": {
+      "alias": "rejection",
+      "parallel": 3,
+      "options": {
+        "Zp": 2039,
+        "party_count": 2
+      },
+      "inputs": [
+        {"upper": 2049, "lower": 1},
+        {"upper": 2049, "lower": 1},
+        {"upper": 2049, "lower": 1},
+        {"upper": 2049, "lower": 1},
+        {"upper": 2049, "lower": 1},
+        {"upper": 2049, "lower": 1},
+        {"upper": 2049, "lower": 1}
+      ]
+    },
+    "rejection(2)-1-2049-ondemand": {
+      "alias": "rejection",
+      "parallel": 3,
+      "options": {
+        "Zp": 2039,
+        "party_count": 2,
+        "ondemand": true
+      },
+      "inputs": [
+        {"upper": 2049, "lower": 1},
+        {"upper": 2049, "lower": 1},
+        {"upper": 2049, "lower": 1}
+      ]
+    },
+    "rejection(2)-5-1000000": {
+      "alias": "rejection",
+      "parallel": 3,
+      "options": {
+        "Zp": 127,
+        "party_count": 2
+      },
+      "inputs": [
+        {"upper": 1000000, "lower": 5},
+        {"upper": 1000000, "lower": 5},
+        {"upper": 1000000, "lower": 5},
+        {"upper": 1000000, "lower": 5},
+        {"upper": 1000000, "lower": 5},
+        {"upper": 1000000, "lower": 5},
+        {"upper": 1000000, "lower": 5},
+        {"upper": 1000000, "lower": 5},
+        {"upper": 1000000, "lower": 5},
+        {"upper": 1000000, "lower": 5}
+      ]
+    },
+    "rejection(2)-16777729": {
+      "alias": "rejection",
+      "parallel": 2,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 2
+      },
+      "inputs": [
+        {},
+        {},
+        {},
+        {}
+      ]
+    },
+    "rejection(2)-16777729-provider": {
+      "alias": "rejection",
+      "parallel": 2,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 2,
+        "crypto_provider": true
+      },
+      "inputs": [
+        {"lower": 0, "upper": 16777729},
+        {"lower": 0, "upper": 16777729},
+        {"lower": 0, "upper": 16777729}
+      ]
+    },
+    "rejection(2)-1": {
+      "alias": "rejection",
+      "parallel": 2,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 2
+      },
+      "inputs": [
+        {"upper": 500, "lower": 499},
+        {"upper": 2, "lower": 1},
+        {"upper": 1, "lower": 0}
+      ]
+    },
+    "rejection(2)-1-provider": {
+      "alias": "rejection",
+      "parallel": 2,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 2,
+        "crypto_provider": true
+      },
+      "inputs": [
+        {"upper": 500, "lower": 499},
+        {"upper": 2, "lower": 1},
+        {"upper": 1, "lower": 0}
+      ]
+    },
+    "rejection(5)-1": {
+      "alias": "rejection",
+      "parallel": 2,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 5
+      },
+      "inputs": [
+        {"upper": 500, "lower": 499},
+        {"upper": 2, "lower": 1},
+        {"upper": 1, "lower": 0}
+      ]
+    },
+    "rejection(5)-1-provider": {
+      "alias": "rejection",
+      "parallel": 2,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 5,
+        "crypto_provider": true
+      },
+      "inputs": [
+        {"upper": 500, "lower": 499},
+        {"upper": 2, "lower": 1},
+        {"upper": 1, "lower": 0}
+      ]
+    },
+    "rejection(5)-1-ondemand": {
+      "alias": "rejection",
+      "parallel": 2,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 5,
+        "ondemand": true
+      },
+      "inputs": [
+        {"upper": 500, "lower": 499},
+        {"upper": 2, "lower": 1},
+        {"upper": 1, "lower": 0}
+      ]
+    }
+  }
+}

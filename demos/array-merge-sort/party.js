@@ -45,7 +45,7 @@ options.onConnect = function (jiff_instance) {
   var promise = mpc.compute(input);
   promise.then(function (v) {
     console.log(v);
-    jiff_instance.disconnect(true);
+    jiff_instance.disconnect(false, true);
   });
 };
 

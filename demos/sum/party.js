@@ -1,3 +1,12 @@
+process.on('uncaughtException', function (err) {
+  console.log('Uncaught Exception!');
+  console.log(err);
+  throw err;
+});
+process.on('unhandledRejection', function (reason) {
+  console.log('Unhandled Rejection', reason);
+});
+
 /**
  * Do not change this unless you have to.
  * This code parses input command line arguments,
@@ -35,7 +44,7 @@ options.onConnect = function (jiff_instance) {
 
   promise.then(function (v) {
     console.log(v);
-    jiff_instance.disconnect(true);
+    jiff_instance.disconnect(true, true);
   });
 };
 

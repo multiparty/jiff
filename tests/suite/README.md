@@ -75,8 +75,8 @@ to any test case which is not explicitly mapped to some JSON object.
 each of the nested JSON object can have these attributes:
 1. count: the number of cases to run in this test.
 2. parallel: the max number of cases to run in parallel.
-3. options: a JSON object that is passed as options while creating an instance with make_jiff. It can contain 
-   any of the attributes usually passed to make_jiff, in particular, it must specify the party\_count.
+3. options: a JSON object that is passed as options while creating an instance with new JIFFClient(). It can contain 
+   any of the attributes usually passed to the constructor, in particular, it must specify the party\_count.
 4. alias: optional. If provided, the alias will be passed to the compute function (but not to generation) instead of the name.
    This is useful for cases where different test execute the same functionality but with different inputs (e.g. one test uses
    pre-defined inputs, the other uses random inputs).

@@ -5,9 +5,8 @@ mkdir -p logs
 if [ "$1" == "*" ]; then
     EXIT_CODE=0
     for i in demos/*; do
-        if [ -f "$i/test.js" ]; then
-            if ! [[ "$i" =~ ^demos/(pca|mpc-web|template|mpc-as-a-service)$ ]]; then
-                sleep 2
+        if [ -f "$i/test.js" ] || [ -f "$i/test.sh" ]; then
+            if ! [[ "$i" =~ ^demos/(pca|template)$ ]]; then
                 npm run-script test-demo -- "$i"
                 CODE=$?
                 if [[ "${CODE}" != "0" ]]; then
@@ -18,22 +17,34 @@ if [ "$1" == "*" ]; then
     done
     exit "$EXIT_CODE"
 else
+    OLD_PWD=$(pwd)
     TESTDIR=${1%/}
     NAME=$(basename $TESTDIR)
     logs="logs/${NAME}.log"
     echo "Server logs at ${logs}"
 
-    # Run server
-    echo "====================" >> "${logs}"
-    echo "====================" >> "${logs}"
-    echo "NEW TEST $(date)" >> "${logs}"
-    echo "====================" >> "${logs}"
-    node ${TESTDIR}/server.js >> "${logs}" &
+    if [ -f "$TESTDIR/test.sh" ]; then
+      # demo has custom test bash script, run it
+      (cd "$TESTDIR" && ./test.sh)
+      exit $?
+    else
+      # genric demo, run genric tests
 
-    # Run test
-    ./node_modules/.bin/mocha --full-trace --reporter spec ${TESTDIR}/test.js
-    EXIT_CODE=$?
+      # Run server
+      if [[ $NAME != "web-mpc" ]]; then
+        echo "====================" >> "${logs}"
+        echo "====================" >> "${logs}"
+        echo "NEW TEST $(date)" >> "${logs}"
+        echo "====================" >> "${logs}"
+        node ${TESTDIR}/server.js >> "${logs}" &
+        sleep 1
+      fi
 
-    kill $(ps aux | grep " ${TESTDIR}/server\.js" | awk '{ print $2}')
-    exit "$EXIT_CODE"
+      # Run test
+      ./node_modules/.bin/mocha --full-trace --reporter spec ${TESTDIR}/test.js
+      EXIT_CODE=$?
+
+      kill $(ps aux | grep " ${TESTDIR}/server\.js" | awk '{ print $2}')
+      exit "$EXIT_CODE"
+    fi
 fi

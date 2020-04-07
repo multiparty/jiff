@@ -82,24 +82,22 @@
   * Return: the reconstructed secret, possibly modified (this is used as value for the subsequent hooks in the array).
 
 ### Miscellaneous Hooks:
-* `receiveTriplet[Array]: function(instance, triplet)`
-    * `instance`: the JIFF instance
-    * `triplet`: the received triplet after decryption (a map from *a*, *b*, *c* to the corresponding shares such that *a* * *b* = *c*`)
-  * Return: the triplet, possibly modified (this is used as triplet for the subsequent hooks in the array).
-* `receiveNumbers[Array]: function(instance, numbers)`
-    * `instance`: the JIFF instance
-    * `numbers`: an array with format: [ {"number": {value}, "number_id": <string> } ] that contains number values (i.e. shares of numbers) and their ids (after decryption).
-  * Return: an array with th same format as the numbers parameter: the values and ids inside it may be possibly modified (this is used as the numbers parameter for the subsequent hooks in the hook array).
 * `createSecretShare[Array]: function(instance, secret_share)`
     * `instance`: the JIFF instance
     * `secret_share`: the secret_share object as created by JIFF
   * Return: the `secret_share` object to be used by JIFF, possibly modified (this is used for the subsequent hooks in the array).
-
-
-Must add docs for beforeOperation/afterOperation:
-beforeOperation is called right before encrypting and sending,
-afterOperation is called right after receiving and decrypting.
-public_keys only has an afterOperation, but no beforeOperation.
+* `beforeOperation[Array]: function(instance, label, msg)`
+    Called before serializing and sending messages for any operation.
+    * `instance`: the JIFF instance
+    * `label`: one of 'initialization', 'share', 'open', 'custom', 'crypto_provider', 'free', or 'disconnect'
+    * `msg`: the message received (parsed into a json object), the actual attributes in the object depend on which label it corresponds to
+  * Return: the msg, including any modifications, that will sent out by this event.
+* `afterOperation[Array]: function(instance, label, msg)`
+    Called after receiving and parsing messages (but before handling them) for any event.
+    * `instance`: the JIFF instance
+    * `label`: one of 'initialization', 'public_keys', 'share', 'open', 'custom', 'crypto_provider', 'free', or 'disconnect'
+    * `msg`: the message received (parsed into a json object), the actual attributes in the object depend on which label it corresponds to
+  * Return: the msg, including modifications, that will get passed into operation handlers.
 
 ## Example
 
@@ -185,26 +183,6 @@ Alternatively, a party may receive the result for a share that it does not own, 
 
 A party may also hold a share of the result but not receive the result, in which case only steps 1-5 of the original flow are executed.
 
-### Triplet request
-
-1. `jiff_instance.triplet` (e.g. when a multiplication is performed)
-2. hook: `encryptSign`
-3. request is sent to server
-4. server replies
-5. hook: `decryptSign`
-6. hook: `receiveTriplet`
-7. resolve triplet into corresponding `secret_share` objects
-
-### Number request
-
-1. `jiff_instance.server_generate_and_share` (e.g. when a constant division or share refresh is performed)
-2. hook: `encryptSign`
-3. request is sent to server
-4. server replies
-5. hook: `decryptSign`
-6. hook: `receiveNumbers`
-7. resolve triplet into corresponding `secret_share` objects
-
 ### Creation of secret_share objects
 
 This flow is particularly useful when developing extensions for JIFF. This allows the user to modify the implementation of a `secret_share` object, including changing how operations are implemented (e.g. addition, multiplication, etc.), registering callbacks for when the share is computed, or adding additional operations:
@@ -227,7 +205,8 @@ and execute the appropriate code for them.
 ## Supported Hooks
 
 ### Crypto Hooks
-Exact match of the client library crypto hooks.
+Exact match of the client library crypto hooks, except it does not include encryptSign or decryptSign, since server
+does not decrypt/encrypt messages by default.
 
 ### Initialization Hooks
 * `beforeInitialization`
@@ -255,8 +234,6 @@ For storing messages in mailboxes
 
 ### Miscellaneous Hooks
 * `log`
-* `beforeOperation` after receiving but before servicing messages from share, open, custom, triplet, and number.
-* `afterOperation` after servicing but before sending responses for share, open, custom, triplet, and number.
+* `beforeOperation` after receiving but before servicing messages for share, open, custom, and crypto_provider. Server restful extension has an extra operation: 'poll'. Any errors raised in this hook cause the request to reject, and the error to be returned to the client.
+* `afterOperation` after servicing but before sending output message for share, open, custom, and crypto_provider. Server restful extension has an extra operation: 'poll'. Any errors raised in this hook cause the request to reject, and the error to be returned to the client.
 * `computeShares`
-* `generateTriplet`
-* `generateNumber`

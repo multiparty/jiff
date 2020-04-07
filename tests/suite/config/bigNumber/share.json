@@ -1,5 +1,5 @@
 {
-  "tests": [ "share2", "share3", "share4", "share5", "share10" ],
+  "tests": [ "share2", "share3", "share4", "share5", "share10", "reshare-threshold4", "reshare-threshold5", "reshare-parties4", "reshare-parties5", "reshare-parties7" ],
   "suiteConf": {
     "port": 3001,
     "extensions": [ "bigNumber" ],
@@ -19,7 +19,8 @@
       "parallel": 25,
       "options": {
         "Zp": "2425967623052370772757633156976982469681",
-        "party_count": 2
+        "party_count": 2,
+        "safemod": false
       }
     },
     "share3": {
@@ -27,7 +28,8 @@
       "parallel": 25,
       "options": {
         "Zp": "2425967623052370772757633156976982469681",
-        "party_count": 3
+        "party_count": 3,
+        "safemod": false
       }
     },
     "share4": {
@@ -35,7 +37,8 @@
       "parallel": 20,
       "options": {
         "Zp": "2425967623052370772757633156976982469681",
-        "party_count": 4
+        "party_count": 4,
+        "safemod": false
       }
     },
     "share5": {
@@ -43,7 +46,8 @@
       "parallel": 20,
       "options": {
         "Zp": "2425967623052370772757633156976982469681",
-        "party_count": 5
+        "party_count": 5,
+        "safemod": false
       }
     },
     "share10": {
@@ -51,7 +55,53 @@
       "parallel": 15,
       "options": {
         "Zp": "2425967623052370772757633156976982469681",
-        "party_count": 10
+        "party_count": 10,
+        "safemod": false
+      }
+    },
+    "reshare-threshold4": {
+      "count": 100,
+      "parallel": 25,
+      "options": {
+        "Zp": "2425967623052370772757633156976982469681",
+        "party_count": 4,
+        "safemod": false
+      }
+    },
+    "reshare-threshold5": {
+      "count": 50,
+      "parallel": 20,
+      "options": {
+        "Zp": "2425967623052370772757633156976982469681",
+        "party_count": 5,
+        "safemod": false
+      }
+    },
+    "reshare-parties4": {
+      "count": 100,
+      "parallel": 20,
+      "options": {
+        "Zp": "2425967623052370772757633156976982469681",
+        "party_count": 4,
+        "safemod": false
+      }
+    },
+    "reshare-parties5": {
+      "count": 100,
+      "parallel": 20,
+      "options": {
+        "Zp": "2425967623052370772757633156976982469681",
+        "party_count": 5,
+        "safemod": false
+      }
+    },
+    "reshare-parties7": {
+      "count": 20,
+      "parallel": 10,
+      "options": {
+        "Zp": "2425967623052370772757633156976982469681",
+        "party_count": 7,
+        "safemod": false
       }
     }
   }

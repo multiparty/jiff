@@ -1,0 +1,36 @@
+{
+  "tests": [ "<", "<=", ">", ">=", "==", "!=" ],
+  "suiteConf": {
+    "port": 3001,
+    "generation": {
+      "file": "config/bits/generation.js",
+      "function": "generateComparisonInputs"
+    },
+    "computation": {
+      "file": "config/bits/computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "share": "bits.share_lengths",
+      "count": 15,
+      "parallel": 3,
+      "options": {
+        "Zp": 11,
+        "max": 1021,
+        "party_count": 3
+      },
+      "inputs": [
+        { "1": 1000, "2": 5 },
+        { "1": 5, "2": 1000 },
+        { "1": 1020, "2": 511 },
+        { "1": 511, "2": 1020 },
+        { "1": 5, "2": 200, "_length1": 10 },
+        { "1": 401, "2": 7, "_length2": 10 },
+        { "1": 28, "2": 28, "_length1": 9 }
+      ]
+    }
+  }
+}

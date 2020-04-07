@@ -8,8 +8,12 @@ var baseGeneration = require('../base/generation.js');
 // functions specific to fixedpoint
 var isConstant;
 var genMem = [];
-function determineMax(test, party_count, integer_digits, decimal_digits) {
-  var max = new BigNumber(10).pow(integer_digits + decimal_digits);
+function determineMax(test, party_count, integer_digits, decimal_digits, max) {
+  // use minimum between max and integer/decimal digits capacity
+  max = new BigNumber(max).times(new BigNumber(10).pow(decimal_digits));
+  var max2 = new BigNumber(10).pow(integer_digits + decimal_digits);
+  max = max.lt(max2) ? max : max2;
+
   var operation_count = isConstant ? 2 : party_count;
   // +: max + max ... + max = party_count * max <= 10^(digits)
   if (test === '+') {
@@ -46,14 +50,14 @@ function pushToMem(party_count, num) {
 }
 
 // Override generation
-baseGeneration.generateUniform = function (test, options) {
-  var max = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits);
+baseGeneration.generateUniform = function (test, options, max) {
+  max = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits, max);
   var wholeNum = BigNumber.random().times(max).floor();
   pushToMem(options.party_count, wholeNum);
   return wholeNum.div(new BigNumber(10).pow(options.decimal_digits));
 };
-baseGeneration.generateNonZeroUniform = function (test, options) {
-  var max = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits);
+baseGeneration.generateNonZeroUniform = function (test, options, max) {
+  max = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits, max);
   var wholeNum = BigNumber.random().times(max.minus(1)).plus(1).floor();
   pushToMem(options.party_count, wholeNum);
   return wholeNum.div(new BigNumber(10).pow(options.decimal_digits));
@@ -63,45 +67,54 @@ baseGeneration.generateBit = function (test, options) {
   pushToMem(options.party_count, num);
   return num;
 };
-baseGeneration.generateMultiple = function (test, options, factor) {
-  var max = determineMax(test, options.party_count, options.integer_digits, 0);
+baseGeneration.generateMultiple = function (test, options, max, factor) {
+  max = determineMax(test, options.party_count, options.integer_digits, 0, max);
   var nmax = max.div(factor).abs().floor();
   max = nmax.gt(max) ? max : nmax;
   var coef = BigNumber.random().times(max).floor();
   return coef.times(factor);
 };
-baseGeneration.generateDividend = function (test, options, divisor) {
-  var max1 = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits);
+baseGeneration.generateDividend = function (test, options, max, divisor) {
+  var max1 = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits, max);
   var max2 = new BigNumber(10).pow(options.integer_digits + options.decimal_digits).times(divisor).floor();
-  var max = max1.lt(max2) ? max1 : max2;
+  max = max1.lt(max2) ? max1 : max2;
   var wholeNum = BigNumber.random().times(max).floor();
   return wholeNum.div(new BigNumber(10).pow(options.decimal_digits));
 };
-
-exports.generateShareInputs = function (test, count, options) {
-  return baseGeneration.generateShareInputs(test, count, options);
+baseGeneration.generateUniformNatural = function (test, options, max) {
+  max = new BigNumber(max);
+  return BigNumber.random().times(max).floor();
 };
 
-exports.generateArithmeticInputs = function (test, count, options) {
+
+// Override entry points
+var oldArithmetic = baseGeneration.generateArithmeticInputs;
+var oldConstantArithmetic = baseGeneration.generateConstantArithmeticInputs;
+var oldComparison = baseGeneration.generateComparisonInputs;
+var oldConstantComparison = baseGeneration.generateConstantComparisonInputs;
+
+baseGeneration.generateArithmeticInputs = function (test, count, options) {
   genMem = [];
   isConstant = false;
-  return baseGeneration.generateArithmeticInputs(test, count, options);
+  return oldArithmetic(test, count, options);
 };
 
-exports.generateConstantArithmeticInputs = function (test, count, options) {
+baseGeneration.generateConstantArithmeticInputs = function (test, count, options) {
   genMem = [];
   isConstant = true;
-  return baseGeneration.generateConstantArithmeticInputs(test, count, options);
+  return oldConstantArithmetic(test, count, options);
 };
 
-exports.generateComparisonInputs = function (test, count, options) {
+baseGeneration.generateComparisonInputs = function (test, count, options) {
   genMem = [];
   isConstant = false;
-  return baseGeneration.generateComparisonInputs(test, count, options);
+  return oldComparison(test, count, options);
 };
 
-exports.generateConstantComparisonInputs = function (test, count, options) {
+baseGeneration.generateConstantComparisonInputs = function (test, count, options) {
   genMem = [];
   isConstant = true;
-  return baseGeneration.generateConstantComparisonInputs(test, count, options);
+  return oldConstantComparison(test, count, options);
 };
+
+module.exports = baseGeneration;

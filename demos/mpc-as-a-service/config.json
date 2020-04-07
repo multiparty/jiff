@@ -2,6 +2,7 @@
   "party_count": 6,
   "compute_parties": [1, 2, 3],
   "input_parties": [4, 5, 6],
+  "preprocessing": true,
   "____COMMENT___": [
     "/*",
     "* party_count defines the total number of parties.",
@@ -10,6 +11,8 @@
     "* There cannot be any overlap between compute and input parties, if you want to support",
     "* compute parties with inputs, you will have to modify compute-party.js",
     "* any party id must be between 1 and party_count inclusive.",
+    "* preprocessing flags whether to rely on preprocessing (true) or the server as a crypto provider (false),",
+    "* for more info on preprocessing, check out the preprocessing tutorial!",
     "*/"
   ]
 }

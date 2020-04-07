@@ -14,7 +14,7 @@ function connect() {
     $('#connectButton').prop('disabled', false);
   } else {
     var options = { party_count: party_count, decimal_digits: 2, integer_digits: 2, Zp: 32749 };
-    options.onError = function (error) {
+    options.onError = function (_, error) {
       $('#output').append("<p class='error'>"+error+'</p>');
     };
     options.onConnect = function () {

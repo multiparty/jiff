@@ -7,11 +7,12 @@
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
     opt.warn = false;
+    opt.crypto_provider = true;
 
     // Added options goes here
     if (node) {
       // eslint-disable-next-line no-undef
-      jiff = require('../../lib/jiff-client');
+      JIFFClient = require('../../lib/jiff-client');
       // eslint-disable-next-line no-undef
       jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
       // eslint-disable-next-line no-undef
@@ -22,7 +23,7 @@
 
     opt.autoConnect = false;
     // eslint-disable-next-line no-undef
-    saved_instance = jiff.make_jiff(hostname, computation_id, opt);
+    saved_instance = new JIFFClient(hostname, computation_id, opt);
     // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_bignumber, opt);
     // eslint-disable-next-line no-undef

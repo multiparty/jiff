@@ -1,143 +1,123 @@
-// Global parameters
-var done;
+var baseComputations = require('./computations.js');
 
-// Test symbol/name, inputs, and parallelism degree
-var test;
-var inputs;
-var testParallel;
+baseComputations.mpcInterpreter = 'MPC';
+baseComputations.openInterpreter = 'OPEN';
 
-// Flags success/failure
-var errors = [];
+baseComputations.shareParameters = function (jiff_instance, test, testInputs) {
+  var numbers = testInputs['numbers'];
 
-// For logging purposes
-function myJoin(indices, values, sep) {
-  var str = '';
-  for (var i = 0; i < indices.length - 1; i++) {
-    str = str + values[indices[i]].toString() + sep;
+  var input = numbers[jiff_instance.id]; // will be ignored if party is not a sender
+  var threshold = testInputs['threshold'];
+  var receivers = testInputs['receivers'];
+  var senders = testInputs['senders'];
+
+  return {
+    input: input,
+    threshold: threshold,
+    receivers: receivers,
+    senders: senders
   }
-
-  if (indices.length > 0) {
-    str += values[indices[indices.length - 1]].toString();
-  }
-
-  if (values['constant'] != null) {
-    str += sep + 'c[' + values['constant'].toString() + ']';
-  } else if (indices.length === 1) {
-    str = sep + str;
-  }
-
-  return str;
-}
-
-function errorMsg(caseNum, id, ss, rs, expected, actual, allInputs) {
-  var msg = '#'+caseNum+' | party id '+id+': ';
-  msg += 'senders: [ ' + ss.join(', ') + ' ]. ';
-  msg += 'receivers: [ ' + rs.join(', ') + ' ]. ';
-  msg += '!= ' + actual.toString() + ' ----- Expected ' + actual.toString() + '. ';
-  msg += 'All Inputs: [ ' + myJoin(ss, allInputs, ' | ') + ' ]';
-  return msg;
-}
-
-// Run a single test case under MPC and in the open and compare the results
-function singleTest(jiff_instance, t) {
-  try {
-    var testCase = inputs[t];
-    var id = jiff_instance.id;
-
-    var numbers = testCase['numbers'];
-
-    var input = numbers[id]; // will be ignored if party is not a sender
-    var threshold = testCase['threshold'];
-    var rs = testCase['receivers'];
-    var ss = testCase['senders'];
-
-    // Share
-    var shares = jiff_instance.share(input, threshold, rs, ss);
-
-    if (ss.indexOf(id) === -1 && rs.indexOf(id) === -1) {
-      // Nothing to do.
-      return null;
-    }
-
-    // receiver but not sender, must send open shares of each number to its owner.
-    if (rs.indexOf(id) > -1 && ss.indexOf(id) === -1) {
-      // Send opens
-      for (var i = 0; i < ss.length; i++) {
-        jiff_instance.open(shares[ss[i]], [ss[i]]);
-      }
-
-      return null;
-    }
-
-    // must be a sender, maybe a receiver too.
-    var promise = null; // to store a promise to opening this party's original input.
-
-    // receiver and sender, must send open shares of each number to its owner, and receive one open.
-    if (rs.indexOf(id) > -1 && ss.indexOf(id) > -1) {
-      // Send opens
-      for (var k = 0; k < ss.length; k++) {
-        var p = jiff_instance.open(shares[ss[k]], [ss[k]]);
-        if (p != null && promise == null) {
-          promise = p;
-        }
-      }
-    }
-
-    // sender, but not receiver, should get back the number, without sending any shares.
-    if (ss.indexOf(id) > -1 && rs.indexOf(id) === -1) {
-      promise = jiff_instance.receive_open(rs, threshold);
-    }
-
-    return promise.then(function (mpcResult) {
-      // Assert both results are equal
-      if (input.toString() !== mpcResult.toString()) {
-        if (id === 1) {
-          errors.push(errorMsg(t, id, ss, rs, input, mpcResult, numbers));
-        }
-      }/* else if (jiff_instance.id === 1) {
-        console.log(myJoin(ss, numbers, ' : ') + ' @ ' + id + ' = ' + mpcResult.toString());
-      }*/
-    });
-  } catch (err) {
-    errors.push(err);
-  }
-}
-
-// Run a batch of tests according to parallelism degree until all tests are consumed
-async function batchTest(jiff_instance) {
-  //var end = Math.min(startIndex + testParallel, inputs.length);
-
-  for (var t = 0; t < inputs.length; t++) {
-    if (t % testParallel === 0) {
-      jiff_instance.start_barrier();
-    }
-
-    var promise = singleTest(jiff_instance, t);
-    jiff_instance.add_to_barriers(promise);
-
-    if (t % testParallel === testParallel - 1 || t === inputs.length - 1) {
-      await jiff_instance.end_barrier();
-    }
-  }
-
-  // Reached the end
-  jiff_instance.disconnect(true, true);
-  if (jiff_instance.id === 1) {
-    var exception;
-    if (errors.length > 0) {
-      exception = Error('Failed Test: ' + test + '\n\t' + errors.join('\n\t'));
-    }
-    done(exception);
-  }
-}
-
-// Default Computation Scheme
-exports.compute = function (jiff_instance, _test, _inputs, _testParallel, _done) {
-  errors = [];
-  done = _done;
-  test = _test;
-  inputs = _inputs;
-  testParallel = _testParallel;
-
-  batchTest(jiff_instance, 0);
 };
+
+baseComputations.shareHook = function (jiff_instance, test, testInputs, input, threshold, receivers, senders, shareParameters) {
+  var id = jiff_instance.id;
+  var shares = jiff_instance.share(input, threshold, receivers, senders);
+
+  // Is this a re-share variant?
+  if (test.startsWith('reshare')) {
+    shareParameters.receivers = testInputs['reshare_holders'];
+    shareParameters.threshold = testInputs['reshare_threshold'];
+    // re-share all shares according to new holders and threshold
+    for (var si = 0; si < senders.length; si++) {
+      var sender = senders[si];
+      shares[sender] = jiff_instance.reshare(shares[sender], shareParameters.threshold, shareParameters.receivers, receivers)
+    }
+  }
+
+  if (shareParameters.receivers.indexOf(id) === -1 && senders.indexOf(id) === -1) {
+    return null;
+  }
+
+  return shares;
+};
+
+baseComputations.singleCompute = function (jiff_instance, shareParameters, test, values, interpreter) {
+  if (interpreter === baseComputations.openInterpreter) {
+    return values['numbers'][jiff_instance.id];
+  }
+
+  // MPC interpreter
+  // If we got here, we must be either a sender or a receiver
+
+  var promise = null;
+  var pid, tmp;
+  for (var i = 0; i < shareParameters.senders.length; i++) {
+    pid = shareParameters.senders[i];
+    if (shareParameters.receivers.indexOf(jiff_instance.id) === -1) {
+      // Case 1: did not receive any shares, must have sent one, will receive an open.
+      tmp = jiff_instance.receive_open(shareParameters.receivers, shareParameters.senders, shareParameters.threshold);
+    } else {
+      // Case 2: received shares, maybe sent one too
+      var share = values[pid];
+      tmp = jiff_instance.open(share, shareParameters.senders);
+    }
+
+    if (pid === jiff_instance.id) {
+      promise = tmp;
+    }
+  }
+  return promise;
+};
+
+baseComputations.openHook = function (jiff_instance, test, promise) {
+  return promise;
+};
+
+baseComputations.errorMessage = function (jiff_instance, test, testInputs, shareParameters, mpcResult, expectedResult) {
+  var msg = 'party id '+ jiff_instance.id +': ';
+  msg += 'senders: [ ' + shareParameters.senders.join(', ') + ' ]. ';
+  msg += 'receivers: [ ' + shareParameters.receivers.join(', ') + ' ]. ';
+  msg += '!= ' + mpcResult.toString() + ' ----- Expected ' + expectedResult.toString() + '. ';
+  msg += 'All Inputs: [ ' + baseComputations.myJoin(shareParameters.senders, testInputs['numbers'], ' | ') + ' ]';
+  return msg;
+};
+
+baseComputations.successMessage = function (jiff_instance, test, testInputs, shareParameters, mpcResult, expectedResult) {
+  var msg = 'party id '+ jiff_instance.id +': ';
+  msg += 'senders: [ ' + shareParameters.senders.join(', ') + ' ]. ';
+  msg += 'receivers: [ ' + shareParameters.receivers.join(', ') + ' ]. ';
+  msg += '= ' + mpcResult.toString() + ' = ' + expectedResult.toString() + '. ';
+  msg += 'All Inputs: [ ' + baseComputations.myJoin(shareParameters.senders, testInputs['numbers'], ' | ') + ' ]';
+  return msg;
+};
+
+baseComputations.preProcessingParams = function () {
+  return true;
+};
+
+baseComputations.preprocess = function (jiff_instance, test, inputs) {
+  baseComputations.preprocess_start(test);
+
+  for (var i = 0; i < inputs.length; i++) {
+    var receivers = inputs[i]['receivers'];
+    var senders = inputs[i]['senders'];
+    var threshold = inputs[i]['threshold'];
+
+    if (test.startsWith('reshare')) {
+      receivers = inputs[i]['reshare_holders'];
+      threshold = inputs[i]['reshare_threshold'];
+    }
+
+    // every receiver performs an open to all sender for all shares it received with the given threshold!
+    jiff_instance.preprocessing('open', senders.length, null, threshold, receivers, senders, null, null, {open_parties: senders});
+  }
+
+  return new Promise(function (resolve) {
+    jiff_instance.executePreprocessing(function () {
+      baseComputations.preprocess_done(test);
+      resolve();
+    });
+  });
+};
+
+module.exports = baseComputations;
