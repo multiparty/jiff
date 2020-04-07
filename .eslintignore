@@ -1,3 +1,4 @@
 **/node_modules/
 docs/
-demos/routing/data/*
+dist/
+tutorials/static/js
