@@ -38,6 +38,7 @@ global.neptune = neptune;
 global.app = neptune.app;
 global.server = neptune.server;
 
+/* global app */
 app.use('/static', express.static('static/'));
 app.use('/lib', express.static('../lib/'));
 app.use('/dist', express.static('../dist/'));
