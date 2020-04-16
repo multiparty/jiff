@@ -23,7 +23,6 @@
     // eslint-disable-next-line no-undef
     __jiff_instance.apply_extension(jiff_restAPI);
     __jiff_instance.connect();
-    console.log(__jiff_instance);
     return __jiff_instance;
   };
   exports.compute = function (input, jiff_instance_) {
