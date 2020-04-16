@@ -41,53 +41,50 @@ var compute = function () {
   jiffClient.wait_for(all_parties, function () {
     // We are a compute party, we do not have any input (thus secret is null),
     // we will receive shares of inputs from all the input_parties.
-    let skeletons = {4: [null,null,null], 5: [null,null,null]};
-    var share_array_promise = jiffClient.share_ND_array(null, skeletons, null, config.compute_parties, config.input_parties);
+    let skeletons = {4: [null,null,null], 5: [null,null,null]};   // Assume arrays of three
+    var shares = jiffClient.share_ND_array(null, skeletons, null, config.compute_parties, config.input_parties);
 
-    share_array_promise.then(function (shares) {
-
-      /*
-       * Sum each array and get a grand total
-       */
-      function sadd_array(arr) {
-        let sum = arr[0];
-        for (var i = 1; i < arr.length; i++) {
-          sum = sum.sadd(arr[i]);
-        }
-        return sum;
+    /*
+     * Sum each array and get a grand total
+     */
+    function sadd_array(arr) {
+      let sum = arr[0];
+      for (var i = 1; i < arr.length; i++) {
+        sum = sum.sadd(arr[i]);
       }
+      return sum;
+    }
 
-      let partial_sums = [];
-      for (var i = 0; i < config.input_parties.length; i++) {
-        var p = config.input_parties[i];
-        partial_sums[i] = sadd_array(shares[p]);
+    let partial_sums = [];
+    for (var i = 0; i < config.input_parties.length; i++) {
+      var p = config.input_parties[i];
+      partial_sums[i] = sadd_array(shares[p]);
+    }
+    let total_sum = sadd_array(partial_sums);
+
+
+    /*
+     * Compute the inner product
+     */
+    let pairwise_product = shares[config.input_parties[0]];
+    for (var i = 1; i < config.input_parties.length; i++) {
+      var p = config.input_parties[i];
+      for (var j = 0; j < pairwise_product.length; j++) {
+        pairwise_product[j] = pairwise_product[j].smult(shares[p][j]);
       }
-      let total_sum = sadd_array(partial_sums);
+    }
+    let inner_product = sadd_array(pairwise_product);
 
 
-      /*
-       * Compute the inner product
-       */
-      let pairwise_product = shares[config.input_parties[0]];
-      for (var i = 1; i < config.input_parties.length; i++) {
-        var p = config.input_parties[i];
-        for (var j = 0; j < pairwise_product.length; j++) {
-          pairwise_product[j] = pairwise_product[j].smult(shares[p][j]);
-        }
-      }
-      let inner_product = sadd_array(pairwise_product);
+    // The results are returned as an array
+    let results = [total_sum, inner_product];
 
+    // Send back the result to any parties that are still connected
+    var promise = jiffClient.open_ND_array(results, all_parties, config.compute_parties);
 
-      // The results are returned as an array
-      let results = [total_sum, inner_product];
-
-      // Send back the result to any parties that are still connected
-      var promise = jiffClient.open_ND_array(results, all_parties, config.compute_parties);
-
-      promise.then(function (output) {
-        console.log('Final output is: ', output);
-        jiffClient.disconnect(true, true);
-      });
+    promise.then(function (output) {
+      console.log('Final output is: ', output);
+      jiffClient.disconnect(true, true);
     });
   });
 };

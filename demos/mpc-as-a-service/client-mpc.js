@@ -32,8 +32,11 @@
       jiff_instance = jiff_instance_;
     }
 
+    // Set up array sharing
+    let skeleton = jiff_instance.skeleton_of(input);
+    let skeletons = {4: skeleton, 5: skeleton};  // Assume same skeleton for all parties
+
     // Share with compute parties
-    let skeletons = {4: [null,null,null], 5: [null,null,null]};
     jiff_instance.share_ND_array(input, skeletons, null, config.compute_parties, config.input_parties);
 
     // If this party is still connected after the compute parties are done, it will
