@@ -41,7 +41,8 @@ var compute = function () {
   jiffClient.wait_for(all_parties, function () {
     // We are a compute party, we do not have any input (thus secret is null),
     // we will receive shares of inputs from all the input_parties.
-    var share_array_promise = jiffClient.share_ND_array(null, null, null, config.compute_parties, config.input_parties);
+    let skeletons = {4: [null,null,null], 5: [null,null,null]};
+    var share_array_promise = jiffClient.share_ND_array(null, skeletons, null, config.compute_parties, config.input_parties);
 
     share_array_promise.then(function (shares) {
 
