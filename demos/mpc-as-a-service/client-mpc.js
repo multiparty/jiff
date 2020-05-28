@@ -17,6 +17,7 @@
     opt['initialization'] = { role: 'input' };
     opt['party_count'] = config.party_count;
     opt['autoConnect'] = false;
+    opt['Zp'] = 101;
 
     // eslint-disable-next-line no-undef
     __jiff_instance = new JIFFClient(hostname, computation_id, opt);
@@ -33,7 +34,11 @@
 
     // Set up array sharing
     let skeleton = jiff_instance.skeleton_of(input);
-    let skeletons = {4: skeleton, 5: skeleton};  // Assume same skeleton for all parties
+    let skeletons = {};
+    for (var i = 0; i < config.input_parties.length; i++) {
+      let p_id = config.input_parties[i];
+      skeletons[p_id] = skeleton;  // Assume same skeleton for all parties
+    }
 
     // Share with compute parties
     jiff_instance.share_ND_array(input, skeletons, null, config.compute_parties, config.input_parties);
