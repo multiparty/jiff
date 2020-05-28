@@ -9,7 +9,7 @@
     "* party_count defines the total number of parties.",
     "* compute_parties defines the ids of the parties performing MPC.",
     "* input_parties defines the ids of the parties providing inputs to the compute parties.",
-    "* input_length defines the length requirement for each input party's array.",
+    "* input_length defines the length requirement for each input party`s array.",
     "* There cannot be any overlap between compute and input parties, if you want to support",
     "* compute parties with inputs, you will have to modify compute-party.js",
     "* any party id must be between 1 and party_count inclusive.",

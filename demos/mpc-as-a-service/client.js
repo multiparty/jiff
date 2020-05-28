@@ -42,8 +42,8 @@ function connect() {
 function submit() {
   var arr = JSON.parse(document.getElementById('inputText').value);
 
-  if (arr.length !== config.array_length) {
-    alert('Please input an array of length ' + config.array_length + '.');
+  if (arr.length !== config.input_length) {
+    alert('Please input an array of length ' + config.input_length + '.');
     return;
   }
 
