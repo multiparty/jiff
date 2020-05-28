@@ -42,6 +42,11 @@ function connect() {
 function submit() {
   var arr = JSON.parse(document.getElementById('inputText').value);
 
+  if (arr.length !== config.array_length) {
+    alert('Please input an array of length ' + config.array_length + '.');
+    return;
+  }
+
   for (var i = 0; i < arr.length; i++) {
     if (typeof(arr[i]) !== 'number') {
       alert('Please input an array of integers.');

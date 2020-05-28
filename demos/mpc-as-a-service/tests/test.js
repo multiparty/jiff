@@ -18,11 +18,17 @@ describe('MPC-as-a-service', function () {
       var jiffClient = clientMPC.connect('http://localhost:8080/', 'test', {}, config);
 
       // generate input
-      var input = Array(3).fill(0).map(() => Math.floor(Math.random() * jiffClient.Zp));
+      var input = Array(config.input_length).fill(0).map(() => Math.floor(Math.random() * jiffClient.Zp));
+
+      // sum output
       output[0] = (output[0] + input.reduce((a,b) => a+b)) % jiffClient.Zp;
+
+      // dot product output
       output[1] = output[1] === -1 ? input : (
         (output[1].map((e, i) => [e, input[i]]).map(e => e.reduce((a,b) => a*b))).reduce((a,b) => a+b)
       ) % jiffClient.Zp;
+
+      // compute
       promises.push(new Promise(function (jiffClient, input, i, resolve) {
         jiffClient.wait_for(compute_parties, function (jiffClient) {
           var promise = clientMPC.compute(input, jiffClient);

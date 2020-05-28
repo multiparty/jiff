@@ -44,7 +44,7 @@ var compute = function () {
     let skeletons = {};
     for (var i = 0; i < config.input_parties.length; i++) {
       let p_id = config.input_parties[i];
-      skeletons[p_id] = [null,null,null];  // Assume arrays of three
+      skeletons[p_id] = Array(config.input_length).fill(null);  // Assume arrays of three
     }
     var shares = jiffClient.share_ND_array(null, skeletons, null, config.compute_parties, config.input_parties);
 
