@@ -12,18 +12,17 @@ describe('MPC-as-a-service', function () {
     var input_parties_count = config.input_parties.length;
 
     // run a bunch of compute parties
-    var output = [0, -1];
+    var output = [-1, -1];
     var promises = [];
     for (var i = 0; i < input_parties_count; i++) {
       var jiffClient = clientMPC.connect('http://localhost:8080/', 'test', {}, config);
 
       // generate input
-      var input = Array(3).fill(0).map(function () { return Math.floor(Math.random() * jiffClient.Zp); });
-      console.log(input);
+      var input = Array(3).fill(0).map(() => Math.floor(Math.random() * jiffClient.Zp));
       output[0] = (output[0] + input.reduce((a,b) => a+b)) % jiffClient.Zp;
-      output[1] = output[1] === -1 ? input : ((
-        output[1].map((e, i) => [e, input[i]]).map(e => e.reduce((a,b) => a*b))
-      ).reduce((a,b) => a+b)) % jiffClient.Zp;
+      output[1] = output[1] === -1 ? input : (
+        (output[1].map((e, i) => [e, input[i]]).map(e => e.reduce((a,b) => a*b))).reduce((a,b) => a+b)
+      ) % jiffClient.Zp;
       promises.push(new Promise(function (jiffClient, input, i, resolve) {
         jiffClient.wait_for(compute_parties, function (jiffClient) {
           var promise = clientMPC.compute(input, jiffClient);
@@ -41,7 +40,7 @@ describe('MPC-as-a-service', function () {
     // verify output
     Promise.all(promises).then(function (results) {
       for (var i = 0; i < results.length; i++) {
-        if (results[i] !== output && results[i] !== 'disconnected') {
+        if (results[i][0] !== output[0] && results[i][1] !== output[1] && results[i] !== 'disconnected') {
           done(new Error('Expected output ' + output + ', found ' + results[i]));
         }
       }
