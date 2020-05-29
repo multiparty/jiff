@@ -49,7 +49,6 @@
     var promise = jiff_instance.open_ND_array(null, all_parties, config.compute_parties);
 
     promise.then(function (value) {
-      console.log('result: ', value);
       jiff_instance.disconnect(true, true);
     });
 
