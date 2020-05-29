@@ -10,7 +10,7 @@ function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
 
-  var options = { party_count: config.party_count, Zp: 101 };
+  var options = { party_count: config.party_count };
   options.onError = function (_, error) {
     $('#output').append("<p class='error'>"+error+'</p>');
   };

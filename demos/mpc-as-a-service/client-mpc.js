@@ -17,7 +17,6 @@
     opt['initialization'] = { role: 'input' };
     opt['party_count'] = config.party_count;
     opt['autoConnect'] = false;
-    opt['Zp'] = 101;
 
     // eslint-disable-next-line no-undef
     __jiff_instance = new JIFFClient(hostname, computation_id, opt);
