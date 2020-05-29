@@ -12,7 +12,7 @@ function connect() {
     $('#output').append("<p class='error'>Party count must be a valid number!</p>");
     $('#connectButton').prop('disabled', false);
   } else {
-    var options = { party_count: party_count, Zp: 13 };
+    var options = { party_count: party_count };
     options.onError = function (_, error) {
       $('#output').append("<p class='error'>"+error+'</p>');
     };
