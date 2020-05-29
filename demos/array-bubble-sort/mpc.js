@@ -58,29 +58,23 @@
     var final_promise = final_deferred.promise();
 
     // Share the arrays
-    jiff_instance.share_array(input, input.length).then(function (shares) {
-      jiff_instance.seed_ids(seed);
+    var shares = jiff_instance.share_array(input, input.length);
+    jiff_instance.seed_ids(seed);
 
-      // sum all shared input arrays element wise
-      var array = shares[1];
-      for (var p = 2; p <= jiff_instance.party_count; p++) {
-        for (var i = 0; i < array.length; i++) {
-          array[i] = array[i].sadd(shares[p][i]);
-        }
+    // sum all shared input arrays element wise
+    var array = shares[1];
+    for (var p = 2; p <= jiff_instance.party_count; p++) {
+      for (var i = 0; i < array.length; i++) {
+        array[i] = array[i].sadd(shares[p][i]);
       }
+    }
 
-      // sort new array
-      var sorted = bubblesort(array);
+    // sort new array
+    var sorted = bubblesort(array);
 
-      // Open the array
-      var allPromises = [];
-      for (var k = 0; k < sorted.length; k++) {
-        allPromises.push(jiff_instance.open(sorted[k]));
-      }
-
-      Promise.all(allPromises).then(function (results) {
-        final_deferred.resolve(results);
-      });
+    // Open the array
+    jiff_instance.open_ND_array(sorted).then(function (results) {
+      final_deferred.resolve(results);
     });
 
     return final_promise;

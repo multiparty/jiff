@@ -1,6 +1,0 @@
-{
-  "party_count": 6,
-  "compute_parties": [1, 2, 3],
-  "input_parties": [4, 5, 6],
-  "preprocessing": false
-}

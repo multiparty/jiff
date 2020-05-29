@@ -28,7 +28,7 @@ else
       (cd "$TESTDIR" && ./test.sh)
       exit $?
     else
-      # genric demo, run genric tests
+      # generic demo, run generic tests
 
       # Run server
       if [[ $NAME != "web-mpc" ]]; then

@@ -34,28 +34,41 @@ function connect() {
   // eslint-disable-next-line no-undef
   var jiff = mpc.connect(hostname, computation_id, options, config);
   jiff.wait_for(config.compute_parties, function () {
-    $('#button').attr('disabled', false); $('#output').append('<p>Connected to the compute parties!</p>');
+    $('#processButton').attr('disabled', false); $('#output').append('<p>Connected to the compute parties!</p>');
   });
 }
 
 // eslint-disable-next-line no-unused-vars
 function submit() {
-  var input = parseInt($('#number').val());
+  var arr = JSON.parse(document.getElementById('inputText').value);
 
-  if (isNaN(input)) {
-    $('#output').append("<p class='error'>Input a valid number!</p>");
-  } else if (100 < input || input < 0 || input !== Math.floor(input)) {
-    $('#output').append("<p class='error'>Input a WHOLE number between 0 and 100!</p>");
-  } else {
-    $('#button').attr('disabled', true);
-    $('#output').append('<p>Starting...</p>');
-    // eslint-disable-next-line no-undef
-    var promise = mpc.compute(input);
-    promise.then(handleResult);
+  if (arr.length !== config.input_length) {
+    alert('Please input an array of length ' + config.input_length + '.');
+    return;
   }
+
+  for (var i = 0; i < arr.length; i++) {
+    if (typeof(arr[i]) !== 'number') {
+      alert('Please input an array of integers.');
+      return;
+    }
+  }
+
+  $('#processButton').attr('disabled', true);
+  $('#output').append('<p>Starting...</p>');
+
+  // eslint-disable-next-line no-undef
+  var promise = mpc.compute(arr);
+  promise.then(function (opened_array) {
+    let results = {
+      sum: opened_array[0],
+      product: opened_array[1]
+    };
+    handleResult(results);
+  });
 }
 
-function handleResult(result) {
-  $('#output').append('<p>Result is: ' + result + '</p>');
+function handleResult(results) {
+  $('#output').append('<p>The sum is ' + results.sum + ' and the inner product is ' + results.product + '.</p>');
   $('#button').attr('disabled', false);
 }
