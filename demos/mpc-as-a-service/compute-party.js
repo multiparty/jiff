@@ -99,7 +99,10 @@ var compute = function () {
 jiffClient.wait_for(config.compute_parties, function () {
   if (config.preprocessing !== false) {
     // do not use crypto provider, perform preprocessing!
-    jiffClient.preprocessing('open', 1, null, null, config.compute_parties, config.compute_parties, null, null, {open_parties: all_parties});
+    var num_mults = config.input_parties.length * config.input_length;
+    console.log(num_mults);
+    jiffClient.preprocessing('smult', num_mults, null, null, config.compute_parties, config.compute_parties);
+    jiffClient.preprocessing('open', 2, null, null, config.compute_parties, config.compute_parties, null, null, {open_parties: all_parties});
     jiffClient.executePreprocessing(compute.bind(null, jiffClient));
   } else {
     // no preprocessing: use server as crypto provider
