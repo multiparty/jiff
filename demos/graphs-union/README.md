@@ -58,6 +58,7 @@ The demo consists of the following parts:
 2. Web Based Party: Made from the following files:
     - *client.html*: UI for the browser.
     - *client.js*: Handlers for UI buttons and input validations.
+    - *graph.js*: UI helpers for rendering a graph from an adjacency matrix.
 3. Node.js-Based Party:
     - *party.js*: Main entry point. Parses input from the command line and initializes the computation.
 4. The MPC protocol: Implemented in *mpc.js*. This file is used in both the browser and node.js versions of the demo.

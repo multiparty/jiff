@@ -14,4 +14,5 @@ http.listen(8080, function () {
 });
 
 console.log('Direct your browser to http://localhost:8080/demos/graphs-union/client.html.');
+console.log('To run a node.js based party: node demos/graphs-union/party <input>');
 console.log();
