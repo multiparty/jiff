@@ -50,7 +50,7 @@ var options = {
 
         for (var p = 0; p < search.length; p++) {
           var id = search[p];
-          if (check[id] === true) {
+          if (check[id] === true || id === 's1') {
             continue;
           }
 
@@ -74,7 +74,8 @@ var computeOptions = {
   party_count: 5,
   initialization: {role: 'compute'} // indicate to the server that this is a compute party
 }
-var serverCompute = jiffServer.compute('test', computeOptions);
+jiffServer.computationMaps.maxCount['test'] = config.party_count;
+var jiffClient = jiffServer.compute('test', computeOptions);
 jiffServer.apply_extension(jiffRestAPIServer, {app: app});
 
 // Serve static files.
@@ -93,10 +94,10 @@ http.listen(8080, function () {
 
 var all_parties = config.compute_parties.concat(config.input_parties);
 var compute = function () {
-  serverCompute.wait_for(all_parties, function () {
+  jiffClient.wait_for(all_parties, function () {
     // We are a compute party, we do not have any input (thus secret is null),
     // we will receive shares of inputs from all the input_parties.
-    var shares = serverCompute.share(null, null, config.compute_parties, config.input_parties);
+    var shares = jiffClient.share(null, null, config.compute_parties, config.input_parties);
 
     var sum = shares[config.input_parties[0]];
     for (var i = 1; i < config.input_parties.length; i++) {
@@ -104,21 +105,22 @@ var compute = function () {
       sum = sum.sadd(shares[p]);
     }
 
-    serverCompute.open(sum, all_parties).then(function (output) {
+    jiffClient.open(sum, all_parties).then(function (output) {
       console.log('Final output is: ', output);
-      serverCompute.disconnect(true, true);
+      jiffClient.disconnect(true, true);
     });
   });
 };
 
 // wait only for the compute parties to preprocess
-serverCompute.wait_for(config.compute_parties, function () {
+jiffClient.wait_for(config.compute_parties, function () {
   if (config.preprocessing !== false) {
     // do not use crypto provider, perform preprocessing!
-    serverCompute.preprocessing('open', 1, null, null, config.compute_parties, config.compute_parties, null, null, {open_parties: all_parties});
-    serverCompute.executePreprocessing(compute.bind(null, serverCompute));
+    jiffClient.preprocessing('open', 1, null, null, config.compute_parties, config.compute_parties, null, null, {open_parties: all_parties});
+    jiffClient.executePreprocessing(compute.bind(null, jiffClient));
   } else {
     // no preprocessing: use server as crypto provider
+
     compute();
   }
 });

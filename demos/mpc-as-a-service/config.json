@@ -1,7 +1,7 @@
 {
-  "party_count": 5,
-  "compute_parties": [1, 2, 3],
-  "input_parties": [4, 5],
+  "party_count": 4,
+  "compute_parties": ["s1", 1, 2],
+  "input_parties": [3, 4],
   "input_length": 3,
   "preprocessing": false,
   "____COMMENT___": [
