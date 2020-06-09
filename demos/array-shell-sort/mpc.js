@@ -184,7 +184,6 @@
 
       // Share the arrays
       var shares = jiff_instance.share_array(input, input.length);
-      jiff_instance.seed_ids(this_count);
 
       // Sum all shared input arrays element wise
       var array = shares[1];
@@ -198,7 +197,7 @@
       randomizedShellSort(array, offsets, permutationsByOffset);
 
       // Open the array
-      jiff_instance.open_ND_array(array).then(function (results) {
+      jiff_instance.open_array(array).then(function (results) {
         final_deferred.resolve(results);
       });
     });

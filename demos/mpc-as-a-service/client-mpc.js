@@ -45,7 +45,7 @@
     // If this party is still connected after the compute parties are done, it will
     // receive the result.
 
-    var promise = jiff_instance.open_ND_array(null, all_parties, config.compute_parties);
+    var promise = jiff_instance.open_array(null, all_parties, config.compute_parties);
 
     promise.then(function (value) {
       jiff_instance.disconnect(true, true);

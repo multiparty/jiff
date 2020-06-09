@@ -70,18 +70,8 @@
       jiff_instance = saved_instance;
     }
 
-    // Unique prefix seed for op_ids
-    if (seeds[jiff_instance.id] == null) {
-      seeds[jiff_instance.id] = 0;
-    }
-    var seed = seeds[jiff_instance.id]++;
-
-    var final_deferred = $.Deferred();
-    var final_promise = final_deferred.promise();
-
     // Share the arrays
     var shares = jiff_instance.share_array(input, input.length);
-    jiff_instance.seed_ids(seed);
 
     // Sum all shared input arrays element wise
     var array = shares[1];
@@ -94,10 +84,6 @@
     oddEvenSort(array, 0, array.length);
 
     // Open the array
-    jiff_instance.open_ND_array(array).then(function (results) {
-      final_deferred.resolve(results);
-    });
-
-    return final_promise;
+    return jiff_instance.open_array(array);
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));

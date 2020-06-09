@@ -48,20 +48,10 @@
       jiff_instance = saved_instance;
     }
 
-    // Unique prefix seed for op_ids
-    if (seeds[jiff_instance.id] == null) {
-      seeds[jiff_instance.id] = 0;
-    }
-    var seed = seeds[jiff_instance.id]++;
-
-    var final_deferred = $.Deferred();
-    var final_promise = final_deferred.promise();
-
     // Share the arrays
     var shares = jiff_instance.share_array(input, input.length);
-    jiff_instance.seed_ids(seed);
 
-    // sum all shared input arrays element wise
+    // Sum all shared input arrays element wise
     var array = shares[1];
     for (var p = 2; p <= jiff_instance.party_count; p++) {
       for (var i = 0; i < array.length; i++) {
@@ -69,14 +59,10 @@
       }
     }
 
-    // sort new array
+    // Sort new array
     var sorted = bubblesort(array);
 
     // Open the array
-    jiff_instance.open_ND_array(sorted).then(function (results) {
-      final_deferred.resolve(results);
-    });
-
-    return final_promise;
+    return jiff_instance.open_ND_array(sorted);
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
