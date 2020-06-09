@@ -1,6 +1,5 @@
 (function (exports, node) {
   var saved_instance;
-  var seeds = {};
 
   /**
    * Connect to the server and initialize the jiff instance
@@ -63,6 +62,6 @@
     var sorted = bubblesort(array);
 
     // Open the array
-    return jiff_instance.open_ND_array(sorted);
+    return jiff_instance.open_array(sorted);
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));

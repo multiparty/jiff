@@ -60,7 +60,7 @@ function submit() {
   // eslint-disable-next-line no-undef
   var promise = mpc.compute(arr);
   promise.then(function (opened_array) {
-    let results = {
+    var results = {
       sum: opened_array[0],
       product: opened_array[1]
     };

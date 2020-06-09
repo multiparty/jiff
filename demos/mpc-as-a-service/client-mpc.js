@@ -32,10 +32,11 @@
     }
 
     // Set up array sharing
-    let skeleton = jiff_instance.skeleton_of(input);
-    let skeletons = {};
-    for (var i = 0; i < config.input_parties.length; i++) {
-      let p_id = config.input_parties[i];
+    var skeleton = jiff_instance.skeleton_of(input);
+    var skeletons = {};
+    var i, p_id;
+    for (i = 0; i < config.input_parties.length; i++) {
+      p_id = config.input_parties[i];
       skeletons[p_id] = skeleton;  // Assume same skeleton for all parties
     }
 
@@ -45,7 +46,7 @@
     // If this party is still connected after the compute parties are done, it will
     // receive the result.
 
-    var promise = jiff_instance.open_array(null, all_parties, config.compute_parties);
+    var promise = jiff_instance.receive_open_array(all_parties, config.compute_parties);
 
     promise.then(function (value) {
       jiff_instance.disconnect(true, true);

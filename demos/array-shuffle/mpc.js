@@ -1,6 +1,5 @@
 (function (exports, node) {
   var saved_instance;
-  var seeds = {};
 
   /**
    * Connect to the server and initialize the jiff instance
@@ -32,7 +31,6 @@
 
     // Share the arrays
     var shares = jiff_instance.share_array(input, input.length);
-    jiff_instance.seed_ids(seed);
 
     // Concatenate input arrays
     var full_array = [];

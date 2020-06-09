@@ -39,13 +39,13 @@ var jiffClient = new JIFFClient('http://localhost:8080', computation_id, {
 // the computation code
 var compute = function () {
   jiffClient.wait_for(all_parties, function () {
-    var i, j, p;
+    var i, j, p, p_id;
 
     // We are a compute party, we do not have any input (thus secret is null),
     // we will receive shares of inputs from all the input_parties.
-    let skeletons = {};
+    var skeletons = {};
     for (i = 0; i < config.input_parties.length; i++) {
-      let p_id = config.input_parties[i];
+      p_id = config.input_parties[i];
       skeletons[p_id] = Array(config.input_length).fill(null);  // Assume arrays of three
     }
     var shares = jiffClient.share_ND_array(null, skeletons, null, config.compute_parties, config.input_parties);
@@ -54,36 +54,36 @@ var compute = function () {
      * Sum each array and get a grand total
      */
     function sadd_array(arr) {
-      let sum = arr[0];
+      var sum = arr[0];
       for (i = 1; i < arr.length; i++) {
         sum = sum.sadd(arr[i]);
       }
       return sum;
     }
 
-    let partial_sums = [];
+    var partial_sums = [];
     for (i = 0; i < config.input_parties.length; i++) {
       p = config.input_parties[i];
       partial_sums[i] = sadd_array(shares[p]);
     }
-    let total_sum = sadd_array(partial_sums);
+    var total_sum = sadd_array(partial_sums);
 
 
     /*
      * Compute the inner product
      */
-    let pairwise_product = shares[config.input_parties[0]];
+    var pairwise_product = shares[config.input_parties[0]];
     for (i = 1; i < config.input_parties.length; i++) {
       p = config.input_parties[i];
       for (j = 0; j < pairwise_product.length; j++) {
         pairwise_product[j] = pairwise_product[j].smult(shares[p][j]);
       }
     }
-    let inner_product = sadd_array(pairwise_product);
+    var inner_product = sadd_array(pairwise_product);
 
 
     // The results are returned as an array
-    let results = [total_sum, inner_product];
+    var results = [total_sum, inner_product];
 
     // Send back the result to any parties that are still connected
     var promise = jiffClient.open_ND_array(results, all_parties, config.compute_parties);
@@ -100,7 +100,6 @@ jiffClient.wait_for(config.compute_parties, function () {
   if (config.preprocessing !== false) {
     // do not use crypto provider, perform preprocessing!
     var num_mults = config.input_parties.length * config.input_length;
-    console.log(num_mults);
     jiffClient.preprocessing('smult', num_mults, null, null, config.compute_parties, config.compute_parties);
     jiffClient.preprocessing('open', 2, null, null, config.compute_parties, config.compute_parties, null, null, {open_parties: all_parties});
     jiffClient.executePreprocessing(compute.bind(null, jiffClient));

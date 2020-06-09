@@ -31,7 +31,7 @@
       jiff_instance = saved_instance;
     }
 
-    let skeletons = {};
+    var skeletons = {};
     for (p = 1; p <= jiff_instance.party_count; p++) {
       skeletons[p] = Array(input.length).fill(Array(input.length).fill(null));  // square matricies
     }

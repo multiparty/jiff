@@ -1,6 +1,5 @@
 (function (exports, node) {
   var saved_instance;
-  var seeds = {};
 
   /**
    * Connect to the server and initialize the jiff instance
