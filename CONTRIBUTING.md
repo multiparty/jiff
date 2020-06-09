@@ -15,7 +15,7 @@ When contributing to this repository, please first discuss the change you wish t
 - Branch formatting:
   - issueNumber-initials-description
   - ex. 22-LQ-bugFixes
-- Demos should be implemented in both the browser and node.js, and accompanied by test cases. Sophisticted demos should include a README as well as a package.json file for managing additional dependencies. *Please Follow the demo template under demos/template closely*.
+- Demos should be implemented in both the browser and node.js, and accompanied by test cases. Sophisticated demos should include a README as well as a package.json file for managing additional dependencies. *Please Follow the demo template under demos/template closely*.
 
 ## Issue Template
 * **I'm submitting a ...**
@@ -54,7 +54,7 @@ When contributing to this repository, please first discuss the change you wish t
 * **Other information** (e.g. detailed explanation, stacktraces, related issues, suggestions how to fix, links for us to have context, eg. stackoverflow, etc)
 
 ## Pull Requests (PRs) ##
-* **Please check if the PR fulfills these requirements**
+* **Please check if the PR fulfils these requirements**
 - [ ] The commit message follows our guidelines
 - [ ] Tests for the changes have been added (for bug fixes / features)
 - [ ] Docs have been added / updated (for bug fixes / features)

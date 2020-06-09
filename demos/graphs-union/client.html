@@ -51,7 +51,7 @@
   </head>
   <body onload="updateGraph(document.getElementById('inputText').value);">
     <h1>Connect JIFF</h1>
-    <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
+    <label for="computation_id">Computation ID</label> <input id="computation_id" value="test"></input><br/><br/>
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*" value="2"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
     <br/><br/>
     <hr/>
@@ -69,7 +69,7 @@
 ]
 </textarea> &nbsp; &nbsp; &nbsp; &nbsp;
     <svg width="250" height="250"></svg><br/>
-    <button onclick="submit();" disabled="disabled" id="processButton">Concat</button>
+    <button onclick="submit();" disabled="disabled" id="processButton">Submit</button>
     <div id="output"></div>
   </body>
 </html>
