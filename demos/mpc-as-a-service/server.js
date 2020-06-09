@@ -71,7 +71,7 @@ var jiffRestAPIServer = require('../../lib/ext/jiff-server-restful.js');
 var jiffServer = new JIFFServer(http, options);
 var computeOptions = {
   crypto_provider: config.preprocessing === false, // comment this out if you want to use preprocessing
-  party_count: 5,
+  party_count: config.party_count,
   initialization: {role: 'compute'} // indicate to the server that this is a compute party
 }
 jiffServer.computationMaps.maxCount['test'] = config.party_count;
