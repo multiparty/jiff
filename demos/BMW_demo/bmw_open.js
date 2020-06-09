@@ -8,42 +8,42 @@
  * @param {number|string} op_id - a unique operation id, used to tag outgoing messages.
  *
  */
- 
-function ooo(jiff,ls){	
-	var re=ls[1];
-	for(var i=2;i<=Object.keys(ls).length;i++){
-		re=re^ls[i];
-	
-	}
-	return re;
-	
+
+function ooo(jiff,ls) {
+  var re=ls[1];
+  for (var i=2;i<=Object.keys(ls).length;i++) {
+    re=re^ls[i];
+
+  }
+  return re;
+
 }
 
-function recon_ls(jiff,ls){	
-	var re=ls[0];
-	for(var i=1;i<Object.keys(ls).length;i++){
-		re=re^ls[i];
-	
-	}
-	return re;
-	
+function recon_ls(jiff,ls) {
+  var re=ls[0];
+  for (var i=1;i<Object.keys(ls).length;i++) {
+    re=re^ls[i];
+
+  }
+  return re;
+
 }
 
-function bmw_reconstruct(jiff,shares){
-	//console.log("inhelp");
-	//console.log(shares);
-	ls=[];	
+function bmw_reconstruct(jiff,shares) {
+  //console.log("inhelp");
+  console.log('in reconstruct: ', shares);
+  var ls=[];
   for (let [key, value] of Object.entries(shares)) {
-  ls.push(shares[key]["value"]);
-  
-}
-//console.log(ls);
-return recon_ls(jiff,ls);
+    ls.push(shares[key]['value']);
+
+  }
+  //console.log(ls);
+  return recon_ls(jiff,ls);
 
 
 
 }
- 
+
 var jiff_broadcast = function (jiff, share, parties, op_id) {
   for (var index = 0; index < parties.length; index++) {
     var i = parties[index]; // Party id
@@ -90,11 +90,11 @@ module.exports = {
     }
 
     // If not a receiver nor holder, do nothing
-	
+
     if (share.holders.indexOf(jiff.id) === -1 && parties.indexOf(jiff.id) === -1) {
       return null;
     }
-	
+
 
     // Compute operation ids (one for each party that will receive a result
     if (op_id == null) {
@@ -108,7 +108,7 @@ module.exports = {
 
       // refresh/reshare, so that the original share remains secret, instead
       // a new share is sent/open without changing the actual value.
-     // share = share.refresh(op_id + ':refresh');
+      // share = share.refresh(op_id + ':refresh');
 
       // The given share has been computed, broadcast it to all parties
       jiff.counters.pending_opens++;
@@ -143,7 +143,7 @@ module.exports = {
           jiff.deferreds[op_id].deferred = 'CLEAN';
         }
         var recons_secret = bmw_reconstruct(jiff,shares);
-		console.log(recons_secret);
+        console.log(recons_secret);
         recons_secret = jiff.hooks.execute_array_hooks('afterReconstructShare', [jiff, recons_secret], 1);
         return recons_secret;
       });
