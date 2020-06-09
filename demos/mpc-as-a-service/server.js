@@ -69,6 +69,12 @@ var options = {
 var JIFFServer = require('../../lib/jiff-server');
 var jiffRestAPIServer = require('../../lib/ext/jiff-server-restful.js');
 var jiffServer = new JIFFServer(http, options);
+var computeOptions = {
+  crypto_provider: config.preprocessing === false, // comment this out if you want to use preprocessing
+  party_count: 5,
+  initialization: {role: 'compute'} // indicate to the server that this is a compute party
+}
+var serverCompute = jiffServer.compute('test', computeOptions);
 jiffServer.apply_extension(jiffRestAPIServer, {app: app});
 
 // Serve static files.
@@ -83,6 +89,38 @@ app.use('/dist', express.static(path.join(__dirname, '..', '..', 'dist')));
 app.use('/lib/ext', express.static(path.join(__dirname, '..', '..', 'lib', 'ext')));
 http.listen(8080, function () {
   console.log('listening on *:8080');
+});
+
+var all_parties = config.compute_parties.concat(config.input_parties);
+var compute = function () {
+  serverCompute.wait_for(all_parties, function () {
+    // We are a compute party, we do not have any input (thus secret is null),
+    // we will receive shares of inputs from all the input_parties.
+    var shares = serverCompute.share(null, null, config.compute_parties, config.input_parties);
+
+    var sum = shares[config.input_parties[0]];
+    for (var i = 1; i < config.input_parties.length; i++) {
+      var p = config.input_parties[i];
+      sum = sum.sadd(shares[p]);
+    }
+
+    serverCompute.open(sum, all_parties).then(function (output) {
+      console.log('Final output is: ', output);
+      serverCompute.disconnect(true, true);
+    });
+  });
+};
+
+// wait only for the compute parties to preprocess
+serverCompute.wait_for(config.compute_parties, function () {
+  if (config.preprocessing !== false) {
+    // do not use crypto provider, perform preprocessing!
+    serverCompute.preprocessing('open', 1, null, null, config.compute_parties, config.compute_parties, null, null, {open_parties: all_parties});
+    serverCompute.executePreprocessing(compute.bind(null, serverCompute));
+  } else {
+    // no preprocessing: use server as crypto provider
+    compute();
+  }
 });
 
 console.log('** To provide inputs, direct your browser to http://localhost:8080/demos/mpc-as-a-service/client.html.');
