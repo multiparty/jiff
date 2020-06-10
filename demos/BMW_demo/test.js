@@ -11,7 +11,7 @@ var n = 1000;
 var Zp = null;
 
 // Parameters specific to this demo
-var maxValue = 1000;
+var maxValue = 2;
 
 
 /**
@@ -47,11 +47,11 @@ function computeResults(inputs) {
   var results = [];
 
   for (var j = 0; j < n; j++) {
-    var sum = 0;
+    var output = [];
     for (var i = 1; i <= party_count; i++) {
-      sum += inputs[i][j];
+      output.push(inputs[i][j]);
     }
-    results.push(sum);
+    results.push(output);
   }
   return results;
 }

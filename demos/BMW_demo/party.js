@@ -42,15 +42,15 @@ var options = {party_count: party_count, party_id: party_id};
 
 options.onConnect = function (jiff_instance) {
   var promise = mpc.compute(input);
-/*
+
   promise.then(function (v) {
-	console.log("final return in party");
-	console.log(v);
+    //console.log("final return in party");
+    //console.log(v);
     jiff_instance.disconnect(true, true);
-  }); 
-  */
-  
-  
+  });
+
+
+
 };
 
 // Connect
