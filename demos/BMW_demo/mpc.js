@@ -65,14 +65,6 @@ const BMW_OT=require('./bmw_OT.js');
 
     /*
 
-   	  var final_deferred = $.Deferred();
-=======
-
-
-
-
-    /*
-
       var final_deferred = $.Deferred();
        var final_promise = final_deferred.promise();
     var allPromises = [];
@@ -118,12 +110,8 @@ const BMW_OT=require('./bmw_OT.js');
   var ss=BMW_OT.send_opts(jiff_instance,csec);
   */
 
-
-
-
     /*
       var final_deferred = $.Deferred();
->>>>>>> a74011cfbfb4726e42e4bbea2724d0c120738d16
        var final_promise = final_deferred.promise();
     var allPromises = [];
       for (var k = 1; k <=Object.keys(shares).length; k++) {
@@ -132,8 +120,6 @@ const BMW_OT=require('./bmw_OT.js');
 
 
 	   Promise.all(allPromises).then(function (results) {
-
-
         final_deferred.resolve(results);
       });
     return final_promise;
@@ -141,9 +127,6 @@ const BMW_OT=require('./bmw_OT.js');
 
   }
 
-
-
-  }
 
   /**
    * The MPC computation

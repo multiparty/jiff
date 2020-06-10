@@ -17,14 +17,14 @@ function send_opts(jiff,csecret, threshold, receivers_list, senders_list, Zp, sh
       }
     }
   }
-  console.log('in send_ops');
+  //console.log('in send_ops');
   var four_opts=OTGate(csecret);// object
   four_opts['sender_id']=jiff.id;
   four_opts = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'open', four_opts], 2);
   var mymsg=JSON.stringify(four_opts);
-  console.log('fmsg'+mymsg);
-  console.log('send msg to ');
-  console.log(receivers_list);
+  //console.log('fmsg'+mymsg);
+  //console.log('send msg to ');
+  //console.log(receivers_list);
   jiff.emit('custom',receivers_list,mymsg,true);
   var ssid=1;
   if (jiff.id===1) {
@@ -32,14 +32,15 @@ function send_opts(jiff,csecret, threshold, receivers_list, senders_list, Zp, sh
   }
   jiff.listen('custom',function (ssid,msg) {
 
-    console.log('hh'+msg);
+    //console.log('hh'+msg);
     msg=JSON.parse(msg);
 
     //var sid=msg['sender_id'];
     var my_choose=csecret[1]+','+csecret[2];
 
     var result=msg[my_choose];
-    console.log('my json get'+my_choose+' '+result+' id'+jiff.id);
+    //console.log('my json get'+my_choose+' '+result+' id'+jiff.id);
+
 
 
     var output_shares=BMW.bmw_jiff_share(jiff,result);
@@ -55,8 +56,8 @@ function send_opts(jiff,csecret, threshold, receivers_list, senders_list, Zp, sh
     }
 
     Promise.all(allPromises).then(function (results) {
-      console.log('open up in ot!',results);
-      console.log(output_shares);
+      //console.log('open up in ot!',results);
+      //console.log(output_shares);
       jiff.disconnect(true, true);
 
       // final_deferred.resolve(results);

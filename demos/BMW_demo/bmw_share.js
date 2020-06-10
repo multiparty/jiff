@@ -1,21 +1,3 @@
-function bmw_compute_share(jiff,input,n, threshold, Zp) {
-  var ls={};// potential shares of length n
-  for (var i=1;i<=n-1;i++) {
-    var b=Math.floor(Math.random()*2); // random from 0,1
-    ls[i]=b;
-
-  }
-  var sum=ls[1];
-  for (i=2;i<=n-1;i++) {
-    sum=sum^ls[i];
-  }
-  sum=sum^input;
-  ls[n]=sum;
-  console.log('my compute for '+jiff.id);
-  console.log(ls);
-
-  return ls;
-
 
 function bmw_compute_share(jiff,input,n, threshold, Zp) {
   var ls={};// potential shares of length n
@@ -45,7 +27,6 @@ function bmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
   var i, p_id;
 
   var myresult=[];
-
 
   // defaults
   if (Zp == null) {
