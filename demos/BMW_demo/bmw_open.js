@@ -8,10 +8,22 @@
  * @param {number|string} op_id - a unique operation id, used to tag outgoing messages.
  *
  */
+
 /*
+
 function ooo(jiff,ls) {
   var re=ls[1];
   for (var i=2;i<=Object.keys(ls).length;i++) {
+    re=re^ls[i];
+
+  }
+  return re;
+
+}
+
+function recon_ls(jiff,ls) {
+  var re=ls[0];
+  for (var i=1;i<Object.keys(ls).length;i++) {
     re=re^ls[i];
 
   }
@@ -26,6 +38,7 @@ function recon_ls(jiff,ls) {
 
   }
   return re;
+
 
 }
 
@@ -144,6 +157,7 @@ module.exports = {
         }
         var recons_secret = bmw_reconstruct(jiff,shares);
         //console.log(recons_secret);
+
         recons_secret = jiff.hooks.execute_array_hooks('afterReconstructShare', [jiff, recons_secret], 1);
         return recons_secret;
       });

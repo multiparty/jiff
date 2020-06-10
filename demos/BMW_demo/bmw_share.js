@@ -1,3 +1,21 @@
+function bmw_compute_share(jiff,input,n, threshold, Zp) {
+  var ls={};// potential shares of length n
+  for (var i=1;i<=n-1;i++) {
+    var b=Math.floor(Math.random()*2); // random from 0,1
+    ls[i]=b;
+
+  }
+  var sum=ls[1];
+  for (i=2;i<=n-1;i++) {
+    sum=sum^ls[i];
+  }
+  sum=sum^input;
+  ls[n]=sum;
+  console.log('my compute for '+jiff.id);
+  console.log(ls);
+
+  return ls;
+
 
 function bmw_compute_share(jiff,input,n, threshold, Zp) {
   var ls={};// potential shares of length n
@@ -25,7 +43,9 @@ function bmw_compute_share(jiff,input,n, threshold, Zp) {
 function bmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Zp, share_id) {
 
   var i, p_id;
+
   var myresult=[];
+
 
   // defaults
   if (Zp == null) {
@@ -40,7 +60,9 @@ function bmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
     jiff.helpers.sort_ids(receivers_list);
   }
 
+
   //console.log("sec in jiff share"+secret);
+
   if (senders_list == null) {
     senders_list = [];
     for (i = 1; i <= jiff.party_count; i++) {
@@ -78,7 +100,9 @@ function bmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
     // compute shares
     //var shares = jiff.hooks.computeShares(jiff, secret, receivers_list, threshold, Zp);
     var shares=bmw_compute_share(jiff,secret,jiff.party_count, threshold, Zp);
+
     myresult.push(shares);
+
     // Call hook
 
     shares = jiff.hooks.execute_array_hooks('afterComputeShare', [jiff, shares, threshold, receivers_list, senders_list, Zp], 1);
@@ -92,6 +116,7 @@ function bmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
 
       // send encrypted and signed shares_id[p_id] to party p_id
       var msg = {party_id: p_id, share: shares[p_id], op_id: share_id};
+
       //console.log("sending msg to "+msg.party_id+" value:"+msg.share);
 
       msg = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'share', msg], 2);
@@ -144,6 +169,7 @@ function bmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
   }
 
   return shares,result;
+
 }
 
 
