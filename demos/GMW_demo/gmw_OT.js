@@ -4,10 +4,10 @@ OT
 
 // csecret=={1:,2:}
 const GMW=require('./gmw_share.js');
-const GMW_OPEN=require('./Gmw_open.js');
+const GMW_OPEN=require('./gmw_open.js');
 const ascii = require('./ascii.js');
 /*
- *  This is the setup for a secure 1-out-of-3 oblivious transfer using
+ *  This is the setup for a secure 1-out-of-4 oblivious transfer using
  *  the methods in IO to send public messages between the two parties.
  */
 var IO = require('./io-example.js');
@@ -17,13 +17,12 @@ const N = 4;
 
 // party i :  receive aibj+ajbi from party j;
 // get choose then ^aibi
-// then share result to party i, j ,c, sxor to open
+// then share result to party i, j sxor to open
 
-// if i<j
+// if i>j
 function receive_OT(jiff,csecret) {
-// ai,bi   // ai aj
+// ai,bi
   var my_choose=csecret[1]+','+csecret[2];
-  //var ori_sum=csecret[1]&csecret[2];
   var op;
   switch (my_choose) {
     case '0,0': op=0;break;
@@ -32,61 +31,44 @@ function receive_OT(jiff,csecret) {
     case '1,1': op=3; break;
   }
 
-
   OT.receive(op, N).then(function (array) {
     var rec=ascii.to_ascii(array).split(':');
     var num=parseInt(rec[1]);
     console.log('The chosen secret is:', num,'op=',op);
+    return num;
+    /*
     var wi= csecret[1]&csecret[2];
     var s=wi^num;
     console.log('re_ot',wi,s);
     //var shares= GMW.gmw_share(jiff,s);// receivlisst
-    //jiff.disconnect(true, true);
     return s;
+    */
   });
 
 }
 
 // if i>j
 
-function send_opts(jiff,csecret) {
+function gmw_and(jiff,csecret) {
   const p_id=jiff.id;
-  //four ops to send to party who should get
-
-  const secrets = OTGate(csecret).map(ascii.to_array);
-  OT.then(function (OT) {
-    OT.send(secrets, N);
-    var my_choose=csecret[1]+','+csecret[2];
-    var op;
-    switch (my_choose) {
-      case '0,0': op=0;break;
-      case '0,1': op=1;break;
-      case '1,0': op=2;break;
-      case '1,1': op=3;break;
-    }
-
-    console.log('op=',op,my_choose);
-    OT.receive(op, N).then(function (array) {
-      var rec=ascii.to_ascii(array).split(':');
-      var num=parseInt(rec[1]);
-      console.log('The chosen secret is:', num,'op=',op);//ascii.to_ascii(array)
-      var shares=GMW.gmw_jiff_share(jiff,num);
-      //var final_deferred = $.Deferred();
-      //var final_promise = final_deferred.promise();
-      var allPromises = [];
-      for (var k = 1; k <=Object.keys(shares).length; k++) {
-        allPromises.push(shares[k].value);
-      }
-      //return Promise.all(allPromises);
-      Promise.all(allPromises).then(function ( v) {
-        console.log('see',v[0],'kk',allPromises);
-        jiff.disconnect(true, true);
-      });
-
+  var wi= csecret[1]&csecret[2];
+  var j;
+  var vj;
+  const msg_ot = OTGate(csecret).map(ascii.to_array);
+  for (j=1;j<p_id;j++) {
+    OT.then(function (OT) {
+      OT.send(msg_ot, N);//no for loop but sending list to whom/ tag
     });
-    // end receive
+  }
 
-  });
+  //four ops to send to party who should get
+  // no for loop but get negative receive msg of tag OT
+  for (j=p_id+1;j<=jiff.receivers_list.length;j++) {
+    vj=receive_OT(jiff,csecret);// return the choosed value out of four opts
+    wi= wi^vj;
+    console.log('and_re',wi);
+  }
+  return wi;
 
 }
 
