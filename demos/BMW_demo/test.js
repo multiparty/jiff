@@ -1,19 +1,17 @@
 // Chai
 var assert = require('chai').assert;
-
 var mpc = require('./mpc.js');
+var XOR=require('./gmw_xor.js');
 
 // Generic Testing Parameters
 var showProgress = false;
-var party_count = 3;
+var party_count = 2;
 var parallelismDegree = 100; // Max number of test cases running in parallel
 var n = 1000;
 var Zp = null;
 
 // Parameters specific to this demo
 var maxValue = 2;
-
-
 /**
  * CHANGE THIS: Generate inputs for your tests
  * Should return an object with this format:
@@ -45,7 +43,13 @@ function generateInputs(party_count) {
  */
 function computeResults(inputs) {
   var results = [];
+  for (var j = 0; j < n; j++) {
+    // test for gmw_xor
+    results.push(XOR.gmw_xor(inputs[1][j],inputs[2][j]));
+  }
 
+  /*
+   * test for share and open
   for (var j = 0; j < n; j++) {
     var output = [];
     for (var i = 1; i <= party_count; i++) {
@@ -53,6 +57,8 @@ function computeResults(inputs) {
     }
     results.push(output);
   }
+  */
+
   return results;
 }
 

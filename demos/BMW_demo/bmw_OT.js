@@ -2,11 +2,96 @@
 OT
 **/
 
-
-
-// csecret=={""}
+// csecret=={1:,2:}
 const BMW=require('./bmw_share.js');
 const BMW_OPEN=require('./bmw_open.js');
+const ascii = require('./ascii.js');
+/*
+ *  This is the setup for a secure 1-out-of-3 oblivious transfer using
+ *  the methods in IO to send public messages between the two parties.
+ */
+var IO = require('./io-example.js');
+//const OT = require('./index.js')(IO);
+const OT = require('1-out-of-n')(IO);
+const N = 4;
+
+// party i :  receive aibj+ajbi from party j;
+// get choose then ^aibi
+// then share result to party i, j ,c, sxor to open
+
+// if i<j
+function receive_OT(jiff,csecret) {
+// ai,bi   // ai aj
+  var my_choose=csecret[1]+','+csecret[2];
+  //var ori_sum=csecret[1]&csecret[2];
+  var op;
+  switch (my_choose) {
+    case '0,0': op=0;break;
+    case '0,1': op=1;break;
+    case '1,0': op=2;break;
+    case '1,1': op=3; break;
+  }
+
+
+  OT.receive(op, N).then(function (array) {
+    var rec=ascii.to_ascii(array).split(':');
+    var num=parseInt(rec[1]);
+    console.log('The chosen secret is:', num,'op=',op);
+    var wi= csecret[1]&csecret[2];
+    var s=wi^num;
+    console.log('re_ot',wi,s);
+    //var shares= BMW.bmw_share(jiff,s);// receivlisst
+    //jiff.disconnect(true, true);
+    return s;
+  });
+
+}
+
+// if i>j
+
+function send_opts(jiff,csecret) {
+  const p_id=jiff.id;
+  //four ops to send to party who should get
+
+  const secrets = OTGate(csecret).map(ascii.to_array);
+  OT.then(function (OT) {
+    OT.send(secrets, N);
+    var my_choose=csecret[1]+','+csecret[2];
+    var op;
+    switch (my_choose) {
+      case '0,0': op=0;break;
+      case '0,1': op=1;break;
+      case '1,0': op=2;break;
+      case '1,1': op=3;break;
+    }
+
+    console.log('op=',op,my_choose);
+    OT.receive(op, N).then(function (array) {
+      var rec=ascii.to_ascii(array).split(':');
+      var num=parseInt(rec[1]);
+      console.log('The chosen secret is:', num,'op=',op);//ascii.to_ascii(array)
+      var shares=BMW.bmw_jiff_share(jiff,num);
+      //var final_deferred = $.Deferred();
+      //var final_promise = final_deferred.promise();
+      var allPromises = [];
+      for (var k = 1; k <=Object.keys(shares).length; k++) {
+        allPromises.push(shares[k].value);
+      }
+      //return Promise.all(allPromises);
+      Promise.all(allPromises).then(function ( v) {
+        console.log('see',v[0],'kk',allPromises);
+        jiff.disconnect(true, true);
+      });
+
+    });
+    // end receive
+
+  });
+
+}
+
+
+/*
 function send_opts(jiff,csecret, threshold, receivers_list, senders_list, Zp, share_id) {
   if (receivers_list == null) {
     receivers_list = [];
@@ -39,13 +124,12 @@ function send_opts(jiff,csecret, threshold, receivers_list, senders_list, Zp, sh
     var my_choose=csecret[1]+','+csecret[2];
 
     var result=msg[my_choose];
-    //console.log('my json get'+my_choose+' '+result+' id'+jiff.id);
+    console.log('my json get'+my_choose+' '+result+' id'+jiff.id);
 
 
 
     var output_shares=BMW.bmw_jiff_share(jiff,result);
-    //console.log('output_share');
-    //console.log(output_shares);
+    console.log('output_share');
 
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
@@ -56,144 +140,18 @@ function send_opts(jiff,csecret, threshold, receivers_list, senders_list, Zp, sh
     }
 
     Promise.all(allPromises).then(function (results) {
-      //console.log('open up in ot!',results);
-      //console.log(output_shares);
+      console.log('open up in ot!',results);
+      console.log(output_shares);
       jiff.disconnect(true, true);
 
       // final_deferred.resolve(results);
 
     });
     // return final_promise;
-  /*
-	final_promise.then(function (v) {
-	console.log("reconstruct");
-	var csec={'1':v[0],'2':v[1]};
-    console.log(csec);
-	var re=ooo(jiff,v);
-	console.log(re);
-	});
-	*/
+
   });
 
   //bmw_constant_share(jiff, four_opts, threshold, receivers_list, senders_list, Zp, share_id);
-}
-/*
-function bmw_constant_share(jiff, four_opts, threshold, receivers_list, senders_list, Zp, share_id) {
-  // 1001,,,
-  var i, p_id;
-
-  // defaults
-  if (Zp == null) {
-    Zp = jiff.Zp;
-  }
-  if (receivers_list == null) {
-    receivers_list = [];
-    for (i = 1; i <= jiff.party_count; i++) {
-      receivers_list.push(i);
-    }
-  } else {
-    jiff.helpers.sort_ids(receivers_list);
-  }
-  if (senders_list == null) {
-    senders_list = [];
-    for (i = 1; i <= jiff.party_count; i++) {
-      senders_list.push(i);
-    }
-  } else {
-    jiff.helpers.sort_ids(senders_list);
-  }
-  if (threshold == null) {
-    threshold = receivers_list.length;
-  }
-  if (threshold < 0) {
-    threshold = 2;
-  }
-  if (threshold > receivers_list.length) {
-    threshold = receivers_list.length;
-  }
-
-  // if party is uninvolved in the share, do nothing
-  if (receivers_list.indexOf(jiff.id) === -1 && senders_list.indexOf(jiff.id) === -1) {
-    return {};
-  }
-
-  // compute operation id
-  if (share_id == null) {
-    share_id = jiff.counters.gen_op_id2('share', receivers_list, senders_list);
-  }
-
-  // stage sending of shares
-  if (senders_list.indexOf(jiff.id) > -1) {
-    // Call hook
-    // four_opts = jiff.hooks.execute_array_hooks('beforeShare', [jiff, four_opts, threshold, receivers_list, senders_list, Zp], 1);
-
-    // compute shares
-    var shares=four_opts;
-    // Call hook
-    //  shares = jiff.hooks.execute_array_hooks('afterComputeShare', [jiff, shares, threshold, receivers_list, senders_list, Zp], 1);
-
-    // send shares
-    for (i = 0; i < receivers_list.length; i++) {
-      p_id = receivers_list[i];
-      if (p_id === jiff.id) {
-        continue;
-      }
-
-      // send encrypted and signed shares_id[p_id] to party p_id
-      var msg = {party_id: p_id, share: shares[p_id], op_id: share_id};
-		 console.log('!!sendingOTmsg '+msg.share+' '+msg.party_id);
-      msg = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'share', msg], 2);
-      msg['share'] = jiff.hooks.encryptSign(jiff, msg['share'].toString(90), jiff.keymap[msg['party_id']], jiff.secret_key);
-      jiff.socket.safe_emit('share', JSON.stringify(msg));
-
-    }
-  }
-
-  // stage receiving of shares
-  var result = {};
-  if (receivers_list.indexOf(jiff.id) > -1) {
-    // setup a map of deferred for every received share
-    if (jiff.deferreds[share_id] == null) {
-      jiff.deferreds[share_id] = {};
-    }
-
-    var _remaining = senders_list.length;
-    for (i = 0; i < senders_list.length; i++) {
-      p_id = senders_list[i];
-      if (p_id === jiff.id) { // Keep party's own share
-        var my_share = jiff.hooks.execute_array_hooks('receiveShare', [jiff, p_id, shares[p_id]], 2);
-        result[p_id] = new jiff.SecretShare(my_share, receivers_list, threshold, Zp);
-        _remaining--;
-        continue;
-      }
-
-      // check if a deferred is set up (maybe the message was previously received)
-      if (jiff.deferreds[share_id][p_id] == null) { // not ready, setup a deferred
-        jiff.deferreds[share_id][p_id] = new jiff.helpers.Deferred();
-
-      }
-
-      var promise = jiff.deferreds[share_id][p_id].promise;
-      // destroy deferred when done
-      (function (promise, p_id) { // p_id is modified in a for loop, must do this to avoid scoping issues.
-        promise.then(function () {
-          delete jiff.deferreds[share_id][p_id];
-          _remaining--;
-          if (_remaining === 0) {
-            delete jiff.deferreds[share_id];
-          }
-        });
-      })(promise, p_id);
-
-      // receive share_i[id] from party p_id
-      result[p_id] = new jiff.SecretShare(promise, receivers_list, threshold, Zp);
-    }
-  }
-
-  return result;
-
-
-
 }
 */
 
@@ -203,13 +161,25 @@ function OT_option(cx,cy,i_shares) {
 }
 
 function OTGate(i_shares) {
+  
   var opt1=OT_option(0,0,i_shares);
   var opt2=OT_option(0,1,i_shares);
   var opt3=OT_option(1,0,i_shares);
   var opt4=OT_option(1,1,i_shares);
-  var msg={'0,0':opt1,'0,1':opt2,'1,0':opt3,'1,1':opt4};
-  return msg;
+  var re=[];
+  // re.push(opt1);
+  // re.push(opt2);
+  // re.push(opt3);
+  // re.push(opt4);
+  re.push('0,0:'.concat(opt1));
+  re.push('0,1:'.concat(opt2));
+  re.push('1,0:'.concat(opt3));
+  re.push('1,1:'.concat(opt4));
+  console.log('my_ops',re);
+  return re;
 }
+
+
 /*
 function ooo(ls) {
   var re=ls[1];
@@ -225,3 +195,15 @@ module.exports = {
   send_opts: send_opts,
 //  bmw_jiff_share:bmw_jiff_share
 };
+
+    //var i;
+    // for ( i=1;i<p_id;i++) {
+    // }
+
+    // send ops to
+    // for ( i=p_id+1;i<=jiff.receivers_list.length;i++ ) {
+    //   OT.send(secrets, N);
+    // }
+    // var wi= csecret[1]&csecret[2];
+    // var s=wi^array;
+    // console.log('re_ot',wi,s);

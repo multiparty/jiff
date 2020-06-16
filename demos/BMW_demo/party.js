@@ -17,6 +17,7 @@ console.log('Command line arguments: <input> [<party count> [<computation_id> [<
 
 var mpc = require('./mpc');
 
+
 // Read Command line arguments
 var input = parseInt(process.argv[2], 10);// 0 or 1
 
@@ -42,14 +43,11 @@ var options = {party_count: party_count, party_id: party_id};
 
 options.onConnect = function (jiff_instance) {
   var promise = mpc.compute(input);
-
+  console.log('in party',typeof(promise));
   promise.then(function (v) {
-    //console.log("final return in party");
-    //console.log(v);
+    console.log('in party log',v);
     jiff_instance.disconnect(true, true);
   });
-
-
 
 };
 

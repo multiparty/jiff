@@ -42,7 +42,7 @@ function recon_ls(jiff,ls) {
 
 }
 
-function bmw_reconstruct(jiff,shares) {
+function gmw_reconstruct(jiff,shares) {
   //console.log("inhelp");
   //console.log(shares);
   var ls=[];
@@ -85,7 +85,7 @@ module.exports = {
    * @returns {?promise} a (JQuery) promise to the open value of the secret, or null if the calling party is not a receiving party
    *
    */
-  bmw_jiff_open: function (jiff, share, parties, op_id) {
+  gmw_jiff_open: function (jiff, share, parties, op_id) {
 
     var i;
     if (!(share.jiff === jiff)) {
@@ -155,7 +155,7 @@ module.exports = {
         } else {
           jiff.deferreds[op_id].deferred = 'CLEAN';
         }
-        var recons_secret = bmw_reconstruct(jiff,shares);
+        var recons_secret = gmw_reconstruct(jiff,shares);
         //console.log(recons_secret);
 
         recons_secret = jiff.hooks.execute_array_hooks('afterReconstructShare', [jiff, recons_secret], 1);

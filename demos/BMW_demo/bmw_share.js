@@ -1,5 +1,12 @@
 
-function bmw_compute_share(jiff,input,n, threshold, Zp) {
+
+/*
+compute shares for input bit(internal use)
+input: bit to compute share for
+n: number of shares
+
+*/
+function gmw_compute_share(jiff,input,n, threshold, Zp) {
   var ls={};// potential shares of length n
   var i;
   for (i=1;i<=n-1;i++) {
@@ -13,16 +20,15 @@ function bmw_compute_share(jiff,input,n, threshold, Zp) {
   }
   sum=sum^input;
   ls[n]=sum;
-  //console.log("my compute for "+jiff.id);
-  //console.log(ls);
-
   return ls;
 
 }
 
+/*
+ * share the secret to corresponding party i with corresponding shares[i]
 
-// share the secret to corresponding party i with corresponding share[i]
-function bmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Zp, share_id) {
+*/
+function gmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Zp, share_id) {
 
   var i, p_id;
 
@@ -80,7 +86,7 @@ function bmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
 
     // compute shares
     //var shares = jiff.hooks.computeShares(jiff, secret, receivers_list, threshold, Zp);
-    var shares=bmw_compute_share(jiff,secret,jiff.party_count, threshold, Zp);
+    var shares=gmw_compute_share(jiff,secret,jiff.party_count, threshold, Zp);
 
     myresult.push(shares);
 
@@ -99,7 +105,6 @@ function bmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
       var msg = {party_id: p_id, share: shares[p_id], op_id: share_id};
 
       //console.log("sending msg to "+msg.party_id+" value:"+msg.share);
-
       msg = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'share', msg], 2);
       msg['share'] = jiff.hooks.encryptSign(jiff, msg['share'].toString(10), jiff.keymap[msg['party_id']], jiff.secret_key);
       //console.log("msg"+JSON.stringify(msg)+" "+msg.share);
@@ -155,8 +160,8 @@ function bmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
 
 
 module.exports = {
-  bmw_compute_share: bmw_compute_share,
-  bmw_jiff_share:bmw_jiff_share
+  gmw_compute_share: gmw_compute_share,
+  gmw_jiff_share:gmw_jiff_share
 };
 
 
