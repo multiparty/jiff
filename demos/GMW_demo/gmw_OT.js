@@ -172,5 +172,5 @@ function ooo(ls) {
 }
 */
 module.exports = {
-  send_opts: send_opts,
+  gmw_and: gmw_and,
 };
