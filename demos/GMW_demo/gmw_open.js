@@ -20,16 +20,6 @@ function ooo(jiff,ls) {
   return re;
 
 }
-
-function recon_ls(jiff,ls) {
-  var re=ls[0];
-  for (var i=1;i<Object.keys(ls).length;i++) {
-    re=re^ls[i];
-
-  }
-  return re;
-
-}
 */
 function recon_ls(jiff,ls) {
   var re=ls[0];

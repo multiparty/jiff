@@ -20,6 +20,7 @@ function gmw_compute_share(jiff,input,n, threshold, Zp) {
   }
   sum=sum^input;
   ls[n]=sum;
+  //console.log('my com for shares',ls);
   return ls;
 
 }
@@ -31,8 +32,6 @@ function gmw_compute_share(jiff,input,n, threshold, Zp) {
 function gmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Zp, share_id) {
 
   var i, p_id;
-
-  var myresult=[];
 
   // defaults
   if (Zp == null) {
@@ -88,7 +87,7 @@ function gmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
     //var shares = jiff.hooks.computeShares(jiff, secret, receivers_list, threshold, Zp);
     var shares=gmw_compute_share(jiff,secret,jiff.party_count, threshold, Zp);
 
-    myresult.push(shares);
+    //myresult.push(shares);
 
     // Call hook
 

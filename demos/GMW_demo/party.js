@@ -43,9 +43,9 @@ var options = {party_count: party_count, party_id: party_id};
 
 options.onConnect = function (jiff_instance) {
   var promise = mpc.compute(input);
- // console.log('in party',typeof(promise));
+  //console.log('in party',typeof(promise));
   promise.then(function (v) {
-   //console.log('in party log',v);
+    //console.log('party log:',v);
     jiff_instance.disconnect(true, true);
   });
 

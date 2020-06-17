@@ -1,19 +1,18 @@
 /**
 OT
 **/
-
 // csecret=={1:,2:}
 const GMW=require('./gmw_share.js');
 const GMW_OPEN=require('./gmw_open.js');
 const ascii = require('./ascii.js');
+$ = require('jquery-deferred');
 /*
  *  This is the setup for a secure 1-out-of-4 oblivious transfer using
  *  the methods in IO to send public messages between the two parties.
  */
-var IO = require('./io-example.js');
-//const OT = require('./index.js')(IO);
-const OT = require('1-out-of-n')(IO);
-const N = 4;
+// var IO = require('./io-template.js');
+// const OT = require('1-out-of-n')(IO);
+// const N = 4;
 
 // party i :  receive aibj+ajbi from party j;
 // get choose then ^aibi
@@ -54,21 +53,60 @@ function gmw_and(jiff,csecret) {
   var wi= csecret[1]&csecret[2];
   var j;
   var vj;
-  const msg_ot = OTGate(csecret).map(ascii.to_array);
+
+  var final_deferred = $.Deferred();
+  var final_promise = final_deferred.promise();
+  // receivinglist of OT msg
+  var recls=[];
   for (j=1;j<p_id;j++) {
-    OT.then(function (OT) {
-      OT.send(msg_ot, N);//no for loop but sending list to whom/ tag
+    recls.push(j);
+  }
+  var four_opts=OTGate(csecret);// jason object
+  four_opts['sender_id']=jiff.id;
+  four_opts = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'open', four_opts], 2);
+  var mymsg=JSON.stringify(four_opts);
+  //console.log('send OT msg to ',recls,'msg=',mymsg);
+  jiff.emit('OT',recls,mymsg,true);
+
+  var ssid=2;
+  // if (jiff.id===1) {
+  //   ssid=2;
+  // }
+  if (jiff.id===2) {
+    final_deferred.resolve(wi);
+  }
+  var w2;
+  if (jiff.id===1) {
+    jiff.listen('OT',function (ssid,msg) {
+      w2=wi;
+      msg=JSON.parse(msg);
+      var my_choose=csecret[1]+','+csecret[2]+':';
+      var result=msg[my_choose];
+      //console.log('my json get'+my_choose+' id'+jiff.id,'result=',result);
+      w2= w2^result;
+      final_deferred.resolve(w2);
     });
   }
+  return final_promise;
+
+  // OT.then(function (OT) {
+  //     OT.send(msg_ot, N);//no for loop but sending list to whom/ tag
+  //   });
+  // for (j=1;j<p_id;j++) {
+
+  //   OT.then(function (OT) {
+  //     OT.send(msg_ot, N);//no for loop but sending list to whom/ tag
+  //   });
+  // }
 
   //four ops to send to party who should get
   // no for loop but get negative receive msg of tag OT
-  for (j=p_id+1;j<=jiff.receivers_list.length;j++) {
-    vj=receive_OT(jiff,csecret);// return the choosed value out of four opts
-    wi= wi^vj;
-    console.log('and_re',wi);
-  }
-  return wi;
+  // for (j=p_id+1;j<=jiff.receivers_list.length;j++) {
+  //   vj=receive_OT(jiff,csecret);// return the choosed value out of four opts
+  //   wi= wi^vj;
+  //   console.log('and_re',wi);
+  // }
+  // return wi;
 
 }
 
@@ -137,7 +175,7 @@ function send_opts(jiff,csecret, threshold, receivers_list, senders_list, Zp, sh
 */
 
 function OT_option(cx,cy,i_shares) {
-  var op=(cx&i_shares[1])^(cy&i_shares[2]);
+  var op=(cx&i_shares[2])^(cy&i_shares[1]);
   return op;
 }
 
@@ -146,12 +184,19 @@ function OTGate(i_shares) {
   var opt2=OT_option(0,1,i_shares);
   var opt3=OT_option(1,0,i_shares);
   var opt4=OT_option(1,1,i_shares);
-  var re=[];
-  re.push('0,0:'.concat(opt1));
-  re.push('0,1:'.concat(opt2));
-  re.push('1,0:'.concat(opt3));
-  re.push('1,1:'.concat(opt4));
-  console.log('my_ops',re);
+  // var re=[];
+  // re.push('0,0:'.concat(opt1));
+  // re.push('0,1:'.concat(opt2));
+  // re.push('1,0:'.concat(opt3));
+  // re.push('1,1:'.concat(opt4));
+  // console.log('my_ops',re);
+  var re={};
+  re['0,0:']=opt1;
+  re['0,1:']=opt2;
+  re['1,0:']=opt3;
+  re['1,1:']=opt4;
+
+  //console.log('my_ops',re);
   return re;
   // re.push(opt1);
   // re.push(opt2);
@@ -172,5 +217,5 @@ function ooo(ls) {
 }
 */
 module.exports = {
-  gmw_and: gmw_and,
+  gmw_and: gmw_and
 };
