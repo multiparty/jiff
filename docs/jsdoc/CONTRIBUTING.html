@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>jiff-client - JIFF Library Documentation</title>
+    <title>Home - JIFF Library Documentation</title>
     
     
     
@@ -37,158 +37,130 @@
 
 <div id="main">
     
-    <h1 class="page-title">jiff-client</h1>
-    
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-            
-        
-    
-</header>
 
-<article>
-    
-        <div class="container-overview">
-        
-            
-                <div class="description"><p>JIFF Client.</p>
-<p>Exposes the constructor for the <a href="module-jiff-client-JIFFClient.html">JIFFClient</a> class.</p>
-<p>In the browser, this adds <code>JIFFClient</code> as a global identifier.</p>
-<p>In the browser, this can be accessed via:</p>
-<pre><code>
-  &lt;script src="jiff-client.js"&gt;&lt;/script&gt;
-  &lt;script type="text/javascript"&gt;
-    var jiffClientInstance = new JIFFClient(hostname, computationId, options);
-  &lt;/script&gt;
-</code></pre>
-<p>In node.js, this can be accessed via:</p>
-<pre><code>
-  const JIFFClient = require('jiffClient');
-  const jiffClientInstance = new JIFFClient(hostname, computationId, options);
 
-</code></pre></div>
-            
-
-            
-                
+    <section class="package">
+        <h3> </h3>		
+    </section>
 
 
 
 
-<dl class="details">
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
+
+
+
 
     
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
 
 
+    <section class="readme">
+        <article><h1>Contributing to JIFF</h1>
+<p>Welcome! These are the guidelines for contributing to JIFF. Feel free to propose new ones via a pull request!</p>
+<p>Issues (bugs, feature requests or otherwise feedback) may be reported in the <a href="https://github.com/multiparty/jiff/issues">GitHub issue tracker</a> for this project. Pull requests are also welcome.</p>
+<p>When contributing to this repository, please first discuss the change you wish to make via an issue, unless it's entirely trivial (typo fixes, etc.). If there is already an issue that describes the change you have in mind, comment on it indicating that you're going to work on that. This way we can avoid the situation when several people work on the same thing.</p>
+<h2>Guidelines</h2>
+<ul>
+<li>Code should follow the <a href="https://github.com/airbnb/javascript">AirBnB style guide</a> (with a few exceptions), check for linting errors before submitting a PR</li>
+<li>New pull requests must be accompanied by <strong>passing tests</strong> written by the task owner
+<ul>
+<li>see <a href="https://github.com/multiparty/jiff/tree/master/tests.html">tests.html</a></li>
+</ul>
+</li>
+<li>Code should not use ES6 features, as JIFF aims to be compatible with as many browsers as possible</li>
+<li>Code should be documented using proper JSDoc formatting</li>
+<li>Branch formatting:
+<ul>
+<li>issueNumber-initials-description</li>
+<li>ex. 22-LQ-bugFixes</li>
+</ul>
+</li>
+<li>Demos should be implemented in both the browser and node.js, and accompanied by test cases. Sophisticted demos should include a README as well as a package.json file for managing additional dependencies. <em>Please Follow the demo template under demos/template closely</em>.</li>
+</ul>
+<h2>Issue Template</h2>
+<ul>
+<li>
+<p><strong>I'm submitting a ...</strong></p>
+<ul>
+<li>[ ] bug report</li>
+<li>[ ] feature request</li>
+<li>[ ] support request</li>
+</ul>
+</li>
+<li>
+<p><strong>Do you want to request a <em>feature</em> or report a <em>bug</em>?</strong></p>
+</li>
+<li>
+<p><strong>What is the current behavior?</strong></p>
+</li>
+<li>
+<p><strong>If the current behavior is a bug, please provide the steps to reproduce and if possible a minimal demo of the problem</strong></p>
+</li>
+<li>
+<p><strong>What is the expected behavior?</strong></p>
+</li>
+<li>
+<p><strong>What is the motivation / use case for changing the behavior?</strong></p>
+</li>
+<li>
+<p><strong>Please tell us about your environment:</strong></p>
+<ul>
+<li>JIFF Version: [1.X | commit hash]</li>
+<li>Node Version: XX.XX.X</li>
+<li>Browser: [all | Chrome XX | Firefox XX | IE XX | Safari XX | Mobile Chrome XX | Android X.X Web Browser | iOS XX Safari | iOS XX UIWebView | iOS XX WKWebView ]</li>
+</ul>
+</li>
+<li>
+<p><strong>Other information</strong> (e.g. detailed explanation, stacktraces, related issues, suggestions how to fix, links for us to have context, eg. stackoverflow, etc)</p>
+</li>
+</ul>
+<h2>Pull Requests (PRs)</h2>
+<ul>
+<li><strong>Please check if the PR fulfills these requirements</strong></li>
+</ul>
+<ul>
+<li>[ ] The commit message follows our guidelines</li>
+<li>[ ] Tests for the changes have been added (for bug fixes / features)</li>
+<li>[ ] Docs have been added / updated (for bug fixes / features)</li>
+</ul>
+<ul>
+<li>
+<p><strong>What kind of change does this PR introduce?</strong> (Bug fix, feature, docs update, ...)</p>
+</li>
+<li>
+<p><strong>What is the current behavior?</strong> (You can also link to an open issue here)</p>
+</li>
+<li>
+<p><strong>What is the new behavior (if this is a feature change)?</strong></p>
+</li>
+<li>
+<p><strong>Does this PR introduce a breaking change?</strong> (What changes might users need to make in their application due to this PR?)</p>
+</li>
+<li>
+<p><strong>Other information</strong>:</p>
+</li>
+</ul>
+<h3>What do I need to know to help?</h3>
+<p>If you are interested in making a code contribution to JIFF, the project is entirely written in JavaScript. If you would like to become more familiar with MPC protocols and the cryptographic tools underlying JIFF, there are a variety of resources to check out:</p>
+<ul>
+<li><a href="https://securecomputation.org/">A Pragmatic Introduction to Secure Multi-Party Computation</a></li>
+<li><a href="https://github.com/multiparty/web-mpc">Example of a real-world software deployment that uses JIFF</a></li>
+<li><a href="https://multiparty.org/jiff/docs/jsdoc/">JIFF Documentation</a></li>
+<li><a href="https://www.youtube.com/watch?v=S-IkyOEgrfI">JIFF Presentation at DIMACS/MACS Workshop</a></li>
+</ul>
+<p>Looking at the <a href="https://github.com/multiparty/jiff/tree/master/demos">/demos/</a> folder is a good way to see how common, simple workflows can be implemented in JIFF.</p>
+<h3>Where can I go for help?</h3>
+<p>If you have JIFF-specific questions or issues, you can contact info@multiparty.org</p></article>
+    </section>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-        
-        </div>
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-jiff-client-JIFFClient.html">JIFFClient</a></dt>
-            <dd></dd>
-        </dl>
-    
-    
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
 
 
 
@@ -200,7 +172,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Jun 11 2020 12:17:15 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Jun 11 2020 11:37:38 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

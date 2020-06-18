@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>jiff-client - JIFF Library Documentation</title>
+    <title>Home - JIFF Library Documentation</title>
     
     
     
@@ -37,158 +37,140 @@
 
 <div id="main">
     
-    <h1 class="page-title">jiff-client</h1>
-    
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-            
-        
-    
-</header>
 
-<article>
+
+    <section class="package">
+        <h3> </h3>		
+    </section>
+
+
+
+
+
+
+
+
+
     
-        <div class="container-overview">
-        
-            
-                <div class="description"><p>JIFF Client.</p>
-<p>Exposes the constructor for the <a href="module-jiff-client-JIFFClient.html">JIFFClient</a> class.</p>
-<p>In the browser, this adds <code>JIFFClient</code> as a global identifier.</p>
-<p>In the browser, this can be accessed via:</p>
-<pre><code>
-  &lt;script src="jiff-client.js"&gt;&lt;/script&gt;
-  &lt;script type="text/javascript"&gt;
-    var jiffClientInstance = new JIFFClient(hostname, computationId, options);
-  &lt;/script&gt;
+
+
+
+    <section class="readme">
+        <article><h1>Tests</h1>
+<p>This directory contains scripts and configurations for automatic testing of the base jiff
+and select extensions (and composition of extensions).</p>
+<h2>Tests Organization</h2>
+<p>The tests are organized/identified by a <em>NAME</em> and a <em>SUITE</em>. Each suite may contain several
+test cases (e.g. tests for several opertions, or testing an operation with different
+parameters), and related suites are combined under a global name (e.g. suites testing different
+functionality in a single extensions).</p>
+<p>Most of the tests use the same boiler plate code (e.g. initializing instances, connecting, etc).
+That code is provided and re-used by the tests. The difference between two tests is two folds:</p>
+<ol>
+<li>The inputs are different (e.g. they are generated from different domains: naturals vs fixedpoint)</li>
+<li>The tests correspond to different functionality (adding vs multiplying)</li>
+</ol>
+<h2>Test Definition</h2>
+<p>Each name, suite, and tests are defined inside the config/ directory.
+The config/ directory contains several sub-directories, each corresponding to a NAME.
+Inside a NAME sub-directory, several suites may be defined, each using a single json file.
+The json file specifies the different cases in the suite, and in particular their functionality
+and input generations.</p>
+<h3>Suite Configuration Structure</h3>
+<p>Each suite is a JSON file containing a single object. The object has the following attributes:</p>
+<ol>
+<li><em>tests</em>: an array of strings, each is the name of a single test case</li>
+<li><em>suiteConf</em>: properties if the suite (not specific tests)</li>
+<li><em>testConf</em>: properties of test cases</li>
+</ol>
+<p><em>suiteConf</em> is a JSON object containing configurations related to the entire suite. In particular,
+it contains the following attributes:</p>
+<ol>
+<li>
+<p>port: the port which the server will use to listen to instances belonging to all cases in this suite.</p>
+</li>
+<li>
+<p>generation: an optional JSON object specifying a function to be used to generate inputs for this suite.</p>
+</li>
+</ol>
+<p>The function has the signature: function(test, count, options) where test is the name of the test, count
+is the number of needed inputs, and options are the options/configuration of the test. The function must
+return an array of JSON objects, each belonging to one case, that maps a party id (or 'constant') to its
+respective inputs.</p>
+<p>The generation object must contain two string attributes:</p>
+<ul>
+<li>file: path to a Javascript file relative to test/suite/.</li>
+<li>function: the name of an exported function in the given file.</li>
+</ul>
+<ol start="3">
+<li>computation: a JSON object that specifies what function to be used to execute and verify a single test
+case.</li>
+</ol>
+<p>The function is executed once for every party with the instance corresponding to that party. The function
+is responsible for opening the results and verifying that they are correct (e.g. comparing them against
+in-the-open equivalent bug-free function). When all inputs have been consumed and all results are verified
+the function must call done(&lt;optional_error_string&gt;).</p>
+<p>The computation object must contains two string attributes:</p>
+<pre><code>  + file: path to a Javascript file relative to test/suite/. 
+  + function: the name of an exported function in the given file.
 </code></pre>
-<p>In node.js, this can be accessed via:</p>
-<pre><code>
-  const JIFFClient = require('jiffClient');
-  const jiffClientInstance = new JIFFClient(hostname, computationId, options);
+<p>The signature of the function must be: function(jiff_instance, test, inputs, testParallel, done) where:</p>
+<ol>
+<li>jiff_instance: the instant corresponding to the current party.</li>
+<li>test: the name (or alias) of the test.</li>
+<li>inputs: the output of generation.</li>
+<li>testParallel: the max number of cases to run in parallel.</li>
+<li>done: called when the test is done with an optional string parameter detailing any errors.</li>
+</ol>
+<p><em>testConf</em> is a JSON object that specifies properties of a particular test, it maps a test case name or 'default'
+to a JSON object detailing the properties of that the test case. If 'default' is used, then the properties will apply
+to any test case which is not explicitly mapped to some JSON object.</p>
+<p>each of the nested JSON object can have these attributes:</p>
+<ol>
+<li>count: the number of cases to run in this test.</li>
+<li>parallel: the max number of cases to run in parallel.</li>
+<li>options: a JSON object that is passed as options while creating an instance with new JIFFClient(). It can contain
+any of the attributes usually passed to the constructor, in particular, it must specify the party_count.</li>
+<li>alias: optional. If provided, the alias will be passed to the compute function (but not to generation) instead of the name.
+This is useful for cases where different test execute the same functionality but with different inputs (e.g. one test uses
+pre-defined inputs, the other uses random inputs).</li>
+</ol>
+<p>Notice that you can avoid re-writing most of the computation code by including the default 'computations.js' file in your
+custom computations file, and then call the default computation function with customized interpreter. For more, check out
+the default computations file, and how it is customized inside /config/bigNumber/computations.js</p>
+<h2>Running Tests:</h2>
+<p>To run a particular suite, you can use</p>
+<pre class="prettyprint source lang-shell"><code>npm test # Run all suites in all NAMES sequentially
+npm test -- &quot;TEST\_NAME&quot; # Run all suites in given NAME sequentially
+npm test -- &quot;TEST\_NAME&quot; &quot;SUITE\_NAME&quot; # Run particular suite and NAME
+</code></pre>
+<p>Alternatively:</p>
+<pre class="prettyprint source lang-shell"><code>cd $JIFFPATH/test/suite
+./all.sh # Run all suits in all NAMES sequentially
+./all.sh parallel # Run all NAMES sequentially, but suites within a name in parallel
+./suite.sh &quot;TESTS\_NAME&quot; # runs suites of given NAME in sequence
+./suite.sh &quot;TESTS\_NAME&quot; parallel # runs suites of given NAME in parallel
+./test.sh &quot;TESTS\_NAME&quot; &quot;SUITE\_NAME&quot; # Run given suite and NAME
+</code></pre>
+<p>You can also run all the suites belonging to a single TEST NAME using</p>
+<h2>File Structure</h2>
+<ol>
+<li>config/ contains the configuration files for each NAME and suite.</li>
+<li>logs/ contains the server logs for each NAME and suite.</li>
+<li>computations.js the default computation (used for base instance)</li>
+<li>init.js used to initialize the instances and apply the appropriate extensions according to the NAME.</li>
+<li>index.js main entry point to a test suite. Calls init, generation, and computation in the appropriate order
+and manages mocha.</li>
+</ol></article>
+    </section>
 
-</code></pre></div>
-            
 
-            
-                
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-        
-        </div>
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-jiff-client-JIFFClient.html">JIFFClient</a></dt>
-            <dd></dd>
-        </dl>
-    
-    
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
 
 
 
@@ -200,7 +182,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Jun 11 2020 12:17:15 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Jun 11 2020 12:15:34 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

@@ -67,7 +67,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line12">line 12</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -106,7 +106,10 @@
 
 
             
-                <div class="description"><p>Contains bits protocols (including rejection sampling and bits operations)</p></div>
+                <div class="description"><p>Contains bits protocols (including rejection sampling and bits operations)</p>
+<p><b>Important: bit protocols (including bit_decomposition) are unaware of any extension specific customizations, and will operate as
+on the given shares as if they are natural numbers in Zp. Make sure to take into consideration any magnification/shift transformations
+needed to translate correctly between plain representations and extension representations of bits! </b></p></div>
             
 
             
@@ -148,7 +151,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line339">line 339</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line343">line 343</a>
     </li></ul></dd>
     
 
@@ -307,7 +310,7 @@ Requires no communication, only local operations</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line25">line 25</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line29">line 29</a>
     </li></ul></dd>
     
 
@@ -558,7 +561,7 @@ in case of potential overflow / carry</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line139">line 139</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line143">line 143</a>
     </li></ul></dd>
     
 
@@ -823,7 +826,7 @@ constant or bits, whichever is smaller</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line156">line 156</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line160">line 160</a>
     </li></ul></dd>
     
 
@@ -1078,7 +1081,7 @@ is equal to constant</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line171">line 171</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line175">line 175</a>
     </li></ul></dd>
     
 
@@ -1333,7 +1336,7 @@ returned immediately as a boolean</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line199">line 199</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line203">line 203</a>
     </li></ul></dd>
     
 
@@ -1588,7 +1591,7 @@ returned immediately as a boolean</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line213">line 213</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line217">line 217</a>
     </li></ul></dd>
     
 
@@ -1843,7 +1846,7 @@ returned immediately as a boolean</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line227">line 227</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line231">line 231</a>
     </li></ul></dd>
     
 
@@ -2098,7 +2101,7 @@ returned immediately as a boolean</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line241">line 241</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line245">line 245</a>
     </li></ul></dd>
     
 
@@ -2353,7 +2356,7 @@ returned immediately as a boolean</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line94">line 94</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line98">line 98</a>
     </li></ul></dd>
     
 
@@ -2604,7 +2607,7 @@ if constant is zero, the result will then be [ zero share ]</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line185">line 185</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line189">line 189</a>
     </li></ul></dd>
     
 
@@ -2859,7 +2862,7 @@ returned immediately as a boolean</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line39">line 39</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line43">line 43</a>
     </li></ul></dd>
     
 
@@ -3111,7 +3114,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line53">line 53</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line57">line 57</a>
     </li></ul></dd>
     
 
@@ -3363,7 +3366,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line370">line 370</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line374">line 374</a>
     </li></ul></dd>
     
 
@@ -3615,7 +3618,7 @@ This works regardless of whether the represented value fit inside the correspond
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line329">line 329</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line333">line 333</a>
     </li></ul></dd>
     
 
@@ -3982,7 +3985,7 @@ ensure that corresponding instructions across different parties are matched corr
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line67">line 67</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line71">line 71</a>
     </li></ul></dd>
     
 
@@ -4233,7 +4236,7 @@ the bit at index 0 is the least significant bit</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line123">line 123</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line127">line 127</a>
     </li></ul></dd>
     
 
@@ -4488,7 +4491,7 @@ is equal to bits1</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line253">line 253</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line257">line 257</a>
     </li></ul></dd>
     
 
@@ -4738,7 +4741,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line277">line 277</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line281">line 281</a>
     </li></ul></dd>
     
 
@@ -4988,7 +4991,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line289">line 289</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line293">line 293</a>
     </li></ul></dd>
     
 
@@ -5238,7 +5241,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line359">line 359</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line363">line 363</a>
     </li></ul></dd>
     
 
@@ -5654,7 +5657,7 @@ and the value is an array of secret shared bits</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line301">line 301</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line305">line 305</a>
     </li></ul></dd>
     
 
@@ -5904,7 +5907,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line313">line 313</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line317">line 317</a>
     </li></ul></dd>
     
 
@@ -6154,7 +6157,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line106">line 106</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line110">line 110</a>
     </li></ul></dd>
     
 
@@ -6404,7 +6407,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line265">line 265</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line269">line 269</a>
     </li></ul></dd>
     
 
@@ -6654,7 +6657,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line81">line 81</a>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line85">line 85</a>
     </li></ul></dd>
     
 
@@ -6909,7 +6912,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Tue Mar 17 2020 23:13:19 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Jun 11 2020 12:17:15 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

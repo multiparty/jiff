@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>jiff-client - JIFF Library Documentation</title>
+    <title>Home - JIFF Library Documentation</title>
     
     
     
@@ -37,158 +37,95 @@
 
 <div id="main">
     
-    <h1 class="page-title">jiff-client</h1>
-    
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-            
-        
-    
-</header>
 
-<article>
-    
-        <div class="container-overview">
-        
-            
-                <div class="description"><p>JIFF Client.</p>
-<p>Exposes the constructor for the <a href="module-jiff-client-JIFFClient.html">JIFFClient</a> class.</p>
-<p>In the browser, this adds <code>JIFFClient</code> as a global identifier.</p>
-<p>In the browser, this can be accessed via:</p>
-<pre><code>
-  &lt;script src="jiff-client.js"&gt;&lt;/script&gt;
-  &lt;script type="text/javascript"&gt;
-    var jiffClientInstance = new JIFFClient(hostname, computationId, options);
-  &lt;/script&gt;
-</code></pre>
-<p>In node.js, this can be accessed via:</p>
-<pre><code>
-  const JIFFClient = require('jiffClient');
-  const jiffClientInstance = new JIFFClient(hostname, computationId, options);
 
-</code></pre></div>
-            
-
-            
-                
+    <section class="package">
+        <h3> </h3>		
+    </section>
 
 
 
 
-<dl class="details">
 
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
+
+
+
 
     
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
 
 
+    <section class="readme">
+        <article><h1>Extensions</h1>
+<p>All available extensions can be found under lib/ext.
+Extensions extend client, server, or both. Some functionality requires both client and server side
+extensions to be applied (jiff-&lt;client/server&gt;-bignumber.js).
+For a concrete example of how an extension is created, look at jiff-client-bignumber.js.</p>
+<h2>Creating Extensions</h2>
+<p>These are the required steps when you want to create a client extension:</p>
+<ol>
+<li>
+<p><strong>File Creation:</strong> Create your extension file, and write a top-level function to scope the module (checkout
+jiff-client-bignumber.js: something like (function(exports, node) { .... })(typeof(exports) ....) ). This
+function acts as the scope for the module, which forbids name conflicts as well as forbid others from modifying
+or messing around with the functions and constants inside. Additionally, it makes the code useable
+from the browsers and nodejs.</p>
+</li>
+<li>
+<p><strong>API Name:</strong> Your API should be reachable through an object name <em>jiff_&lt;module_name&gt; = {}</em>. This is the defacto
+name space for this module. Calling code on the user-side will use that name (jiff_&lt;module_name&gt;) to access the
+functions you choose to expose. For nodejs the name space will be ignored and calling code can use the object
+returned by the require() call corresponding to this module. You will need to modify the parameter passed to
+the top-level function form step 1 to acheive this.</p>
+</li>
+<li>
+<p><strong>make_jiff:</strong> Inside the top-level function, create a function called make_jiff. The function should take two parameters:</p>
+<ul>
+<li><em>base_instance:</em> the base instance to wrap the extension around, it can be a basic jiff-client.js instance or an instance of another extension, you can use this instance to perform the basic operation that build  your modules (sharing of integers, simple operations on ints, etc).</li>
+<li><em>options:</em> should be an object that provides your module with whatever options it requires. The options for the base_instance will be passed to it prior to calling your modules and may not be inside the options object, but you can access them using base_instance.</li>
+</ul>
+</li>
+<li>
+<p><strong>Dependencies:</strong> If your module requires other extensions be applied to the base instance, you can force this through a
+runtime check (if condition), by seeing if the required extension name exists in base_instance.modules array. You will need to
+add the name of this module to that array as well.</p>
+</li>
+<li>
+<p><strong>Adding Functionality:</strong> You have two options:</p>
+<ul>
+<li>use <a href="hooks.html"><strong>hooks</strong></a> to modify the functionality of the base instance &quot;in place&quot; and then return the base instance.</li>
+<li>Create a <strong>new object</strong> that contains the base_instance (perhaps as an attribute named &quot;base&quot;), you will need to recreate the JIFF API at the new object level. The implementation of this API can use functionality from base_instance. Return the new object.</li>
+</ul>
+</li>
+<li>
+<p><strong>Overriding Functionality:</strong> If you need to override any feature in jiff (change how share work, or how open work, or how beaver_triplets
+work etc), look at the <a href="hooks.html">hooks documentation</a> documentation to see if it is available as a hook, or can be implemented by overriding
+jiff's built-in helper functions.  If it is, your best bet would be to use it on top of base_instance. Another approach could be to override
+functions inside the base_instance or to create a new object with brand new functions (that may or may not refer to base_instance). These approaches
+can be mixed.</p>
+</li>
+<li>
+<p><strong>New Functionality:</strong> If you want to add additional feature that does not override any other feature in jiff, implement that in a
+function under a new appropriate name, make sure to document the function properly.</p>
+</li>
+<li>
+<p><strong>API Exposure:</strong> Make sure to expose the make_jiff function, by adding it the exports object passed to the top-level function in step 1.
+You can expose any additional helpers or functions the same way.</p>
+</li>
+</ol>
+<p>Keep in mind that others may base extensions on your extension, or that clients may want to combine functionality from two extensions
+together. If you have specific dependencies or if you know that the extension will be incompatible with other extensions, make sure
+to check inside the .modules array, and throw the appropriate errors.</p>
+<p><strong>If going with approach 5(b), then you must ensure that your new functions execute the appropriate hooks, either through use of base_instance, or manually.</strong></p></article>
+    </section>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-        
-        </div>
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-jiff-client-JIFFClient.html">JIFFClient</a></dt>
-            <dd></dd>
-        </dl>
-    
-    
-    
-
-     
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
 
 
 
@@ -200,7 +137,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Jun 11 2020 12:17:15 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Jun 11 2020 11:59:24 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
