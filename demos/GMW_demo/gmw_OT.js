@@ -4,7 +4,7 @@ OT
 // csecret=={1:,2:}
 const GMW=require('./gmw_share.js');
 const GMW_OPEN=require('./gmw_open.js');
-const ascii = require('./ascii.js');
+//const ascii = require('./ascii.js');
 $ = require('jquery-deferred');
 /*
  *  This is the setup for a secure 1-out-of-4 oblivious transfer using
@@ -51,39 +51,45 @@ function receive_OT(jiff,csecret) {
 
 // if i>j
 
-function gmw_and(jiff,csecret,ssid) {    
+//ssid: send OT msg to party_id list
+function gmw_and(jiff,csecret,rels) {
   //console.log('v',csecret,jiff.id,ssid);
   const p_id=jiff.id;
   var wi= csecret[0]&csecret[1];
   //console.log('v',csecret,jiff.id,ssid,'wi=',wi);
-  var j;
-  var vj;
+  var ssid;
 
-  var final_deferred = $.Deferred();
-  var final_promise = final_deferred.promise();
+  ssid=rels[1];
+  if (jiff.id===rels[1]) {
+    ssid=rels[0];
+  }
   // receivinglist of OT msg
   var recls=[];
   if (ssid<p_id) {
     recls.push(ssid);
   }
-  // for (j=1;j<p_id;j++) {
-  //   recls.push(j);
+
+  // for (var i=0;i<rels.length;i++ ) {
+  //   if (rels[i]<p_id) {
+  //     recls.push(rels[i]);
+  //   }
   // }
+  var final_deferred = $.Deferred();
+  var final_promise = final_deferred.promise();
   var four_opts=OTGate(csecret);// jason object
   four_opts['sender_id']=jiff.id;
   four_opts = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'open', four_opts], 2);
   var mymsg=JSON.stringify(four_opts);
+
   //console.log('send OT msg to ',recls,'msg=',mymsg);
   jiff.emit('OT',recls,mymsg,true);
 
-  //var ssid=2;
-  if (jiff.id>ssid) {//jiff.id===2
-    
+  if (jiff.id>ssid) {
     final_deferred.resolve(wi);
     //console.log('in simple return',wi);
   }
   var w2;
-  if (jiff.id<ssid) {//jiff.id===1
+  if (jiff.id<ssid) {
     jiff.listen('OT',function (ssid,msg) {
       w2=wi;
       msg=JSON.parse(msg);

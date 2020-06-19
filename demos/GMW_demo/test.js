@@ -4,13 +4,12 @@ var mpc = require('./mpc.js');
 var XOR=require('./gmw_xor.js');
 
 // Generic Testing Parameters
-var showProgress = false;
-
+var showProgress = true;
 var parallelismDegree = 2; // Max number of test cases running in parallel
 var Zp = null;
-var n = 4;
-var party_count = 4;
-var partylist=[2,3];
+var n = 8;
+var party_count = 2;
+var partylist=[1,2];
 
 // Parameters specific to this demo
 var maxValue = 2;

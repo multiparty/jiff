@@ -42,7 +42,8 @@ if (party_id != null) {
 var options = {party_count: party_count, party_id: party_id};
 
 options.onConnect = function (jiff_instance) {
-  var promise = mpc.compute(input,[2,3],jiff_instance);
+  var andPartyList=[1,2];
+  var promise = mpc.compute(input,andPartyList,jiff_instance);
   //console.log('in party',typeof(promise));
   promise.then(function (v) {
     console.log('party log:',v);

@@ -9,7 +9,6 @@ n: number of shares
 function gmw_compute_share(jiff,input,receivers_list, threshold, Zp) {
   var ls={};// potential shares of length n
   var i;
-  console.log('vcb',receivers_list,'ll=',receivers_list.length-1);
   for (i=0;i<receivers_list.length-1;i++) {
 
     var b=Math.floor(Math.random()*2); // random from 0,1

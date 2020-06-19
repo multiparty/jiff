@@ -33,13 +33,13 @@ function recon_ls(jiff,ls) {
 }
 
 function gmw_reconstruct(jiff,shares) {
-  console.log("inhelp",shares);
+  //console.log("inhelp",shares);
   var ls=[];
   for (let [key] of Object.keys(shares)) {
     ls.push(shares[key]['value']);
 
   }
-  console.log(ls);
+  //console.log(ls);
   return recon_ls(jiff,ls);
 
 
@@ -142,7 +142,7 @@ module.exports = {
           jiff.deferreds[op_id].deferred = 'CLEAN';
         }
         var recons_secret = gmw_reconstruct(jiff,shares);
-        console.log('open',shares,'recons_open',recons_secret);
+        //console.log('open',shares,'recons_open',recons_secret);
 
         recons_secret = jiff.hooks.execute_array_hooks('afterReconstructShare', [jiff, recons_secret], 1);
         return recons_secret;

@@ -49,12 +49,9 @@ const GMW_OT=require('./gmw_OT.js');
       //var csec={'1':v[0],'2':v[1]};
       //var rels=jiff_instance.receiving_list;
       //csec=v;
-        var ssid=rels[1];
-        if (jiff_instance.id===rels[1]) {
-          ssid=rels[0];
-        }
+
         //console.log('v=',v,'ssid',ssid);
-        var re=GMW_OT.gmw_and(jiff_instance,v,ssid);
+        var re=GMW_OT.gmw_and(jiff_instance,v,rels);
         re.then(function (v) {
           console.log('ci=',v);
           final_deferred.resolve(v);
@@ -119,6 +116,7 @@ const GMW_OT=require('./gmw_OT.js');
       });
     }
     // return gmw_and result
+
     return promise;
 
     /*
