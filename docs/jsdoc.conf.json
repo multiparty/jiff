@@ -7,8 +7,7 @@
     "include": [
       "./lib/jiff-client.js",
       "./lib/client/",
-      "./lib/jiff-server.js",
-      "./README.md"
+      "./lib/jiff-server.js"
     ]
   },
   "sourceType": "module",
