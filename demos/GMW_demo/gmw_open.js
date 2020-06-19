@@ -33,14 +33,13 @@ function recon_ls(jiff,ls) {
 }
 
 function gmw_reconstruct(jiff,shares) {
-  //console.log("inhelp");
-  //console.log(shares);
+  console.log("inhelp",shares);
   var ls=[];
   for (let [key] of Object.keys(shares)) {
     ls.push(shares[key]['value']);
 
   }
-  //console.log(ls);
+  console.log(ls);
   return recon_ls(jiff,ls);
 
 
@@ -103,7 +102,6 @@ module.exports = {
     if (op_id == null) {
       op_id = jiff.counters.gen_op_id2('open', parties, share.holders);
     }
-
     // Party is a holder
     if (share.holders.indexOf(jiff.id) > -1) {
       // Call hook
@@ -136,17 +134,15 @@ module.exports = {
       if (jiff.deferreds[op_id].shares != null && jiff.deferreds[op_id].shares.length >= share.threshold) {
         final_deferred.resolve();
       }
-
       return final_promise.then(function () {
         var shares = jiff.deferreds[op_id].shares;
-
         if (shares.length === jiff.deferreds[op_id].total) {
           delete jiff.deferreds[op_id];
         } else {
           jiff.deferreds[op_id].deferred = 'CLEAN';
         }
         var recons_secret = gmw_reconstruct(jiff,shares);
-        //console.log(recons_secret);
+        console.log('open',shares,'recons_open',recons_secret);
 
         recons_secret = jiff.hooks.execute_array_hooks('afterReconstructShare', [jiff, recons_secret], 1);
         return recons_secret;

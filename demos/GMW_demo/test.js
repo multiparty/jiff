@@ -5,10 +5,12 @@ var XOR=require('./gmw_xor.js');
 
 // Generic Testing Parameters
 var showProgress = false;
-var party_count = 2;
-var parallelismDegree = 1; // Max number of test cases running in parallel
-var n = 100;
+
+var parallelismDegree = 2; // Max number of test cases running in parallel
 var Zp = null;
+var n = 4;
+var party_count = 4;
+var partylist=[2,3];
 
 // Parameters specific to this demo
 var maxValue = 2;
@@ -32,6 +34,7 @@ function generateInputs(party_count) {
       inputs[i+1].push(Math.floor((Math.random() * maxValue)));
     }
   }
+  console.log('testin',inputs);
   return inputs;
 }
 
@@ -45,7 +48,9 @@ function computeResults(inputs) {
   var results = [];
   for (var j = 0; j < n; j++) {
     // test for gmw_and
-    results.push(inputs[1][j]&inputs[2][j]);
+    var pid1=partylist[0];
+    var pid2=partylist[1];
+    results.push(inputs[pid1][j]&inputs[pid2][j]);
   }
 
   /* test for gmw_xor function
@@ -65,6 +70,7 @@ function computeResults(inputs) {
     results.push(output);
   }
   */
+  console.log('testou',results);
   return results;
 }
 

@@ -6,20 +6,22 @@ input: bit to compute share for
 n: number of shares
 
 */
-function gmw_compute_share(jiff,input,n, threshold, Zp) {
+function gmw_compute_share(jiff,input,receivers_list, threshold, Zp) {
   var ls={};// potential shares of length n
   var i;
-  for (i=1;i<=n-1;i++) {
+  console.log('vcb',receivers_list,'ll=',receivers_list.length-1);
+  for (i=0;i<receivers_list.length-1;i++) {
+
     var b=Math.floor(Math.random()*2); // random from 0,1
-    ls[i]=b;
+    ls[receivers_list[i] ]=b;
 
   }
-  var sum=ls[1];
-  for (i=2;i<=n-1;i++) {
+  var sum=ls[receivers_list[0]];
+  for (i=1;i<receivers_list.length-1;i++) {
     sum=sum^ls[i];
   }
   sum=sum^input;
-  ls[n]=sum;
+  ls[receivers_list[i]]=sum;
   //console.log('my com for shares',ls);
   return ls;
 
@@ -85,9 +87,8 @@ function gmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
 
     // compute shares
     //var shares = jiff.hooks.computeShares(jiff, secret, receivers_list, threshold, Zp);
-    var shares=gmw_compute_share(jiff,secret,jiff.party_count, threshold, Zp);
-
-    //myresult.push(shares);
+    
+    var shares=gmw_compute_share(jiff,secret,receivers_list, threshold, Zp);
 
     // Call hook
 
