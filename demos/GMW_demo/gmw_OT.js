@@ -52,28 +52,30 @@ function receive_OT(jiff,csecret) {
 // if i>j
 
 //ssid: send OT msg to party_id list
-function gmw_and(jiff,csecret,rels) {
+function gmw_and(jiff,sec,sendls) {
   //console.log('v',csecret,jiff.id,ssid);
-  const p_id=jiff.id;
-  var wi= csecret[0]&csecret[1];
-  //console.log('v',csecret,jiff.id,ssid,'wi=',wi);
-  var ssid;
-
-  ssid=rels[1];
-  if (jiff.id===rels[1]) {
-    ssid=rels[0];
+  var rels=[];
+  var i;
+  for ( i=1;i<=jiff.party_count;i++) {
+    rels.push(i);
   }
+  const p_id=jiff.id;
+  var wi=sec[sendls[0]-1]&sec[sendls[1]-1];
+  //console.log('fwi',wi,sec,'m1',sec[sendls[0]-1],'m2',sec[sendls[1]-1]);
+  var csecret=[];
+
+  for ( i=0;i<2;i++) {
+    csecret.push(sec[sendls[i]-1]);
+  }
+  //console.log(csecret);
   // receivinglist of OT msg
   var recls=[];
-  if (ssid<p_id) {
-    recls.push(ssid);
+  for (i=0;i<rels.length;i++) {
+    if (rels[i]<p_id) {
+      recls.push(rels[i]);
+    }
   }
 
-  // for (var i=0;i<rels.length;i++ ) {
-  //   if (rels[i]<p_id) {
-  //     recls.push(rels[i]);
-  //   }
-  // }
   var final_deferred = $.Deferred();
   var final_promise = final_deferred.promise();
   var four_opts=OTGate(csecret);// jason object
@@ -84,22 +86,28 @@ function gmw_and(jiff,csecret,rels) {
   //console.log('send OT msg to ',recls,'msg=',mymsg);
   jiff.emit('OT',recls,mymsg,true);
 
-  if (jiff.id>ssid) {
+  if (jiff.id===jiff.party_count) {//jiff.id>ssid
     final_deferred.resolve(wi);
     //console.log('in simple return',wi);
   }
-  var w2;
-  if (jiff.id<ssid) {
+  var w2=0;
+  //if (jiff.id<ssid) {
+  var count=jiff.party_count-p_id;
+  var my_choose=csecret[0]+','+csecret[1]+':';
+  for ( var ssid=p_id+1;ssid<=jiff.party_count;ssid++) {
     jiff.listen('OT',function (ssid,msg) {
-      w2=wi;
       msg=JSON.parse(msg);
-      var my_choose=csecret[0]+','+csecret[1]+':';
       var result=msg[my_choose];
-      //console.log('my json get'+my_choose+' id'+jiff.id,'result=',result);
       w2= w2^result;
-      final_deferred.resolve(w2);
+      count--;
+      // console.log('my json get'+my_choose+' id'+msg['sender_id'],'result=',result,'c=',count,'w2=',w2,'wic',wi);
+      if (count===0) {
+        w2=wi^w2;
+        final_deferred.resolve(w2);
+      }
     });
   }
+  // }
 
   // for (j=1;j<jiff.id;j++) {
   //   jiff.listen('OT',function (j,msg) {
@@ -210,12 +218,6 @@ function OTGate(i_shares) {
   var opt2=OT_option(0,1,i_shares);
   var opt3=OT_option(1,0,i_shares);
   var opt4=OT_option(1,1,i_shares);
-  // var re=[];
-  // re.push('0,0:'.concat(opt1));
-  // re.push('0,1:'.concat(opt2));
-  // re.push('1,0:'.concat(opt3));
-  // re.push('1,1:'.concat(opt4));
-  // console.log('my_ops',re);
   var re={};
   re['0,0:']=opt1;
   re['0,1:']=opt2;
@@ -224,10 +226,6 @@ function OTGate(i_shares) {
 
   //console.log('my_ops',re);
   return re;
-  // re.push(opt1);
-  // re.push(opt2);
-  // re.push(opt3);
-  // re.push(opt4);
 }
 
 

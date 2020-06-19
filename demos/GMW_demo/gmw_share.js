@@ -5,11 +5,23 @@ compute shares for input bit(internal use)
 input: bit to compute share for
 n: number of shares
 
+function ooo(jiff,ls) {
+  var re=ls[1];
+  for (var i=2;i<=Object.keys(ls).length;i++) {
+    re=re^ls[i];
+
+  }
+  return re;
+
+}
 */
+
+
 function gmw_compute_share(jiff,input,receivers_list, threshold, Zp) {
   var ls={};// potential shares of length n
   var i;
-  for (i=0;i<receivers_list.length-1;i++) {
+  var len=receivers_list.length;
+  for (i=0;i<len-1;i++) {
 
     var b=Math.floor(Math.random()*2); // random from 0,1
     ls[receivers_list[i] ]=b;
@@ -17,14 +29,16 @@ function gmw_compute_share(jiff,input,receivers_list, threshold, Zp) {
   }
   var sum=ls[receivers_list[0]];
   for (i=1;i<receivers_list.length-1;i++) {
-    sum=sum^ls[i];
+    sum=sum^ls[receivers_list[i]];
   }
   sum=sum^input;
   ls[receivers_list[i]]=sum;
-  //console.log('my com for shares',ls);
+  //var ree=ooo(jiff,ls);
+  //console.log('my com for shares',ls,'ree',ree,'i',input,len);
   return ls;
 
 }
+
 
 /*
  * share the secret to corresponding party i with corresponding shares[i]
@@ -85,8 +99,7 @@ function gmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
     secret = jiff.hooks.execute_array_hooks('beforeShare', [jiff, secret, threshold, receivers_list, senders_list, Zp], 1);
 
     // compute shares
-    //var shares = jiff.hooks.computeShares(jiff, secret, receivers_list, threshold, Zp);
-    
+    //var shares = jiff.hooks.computeShares(jiff, secret, receivers_list, threshold, Zp);  
     var shares=gmw_compute_share(jiff,secret,receivers_list, threshold, Zp);
 
     // Call hook
