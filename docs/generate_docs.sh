@@ -20,9 +20,9 @@ mv docs/jsdoc/index.html docs/jsdoc/hooks-overview.html
 ./node_modules/.bin/jsdoc -R README.md -r -c docs/jsdoc.conf.json
 
 #correct links
-sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html
-sed -i -e 's/tests\\/suite\\/README.md/tests.html/g' docs/jsdoc/*.html
-sed -i -e 's/lib\\/ext\\/Hooks.md/hooks-overview.html/g' docs/jsdoc/*.html
-sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html
-sed -i -e 's/CONTRIBUTING.md/contributing.html/g' docs/jsdoc/*.html
+sed -i -e 's|lib/ext/README.md|extensions.html|g' docs/jsdoc/*.html
+sed -i -e 's|tests/suite/README.md|tests.html|g' docs/jsdoc/*.html
+sed -i -e 's|lib/ext/Hooks.md|hooks-overview.html|g' docs/jsdoc/*.html
+sed -i -e 's|Hooks.md|hooks.html|g' docs/jsdoc/*.html
+sed -i -e 's|CONTRIBUTING.md|contributing.html|g' docs/jsdoc/*.html
 sed -i -e 's|https://github.com/multiparty/jiff/tree/master/tests.html|tests.html|g' docs/jsdoc/contributing.html
