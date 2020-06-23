@@ -10,7 +10,14 @@ echo "====================" >> "${logs}"
 echo "NEW TEST $(date)" >> "${logs}"
 echo "====================" >> "${logs}"
 
-node tests/suite/server.js >> "${logs}" &
+if [ "$1" == "restAPI" ]
+then
+  pushd ~/SAIL/RIFF/
+  cargo test >> test_suite.logs &
+  popd
+else
+  node tests/suite/server.js >> "${logs}" &
+fi
 
 EXIT_CODE=0
 i=0
