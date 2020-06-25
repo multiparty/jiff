@@ -1,10 +1,12 @@
 const GMW=require('./gmw_share.js');
 const GMW_OPEN=require('./gmw_open.js');
 const GMW_OT=require('./gmw_OT.js');
+const GMW_xor=require('./gmw_xor.js');
 
 (function (exports, node) {
   var saved_instance;
-
+  var seeds = {};
+  // Unique prefix seed for op_ids
   /**
    * Connect to the server and initialize the jiff instance
    */
@@ -24,55 +26,76 @@ const GMW_OT=require('./gmw_OT.js');
   };
 
   exports.compute = function (input,jiff_instance) {
-    //console.log('id',jiff_instance.id, rels);
+    //console.log('id',jiff_instance.id);
     if (jiff_instance == null) {
       jiff_instance = saved_instance;
 
     }
-    console.log('check test in mpc',jiff_instance.id);
+    // if (seeds[jiff_instance.id] == null) {
+    //   seeds[jiff_instance.id] = 0;
+    // }
+    // var seed = seeds[jiff_instance.id]++;
+    // jiff_instance.seed_ids(seed);
+    // console.log('check test in mpc',jiff_instance.id,'seed=',seed);
     var deferred = $.Deferred();
     var promise = deferred.promise();
-    // for (var k = 1; k <=Object.keys(shares).length; k++) {
-    //   allPromises.push(shares[k].value);
-    // }
     var rels=[];
     for ( var i=1;i<=jiff_instance.party_count;i++) {
       rels.push(i);
     }
-
-    //   if (true) {//jiff_instance.id===rels[0]||jiff_instance.id===rels[1]
-    //console.log('vvbb',rels,'my',jiff_instance.id);
+    // xor bwteen which  two parties.
     var sendls=[2,3];
+    // for xor, other =0; for and other=1;
+    var other=0;
     var shares;
-    if(jiff_instance.id===sendls[0]||jiff_instance.id===sendls[1]) {
+
+    if (jiff_instance.id===sendls[0]||jiff_instance.id===sendls[1]) {
       shares=GMW.gmw_jiff_share(jiff_instance,input,null,rels,rels);
     } else {
-      shares=GMW.gmw_jiff_share(jiff_instance,1,null,rels,rels);
+      shares=GMW.gmw_jiff_share(jiff_instance,other,null,rels,rels);
     }
-    var allPromises=[];
-    //console.log('shares1',shares);
-    for (var k = 0; k <rels.length; k++) {
-      allPromises.push(shares[rels[k]].value);
-    }
+    // get ci promise
+    var ci=GMW_xor.gmw_xor(jiff_instance, shares,rels,sendls);
+    // open the ci among all party including broadcast and reconstruct phase
+    return GMW_OPEN.gmw_jiff_open(jiff_instance,ci,rels);
+    /*
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
+    var re;
     Promise.all(allPromises).then( function (v) {
-    //console.log('v=',v);
-      var re=GMW_OT.gmw_and(jiff_instance,v,sendls);
+      console.log('v=',v);
+      //jiff_instance.seed_ids(seed);
+      // console.log('mm',jiff_instance.id,'seed',seed);
+      //var re=GMW_OT.gmw_and(jiff_instance,v,sendls);
+      //console.log('rrrr',re);
+      var myls=[];
+      for (var i=1;i<=rels.length;i++) {
+        myls.push(GMW_OPEN.gmw_jiff_open(jiff_instance,re[i]));
+      }
+     // return  Promise.all(myls);
+      final_deferred.resolve(myls);
+          });
+    //return GMW_OPEN.gmw_jiff_open(jiff_instance,re[1])
+    return final_promise;
       re.then(function (v) {
         //console.log('ci=',v);
+        //seed = seeds[jiff_instance.id]++;
+        //jiff_instance.seed_ids(seed);
         final_deferred.resolve(v);
       });
     } );
+    */
     //return final_promise;
-    //---- till now return ci for each party
-
-    // --- from now test for reconstruct and gmw_and result
+    /*
     final_promise.then(function (v) {
-
+      //seed = seeds[jiff_instance.id]++;
+      //jiff_instance.seed_ids(seed);
+      console.log('!!start',jiff_instance.id,'seed=',seed);
       var c_shares=GMW.gmw_jiff_share(jiff_instance,v,null,rels,rels);
+      console.log('!!end',jiff_instance.id,'seed=',seed);
       var and_re;
       var ap=[];
+      //return GMW_OPEN.gmw_jiff_open(jiff_instance,c_shares,rels);  
       for (var k = 0; k <rels.length; k++) {
         ap.push(GMW_OPEN.gmw_jiff_open(jiff_instance,c_shares[rels[k]],rels));
       }
@@ -81,6 +104,9 @@ const GMW_OT=require('./gmw_OT.js');
       // }
       Promise.all(ap).then(function (v) {
         //and_re=v[0]^v[1];// v[2]
+        //seed = seeds[jiff_instance.id]++;
+        jiff_instance.seed_ids(seed);
+        console.log('mm222c',jiff_instance.id,seed);
         and_re=v[0];
         for ( var i=1;i<v.length;i++) {
           and_re=and_re^v[i];
@@ -90,44 +116,13 @@ const GMW_OT=require('./gmw_OT.js');
         deferred.resolve(and_re);
 
       });
-      // xor to resonstruct and result
-      // if (typeof(c_shares[1].value) === 'number') {
-      //   GMW_OPEN.gmw_jiff_open(jiff_instance,c_shares[2]).then( function (re) {
-      //     and_re =re^v;
-      //     console.log('xx',and_re,'2',re,v);
-      //     deferred.resolve(and_re);
-      //   });
-      // } else {
-      //   GMW_OPEN.gmw_jiff_open(jiff_instance,c_shares[1]).then( function (re) {
-      //     and_re =re^v;
-      //     console.log('xx',and_re,'1',re,v);
-      //     deferred.resolve(and_re);
-      //   });
-      // }
-      // jiff_instance.open(and_re).then(function (v) {
-      //   console.log('and_re',v);
-      //   deferred.resolve(v);
-      // });
+   */
+  }
+//});
 
-    });
+}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
 
-    return promise;
-
-    /*
-    // xor test
-    if (typeof(shares[1].value) === 'number') {
-      var xor_share;
-      xor_share =shares[2].cxor_bit(shares[1].value);
-    } else {
-      xor_share =shares[1].cxor_bit(shares[2].value);
-    }
-    var xor_re=GMW_OPEN.gmw_jiff_open(jiff_instance,xor_share);
-    return xor_re;
-    */
-
-
-
-    /* !!open test use
+/* !!open test use
     var allPromises=[];
     for (var k = 1; k <=Object.keys(shares).length; k++) {
       allPromises.push(GMW_OPEN.gmw_jiff_open(jiff_instance,shares[k]));
@@ -135,8 +130,3 @@ const GMW_OT=require('./gmw_OT.js');
     return Promise.all(allPromises);
     //eg.[1,0]
     */
-
-  }
-
-}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
-

@@ -5,9 +5,9 @@ var XOR=require('./gmw_xor.js');
 
 // Generic Testing Parameters
 var showProgress = true;
-var parallelismDegree = 1; // Max number of test cases running in parallel
-var Zp = null;
-var n = 6;
+var parallelismDegree = 3; // Max number of test cases running in parallel
+var Zp = 13;
+var n = 300;
 var party_count = 3;
 var partylist=[2,3];
 
@@ -49,7 +49,7 @@ function computeResults(inputs) {
     // test for gmw_and
     var pid1=partylist[0];
     var pid2=partylist[1];
-    results.push(inputs[pid1][j]&inputs[pid2][j]);
+    results.push(inputs[pid1][j]^inputs[pid2][j]);
   }
 
   /* test for gmw_xor function
@@ -122,7 +122,7 @@ describe('Test', function () {
             ithInputs += ',' + inputs[p][i];
           }
           var msg = 'Party: ' + jiff_instance.id + '. inputs: [' + ithInputs + ']';
-          console.log('hh',msg);
+          //console.log('hh',msg);
           // assert results are accurate
           try {
             assert.deepEqual(testResults[i].toString(), realResults[i].toString(), msg);

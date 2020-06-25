@@ -22,6 +22,7 @@ function ooo(jiff,ls) {
 }
 */
 function recon_ls(jiff,ls) {
+  // console.log('lllff',ls,jiff.id);
   var re=ls[0];
   for (var i=1;i<Object.keys(ls).length;i++) {
     re=re^ls[i];
@@ -47,6 +48,7 @@ function gmw_reconstruct(jiff,shares) {
 }
 
 var jiff_broadcast = function (jiff, share, parties, op_id) {
+  //console.log('',op_id);
   for (var index = 0; index < parties.length; index++) {
     var i = parties[index]; // Party id
     if (i === jiff.id) {
@@ -58,7 +60,9 @@ var jiff_broadcast = function (jiff, share, parties, op_id) {
     var msg = {party_id: i, share: share.value, op_id: op_id, Zp: share.Zp};
     msg = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'open', msg], 2);
     msg['share'] = jiff.hooks.encryptSign(jiff, msg['share'].toString(), jiff.keymap[msg['party_id']], jiff.secret_key);
-    jiff.socket.safe_emit('open', JSON.stringify(msg));
+    var ee= JSON.stringify(msg);
+    //console.log('broadcast in open',op_id);
+    jiff.socket.safe_emit('open',ee);
   }
 };
 
@@ -77,6 +81,7 @@ module.exports = {
   gmw_jiff_open: function (jiff, share, parties, op_id) {
 
     var i;
+    //console.log('zz',share.jiff);
     if (!(share.jiff === jiff)) {
       throw 'share does not belong to given instance';
     }
@@ -100,7 +105,7 @@ module.exports = {
 
     // Compute operation ids (one for each party that will receive a result
     if (op_id == null) {
-      op_id = jiff.counters.gen_op_id2('open', parties, share.holders);
+      op_id = jiff.counters.gen_op_id2('gmwopen', parties, share.holders);
     }
     // Party is a holder
     if (share.holders.indexOf(jiff.id) > -1) {
@@ -142,9 +147,8 @@ module.exports = {
           jiff.deferreds[op_id].deferred = 'CLEAN';
         }
         var recons_secret = gmw_reconstruct(jiff,shares);
-        //console.log('open',shares,'recons_open',recons_secret);
-
         recons_secret = jiff.hooks.execute_array_hooks('afterReconstructShare', [jiff, recons_secret], 1);
+        //console.log('open',shares,'recons_open',recons_secret);
         return recons_secret;
       });
     }
