@@ -49,75 +49,12 @@ const GMW_xor=require('./gmw_xor.js');
     var other=1;
     var shares;
 
-    if (jiff_instance.id===sendls[0]||jiff_instance.id===sendls[1]) {
-      shares=GMW.gmw_jiff_share(jiff_instance,input);
-    } else {
-      shares=GMW.gmw_jiff_share(jiff_instance,other);
-    }
+    shares=GMW.gmw_jiff_share(jiff_instance,input);
     // get ci promise
-    var ci=GMW_OT.gmw_and (jiff_instance, shares,sendls);
+    var ci=GMW_xor.gmw_xor(jiff_instance, shares[1],shares[2]);
 
     // open the ci among all party including broadcast and reconstruct phase
     return GMW_OPEN.gmw_jiff_open(jiff_instance,ci);
-    /*
-    var final_deferred = $.Deferred();
-    var final_promise = final_deferred.promise();
-    var re;
-    Promise.all(allPromises).then( function (v) {
-      console.log('v=',v);
-      //jiff_instance.seed_ids(seed);
-      // console.log('mm',jiff_instance.id,'seed',seed);
-      //var re=GMW_OT.gmw_and(jiff_instance,v,sendls);
-      //console.log('rrrr',re);
-      var myls=[];
-      for (var i=1;i<=rels.length;i++) {
-        myls.push(GMW_OPEN.gmw_jiff_open(jiff_instance,re[i]));
-      }
-     // return  Promise.all(myls);
-      final_deferred.resolve(myls);
-          });
-    //return GMW_OPEN.gmw_jiff_open(jiff_instance,re[1])
-    return final_promise;
-      re.then(function (v) {
-        //console.log('ci=',v);
-        //seed = seeds[jiff_instance.id]++;
-        //jiff_instance.seed_ids(seed);
-        final_deferred.resolve(v);
-      });
-    } );
-    */
-    //return final_promise;
-    /*
-    final_promise.then(function (v) {
-      //seed = seeds[jiff_instance.id]++;
-      //jiff_instance.seed_ids(seed);
-      console.log('!!start',jiff_instance.id,'seed=',seed);
-      var c_shares=GMW.gmw_jiff_share(jiff_instance,v,null,rels,rels);
-      console.log('!!end',jiff_instance.id,'seed=',seed);
-      var and_re;
-      var ap=[];
-      //return GMW_OPEN.gmw_jiff_open(jiff_instance,c_shares,rels);  
-      for (var k = 0; k <rels.length; k++) {
-        ap.push(GMW_OPEN.gmw_jiff_open(jiff_instance,c_shares[rels[k]],rels));
-      }
-      // for (var k = 1; k <=Object.keys(c_shares).length; k++) {
-      //   ap.push(GMW_OPEN.gmw_jiff_open(jiff_instance,c_shares[k],rels));
-      // }
-      Promise.all(ap).then(function (v) {
-        //and_re=v[0]^v[1];// v[2]
-        //seed = seeds[jiff_instance.id]++;
-        jiff_instance.seed_ids(seed);
-        console.log('mm222c',jiff_instance.id,seed);
-        and_re=v[0];
-        for ( var i=1;i<v.length;i++) {
-          and_re=and_re^v[i];
-        }
-
-        //console.log('and_re',v,and_re);
-        deferred.resolve(and_re);
-
-      });
-   */
   }
 //});
 
