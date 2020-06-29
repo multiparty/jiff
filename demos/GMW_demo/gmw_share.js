@@ -50,7 +50,7 @@ function gmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
 
   // defaults
   if (Zp == null) {
-    Zp = jiff.Zp;
+    Zp = 2;
   }
   if (receivers_list == null) {
     receivers_list = [];
@@ -99,7 +99,7 @@ function gmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
     secret = jiff.hooks.execute_array_hooks('beforeShare', [jiff, secret, threshold, receivers_list, senders_list, Zp], 1);
 
     // compute shares
-    //var shares = jiff.hooks.computeShares(jiff, secret, receivers_list, threshold, Zp);  
+    //var shares = jiff.hooks.computeShares(jiff, secret, receivers_list, threshold, Zp);
     var shares=gmw_compute_share(jiff,secret,receivers_list, threshold, Zp);
 
     // Call hook
