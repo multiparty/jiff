@@ -6,86 +6,448 @@ const GMW=require('./gmw_share.js');
 const GMW_OPEN=require('./gmw_open.js');
 //const ascii = require('./ascii.js');
 $ = require('jquery-deferred');
-/*
- *  This is the setup for a secure 1-out-of-4 oblivious transfer using
- *  the methods in IO to send public messages between the two parties.
- */
-// var IO = require('./io-template.js');
-// const OT = require('1-out-of-n')(IO);
-// const N = 4;
 
 // party i :  receive aibj+ajbi from party j;
 // get choose then ^aibi
 // then share result to party i, j sxor to open
-
 // if i>j
-/*
-function receive_OT(jiff,csecret) {
-// ai,bi
-  var my_choose=csecret[1]+','+csecret[2];
-  var op;
-  switch (my_choose) {
-    case '0,0': op=0;break;
-    case '0,1': op=1;break;
-    case '1,0': op=2;break;
-    case '1,1': op=3; break;
-  }
-
-  OT.receive(op, N).then(function (array) {
-    var rec=ascii.to_ascii(array).split(':');
-    var num=parseInt(rec[1]);
-    //console.log('The chosen secret is:', num,'op=',op);
-    return num;
-
-  });
-
-}
-*/
-/*
-    var wi= csecret[1]&csecret[2];
-    var s=wi^num;
-    console.log('re_ot',wi,s);
-    //var shares= GMW.gmw_share(jiff,s);// receivlisst
-    return s;
-    */
-
-// if i>j
-
 //ssid: send OT msg to party_id list
-function gmw_and(jiff,sec,sendls) {
-  //console.log('v',csecret,jiff.id,ssid);
-  var rels=[];
-  var i;
-  for ( i=1;i<=jiff.party_count;i++) {
-    rels.push(i);
+function counter(counts,n) {
+  for (var k=1;k<=n;k++) {
+    counts[k]=0;
   }
-  const p_id=jiff.id;
-  var wi=sec[sendls[0]-1]&sec[sendls[1]-1];
-  //console.log('fwi',wi,sec,'m1',sec[sendls[0]-1],'m2',sec[sendls[1]-1]);
-  var csecret=[];
 
-  for ( i=0;i<2;i++) {
-    csecret.push(sec[sendls[i]-1]);
-  }
-  //console.log(csecret);
-  // receivinglist of OT msg
-  var recls=[];
-  for (i=0;i<rels.length;i++) {
-    if (rels[i]<p_id) {
-      recls.push(rels[i]);
+  return counts;
+}
+
+function gmw_and(jiff,sec,sendls,rels) {
+  //jiff.seed_ids(seed);
+  if (rels==null||rels===[]) {
+    rels = [];
+    for ( var i=1;i<=jiff.party_count;i++) {
+      rels.push(i);
     }
   }
 
-  var final_deferred = $.Deferred();
-  var final_promise = final_deferred.promise();
-  var four_opts=OTGate(csecret);// jason object
-  four_opts['sender_id']=jiff.id;
-  four_opts = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'open', four_opts], 2);
-  var mymsg=JSON.stringify(four_opts);
+  var allPromises=[];
+  for (var k = 0; k <rels.length; k++) {
+    allPromises.push(sec[rels[k]].value);
 
-  //console.log('send OT msg to ',recls,'msg=',mymsg);
-  jiff.emit('OT',recls,mymsg,true);
+  }
 
+  var final_deferred = new jiff.helpers.Deferred();
+  var final_promise = final_deferred.promise;
+  var result = new jiff.SecretShare(final_promise,rels, rels.length, jiff.Zp);
+  var counts={};
+  counts= counter(counts,jiff.party_count);
+  console.log('check count:',jiff.id,counts);
+  Promise.all(allPromises).then( function (v) {
+    var wi= v[sendls[0]-1]&v[sendls[1]-1];
+    var csecret=[];
+    var p_id=jiff.id;
+    for ( i=0;i<2;i++) {
+      csecret.push(v[sendls[i]-1]);
+    }
+    // receivinglist of OT msg
+    var recls=[];
+    for (i=0;i<rels.length;i++) {
+      if (rels[i]<jiff.id) {
+        recls.push(rels[i]);
+      }
+    }
+
+    var share_id = jiff.counters.gen_op_id2('share', rels, rels);
+    console.log(jiff.id,'no share',share_id);
+    var four_opts=OTGate(csecret);// jason object
+    four_opts['sender_id']=jiff.id;
+    four_opts['op_id']=share_id;
+    four_opts = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'open', four_opts], 2);
+    var mymsg=JSON.stringify(four_opts);
+    var w2=0;
+    //if (jiff.id<ssid) {
+ //   var count=jiff.party_count-p_id;
+    var my_choose=csecret[0]+','+csecret[1]+':';
+//    console.log(jiff.id,'cc',count);
+
+
+    //console.log(jiff.id,counts);
+    console.log(jiff.id,share_id,'send OT msg to  ',recls);
+    jiff.emit('OT',recls,mymsg,true);
+
+
+    // receive OT msg
+    if (jiff.id===jiff.party_count) {//jiff.id>ssid
+      final_deferred.resolve(wi);
+      console.log(jiff.id,share_id,' in simple return','wi=',wi);
+    }
+
+    for ( var ssid=p_id+1;ssid<=jiff.party_count;ssid++) {
+      jiff.listen('OT',function (ssid,msg) {
+        msg=JSON.parse(msg);
+        console.log(jiff.id,'get ot msg from',msg['sender_id'],msg['op_id'],'!',share_id);
+        //if (msg.op_id===share_id) {
+        var select=msg[my_choose];
+        w2= w2^select;
+        console.log(jiff.id,counts);
+        counts[jiff.id]=counts[jiff.id]+1;
+        console.log(jiff.id,share_id,'my json get op_id=',msg['op_id'],' from sender='+msg['sender_id'],'cc=',counts[jiff.id],counts);
+        //console.log('my json get'+my_choose+' id'+msg['sender_id'],'result=',select);
+        if (counts[jiff.id]===jiff.party_count-jiff.id) {
+          // checking when it should be returning
+          // because of asyncnous, the count is not correct, has some issue.
+          
+          w2=wi^w2;
+          //counts[jiff.id]=0;
+          console.log(jiff.id,msg['op_id'],'return ',msg['op_id'],'ci=',w2);
+          final_deferred.resolve(w2);
+        }
+        //}
+      });
+    }
+
+  });
+  return result;
+
+
+/*
+
+
+    if (jiff.id===jiff.party_count) {//jiff.id>ssid
+    //final_deferred.resolve(wi);
+    f=wi;
+    console.log('in simple return',wi);
+////
+    f = jiff.hooks.execute_array_hooks('beforeShare', [jiff, f, rels.length, rels, rels, jiff.Zp], 1);
+
+    // compute shares
+    //var shares = jiff.hooks.computeShares(jiff, secret, receivers_list, threshold, Zp);  
+    var shares={};
+    for ( var j=1;j<=rels.length;j++) {
+      shares[j]=f;
+    }
+    //gmw_compute_share(jiff,my_share,receivers_list, threshold, jiff.Zp);
+
+    // Call hook
+
+    shares = jiff.hooks.execute_array_hooks('afterComputeShare', [jiff, shares, rels.length, rels, rels, jiff.Zp], 1);
+
+    // send shares
+    for (i = 0; i < rels.length; i++) {
+      p_id = rels[i];
+      if (p_id === jiff.id) {
+        continue;
+      }
+
+      // send encrypted and signed shares_id[p_id] to party p_id
+      var msg = {party_id: p_id, share: shares[p_id], op_id: share_id};
+
+      console.log("sending msg", jiff.id, "op_id:",msg.op_id);
+      msg = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'share', msg], 2);
+      msg['share'] = jiff.hooks.encryptSign(jiff, msg['share'].toString(10), jiff.keymap[msg['party_id']], jiff.secret_key);
+      //console.log("msg"+JSON.stringify(msg)+" "+msg.share);
+      jiff.socket.safe_emit('share', JSON.stringify(msg));
+
+    }
+  //}
+
+    
+ // if (receivers_list.indexOf(jiff.id) > -1) {
+    // setup a map of deferred for every received share
+    var result = {};
+    if (jiff.deferreds[share_id] == null) {
+      jiff.deferreds[share_id] = {};
+    }
+
+    var _remaining = rels.length;
+      for (i = 0; i < rels.length; i++) {
+      p_id = rels[i];
+
+      if (p_id === jiff.id) { // Keep party's own share
+        //var my_share = final_promise.value; //jiff.hooks.execute_array_hooks('receiveShare', [jiff, p_id, shares[p_id]], 2);      
+        var my = jiff.hooks.execute_array_hooks('receiveShare', [jiff, p_id, shares[p_id]], 2);
+        //result[p_id] = new jiff.SecretShare(my_share, receivers_list, threshold, Zp);
+        result[p_id] = new jiff.SecretShare(my, rels, rels.length, jiff.Zp);
+        _remaining--;
+        continue;
+      }
+
+      // check if a deferred is set up (maybe the message was previously received)
+      if (jiff.deferreds[share_id][p_id] == null) { // not ready, setup a deferred
+        jiff.deferreds[share_id][p_id] = new jiff.helpers.Deferred();
+
+      }
+
+      var promise = jiff.deferreds[share_id][p_id].promise;
+      // destroy deferred when done
+      (function (promise, p_id) { // p_id is modified in a for loop, must do this to avoid scoping issues.
+        promise.then(function () {
+          delete jiff.deferreds[share_id][p_id];
+          _remaining--;
+          if (_remaining === 0) {
+            delete jiff.deferreds[share_id];
+          }
+        });
+      })(promise, p_id);
+
+      // receive share_i[id] from party p_id
+      result[p_id] = new jiff.SecretShare(promise, rels, rels.length, jiff.Zp);
+    }
+  
+    //return result;
+
+
+/////
+  }
+
+
+  var w2=0;
+  var count=jiff.party_count-jiff.id;
+  var my_choose=csecret[0]+','+csecret[1]+':';
+  for ( var ssid=jiff.id+1;ssid<=jiff.party_count;ssid++) {
+    console.log('for','ssid=',ssid);
+    jiff.listen('OT',function (ssid,msg) {
+      msg=JSON.parse(msg);
+      console.log('for','ot=',msg);
+      if(msg.op_id===share_id){
+      var res=msg[my_choose];
+      w2= w2^res;
+      count--;
+      console.log('my json get'+my_choose+' id'+msg['sender_id'],'result=',res,'c=',count,'w2=',w2,'wic',wi);
+      if (count===0) {
+        w2=wi^w2;
+        f=w2;
+        console.log('ci=',w2);
+       ////
+       
+
+    f = jiff.hooks.execute_array_hooks('beforeShare', [jiff, f, rels.length, rels, rels, jiff.Zp], 1);
+
+    // compute shares
+    //var shares = jiff.hooks.computeShares(jiff, secret, receivers_list, threshold, Zp);  
+    var shares={};
+    for ( var j=1;j<=rels.length;j++) {
+      shares[j]=f;
+    }
+    //gmw_compute_share(jiff,my_share,receivers_list, threshold, jiff.Zp);
+
+    // Call hook
+
+    shares = jiff.hooks.execute_array_hooks('afterComputeShare', [jiff, shares, rels.length, rels, rels, jiff.Zp], 1);
+
+    // send shares
+    for (i = 0; i < rels.length; i++) {
+      p_id = rels[i];
+      if (p_id === jiff.id) {
+        continue;
+      }
+
+      // send encrypted and signed shares_id[p_id] to party p_id
+      var msg = {party_id: p_id, share: shares[p_id], op_id: share_id};
+
+      console.log("sending msg", jiff.id, "op_id:",msg.op_id);
+      msg = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'share', msg], 2);
+      msg['share'] = jiff.hooks.encryptSign(jiff, msg['share'].toString(10), jiff.keymap[msg['party_id']], jiff.secret_key);
+      //console.log("msg"+JSON.stringify(msg)+" "+msg.share);
+      jiff.socket.safe_emit('share', JSON.stringify(msg));
+
+    }
+  //}
+
+    
+ // if (receivers_list.indexOf(jiff.id) > -1) {
+    // setup a map of deferred for every received share
+    var result = {};
+    if (jiff.deferreds[share_id] == null) {
+      jiff.deferreds[share_id] = {};
+    }
+
+    var _remaining = rels.length;
+      for (i = 0; i < rels.length; i++) {
+      p_id = rels[i];
+
+      if (p_id === jiff.id) { // Keep party's own share
+        //var my_share = final_promise.value; //jiff.hooks.execute_array_hooks('receiveShare', [jiff, p_id, shares[p_id]], 2);      
+        var my = jiff.hooks.execute_array_hooks('receiveShare', [jiff, p_id, shares[p_id]], 2);
+        //result[p_id] = new jiff.SecretShare(my_share, receivers_list, threshold, Zp);
+        result[p_id] = new jiff.SecretShare(my, rels, rels.length, jiff.Zp);
+        _remaining--;
+        continue;
+      }
+
+      // check if a deferred is set up (maybe the message was previously received)
+      if (jiff.deferreds[share_id][p_id] == null) { // not ready, setup a deferred
+        jiff.deferreds[share_id][p_id] = new jiff.helpers.Deferred();
+
+      }
+
+      var promise = jiff.deferreds[share_id][p_id].promise;
+      // destroy deferred when done
+      (function (promise, p_id) { // p_id is modified in a for loop, must do this to avoid scoping issues.
+        promise.then(function () {
+          delete jiff.deferreds[share_id][p_id];
+          _remaining--;
+          if (_remaining === 0) {
+            delete jiff.deferreds[share_id];
+          }
+        });
+      })(promise, p_id);
+
+      // receive share_i[id] from party p_id
+      result[p_id] = new jiff.SecretShare(promise, rels, rels.length, jiff.Zp);
+    }
+    final_deferred.resolve(result);
+    //return result;
+
+
+        
+    ////
+        //final_deferred.resolve(w2);
+      }
+    }
+    });
+  }
+
+return final_promise;
+*/
+  // var fd = $.Deferred();
+  // var fp = final_deferred.promise();
+  //   var result = {};
+  /*
+   final_promise.then(function (my_share){
+      console.log('myshh',my_share);
+
+    //if (senders_list.indexOf(jiff.id) > -1) {
+    // Call hook
+    my_share = jiff.hooks.execute_array_hooks('beforeShare', [jiff, my_share, rels.length, rels, rels, jiff.Zp], 1);
+
+    // compute shares
+    //var shares = jiff.hooks.computeShares(jiff, secret, receivers_list, threshold, Zp);  
+    var shares={};
+    for(var i=1;i<=rels.length;i++){
+      shares[i]=my_share;
+    }
+    //gmw_compute_share(jiff,my_share,receivers_list, threshold, jiff.Zp);
+
+    // Call hook
+
+    shares = jiff.hooks.execute_array_hooks('afterComputeShare', [jiff, shares, rels.length, rels, rels, jiff.Zp], 1);
+
+    // send shares
+    for (i = 0; i < rels.length; i++) {
+      p_id = rels[i];
+      if (p_id === jiff.id) {
+        continue;
+      }
+
+      // send encrypted and signed shares_id[p_id] to party p_id
+      var msg = {party_id: p_id, share: shares[p_id], op_id: share_id};
+
+      console.log("sending msg", jiff.id, "op_id:",msg.op_id);
+      msg = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'share', msg], 2);
+      msg['share'] = jiff.hooks.encryptSign(jiff, msg['share'].toString(10), jiff.keymap[msg['party_id']], jiff.secret_key);
+      //console.log("msg"+JSON.stringify(msg)+" "+msg.share);
+      jiff.socket.safe_emit('share', JSON.stringify(msg));
+
+    }
+  //}
+ 
+ // if (receivers_list.indexOf(jiff.id) > -1) {
+    // setup a map of deferred for every received share
+    var result = {};
+    if (jiff.deferreds[share_id] == null) {
+      jiff.deferreds[share_id] = {};
+    }
+
+    var _remaining = rels.length;
+      for (i = 0; i < rels.length; i++) {
+      p_id = rels[i];
+
+      if (p_id === jiff.id) { // Keep party's own share
+        //var my_share = final_promise.value; //jiff.hooks.execute_array_hooks('receiveShare', [jiff, p_id, shares[p_id]], 2);      
+        var my = jiff.hooks.execute_array_hooks('receiveShare', [jiff, p_id, shares[p_id]], 2);
+        //result[p_id] = new jiff.SecretShare(my_share, receivers_list, threshold, Zp);
+        result[p_id] = new jiff.SecretShare(my, rels, rels.length, jiff.Zp);
+        _remaining--;
+        continue;
+      }
+
+      // check if a deferred is set up (maybe the message was previously received)
+      if (jiff.deferreds[share_id][p_id] == null) { // not ready, setup a deferred
+        jiff.deferreds[share_id][p_id] = new jiff.helpers.Deferred();
+
+      }
+
+      var promise = jiff.deferreds[share_id][p_id].promise;
+      // destroy deferred when done
+      (function (promise, p_id) { // p_id is modified in a for loop, must do this to avoid scoping issues.
+        promise.then(function () {
+          delete jiff.deferreds[share_id][p_id];
+          _remaining--;
+          if (_remaining === 0) {
+            delete jiff.deferreds[share_id];
+          }
+        });
+      })(promise, p_id);
+
+      // receive share_i[id] from party p_id
+      result[p_id] = new jiff.SecretShare(promise, rels, rels.length, jiff.Zp);
+    }
+     fd.resolve(result);
+    });
+   */
+
+    // for (i = 0; i < rels.slength; i++) {
+    //   p_id = rels[i];
+
+    //   if (p_id === jiff.id) { // Keep party's own share
+    //     var my_share = final_promise.value; //jiff.hooks.execute_array_hooks('receiveShare', [jiff, p_id, shares[p_id]], 2);
+    //     result[p_id] = new jiff.SecretShare(my_share, rels, rels.length, jiff.Zp);
+    //     _remaining--;
+    //     continue;
+    //   }
+
+    //   // check if a deferred is set up (maybe the message was previously received)
+    //   if (jiff.deferreds[share_id][p_id] == null) { // not ready, setup a deferred
+    //     jiff.deferreds[share_id][p_id] = new jiff.helpers.Deferred();
+
+    //   }
+
+    //   var promise = jiff.deferreds[share_id][p_id].promise;
+    //   // destroy deferred when done
+    //   (function (promise, p_id) { // p_id is modified in a for loop, must do this to avoid scoping issues.
+    //     promise.then(function () {
+    //       delete jiff.deferreds[share_id][p_id];
+    //       _remaining--;
+    //       if (_remaining === 0) {
+    //         delete jiff.deferreds[share_id];
+    //       }
+    //     });
+    //   })(promise, p_id);
+
+    //   // receive share_i[id] from party p_id
+    //   result[p_id] = new jiff.SecretShare(promise, rels, rels.length, jiff.Zp);
+    // }
+
+    // console.log('hhdd',fp);
+    // //return result;
+    // return fp;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
   if (jiff.id===jiff.party_count) {//jiff.id>ssid
     final_deferred.resolve(wi);
     //console.log('in simple return',wi);
@@ -107,21 +469,9 @@ function gmw_and(jiff,sec,sendls) {
       }
     });
   }
-  // }
-
-  // for (j=1;j<jiff.id;j++) {
-  //   jiff.listen('OT',function (j,msg) {
-  //     w2=wi;
-  //     msg=JSON.parse(msg);
-  //     var my_choose=csecret[1]+','+csecret[2]+':';
-  //     var result=msg[my_choose];
-  //     //console.log('my json get'+my_choose+' id'+jiff.id,'result=',result);
-  //     w2= w2^result;
-  //     final_deferred.resolve(w2);
-  //   });
-  // }
 
   return final_promise;
+  */
 
   // OT.then(function (OT) {
   //     OT.send(msg_ot, N);//no for loop but sending list to whom/ tag
@@ -202,6 +552,29 @@ function send_opts(jiff,csecret, threshold, receivers_list, senders_list, Zp, sh
 
     });
     // return final_promise;
+
+  });
+
+}
+*/
+// if i>j
+/*
+function receive_OT(jiff,csecret) {
+// ai,bi
+  var my_choose=csecret[1]+','+csecret[2];
+  var op;
+  switch (my_choose) {
+    case '0,0': op=0;break;
+    case '0,1': op=1;break;
+    case '1,0': op=2;break;
+    case '1,1': op=3; break;
+  }
+
+  OT.receive(op, N).then(function (array) {
+    var rec=ascii.to_ascii(array).split(':');
+    var num=parseInt(rec[1]);
+    //console.log('The chosen secret is:', num,'op=',op);
+    return num;
 
   });
 

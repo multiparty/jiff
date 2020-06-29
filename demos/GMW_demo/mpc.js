@@ -39,25 +39,26 @@ const GMW_xor=require('./gmw_xor.js');
     // console.log('check test in mpc',jiff_instance.id,'seed=',seed);
     var deferred = $.Deferred();
     var promise = deferred.promise();
-    var rels=[];
-    for ( var i=1;i<=jiff_instance.party_count;i++) {
-      rels.push(i);
-    }
+    // var rels=[];
+    // for ( var i=1;i<=jiff_instance.party_count;i++) {
+    //   rels.push(i);
+    // }
     // xor bwteen which  two parties.
     var sendls=[2,3];
     // for xor, other =0; for and other=1;
-    var other=0;
+    var other=1;
     var shares;
 
     if (jiff_instance.id===sendls[0]||jiff_instance.id===sendls[1]) {
-      shares=GMW.gmw_jiff_share(jiff_instance,input,null,rels,rels);
+      shares=GMW.gmw_jiff_share(jiff_instance,input);
     } else {
-      shares=GMW.gmw_jiff_share(jiff_instance,other,null,rels,rels);
+      shares=GMW.gmw_jiff_share(jiff_instance,other);
     }
     // get ci promise
-    var ci=GMW_xor.gmw_xor(jiff_instance, shares,rels,sendls);
+    var ci=GMW_OT.gmw_and (jiff_instance, shares,sendls);
+
     // open the ci among all party including broadcast and reconstruct phase
-    return GMW_OPEN.gmw_jiff_open(jiff_instance,ci,rels);
+    return GMW_OPEN.gmw_jiff_open(jiff_instance,ci);
     /*
     var final_deferred = $.Deferred();
     var final_promise = final_deferred.promise();
