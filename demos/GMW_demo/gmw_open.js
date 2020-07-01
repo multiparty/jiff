@@ -1,4 +1,23 @@
 /**
+ * the function to reconstruct the result from the secret
+ * @function gmw_reconstruct
+ * @param {module:jiff-client~JIFFClient} jiff - the jiff instance
+ * @param {number} secret - the secretshare to be open.
+ * @returns {object} the opened result
+ */
+function gmw_reconstruct(jiff,shares) {
+  var ls=[];
+  for (let [key] of Object.keys(shares)) {
+    ls.push(shares[key]['value']);
+
+  }
+  var re=ls[0];
+  for (var i=1;i<Object.keys(ls).length;i++) {
+    re=re^ls[i];
+  }
+  return re;
+}
+/**
  * Share the given share to all the parties in the jiff instance.
  * @function jiff_broadcast
  * @ignore
@@ -8,36 +27,6 @@
  * @param {number|string} op_id - a unique operation id, used to tag outgoing messages.
  *
  */
-
-/*
-
-function ooo(jiff,ls) {
-  var re=ls[1];
-  for (var i=2;i<=Object.keys(ls).length;i++) {
-    re=re^ls[i];
-
-  }
-  return re;
-
-}
-*/
-function recon_ls(jiff,ls) {
-  var re=ls[0];
-  for (var i=1;i<Object.keys(ls).length;i++) {
-    re=re^ls[i];
-  }
-  return re;
-}
-
-function gmw_reconstruct(jiff,shares) {
-  var ls=[];
-  for (let [key] of Object.keys(shares)) {
-    ls.push(shares[key]['value']);
-
-  }
-  return recon_ls(jiff,ls);
-}
-
 var jiff_broadcast = function (jiff, share, parties, op_id) {
   for (var index = 0; index < parties.length; index++) {
     var i = parties[index]; // Party id
@@ -51,7 +40,6 @@ var jiff_broadcast = function (jiff, share, parties, op_id) {
     msg = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'open', msg], 2);
     msg['share'] = jiff.hooks.encryptSign(jiff, msg['share'].toString(), jiff.keymap[msg['party_id']], jiff.secret_key);
     var ee= JSON.stringify(msg);
-    //console.log('broadcast in open',op_id);
     jiff.socket.safe_emit('open',ee);
   }
 };
@@ -68,7 +56,7 @@ module.exports = {
    * @returns {?promise} a (JQuery) promise to the open value of the secret, or null if the calling party is not a receiving party
    *
    */
-  gmw_jiff_open: function (jiff, share, parties, op_id) {
+  gmw_open: function (jiff, share, parties, op_id) {
 
     var i;
     if (!(share.jiff === jiff)) {
@@ -93,20 +81,16 @@ module.exports = {
 
     // Compute operation ids (one for each party that will receive a result
     if (op_id == null) {
-      op_id = jiff.counters.gen_op_id2('open', parties, share.holders);
+      op_id = jiff.counters.gen_op_id2('GMW_open', parties, share.holders);
     }
     // Party is a holder
     if (share.holders.indexOf(jiff.id) > -1) {
       // Call hook
       share = jiff.hooks.execute_array_hooks('beforeOpen', [jiff, share, parties], 1);
-      // refresh/reshare, so that the original share remains secret, instead
-      // a new share is sent/open without changing the actual value.
-      //share = share.refresh(op_id + ':refresh');//!!
       // The given share has been computed, broadcast it to all parties
       jiff.counters.pending_opens++;
       share.wThen(function () {
         jiff.counters.pending_opens--;
-        //console.log('broadcasting',jiff.id,op_id);
         jiff_broadcast(jiff, share, parties, op_id);
       }, share.error);
     }
@@ -136,7 +120,6 @@ module.exports = {
         }
         var recons_secret = gmw_reconstruct(jiff,shares);
         recons_secret = jiff.hooks.execute_array_hooks('afterReconstructShare', [jiff, recons_secret], 1);
-        //console.log(jiff.id,'open',shares,'recons_open',recons_secret);
         return recons_secret;
       });
     }

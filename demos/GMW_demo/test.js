@@ -4,11 +4,12 @@ var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
 var showProgress = true;
-var parallelismDegree = 5; // Max number of test cases running in parallel
+var parallelismDegree = 4; // Max number of test cases running in parallel
 var Zp = 13;
-var n = 100;
-var party_count = 5;
-var partylist=[2,3];
+var n = 200;
+var party_count = 4;
+var partylist=[1,2];
+var andls=[3];
 
 // Parameters specific to this demo
 var maxValue = 2;
@@ -32,7 +33,6 @@ function generateInputs(party_count) {
       inputs[i+1].push(Math.floor((Math.random() * maxValue)));
     }
   }
-  //console.log('testin',inputs);
   return inputs;
 }
 
@@ -48,20 +48,13 @@ function computeResults(inputs) {
     // test for gmw_and
     var pid1=partylist[0];
     var pid2=partylist[1];
-    results.push(inputs[pid1][j]&inputs[pid2][j]);
-  }
+    var pid11=andls[0];
+    //var pid22=andls[1];
+    var re1=inputs[pid1][j]^inputs[pid2][j];
+    var re2=re1&inputs[pid11][j]
 
-  /*
-   * test for share and open
-  for (var j = 0; j < n; j++) {
-    var output = [];
-    for (var i = 1; i <= party_count; i++) {
-      output.push(inputs[i][j]);
-    }
-    results.push(output);
+    results.push( re2);
   }
-  */
-  //console.log('testou',results);
   return results;
 }
 

@@ -1,5 +1,13 @@
 
-//public xor locally on my shares a0,b0, var ci=ai^bi;
+/**
+ * xor locally on my local shares a0,b0, return secret share of value ci=ai^bi;
+ * @function gmw_xor
+ * @param {module:jiff-client~JIFFClient} jiff - the jiff instance
+ * @param {number} secret - the secret1 to share.
+ * @param {number} secret - the secret2 to share.
+ * @returns {object} a secret share of value ci=ai^bi
+ */
+
 function gmw_xor(jiff,share1,share2) {
   if (!(share1.jiff === share2.jiff)) {
     throw new Error('shares do not belong to the same instance (^)');
@@ -13,7 +21,8 @@ function gmw_xor(jiff,share1,share2) {
 
   // XOR the two shares when ready locally
   var ready = function () {
-    return share1.value ^ share2.value;
+    var re=share1.value ^ share2.value;
+    return re;
   };
 
   // promise to execute ready_XOR when both are ready
