@@ -22,33 +22,23 @@ function ooo(jiff,ls) {
 }
 */
 function recon_ls(jiff,ls) {
-  // console.log('lllff',ls,jiff.id);
   var re=ls[0];
   for (var i=1;i<Object.keys(ls).length;i++) {
     re=re^ls[i];
-
   }
   return re;
-
-
 }
 
 function gmw_reconstruct(jiff,shares) {
-  //console.log("inhelp",shares);
   var ls=[];
   for (let [key] of Object.keys(shares)) {
     ls.push(shares[key]['value']);
 
   }
-  //console.log(ls);
   return recon_ls(jiff,ls);
-
-
-
 }
 
 var jiff_broadcast = function (jiff, share, parties, op_id) {
-  //console.log('',op_id);
   for (var index = 0; index < parties.length; index++) {
     var i = parties[index]; // Party id
     if (i === jiff.id) {
@@ -81,7 +71,6 @@ module.exports = {
   gmw_jiff_open: function (jiff, share, parties, op_id) {
 
     var i;
-    //console.log('zz',share.jiff);
     if (!(share.jiff === jiff)) {
       throw 'share does not belong to given instance';
     }
@@ -102,24 +91,22 @@ module.exports = {
       return null;
     }
 
-
     // Compute operation ids (one for each party that will receive a result
     if (op_id == null) {
-      op_id = jiff.counters.gen_op_id2('gmwopen', parties, share.holders);
+      op_id = jiff.counters.gen_op_id2('open', parties, share.holders);
     }
     // Party is a holder
     if (share.holders.indexOf(jiff.id) > -1) {
       // Call hook
       share = jiff.hooks.execute_array_hooks('beforeOpen', [jiff, share, parties], 1);
-
       // refresh/reshare, so that the original share remains secret, instead
       // a new share is sent/open without changing the actual value.
-      // share = share.refresh(op_id + ':refresh');
-
+      share = share.refresh(op_id + ':refresh');//!!
       // The given share has been computed, broadcast it to all parties
       jiff.counters.pending_opens++;
       share.wThen(function () {
         jiff.counters.pending_opens--;
+        //console.log('broadcasting',jiff.id,op_id);
         jiff_broadcast(jiff, share, parties, op_id);
       }, share.error);
     }
@@ -141,6 +128,7 @@ module.exports = {
       }
       return final_promise.then(function () {
         var shares = jiff.deferreds[op_id].shares;
+
         if (shares.length === jiff.deferreds[op_id].total) {
           delete jiff.deferreds[op_id];
         } else {
@@ -148,7 +136,7 @@ module.exports = {
         }
         var recons_secret = gmw_reconstruct(jiff,shares);
         recons_secret = jiff.hooks.execute_array_hooks('afterReconstructShare', [jiff, recons_secret], 1);
-        //console.log('open',shares,'recons_open',recons_secret);
+        //console.log(jiff.id,'open',shares,'recons_open',recons_secret);
         return recons_secret;
       });
     }

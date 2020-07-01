@@ -1,8 +1,6 @@
 
 //public xor locally on my shares a0,b0, var ci=ai^bi;
-const GMW=require('./gmw_share.js');
 function gmw_xor(jiff,share1,share2) {
-  //return result;
   if (!(share1.jiff === share2.jiff)) {
     throw new Error('shares do not belong to the same instance (^)');
   }

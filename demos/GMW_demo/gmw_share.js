@@ -33,10 +33,8 @@ function gmw_compute_share(jiff,input,receivers_list, threshold, Zp) {
   }
   sum=sum^input;
   ls[receivers_list[i]]=sum;
-  //var ree=ooo(jiff,ls);
   //console.log('my com for shares',ls,'ree',ree,'i',input,len);
   return ls;
-
 }
 
 
@@ -60,9 +58,6 @@ function gmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
   } else {
     jiff.helpers.sort_ids(receivers_list);
   }
-
-
-  //console.log("sec in jiff share"+secret);
 
   if (senders_list == null) {
     senders_list = [];
@@ -115,11 +110,8 @@ function gmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
 
       // send encrypted and signed shares_id[p_id] to party p_id
       var msg = {party_id: p_id, share: shares[p_id], op_id: share_id};
-
-      //console.log("sending msg to "+msg.party_id+" value:"+msg.share);
       msg = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'share', msg], 2);
       msg['share'] = jiff.hooks.encryptSign(jiff, msg['share'].toString(10), jiff.keymap[msg['party_id']], jiff.secret_key);
-      //console.log("msg"+JSON.stringify(msg)+" "+msg.share);
       jiff.socket.safe_emit('share', JSON.stringify(msg));
 
     }
@@ -166,7 +158,7 @@ function gmw_jiff_share(jiff, secret, threshold, receivers_list, senders_list, Z
     }
   }
 
-  return shares,result;
+  return result;
 
 }
 
