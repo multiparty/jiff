@@ -5,30 +5,8 @@ $ = require('jquery-deferred');
 // party i :  receive aibj+ajbi from party j;
 // get choose then ^aibi
 // then share result to party i, j sxor to open
-// if i>j
-//ssid: send OT msg to party_id list
-function initial_count(jiff,share_id) {
-  if (jiff.deferreds[share_id] == null) {
-    jiff.deferreds[share_id] = {};
-  }
-  var re=[];// promises waiting for
-  for (var i=jiff.id;i<=jiff.party_count;i++) {
-    if (jiff.deferreds[share_id][i] == null) { // not ready, setup a deferred
-      jiff.deferreds[share_id][i] = new jiff.helpers.Deferred();
-    }
-    re.push( jiff.deferreds[share_id][i].promise);
 
-  }
-  //console.log(jiff.id,share_id,'!!now get counts ',re);
-  return re;
-}
 
-function find(jiff,msgls,csecret) {
-  var choose=2*csecret[0]+csecret[1];
-  var one=msgls[choose];
-  return one;
-
-}
 
 function gmw_and(jiff,share1,share2) {
   if (!(share1.jiff === share2.jiff)) {
@@ -77,14 +55,14 @@ function gmw_and(jiff,share1,share2) {
     four_opts['op_id']=share_id;
     four_opts = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'open', four_opts], 2);
     var mymsg=JSON.stringify(four_opts);
-    //if (jiff.id<ssid) {
     //console.log(jiff.id,share_id,'send OT msg to  ',recls);
     var help1=[];
     help1.push(wi);
     jiff.deferreds[share_id][jiff.id].resolve(help1);//wi resolve local wi; when jiff.id===jiff.party_count, simple return
-    //console.log(jiff.id,share_id,'wi=',wi,my_count);
-
+    //console.log(jiff.id,share_id,'wi=',wi);
     // OT send process
+    // if i>j
+    // send OT msg to party_id list,eg.recls
     jiff.emit('OT',recls,mymsg,true);
 
     // OT receive process
@@ -106,7 +84,7 @@ function gmw_and(jiff,share1,share2) {
       });
     }
 
-    Promise.all(Object.values( my_count)).then(function (v) {
+    Promise.all(my_count).then(function (v) {
       //v= [ [ 0 ], [ 0, 0, 0, 0 ], [ 0, 1, 0, 1 ] ]
       var re=0;
       for ( var i=0;i<v.length;i++) {
@@ -114,7 +92,8 @@ function gmw_and(jiff,share1,share2) {
         if (cur.length===1) {
           re=re^cur[0];
         } else {
-          var ans=find(jiff,cur,csecret);// ot select
+          var ans=find(cur,csecret);// ot select
+          //console.log(jiff.id,'find',csecret,'from',(i+1),cur,'ans=',ans);
           re=re^ans;
         }
       }
@@ -142,7 +121,7 @@ function gmw_and(jiff,share1,share2) {
     return final_promise;
   };
 
-
+  // return of the and function
   return new share1.jiff.SecretShare(share1.when_both_ready(share2, ready), share1.holders, Math.max(share1.threshold, share2.threshold), share1.Zp);
 
 }
@@ -168,6 +147,31 @@ function OTGate(i_shares) {
   // re['1,0:']=opt3;
   // re['1,1:']=opt4;
   return re;
+}
+
+//function to get promises list.
+function initial_count(jiff,share_id) {
+  if (jiff.deferreds[share_id] == null) {
+    jiff.deferreds[share_id] = {};
+  }
+  var re=[];// promises waiting for
+  for (var i=jiff.id;i<=jiff.party_count;i++) {
+    if (jiff.deferreds[share_id][i] == null) { // not ready, setup a deferred
+      jiff.deferreds[share_id][i] = new jiff.helpers.Deferred();
+    }
+    re.push( jiff.deferreds[share_id][i].promise);
+
+  }
+  //console.log(jiff.id,share_id,'!!now get counts ',re);
+  return re;
+}
+
+// choose one result from 4 options
+function find(msgls,csecret) {
+  var choose=2*csecret[0]+csecret[1];
+  var one=msgls[choose];
+  return one;
+
 }
 
 module.exports = {

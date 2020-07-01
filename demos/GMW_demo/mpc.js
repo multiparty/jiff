@@ -36,7 +36,7 @@ const GMW_xor=require('./gmw_xor.js');
     shares=GMW.gmw_jiff_share(jiff_instance,input);
     // get ci promise
     //var ci=GMW_xor.gmw_xor(jiff_instance, shares[2],shares[3]);
-    var ci=GMW_OT.gmw_and(jiff_instance,shares[3],shares[2]);
+    var ci=GMW_OT.gmw_and(jiff_instance,shares[2],shares[3]);
     // open the ci among all party including broadcast and reconstruct phase
     return GMW_OPEN.gmw_jiff_open(jiff_instance,ci);
   }

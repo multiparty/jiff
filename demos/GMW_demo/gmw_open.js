@@ -101,7 +101,7 @@ module.exports = {
       share = jiff.hooks.execute_array_hooks('beforeOpen', [jiff, share, parties], 1);
       // refresh/reshare, so that the original share remains secret, instead
       // a new share is sent/open without changing the actual value.
-      share = share.refresh(op_id + ':refresh');//!!
+      //share = share.refresh(op_id + ':refresh');//!!
       // The given share has been computed, broadcast it to all parties
       jiff.counters.pending_opens++;
       share.wThen(function () {

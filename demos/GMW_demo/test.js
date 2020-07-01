@@ -4,11 +4,11 @@ var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
 var showProgress = true;
-var parallelismDegree = 3; // Max number of test cases running in parallel
+var parallelismDegree = 5; // Max number of test cases running in parallel
 var Zp = 13;
-var n = 200;
-var party_count = 3;
-var partylist=[3,2];
+var n = 100;
+var party_count = 5;
+var partylist=[2,3];
 
 // Parameters specific to this demo
 var maxValue = 2;
