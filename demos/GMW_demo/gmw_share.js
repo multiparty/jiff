@@ -1,6 +1,7 @@
 
 /**
  * the function to compute the shares of input (can be overridden using hooks).
+ * @ignore
  * @function gmw_compute_share
  * @param {module:jiff-client~JIFFClient} jiff - the jiff instance
  * @param {number} the secret to share

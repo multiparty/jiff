@@ -1,6 +1,7 @@
 
 /**
- * xor locally on my local shares a0,b0, return secret share of value ci=ai^bi;
+ * xor locally on my local shares a0,b0, return secret share of value ci=ai^bi.
+ * @ignore
  * @function gmw_xor
  * @param {module:jiff-client~JIFFClient} jiff - the jiff instance
  * @param {number} secret - the secret1 to share.

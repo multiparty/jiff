@@ -1,5 +1,6 @@
 /**
- * the function to reconstruct the result from the secret
+ * the function to reconstruct the result from the secret.
+ * @ignore
  * @function gmw_reconstruct
  * @param {module:jiff-client~JIFFClient} jiff - the jiff instance
  * @param {number} secret - the secretshare to be open.
