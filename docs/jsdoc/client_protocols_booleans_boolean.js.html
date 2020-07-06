@@ -53,8 +53,8 @@ module.exports = function (SecretShare) {
    * bitwise-XOR with a constant (BOTH BITS).
    * @method cxor_bit
    * @param {number} cst - the constant bit to XOR with (0 or 1).
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.cxor_bit = function (cst) {
@@ -72,8 +72,8 @@ module.exports = function (SecretShare) {
    * bitwise-OR with a constant (BOTH BITS).
    * @method cor_bit
    * @param {number} cst - the constant bit to OR with (0 or 1).
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.cor_bit = function (cst) {
@@ -90,13 +90,13 @@ module.exports = function (SecretShare) {
   /**
    * bitwise-XOR of two secret shares OF BITS.
    * @method sxor_bit
-   * @param {module:jiff-client~JIFFClient#SecretShare} o - the share to XOR with.
+   * @param {SecretShare} o - the share to XOR with.
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 1 if this &lt; o, and 0 otherwise.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 1 if this &lt; o, and 0 otherwise.
+   * @return {SecretShare} this party's share of the result.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.sxor_bit = function (o, op_id) {
@@ -119,13 +119,13 @@ module.exports = function (SecretShare) {
   /**
    * OR of two secret shares OF BITS.
    * @method sor_bit
-   * @param {module:jiff-client~JIFFClient#SecretShare} o - the share to OR with.
+   * @param {SecretShare} o - the share to OR with.
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 1 if this &lt; o, and 0 otherwise.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 1 if this &lt; o, and 0 otherwise.
+   * @return {SecretShare} this party's share of the result.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.sor_bit = function (o, op_id) {
@@ -149,8 +149,8 @@ module.exports = function (SecretShare) {
    * Negation of a bit.
    * This has to be a share of a BIT in order for this to work properly.
    * @method not
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result (negated bit).
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result (negated bit).
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.not = function () {
@@ -163,14 +163,14 @@ module.exports = function (SecretShare) {
    * If this is a share of 1, a new sharing of the element represented by the first parameter is returned,
    * otherwise, a new sharing of the second is returned.
    * @method if_else
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @memberof SecretShare
    * @instance
-   * @param {module:jiff-client~JIFFClient#SecretShare | number} trueVal - the value/share to return if this is a sharing of 1.
-   * @param {module:jiff-client~JIFFClient#SecretShare | number} falseVal - the value/share to return if this is a sharing of 0.
+   * @param {SecretShare | number} trueVal - the value/share to return if this is a sharing of 1.
+   * @param {SecretShare | number} falseVal - the value/share to return if this is a sharing of 0.
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} a new sharing of the result of the if.
+   * @return {SecretShare} a new sharing of the result of the if.
    *
    * @example
    * // a and b are secret shares
@@ -211,7 +211,7 @@ module.exports = function (SecretShare) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:15:39 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:19:37 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

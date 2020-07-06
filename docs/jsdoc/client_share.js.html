@@ -64,7 +64,7 @@ module.exports = function (jiff) {
     /**
      * Indicates if the secret share's value is ready or still a promise
      * @member {boolean} ready
-     * @memberof module:jiff-client~JIFFClient#SecretShare
+     * @memberof SecretShare
      * @instance
      */
     this.ready = (value.then == null);
@@ -72,7 +72,7 @@ module.exports = function (jiff) {
     /**
      * The value of the share (or a promise to it)
      * @member {number|promise} value
-     * @memberof module:jiff-client~JIFFClient#SecretShare
+     * @memberof SecretShare
      * @instance
      */
     this.value = value;
@@ -80,14 +80,14 @@ module.exports = function (jiff) {
     /**
      * Array of party ids who hold shares of the corresponding secret
      * @member {Array} holders
-     * @memberof module:jiff-client~JIFFClient#SecretShare
+     * @memberof SecretShare
      * @instance
      */
     this.holders = holders;
     /**
      * The sharing threshold
      * @member {number} threshold
-     * @memberof module:jiff-client~JIFFClient#SecretShare
+     * @memberof SecretShare
      * @instance
      */
     this.threshold = threshold;
@@ -95,7 +95,7 @@ module.exports = function (jiff) {
     /**
      * The field prime under which the corresponding secret is shared
      * @member {number} Zp
-     * @memberof module:jiff-client~JIFFClient#SecretShare
+     * @memberof SecretShare
      * @instance
      */
     this.Zp = Zp;
@@ -113,7 +113,7 @@ module.exports = function (jiff) {
   /**
    * The jiff client instance this share belongs to
    * @member {module:jiff-client~JIFFClient} jiff
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.jiff = jiff;
@@ -123,7 +123,7 @@ module.exports = function (jiff) {
    * Gets the value of this share
    * @method valueOf
    * @returns {number} the value (undefined if not ready yet)
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.valueOf = function () {
@@ -138,7 +138,7 @@ module.exports = function (jiff) {
    * Gets a string representation of this share
    * @method toString
    * @returns {string} the id and value of the share as a string
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.toString = function () {
@@ -149,7 +149,7 @@ module.exports = function (jiff) {
   /**
    * Logs an error. Passes the error on to the associated jiff client instance's {@link handlers.error}
    * @method error
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @memberof SecretShare
    * @instance
    * @param {string|error} error - the error to log
    */
@@ -161,7 +161,7 @@ module.exports = function (jiff) {
    * Logs the value represented by this share to the console
    * WARNING: THIS LEAKS INFORMATION AND MUST BE USED ONLY TO DEBUG ON FAKE DATA
    * @method logLEAK
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @memberof SecretShare
    * @instance
    * @param {string} tag - accompanying tag to display in the console
    * @param {Array&lt;number|string>} [parties=[holders[0]] - the parties which will display the log
@@ -185,7 +185,7 @@ module.exports = function (jiff) {
   /**
    * Handler for when this share's promise (if any) is resolved
    * @method promise_handler
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @memberof SecretShare
    * @instance
    * @param {number} value - the value of the share after it was resolved
    */
@@ -198,7 +198,7 @@ module.exports = function (jiff) {
   /**
    * Executes callback when both this share and o are ready and returns the result (or a promise to the result)
    * @method when_both_ready
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @memberof SecretShare
    * @instance
    * @param {SecretShare} o - the other share object.
    * @param {function()} cb - the callback to execute.
@@ -222,7 +222,7 @@ module.exports = function (jiff) {
    * Shortcut for opening/revealing the value of this share. Alias for open in jiff-instance
    * @see jiff-instance#open
    * @method open
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @memberof SecretShare
    * @instance
    * @param {Array} [parties=all_parties] - an array with party ids (1 to n) of receiving parties
    * @param {string|number|object} [op_id=auto_gen()] - same as {@link module:jiff-client:JIFFClient#open}
@@ -239,7 +239,7 @@ module.exports = function (jiff) {
    * The callback is executed immediately.
    * Does not support chaining
    * @method wThen
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @memberof SecretShare
    * @instance
    * @param {function} onFulfilled - callback for success, called with this.value as parameter
    * @param {function} [onRejected=this.error] - callback for errors
@@ -289,7 +289,7 @@ module.exports = function (jiff) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:15:39 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:19:37 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

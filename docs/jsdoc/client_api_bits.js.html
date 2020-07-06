@@ -67,12 +67,12 @@ module.exports = function (jiffClient) {
    * Compute sum of bitwise secret shared number and a constant
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - the bit wise secret shares
+   * @param {SecretShare[]} bits - the bit wise secret shares
    * @param {number} constant - the constant
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for communication
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {module:jiff-client~JIFFClient#SecretShare[]} bitwise sharing of the result. Note that the length here will be max(|bits|, |constant|) + 1
+   * @returns {SecretShare[]} bitwise sharing of the result. Note that the length here will be max(|bits|, |constant|) + 1
    *                          in case of potential overflow / carry
    */
   jiffClient.protocols.bits.cadd = arithmetic.cadd.bind(null, jiffClient);
@@ -81,11 +81,11 @@ module.exports = function (jiffClient) {
    * @method
    * @memberof bits
    * @param {number} constant - the constant
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - the bit wise secret shares
+   * @param {SecretShare[]} bits - the bit wise secret shares
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for communication.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {module:jiff-client~JIFFClient#SecretShare[]} bitwise sharing of the result. Note that the length of the returned result is |bits|+1, where
+   * @returns {SecretShare[]} bitwise sharing of the result. Note that the length of the returned result is |bits|+1, where
    *                          the bit at index 0 is the least significant bit. The bit at index 1 is the most significant bit,
    *                          and the bit at index |bits| is 1 if the result overflows, or 0 otherwise
    */
@@ -95,11 +95,11 @@ module.exports = function (jiffClient) {
    * @method
    * @memberof bits
    * @param {number} constant - the constant
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - the bit wise secret shares
+   * @param {SecretShare[]} bits - the bit wise secret shares
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for communication.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {module:jiff-client~JIFFClient#SecretShare[]} bitwise sharing of the result. Note that the length of the returned result is |bits|+1, where
+   * @returns {SecretShare[]} bitwise sharing of the result. Note that the length of the returned result is |bits|+1, where
    *                          the bit at index 0 is the least significant bit. The bit at index 1 is the most significant bit,
    *                          and the bit at index |bits| is 1 if the result overflows, or 0 otherwise
    */
@@ -109,12 +109,12 @@ module.exports = function (jiffClient) {
    * Compute [secret bits1] + [secret bits2]
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits1 - the first bitwise shared number: array of secrets with index 0 being least significant bit
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits2 - the second bitwise shared number (length may be different)
+   * @param {SecretShare[]} bits1 - the first bitwise shared number: array of secrets with index 0 being least significant bit
+   * @param {SecretShare[]} bits2 - the second bitwise shared number (length may be different)
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for communication.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {module:jiff-client~JIFFClient#SecretShare[]} bitwise sharing of the result. Note that the length of the returned result is |bits|+1, where
+   * @returns {SecretShare[]} bitwise sharing of the result. Note that the length of the returned result is |bits|+1, where
    *                          the bit at index 0 is the least significant bit
    */
   jiffClient.protocols.bits.sadd = arithmetic.sadd.bind(null, jiffClient);
@@ -122,12 +122,12 @@ module.exports = function (jiffClient) {
    * Compute [secret bits1] - [secret bits2]
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits1 - first bitwise secret shared number: lower indices represent less significant bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits2 - second bitwise secret shared number (length may be different)
+   * @param {SecretShare[]} bits1 - first bitwise secret shared number: lower indices represent less significant bits
+   * @param {SecretShare[]} bits2 - second bitwise secret shared number (length may be different)
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for communication.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {module:jiff-client~JIFFClient#SecretShare[]} bitwise sharing of the result. Note that the length of the returned result is |bits|+1, where
+   * @returns {SecretShare[]} bitwise sharing of the result. Note that the length of the returned result is |bits|+1, where
    *                          the bit at index 0 is the least significant bit. The bit at index 1 is the most significant bit,
    *                          and the bit at index |bits| is 1 if the result overflows, or 0 otherwise
    */
@@ -136,12 +136,12 @@ module.exports = function (jiffClient) {
    * Compute [secret bits] * constant
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - bitwise shared secret to multiply: lower indices represent less significant bits
+   * @param {SecretShare[]} bits - bitwise shared secret to multiply: lower indices represent less significant bits
    * @param {number} constant - constant to multiply with
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for communication.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {module:jiff-client~JIFFClient#SecretShare[]} bitwise sharing of the result, the length of the result will be bits.length + ceil(log2(constant)), except
+   * @returns {SecretShare[]} bitwise sharing of the result, the length of the result will be bits.length + ceil(log2(constant)), except
    *                          if constant is zero, the result will then be [ zero share ]
    */
   jiffClient.protocols.bits.cmult = arithmetic.cmult.bind(null, jiffClient);
@@ -149,24 +149,24 @@ module.exports = function (jiffClient) {
    * Compute [secret bits1] * [secret bits2]
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits1 - bitwise shared secret to multiply: lower indices represent less significant bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits2 - bitwise shared secret to multiply
+   * @param {SecretShare[]} bits1 - bitwise shared secret to multiply: lower indices represent less significant bits
+   * @param {SecretShare[]} bits2 - bitwise shared secret to multiply
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for communication.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {module:jiff-client~JIFFClient#SecretShare[]} bitwise sharing of the result, the length of the result will be bits1.length + bits2.length
+   * @returns {SecretShare[]} bitwise sharing of the result, the length of the result will be bits1.length + bits2.length
    */
   jiffClient.protocols.bits.smult = arithmetic.smult.bind(null, jiffClient);
   /**
    * Computes integer division of [secret bits 1] / [secret bits 2]
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits2 - the second bitwise shared number
+   * @param {SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits2 - the second bitwise shared number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {{quotient: module:jiff-client~JIFFClient#SecretShare[], remainder: module:jiff-client~JIFFClient#SecretShare[]}} the quotient and remainder bits arrays, note that
+   * @returns {{quotient: SecretShare[], remainder: SecretShare[]}} the quotient and remainder bits arrays, note that
    *                                                                the quotient array has the same length as bits1,
    *                                                                and the remainder array has the same length as bits2 or bits1, whichever is smaller.
    *                                                                Note: if bits2 represent 0, the returned result is the maximum
@@ -178,12 +178,12 @@ module.exports = function (jiffClient) {
    * Computes integer division of [secret bits] / constant
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - numerator: an array of secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits - numerator: an array of secret shares of bits, starting from least to most significant bits
    * @param {number} constant - the denominator number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {{quotient: module:jiff-client~JIFFClient#SecretShare[], remainder: module:jiff-client~JIFFClient#SecretShare[]}} the quotient and remainder bits arrays, note that
+   * @returns {{quotient: SecretShare[], remainder: SecretShare[]}} the quotient and remainder bits arrays, note that
    *                                                                the quotient array has the same length as bits,
    *                                                                and the remainder array has the same length as
    *                                                                constant or bits, whichever is smaller
@@ -195,11 +195,11 @@ module.exports = function (jiffClient) {
    * @method
    * @memberof bits
    * @param {number} constant - the numerator number
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - denominator: an array of secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits - denominator: an array of secret shares of bits, starting from least to most significant bits
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {{quotient: module:jiff-client~JIFFClient#SecretShare[], remainder: module:jiff-client~JIFFClient#SecretShare[]}} the quotient and remainder bits arrays, note that
+   * @returns {{quotient: SecretShare[], remainder: SecretShare[]}} the quotient and remainder bits arrays, note that
    *                                                                the quotient array has the same length as the number of bits in constant,
    *                                                                and the remainder array has the same length as bits or constant, whichever is smaller.
    *                                                                Note: if bits represent 0, the returned result is the maximum
@@ -212,7 +212,7 @@ module.exports = function (jiffClient) {
    * Checks whether the given bitwise secret shared number and numeric constant are equal
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - an array of secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits - an array of secret shares of bits, starting from least to most significant bits
    * @param {number} constant - the constant number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications.
    *                                              default value should suffice when the code of all parties executes all instructions
@@ -226,7 +226,7 @@ module.exports = function (jiffClient) {
    * Checks whether the given bitwise secret shared number and numeric constant are not equal
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - an array of secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits - an array of secret shares of bits, starting from least to most significant bits
    * @param {number} constant - the constant number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications.
    *                                              default value should suffice when the code of all parties executes all instructions
@@ -240,7 +240,7 @@ module.exports = function (jiffClient) {
    * Checks whether given secret shared bits are greater than the given constant
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - an array of the secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits - an array of the secret shares of bits, starting from least to most significant bits
    * @param {number} constant - the constant number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications
    *                                              default value should suffice when the code of all parties executes all instructions
@@ -254,7 +254,7 @@ module.exports = function (jiffClient) {
    * Checks whether given secret shared bits are greater or equal to the given constant
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - an array of the secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits - an array of the secret shares of bits, starting from least to most significant bits
    * @param {number} constant - the constant number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications.
    *                                              default value should suffice when the code of all parties executes all instructions
@@ -268,7 +268,7 @@ module.exports = function (jiffClient) {
    * Checks whether given secret shared bits are less than the given constant
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - an array of the secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits - an array of the secret shares of bits, starting from least to most significant bits
    * @param {number} constant - the constant number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications.
    *                                              default value should suffice when the code of all parties executes all instructions
@@ -282,7 +282,7 @@ module.exports = function (jiffClient) {
    * Checks whether given secret shared bits are less or equal to the given constant
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - an array of the secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits - an array of the secret shares of bits, starting from least to most significant bits
    * @param {number} constant - the constant number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications.
    *                                              default value should suffice when the code of all parties executes all instructions
@@ -296,72 +296,72 @@ module.exports = function (jiffClient) {
    * Checks whether the two given bitwise secret shared numbers are equal
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits2 - the second bitwise shared number
+   * @param {SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits2 - the second bitwise shared number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {module:jiff-client~JIFFClient#SecretShare} a secret share of 1 if bits are equal, 0 otherwise
+   * @returns {SecretShare} a secret share of 1 if bits are equal, 0 otherwise
    */
   jiffClient.protocols.bits.seq = comparison.seq.bind(null, jiffClient);
   /**
    * Checks whether the two given bitwise secret shared numbers are not equal
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits2 - the second bitwise shared number
+   * @param {SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits2 - the second bitwise shared number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {module:jiff-client~JIFFClient#SecretShare} a secret share of 1 if bits are not equal, 0 otherwise
+   * @returns {SecretShare} a secret share of 1 if bits are not equal, 0 otherwise
    */
   jiffClient.protocols.bits.sneq = comparison.sneq.bind(null, jiffClient);
   /**
    * Checks whether the first given bitwise secret shared number is greater than the second bitwise secret shared number
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits2 - the second bitwise shared number
+   * @param {SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits2 - the second bitwise shared number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {module:jiff-client~JIFFClient#SecretShare} a secret share of 1 if the first number is greater than the second, 0 otherwise
+   * @returns {SecretShare} a secret share of 1 if the first number is greater than the second, 0 otherwise
    */
   jiffClient.protocols.bits.sgt = comparison.sgt.bind(null, jiffClient);
   /**
    * Checks whether the first given bitwise secret shared number is greater than or equal to the second bitwise secret shared number
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits2 - the second bitwise shared number
+   * @param {SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits2 - the second bitwise shared number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {module:jiff-client~JIFFClient#SecretShare} a secret share of 1 if the first number is greater or equal to the second, 0 otherwise
+   * @returns {SecretShare} a secret share of 1 if the first number is greater or equal to the second, 0 otherwise
    */
   jiffClient.protocols.bits.sgteq = comparison.sgteq.bind(null, jiffClient);
   /**
    * Checks whether the first given bitwise secret shared number is less than the second bitwise secret shared number
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits2 - the second bitwise shared number
+   * @param {SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits2 - the second bitwise shared number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {module:jiff-client~JIFFClient#SecretShare} a secret share of 1 if the first number is less than the second, 0 otherwise
+   * @returns {SecretShare} a secret share of 1 if the first number is less than the second, 0 otherwise
    */
   jiffClient.protocols.bits.slt = comparison.slt.bind(null, jiffClient);
   /**
    * Checks whether the first given bitwise secret shared number is less or equal to the second bitwise secret shared number
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits2 - the second bitwise shared number
+   * @param {SecretShare[]} bits1 - an array of secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits2 - the second bitwise shared number
    * @param {string} [op_id=&lt;auto-generate-id>] - the base operation id to use when generating unique ids for multiplications.
    *                                              default value should suffice when the code of all parties executes all instructions
    *                                              in the same exact order, otherwise, a unique base name is needed here
-   * @returns {module:jiff-client~JIFFClient#SecretShare} a secret share of 1 if the first number is less than or equal to the second, 0 otherwise
+   * @returns {SecretShare} a secret share of 1 if the first number is less than or equal to the second, 0 otherwise
    */
   jiffClient.protocols.bits.slteq = comparison.slteq.bind(null, jiffClient);
 
@@ -386,8 +386,8 @@ module.exports = function (jiffClient) {
    * Requires no communication, only local operations
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - an array of the secret shares of bits, starting from least to most significant bits.
-   * @returns {module:jiff-client~JIFFClient#SecretShare} a secret share of the number represented by bits.
+   * @param {SecretShare[]} bits - an array of the secret shares of bits, starting from least to most significant bits.
+   * @returns {SecretShare} a secret share of the number represented by bits.
    */
   jiffClient.protocols.bits.bit_composition = otherProtocols.bit_composition;
 
@@ -415,7 +415,7 @@ module.exports = function (jiffClient) {
    * This works regardless of whether the represented value fit inside the corresponding field or not
    * @method
    * @memberof bits
-   * @param {module:jiff-client~JIFFClient#SecretShare[]} bits - an array of the secret shares of bits, starting from least to most significant bits
+   * @param {SecretShare[]} bits - an array of the secret shares of bits, starting from least to most significant bits
    * @param {number[]} parties - parties to open (same as jiff_instance.open)
    * @param {string|number} [op_id=auto_gen()] - same as jiff_instance.open
    * @returns {promise} a promise to the number represented by bits
@@ -450,7 +450,7 @@ module.exports = function (jiffClient) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:15:39 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:19:37 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

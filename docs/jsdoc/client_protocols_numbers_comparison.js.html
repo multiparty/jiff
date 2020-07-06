@@ -52,12 +52,12 @@ module.exports = function (SecretShare) {
   /**
    * Greater than or equal with another share.
    * @method sgteq
-   * @param {module:jiff-client~JIFFClient#SecretShare} o - the other share.
+   * @param {SecretShare} o - the other share.
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 1 if this >= o, and 0 otherwise.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 1 if this >= o, and 0 otherwise.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.sgteq = function (o, op_id) {
@@ -81,12 +81,12 @@ module.exports = function (SecretShare) {
   /**
    * Greater than with another share.
    * @method sgt
-   * @param {module:jiff-client~JIFFClient#SecretShare} o - the other share.
+   * @param {SecretShare} o - the other share.
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 1 if this > o, and 0 otherwise.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 1 if this > o, and 0 otherwise.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.sgt = function (o, op_id) {
@@ -110,12 +110,12 @@ module.exports = function (SecretShare) {
   /**
    * Less than or equal with another share.
    * @method slteq
-   * @param {module:jiff-client~JIFFClient#SecretShare} o - the other share.
+   * @param {SecretShare} o - the other share.
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 1 if this &lt;= o, and 0 otherwise.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 1 if this &lt;= o, and 0 otherwise.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.slteq = function (o, op_id) {
@@ -139,12 +139,12 @@ module.exports = function (SecretShare) {
   /**
    * Less than with another share.
    * @method slt
-   * @param {module:jiff-client~JIFFClient#SecretShare} o - the other share.
+   * @param {SecretShare} o - the other share.
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 1 if this &lt; o, and 0 otherwise.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 1 if this &lt; o, and 0 otherwise.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.slt = function (o, op_id) {
@@ -191,8 +191,8 @@ module.exports = function (SecretShare) {
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 1 if this >= cst, and 0 otherwise.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 1 if this >= cst, and 0 otherwise.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.cgteq = function (cst, op_id) {
@@ -215,8 +215,8 @@ module.exports = function (SecretShare) {
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.default ids suffice when all parties execute the
    *                         instructions in the same order.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 1 if this > cst, and 0 otherwise.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 1 if this > cst, and 0 otherwise.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.cgt = function (cst, op_id) {
@@ -255,8 +255,8 @@ module.exports = function (SecretShare) {
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 1 if this &lt;= cst, and 0 otherwise.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 1 if this &lt;= cst, and 0 otherwise.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.clteq = function (cst, op_id) {
@@ -278,8 +278,8 @@ module.exports = function (SecretShare) {
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 1 if this &lt; cst, and 0 otherwise.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 1 if this &lt; cst, and 0 otherwise.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.clt = function (cst, op_id) {
@@ -314,12 +314,12 @@ module.exports = function (SecretShare) {
   /**
    * Equality test with two shares.
    * @method seq
-   * @param {module:jiff-client~JIFFClient#SecretShare} o - the share to compare with.
+   * @param {SecretShare} o - the share to compare with.
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 1 if this = o, and 0 otherwise.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 1 if this = o, and 0 otherwise.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.seq = function (o, op_id) {
@@ -342,12 +342,12 @@ module.exports = function (SecretShare) {
   /**
    * Unequality test with two shares.
    * @method sneq
-   * @param {module:jiff-client~JIFFClient#SecretShare} o - the share to compare with.
+   * @param {SecretShare} o - the share to compare with.
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.sneq = function (o, op_id) {
@@ -374,8 +374,8 @@ module.exports = function (SecretShare) {
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.ceq = function (cst, op_id) {
@@ -396,8 +396,8 @@ module.exports = function (SecretShare) {
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @return {SecretShare} this party's share of the result, the final result is 0 if this = o, and 1 otherwise.
+   * @memberof SecretShare
    * @instance
    */
   SecretShare.prototype.cneq = function (cst, op_id) {
@@ -414,12 +414,12 @@ module.exports = function (SecretShare) {
   /**
    * Checks whether the share is less than half the field size.
    * @method lt_halfprime
-   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @memberof SecretShare
    * @instance
    * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
    *                         This id must be unique, and must be passed by all parties to the same instruction, to
    *                         ensure that corresponding instructions across different parties are matched correctly.
-   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
+   * @return {SecretShare} this party's share of the result.
    */
   SecretShare.prototype.lt_halfprime = function (op_id) {
     if (op_id == null) {
@@ -490,7 +490,7 @@ module.exports = function (SecretShare) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:15:39 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:19:37 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
