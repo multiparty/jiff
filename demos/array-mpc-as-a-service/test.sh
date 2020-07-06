@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 mkdir -p ../../logs
-logs="../../logs/mpc-as-a-service.log"
+logs="../../logs/array-mpc-as-a-service.log"
 
 for config in tests/*.json; do
   # run server
@@ -10,7 +10,7 @@ for config in tests/*.json; do
   sleep 1
 
   # run a bunch of compute parties
-  count=$(sed '3q;d' $config | sed 's/,/\n/g' | wc -l)
+  count=$(sed '3q;d' $config | (read line; wc -c <<< "${line//[^,]}"))  # -OR-  tr "," "\n" | wc -l
   count=$((count-1))
   allIDs=$serverID
   for ((j=1;j<=$count;j++)); do
@@ -20,7 +20,7 @@ for config in tests/*.json; do
 
   # run a bunch of input parties via test.js
   export TEST_CONFIG="$config"
-  ../../node_modules/.bin/mocha --full-trace --reporter spec tests/test.js $config
+  ../../node_modules/.bin/mocha --full-trace --reporter spec tests/test.js $config  # DEBUG add  --inspect--brk
   EXIT_CODE=$?
 
   kill $allIDs 2> /dev/null
