@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-undef
-describe('array-mpc-as-a-service (Array Version)', function () {
+describe('MPC-as-a-service (Array Version)', function () {
   this.timeout(0);
 
   // eslint-disable-next-line no-undef
