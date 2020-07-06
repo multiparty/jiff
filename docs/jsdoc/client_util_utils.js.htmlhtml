@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>client/util/utils.js - JIFF Library Documentation</title>
+    
+    
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/multiparty/jiff" target="_blank" class="menu-item" id="github_link" >Github Repo</a></h2><h2><a href="./intro.html" target="_self" class="menu-item" id="github_link" >Tutorial</a></h2><h2><a href="./contributing.html" target="_self" class="menu-item" id="github_link" >Contributing to JIFF</a></h2><h3>Classes</h3><ul><li><a href="GuardedSocket.html">GuardedSocket</a><ul class='methods'><li data-type='method'><a href="GuardedSocket.html#disconnect">disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#is_empty">is_empty</a></li><li data-type='method'><a href="GuardedSocket.html#resend_mailbox">resend_mailbox</a></li><li data-type='method'><a href="GuardedSocket.html#safe_disconnect">safe_disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#safe_emit">safe_emit</a></li></ul></li><li><a href="helpers.Deferred.html">Deferred</a><ul class='methods'><li data-type='method'><a href="helpers.Deferred.html#reject">reject</a></li><li data-type='method'><a href="helpers.Deferred.html#resolve">resolve</a></li></ul></li><li><a href="module-jiff-client-JIFFClient.html">JIFFClient</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient.html#add_to_barriers">add_to_barriers</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#apply_extension">apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#can_apply_extension">can_apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#connect">connect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#disconnect">disconnect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#emit">emit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#end_barrier">end_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#executePreprocessing">executePreprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#extension_applied">extension_applied</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#free">free</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#from_crypto_provider">from_crypto_provider</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id">gen_op_id</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2">gen_op_id2</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2_preprocessing">gen_op_id2_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id_preprocessing">gen_op_id_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#get_preprocessing">get_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_extension">has_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_preprocessing">has_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_open">internal_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_share">internal_share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isInitialized">isInitialized</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isReady">isReady</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#listen">listen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_array">open_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_ND_array">open_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessing">preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessingDaemon">preprocessingDaemon</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#remove_listener">remove_listener</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#reshare">reshare</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#seed_ids">seed_ids</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share">share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_2D_array">share_2D_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_array">share_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array">share_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_deferred">share_ND_array_deferred</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_static">share_ND_array_static</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#start_barrier">start_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#store_preprocessing">store_preprocessing</a></li></ul></li><li><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#add">add</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#bit_decomposition">bit_decomposition</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cadd">cadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdiv">cdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdivfac">cdivfac</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ceq">ceq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgt">cgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgteqn">cgteqn</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clt">clt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clteq">clteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cmult">cmult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cneq">cneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cor_bit">cor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cpow">cpow</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#csub">csub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cxor_bit">cxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#div">div</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#eq">eq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#error">error</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gt">gt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gteq">gteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#if_else">if_else</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#isConstant">isConstant</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#logLEAK">logLEAK</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt">lt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt_halfprime">lt_halfprime</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lteq">lteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#mult">mult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#neq">neq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#not">not</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#or_bit">or_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#promise_handler">promise_handler</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#refresh">refresh</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sadd">sadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sdiv">sdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#seq">seq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgt">sgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgteq">sgteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slt">slt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slteq">slteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smod">smod</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult">smult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult_bgw">smult_bgw</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sneq">sneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sor_bit">sor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ssub">ssub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sub">sub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sxor_bit">sxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#toString">toString</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#valueOf">valueOf</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#when_both_ready">when_both_ready</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#wThen">wThen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#xor_bit">xor_bit</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-jiff-client.html">jiff-client</a></li></ul><h3>Namespaces</h3><ul><li><a href="bits.html">bits</a><ul class='methods'><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.bit_composition">jiffClient.protocols.bits.bit_composition</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cadd">jiffClient.protocols.bits.cadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivl">jiffClient.protocols.bits.cdivl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivr">jiffClient.protocols.bits.cdivr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ceq">jiffClient.protocols.bits.ceq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgt">jiffClient.protocols.bits.cgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgteq">jiffClient.protocols.bits.cgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clt">jiffClient.protocols.bits.clt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clteq">jiffClient.protocols.bits.clteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cmult">jiffClient.protocols.bits.cmult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cneq">jiffClient.protocols.bits.cneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubl">jiffClient.protocols.bits.csubl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubr">jiffClient.protocols.bits.csubr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.open">jiffClient.protocols.bits.open</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.rejection_sampling">jiffClient.protocols.bits.rejection_sampling</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sadd">jiffClient.protocols.bits.sadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sdiv">jiffClient.protocols.bits.sdiv</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.seq">jiffClient.protocols.bits.seq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgt">jiffClient.protocols.bits.sgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgteq">jiffClient.protocols.bits.sgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.share">jiffClient.protocols.bits.share</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slt">jiffClient.protocols.bits.slt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slteq">jiffClient.protocols.bits.slteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.smult">jiffClient.protocols.bits.smult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sneq">jiffClient.protocols.bits.sneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ssub">jiffClient.protocols.bits.ssub</a></li></ul></li><li><a href="handlers.html">handlers</a><ul class='methods'><li data-type='method'><a href="handlers.html#.jiffClient.handlers.build_initialization_message">jiffClient.handlers.build_initialization_message</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.connected">jiffClient.handlers.connected</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.error">jiffClient.handlers.error</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.initialized">jiffClient.handlers.initialized</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_crypto_provider">jiffClient.handlers.receive_crypto_provider</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_custom">jiffClient.handlers.receive_custom</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_open">jiffClient.handlers.receive_open</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_share">jiffClient.handlers.receive_share</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.store_public_keys">jiffClient.handlers.store_public_keys</a></li></ul></li><li><a href="helpers.html">helpers</a><ul class='methods'><li data-type='method'><a href="helpers.html#.jiffClient.helpers.array_equals">jiffClient.helpers.array_equals</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bits_to_number">jiffClient.helpers.bits_to_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bLog">jiffClient.helpers.bLog</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.ceil">jiffClient.helpers.ceil</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.extended_gcd">jiffClient.helpers.extended_gcd</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.floor">jiffClient.helpers.floor</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.get_party_number">jiffClient.helpers.get_party_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.is_prime">jiffClient.helpers.is_prime</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.mod">jiffClient.helpers.mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.number_to_bits">jiffClient.helpers.number_to_bits</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.pow_mod">jiffClient.helpers.pow_mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.random">jiffClient.helpers.random</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.sort_ids">jiffClient.helpers.sort_ids</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.Zp_equals">jiffClient.helpers.Zp_equals</a></li></ul></li><li><a href="hooks.html">hooks</a><ul class='methods'><li data-type='method'><a href="hooks.html#.computeShares">computeShares</a></li><li data-type='method'><a href="hooks.html#.execute_array_hooks">execute_array_hooks</a></li></ul></li><li><a href="protocols.html">protocols</a><ul class='methods'><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_beaver_bgw">jiffClient.protocols.generate_beaver_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_and_quotient">jiffClient.protocols.generate_random_and_quotient</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_bgw">jiffClient.protocols.generate_random_bit_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_smult">jiffClient.protocols.generate_random_bit_smult</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bits">jiffClient.protocols.generate_random_bits</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_number">jiffClient.protocols.generate_random_number</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_zero">jiffClient.protocols.generate_zero</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.rejection_sampling">jiffClient.protocols.rejection_sampling</a></li></ul></li><li><a href="utils.html">utils</a><ul class='methods'><li data-type='method'><a href="utils.html#.jiffClient.utils.bit_combinator">jiffClient.utils.bit_combinator</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.many_secret_shares">jiffClient.utils.many_secret_shares</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.resolve_many_secrets">jiffClient.utils.resolve_many_secrets</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">client/util/utils.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Contains utility functions (higher order combinators)
+ * @see {@link module:jiff-client~JIFFClient#utils}
+ * @name utils
+ * @alias utils
+ * @namespace
+ */
+
+module.exports = function (jiffClient) {
+  /**
+   * Create an array of secret shares and associated deferred.
+   * @method
+   * @memberof utils
+   * @param {number} count - number of secret shares
+   * @param {Array} holders - the parties that hold all the corresponding shares (must be sorted)
+   * @param {number} threshold - the min number of parties needed to reconstruct the secret
+   * @param {number} Zp - the mod under which this share was created
+   * @return {object} the secret share object containing the give value
+   *
+   */
+  jiffClient.utils.many_secret_shares = function (count, holders, threshold, Zp) {
+    var deferreds = [];
+    var shares = [];
+    for (var i = 0; i &lt; count; i++) {
+      var deferred = new jiffClient.helpers.Deferred();
+      shares.push(new jiffClient.SecretShare(deferred.promise, holders, threshold, Zp));
+      deferreds.push(deferred);
+    }
+
+    return {shares: shares, deferreds: deferreds};
+  };
+
+  /**
+   * Resolve the array of deferreds with the values of the given shares when ready, matched by index
+   * @method
+   * @memberof utils
+   * @param {Deferred[]} deferreds - the deferred to resolve
+   * @param {SecretShare[]} shares - the shares to resolve with
+   */
+  jiffClient.utils.resolve_many_secrets = function (deferreds, shares) {
+    for (var i = 0; i &lt; deferreds.length; i++) {
+      shares[i].wThen(deferreds[i].resolve);
+    }
+  };
+
+  /**
+   * Combines all the promises of the given share into a single promise that is resolved when
+   * all shares are resolved
+   * @method
+   * @methodof utils
+   * @param {SecretShare[]} shares - the shares whose promises should be joined
+   */
+  jiffClient.utils.all_promises = function (shares) {
+    var promises = [];
+    for (var i = 0; i &lt; shares.length; i++) {
+      promises.push(shares[i].value);
+    }
+    return Promise.all(promises);
+  };
+
+  /**
+   * A high level combinator for iteration of bit arrays
+   * It executes a round of (func) starting from index start to the length (supports backwards if start > length) excluding length
+   * Every round is blocked until the previous one finishes and the promise produced by it
+   * is resolved
+   * The final value is used to resolve deferred
+   * @method
+   * @memberof utils
+   * @param {!Deferred} deferred - the deferred to resolve with the final output
+   * @param {!number} start - the index to start from
+   * @param {!number} length - the index to stop at (excluding it)
+   * @param {?object} initial - an initial aggregator value
+   * @param {!function(number, object)} func - the aggregator function to apply to the elements in order, takes the index and the aggregator value so far
+   * @param {?function(object)} [promisify] - if initial is not null, this is called prior to starting combinator, to turn initial
+   *                                        into a promise of the actually used initial value(in case it has to be resolved),
+   *                                        defaults to promisifying a SecretShare with .wThen
+   * @param {?function(object)} [valufy] - applied to the final result to turn it into a value, which is then used to resolve deferred,
+   *                                       defaults to getting value of a SecretShare
+   */
+  jiffClient.utils.bit_combinator = function (deferred, start, length, initial, func, promisify, valufy) {
+    if (promisify == null) {
+      promisify = function (share) {
+        return {then: share.wThen.bind(share)};
+      }
+    }
+
+    if (valufy == null) {
+      valufy = function (share) {
+        return share.value;
+      }
+    }
+
+    var next = start &lt;= length ? 1 : -1;
+    var __bit_combinator = function (start, val) {
+      if (start === length) {
+        // done
+        deferred.resolve(valufy(val));
+        return;
+      }
+
+      // execute func once
+      val = func(start, val);
+
+      // when done, do next iteration
+      promisify(val).then(function () {
+        __bit_combinator(start + next, val);
+      });
+    };
+
+    // start combinator
+    if (initial == null) {
+      __bit_combinator(start, initial);
+    } else {
+      promisify(initial).then(function () {
+        __bit_combinator(start, initial);
+      });
+    }
+  }
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:02:14 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>
