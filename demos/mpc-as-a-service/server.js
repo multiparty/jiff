@@ -29,40 +29,8 @@ console.log('Using config file: ', path.join(__dirname, config));
 config = require(config);
 
 // Keep track of assigned ids
-var assignedCompute = {};
-var assignedInput = {};
 var options = {
-  logs: true,
-  hooks: {
-    beforeInitialization: [
-      function (jiff, computation_id, msg, params) {
-        console.log('got called with', msg.role);
-        if (params.party_id != null) {
-          return params;
-        }
-
-        var search = config.compute_parties;
-        var check = assignedCompute;
-        if (msg.role === 'input') {
-          search = config.input_parties;
-          check = assignedInput;
-        }
-
-        for (var p = 0; p < search.length; p++) {
-          var id = search[p];
-          if (check[id] === true) {
-            continue;
-          }
-
-          check[id] = true;
-          params.party_id = id;
-          return params;
-        }
-
-        return params;
-      }
-    ]
-  }
+  logs: true
 };
 
 // Create the server

@@ -26,6 +26,7 @@
    * The MPC computation
    */
   exports.compute = function (input, jiff_instance) {
+    console.log('connected and computing;');
     if (jiff_instance == null) {
       jiff_instance = saved_instance;
     }
