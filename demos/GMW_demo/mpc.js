@@ -2,6 +2,7 @@ const GMW_SHARE=require('./gmw_share.js');
 const GMW_OPEN=require('./gmw_open.js');
 const GMW_AND=require('./gmw_and.js');
 const GMW_XOR=require('./gmw_xor.js');
+const GMW=require('./update_gmw_and.js');
 
 (function (exports, node) {
   var saved_instance;
@@ -30,8 +31,8 @@ const GMW_XOR=require('./gmw_xor.js');
 
     }
     var shares=GMW_SHARE.gmw_share(jiff_instance,input);
-    var ci=GMW_XOR.gmw_xor(jiff_instance, shares[1],shares[2]);
-    var c2=GMW_AND.gmw_and(jiff_instance,ci,shares[3]);
+    //var ci=GMW_XOR.gmw_xor(jiff_instance, shares[1],shares[2]);
+    var c2=GMW.gmw_and(jiff_instance,shares[1],shares[2]);
     return GMW_OPEN.gmw_open(jiff_instance,c2);
   }
 
