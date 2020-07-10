@@ -40,11 +40,15 @@ if (party_id != null) {
 // JIFF options
 var options = {party_count: party_count, party_id: party_id};
 options.onConnect = function (jiff_instance) {
-  var promise = mpc.compute(input);
+  jiff_instance.preprocessing('open', 1);
 
-  promise.then(function (v) {
-    console.log(v);
-    jiff_instance.disconnect(true, true);
+  jiff_instance.executePreprocessing(function () {
+    var promise = mpc.compute(input);
+    promise.then(function (v) {
+      console.log(v);
+      jiff_instance.disconnect(true, true);
+    });
+
   });
 };
 

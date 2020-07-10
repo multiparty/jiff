@@ -7,7 +7,7 @@
    */
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
-    opt.crypto_provider = true;
+    opt.crypto_provider = false;
 
     if (node) {
       // eslint-disable-next-line no-undef
@@ -26,7 +26,6 @@
    * The MPC computation
    */
   exports.compute = function (input, jiff_instance) {
-    console.log('connected and computing;');
     if (jiff_instance == null) {
       jiff_instance = saved_instance;
     }
