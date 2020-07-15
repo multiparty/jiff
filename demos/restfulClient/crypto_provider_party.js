@@ -38,18 +38,15 @@ if (party_id != null) {
 }
 
 // JIFF options
-var options = {party_count: party_count, party_id: party_id, crypto_provider: false};
+var options = {party_count: party_count, party_id: party_id, crypto_provider: true};
 options.onConnect = function (jiff_instance) {
-  jiff_instance.preprocessing('open', 1);
 
-  jiff_instance.executePreprocessing(function () {
-    var promise = mpc.compute(input);
-    promise.then(function (v) {
-      console.log(v);
-      jiff_instance.disconnect(true, true);
-    });
-
+  var promise = mpc.compute(input);
+  promise.then(function (v) {
+    console.log(v);
+    jiff_instance.disconnect(true, true);
   });
+
 };
 
 // Connect
