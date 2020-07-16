@@ -9,7 +9,7 @@ var Zp = 13;
 var n = 200;
 var party_count = 4;
 var partylist=[1,2];
-var andls=[3];
+var andls=[4];
 
 // Parameters specific to this demo
 var maxValue = 2;
