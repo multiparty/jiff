@@ -8,7 +8,7 @@
  * @returns {object} a secret share of value ci
  */
 
-var IO = require('./1-out-of-n/demo/numbers/IO.js');
+var IO = require('./1-out-of-n/IO.js');
 const OT = require('./1-out-of-n/index.js')(IO);
 function gmw_and(jiff,share1,share2) {
 

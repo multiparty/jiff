@@ -3,7 +3,7 @@ const GMW_OPEN=require('./gmw_open.js');
 const GMW_XOR=require('./gmw_xor.js');
 const GMW=require('./update_gmw_and.js');
 
-var IO = require('./1-out-of-n/demo/numbers/IO.js');
+var IO = require('./1-out-of-n/IO.js');
 const OT = require('./1-out-of-n/index.js')(IO);
 (function (exports, node) {
   var saved_instance;
