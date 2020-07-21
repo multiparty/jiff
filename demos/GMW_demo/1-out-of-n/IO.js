@@ -14,19 +14,19 @@ const give = function ( op_id, jiff,session_id, tag, msg) {
     four_opts['tag']=tag;
     return four_opts;
   };
-  var temp=(op_id.split('.')[0]).split('-');
+  var temp=(op_id.split(':')[3]).split('-');
   var to=parseInt(temp[2]); // sending msg to partyid
   var from=parseInt(temp[1]);
   var four_opts=createMSGObj(msg,op_id,tag,jiff) ;
   four_opts = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'open', four_opts], 2);
-  msg=JSON.stringify(four_opts);// jason object[]
+  msg=JSON.stringify(four_opts);// jason object
   var to_party=to;
   if (jiff.id===to) {
     to_party=from;
   }
   var recls=[];
   recls.push(to_party);
-  jiff.emit('OT',recls,msg,true);//string
+  jiff.emit('OT',recls,msg,true);
   return ;
 };
 
@@ -34,11 +34,10 @@ const give = function ( op_id, jiff,session_id, tag, msg) {
 // IO receive
 const get = function (op_id,jiff,session_id, tag) {
   /* get a message */
-  var temp=(op_id.split('.')[0]).split('-');
+  var temp=(op_id.split(':')[3]).split('-');
   var fromId=parseInt(temp[1]);
   var toId=parseInt(temp[2]);
   var shareid=op_id+'-'+tag;
-
   var from_party=fromId;
   if (jiff.id===fromId) {
     from_party=toId;

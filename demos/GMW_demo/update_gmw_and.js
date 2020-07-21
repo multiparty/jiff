@@ -36,10 +36,8 @@ function gmw_and(jiff,share1,share2) {
       share_id= jiff.counters.gen_op_id2('otshare', share1.holders, share1.holders);
     }
     var my_count=[];//list of promises needs to be resolve
-
     // generate OT msg
     const four_opts=OTGate(csecret);//eg.[0,1,1,0]
-
     // OT send process, send OT msg to small party_ids
     OT.then(function (OT) {
       for (var k=1;k<jiff.id;k++) {
@@ -70,7 +68,6 @@ function gmw_and(jiff,share1,share2) {
 
     return final_promise;
   };
-
   return new share1.jiff.SecretShare(share1.when_both_ready(share2, ready), share1.holders, Math.max(share1.threshold, share2.threshold), share1.Zp);
 
 }

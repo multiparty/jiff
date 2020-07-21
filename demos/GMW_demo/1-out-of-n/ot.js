@@ -4,7 +4,7 @@ module.exports = function (io, sodium) {
 
   // 1-out-of-2 OT sending
   const send_from_2 = function (X1, X2, op_id, jiff,session_id) {
-    op_id = op_id + '.1in2ot';
+    op_id = op_id + ':1in2ot';
     var get = io.get.bind(null, op_id,jiff,session_id);
     var give = io.give.bind(null, op_id, jiff,session_id);
 
@@ -29,7 +29,7 @@ module.exports = function (io, sodium) {
 
   // 1-out-of-2 OT receiving
   const receive_from_2 = function (c, op_id, jiff,session_id) {
-    op_id = op_id + '.1in2ot';
+    op_id = op_id + ':1in2ot';
     var get = io.get.bind(null, op_id, jiff,session_id);
     var give = io.give.bind(null, op_id,jiff, session_id);
 
@@ -61,7 +61,7 @@ module.exports = function (io, sodium) {
   // 1-out-of-2 OT sending
   const send_from_N = function (X, N, op_id,jiff, session_id) {
     var I, j;
-    op_id = op_id + '.1inNot';
+    op_id = op_id + ':1inNot';
     var give = io.give.bind(null, op_id, jiff,session_id);
     X = util.sanitize(X);  // Check padding and fix if not the right type
 
@@ -106,7 +106,7 @@ module.exports = function (io, sodium) {
   // 1-out-of-2 OT receiving
   const receive_from_N = function (I, N, op_id, jiff,session_id) {
     var j;
-    op_id = op_id + '.1inNot';
+    op_id = op_id + ':1inNot';
     var get = io.get.bind(null, op_id, jiff,session_id);
 
     return new Promise(function (resolve) {

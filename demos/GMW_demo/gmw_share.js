@@ -139,6 +139,7 @@ function gmw_share(jiff, secret, threshold, receivers_list, senders_list, Zp, sh
       p_id = senders_list[i];
       if (p_id === jiff.id) { // Keep party's own share
         var my_share = jiff.hooks.execute_array_hooks('receiveShare', [jiff, p_id, shares[p_id]], 2);
+
         result[p_id] = new jiff.SecretShare(my_share, receivers_list, threshold, Zp);
         _remaining--;
         continue;
