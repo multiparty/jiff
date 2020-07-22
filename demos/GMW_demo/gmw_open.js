@@ -48,7 +48,7 @@ var jiff_broadcast = function (jiff, share, parties, op_id) {
 module.exports = {
   /**
    * Open up the given share to the participating parties.
-   * @function jiff_open
+   * @function gmw_open
    * @ignore
    * @param {module:jiff-client~JIFFClient} jiff - the jiff client instance.
    * @param {module:jiff-client~JIFFClient#SecretShare} share - the share of the secret to open that belongs to this party

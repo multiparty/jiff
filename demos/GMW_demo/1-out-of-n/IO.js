@@ -14,15 +14,17 @@ const give = function ( op_id, jiff,session_id, tag, msg) {
     four_opts['tag']=tag;
     return four_opts;
   };
-  var temp=(op_id.split(':')[3]).split('-');
-  var to=parseInt(temp[2]); // sending msg to partyid
-  var from=parseInt(temp[1]);
+  // var temp=(op_id.split(':')[3]).split('-');
+  // var to=parseInt(temp[2]); // sending msg to partyid
+  // var from=parseInt(temp[1]);
+
+  var ids=parse__OT_id(op_id);
   var four_opts=createMSGObj(msg,op_id,tag,jiff) ;
   four_opts = jiff.hooks.execute_array_hooks('beforeOperation', [jiff, 'open', four_opts], 2);
   msg=JSON.stringify(four_opts);// jason object
-  var to_party=to;
-  if (jiff.id===to) {
-    to_party=from;
+  var to_party=ids[1];
+  if (jiff.id===ids[1]) {
+    to_party=ids[0];
   }
   var recls=[];
   recls.push(to_party);
@@ -34,13 +36,11 @@ const give = function ( op_id, jiff,session_id, tag, msg) {
 // IO receive
 const get = function (op_id,jiff,session_id, tag) {
   /* get a message */
-  var temp=(op_id.split(':')[3]).split('-');
-  var fromId=parseInt(temp[1]);
-  var toId=parseInt(temp[2]);
+  var ids=parse__OT_id(op_id);
   var shareid=op_id+'-'+tag;
-  var from_party=fromId;
-  if (jiff.id===fromId) {
-    from_party=toId;
+  var from_party=ids[0];
+  if (jiff.id===ids[0]) {
+    from_party=ids[1];
   }
 
   if (jiff.deferreds[shareid] == null) {
@@ -52,6 +52,17 @@ const get = function (op_id,jiff,session_id, tag) {
   // resolving in customized listen
   return jiff.deferreds[shareid][from_party].promise;
 };
+// helper function to get from_id and to_id from op_id
+function parse__OT_id(op_id) {
+  var re=[];
+  var temp=(op_id.split(':')[3]).split('-');
+  var to=parseInt(temp[2]); // sending msg to partyid
+  var from=parseInt(temp[1]);
+  re.push(from);
+  re.push(to);
+  return re;
+
+}
 
 module.exports = {
   give: give,

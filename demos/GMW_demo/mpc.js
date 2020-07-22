@@ -44,8 +44,11 @@ const GMW=require('./update_gmw_and.js');
 
     var shares=jiff_instance.gmw_share(input);
     var xor_re=GMW_XOR.gmw_xor(jiff_instance,shares[1],shares[2]);
-    var ci=GMW.gmw_and(jiff_instance,xor_re,shares[4]);
+    var ci=GMW.gmw_and(jiff_instance,xor_re,shares[1]);
+    //var cii=jiff_instance.share(1);
+    
     return jiff_instance.gmw_open(ci);
+    //return jiff_instance.open(ci.sor_bit(cii[1]));
   }
 
 

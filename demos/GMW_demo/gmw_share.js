@@ -7,10 +7,9 @@
  * @param {number} the secret to share
  * @param {Array} parties_list - array of party ids to share with.
  * @param {number} threshold - the min number of parties needed to reconstruct the secret, defaults to all the receivers.
- * @param {number} Zp - the mod.
  * @returns {object} a map between party number and its share
  */
-function gmw_compute_share(jiff,input,parties_list, threshold, Zp) {
+function gmw_compute_share(jiff,input,parties_list, threshold) {
   var ls={};// potential shares of length n
   var i;
   var len=parties_list.length;
@@ -39,7 +38,6 @@ function gmw_compute_share(jiff,input,parties_list, threshold, Zp) {
   * @param {number} [threshold=receivers_list.length] - the min number of parties needed to reconstruct the secret, defaults to all the receivers.
   * @param {Array} [receivers_list=all_parties] - array of party ids to share with, by default, this includes all parties.
   * @param {Array} [senders_list=all_parties] - array of party ids to receive from, by default, this includes all parties.
-  * @param {number} [Zp=jiff.Zp] - the mod (if null then the default Zp for the instance is used).
   * @param {string|number} [share_id=auto_gen()] - the tag used to tag the messages sent by this share operation, this tag is used
   *                                   so that parties distinguish messages belonging to this share operation from other
   *                                   share operations between the same parties (when the order of execution is not
@@ -52,14 +50,11 @@ function gmw_compute_share(jiff,input,parties_list, threshold, Zp) {
   *          if the party that calls this function is not a receiver then the map
   *          will be empty.
   */
-function gmw_share(jiff, secret, threshold, receivers_list, senders_list, Zp, share_id) {
+function gmw_share(jiff, secret, threshold, receivers_list, senders_list, share_id) {
 
   var i, p_id;
-
   // defaults
-  if (Zp == null) {
-    Zp = 2;
-  }
+  var Zp = 2;
   if (receivers_list == null) {
     receivers_list = [];
     for (i = 1; i <= jiff.party_count; i++) {
@@ -104,7 +99,7 @@ function gmw_share(jiff, secret, threshold, receivers_list, senders_list, Zp, sh
     secret = jiff.hooks.execute_array_hooks('beforeShare', [jiff, secret, threshold, receivers_list, senders_list, Zp], 1);
 
     // compute shares
-    var shares=gmw_compute_share(jiff,secret,receivers_list, threshold, Zp);
+    var shares=gmw_compute_share(jiff,secret,receivers_list, threshold);
 
     // Call hook
 

@@ -15,9 +15,10 @@ function gmw_and(jiff,share1,share2) {
   if (!(share1.jiff === share2.jiff)) {
     throw new Error('shares do not belong to the same instance (^)');
   }
-  if (!share1.jiff.helpers.Zp_equals(share1, share2)) {
-    throw new Error('shares must belong to the same field (^)');
+  if (!(share1.jiff.helpers.Zp_equals(share1, share2)&& share2.Zp===2) ) {
+    throw new Error('shares must belong to the same field and shares\'Zp must equals 2 (^)');
   }
+
   if (!share1.jiff.helpers.array_equals(share1.holders, share2.holders)) {
     throw new Error('shares must be held by the same parties (^)');
   }
