@@ -1,4 +1,4 @@
-#Image Comparison Demo
+# Image Comparison Demo
 
 Compares images input by the parties. If any pixel in the images differ, then it will return to the parties that the 
 images do not match. Otherwise, it will return that there was a match. 
