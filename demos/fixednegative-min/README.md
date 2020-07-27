@@ -1,4 +1,4 @@
-#Minimum of Inputs
+# Minimum of Inputs
 
 On inputs x_1,...x_n from parties P_1,...,P_n, the function releases min{x_1,...,x_n}. 
 
