@@ -51,6 +51,7 @@
     "build": "./node_modules/.bin/browserify lib/jiff-client.js --debug -s JIFFClient -o dist/jiff-client.js"
   },
   "dependencies": {
+    "1-out-of-n": "^0.3.1",
     "bignumber.js": "^5.0.0",
     "cross-env": "^5.0.5",
     "docdash": "^1.1.1",

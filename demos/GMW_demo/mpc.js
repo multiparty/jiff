@@ -1,6 +1,3 @@
-const GMW_XOR=require('./gmw_xor.js');
-const GMW=require('./update_gmw_and.js');
-
 (function (exports, node) {
   var saved_instance;
   // Unique prefix seed for op_ids
@@ -43,12 +40,9 @@ const GMW=require('./update_gmw_and.js');
     });
 
     var shares=jiff_instance.gmw_share(input);
-    var xor_re=GMW_XOR.gmw_xor(jiff_instance,shares[1],shares[2]);
-    var ci=GMW.gmw_and(jiff_instance,xor_re,shares[1]);
-    //var cii=jiff_instance.share(1);
-    
+    var xor_re=shares[1].gmw_xor(shares[2]);
+    var ci=xor_re.gmw_and(shares[1]);
     return jiff_instance.gmw_open(ci);
-    //return jiff_instance.open(ci.sor_bit(cii[1]));
   }
 
 

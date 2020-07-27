@@ -4,7 +4,7 @@ Description and guide for computing AND or XOR with secure MPC under GMW protoco
 
 ## protocol 
 
-The implementation of the following protocol may be found in jiff/demos/GMW_demo/mpc.js lines 27 through 36.
+The implementation of the following protocol may be found in jiff/demos/GMW_demo/mpc.js lines 42 through 45.
 
 Input: arbitrary number of parties P1,...Pn with bit inputs x1,...xn
 
@@ -23,14 +23,14 @@ Note also that the parties have to iteratively use XOR/AND instead of doing a si
 I.e. if you have shares a, b, and c that you want to
 xor, then you can't do
 ```
-var output = gmw_xor(jiff_instance,a,b,c);
+var output = a.gmw_xor(b,c);
 ```
 but instead have to do 
 ```
-var d = gmw_xor(jiff_instance,a,b);
-var output =gmw_xor(jiff_instance,c,d);
+var c = a.gmw_xor(b);
+var output =c.gmw_xor(d);
 ```
- 
+same for gmw_and function.
 ## Legal inputs
 
 This instantiation of XOR/AND only supports 0/1 as inputs.
