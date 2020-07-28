@@ -4,7 +4,7 @@ Description and guide for computing AND or XOR with secure MPC under GMW protoco
 
 ## protocol 
 
-The implementation of the following protocol may be found in jiff/demos/GMW_demo/mpc.js lines 42 through 45.
+The implementation of the following protocol may be found in jiff/demos/GMW_demo/mpc.js lines 27 through 30.
 
 Input: arbitrary number of parties P1,...Pn with bit inputs x1,...xn
 

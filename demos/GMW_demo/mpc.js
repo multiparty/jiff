@@ -24,21 +24,6 @@
       jiff_instance = saved_instance;
 
     }
-
-    jiff_instance.listen('OT',function (id,msg) {
-      msg=JSON.parse(msg);
-      var opts=msg['opts'];
-      var opId=msg['op_id']+'-'+msg['tag'];
-      if (jiff_instance.deferreds[opId] == null) {
-        jiff_instance.deferreds[opId] = {};
-      }
-      if (jiff_instance.deferreds[opId][id] == null) { // not ready, setup a deferred
-        jiff_instance.deferreds[opId][id] = new jiff_instance.helpers.Deferred();
-      }
-      jiff_instance.deferreds[opId][id].resolve(opts);
-
-    });
-
     var shares=jiff_instance.gmw_share(input);
     var xor_re=shares[1].gmw_xor(shares[2]);
     var ci=xor_re.gmw_and(shares[1]);
