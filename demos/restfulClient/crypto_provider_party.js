@@ -38,7 +38,7 @@ if (party_id != null) {
 }
 
 // JIFF options
-var options = {party_count: party_count, party_id: party_id, crypto_provider: true};
+var options = {party_count: party_count, party_id: party_id, Zp: 13, crypto_provider: true};
 options.onConnect = function (jiff_instance) {
 
   var promise = mpc.compute(input);
