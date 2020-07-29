@@ -4,10 +4,18 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 
+var fs = require('fs')
+var morgan = require('morgan')
+var path = require('path')
+
 var jiffServer = require('../../lib/jiff-server');
 var jiffRestAPIServer =  require('../../lib/ext/jiff-server-restful');
 var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
 
+// log all requests to access.log
+app.use(morgan('tiny', {
+  stream: fs.createWriteStream(path.join(__dirname, 'parallel.log'), { flags: 'a' })
+}))
 var options = {
   logs: true,
   app: app
@@ -23,6 +31,7 @@ if (extensions != null && extensions.indexOf('restAPI') > -1) {
   app.use(bodyParser.json());
   jiff_instance.apply_extension(jiffRestAPIServer, options);
 }
+
 
 // Serve static files.
 app.use('/demos', express.static('demos'));
