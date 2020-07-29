@@ -18,6 +18,7 @@ env:
 - TEST_NAME='bigNumber-negativeNumber' TEST_SUITE=''
 - TEST_NAME='restAPI' TEST_SUITE=''
 - TEST_NAME='bits' TEST_SUITE=''
+- TEST_NAME='GMW' TEST_SUITE=''
 - TEST_NAME='fixedpoint' TEST_SUITE='share'
 - TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
 - TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
