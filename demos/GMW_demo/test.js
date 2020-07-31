@@ -8,9 +8,6 @@ var parallelismDegree = 4; // Max number of test cases running in parallel
 var Zp = 13;
 var n = 100;
 var party_count = 4;
-var partylist=[1,2];
-var andls=[1];
-
 // Parameters specific to this demo
 var maxValue = 2;
 /**
@@ -44,16 +41,13 @@ function generateInputs(party_count) {
  */
 function computeResults(inputs) {
   var results = [];
-  for (var j = 0; j < n; j++) {
-    // test for gmw_and
-    var pid1=partylist[0];
-    var pid2=partylist[1];
-    var pid11=andls[0];
-    //var pid22=andls[1];
-    var re1=inputs[pid1][j]^inputs[pid2][j];
-    var re2=re1&inputs[pid11][j]
+  for (var j = 0; j <n; j++) {
+    var re=1;
+    for (var i=1;i<=party_count;i++) {
+      re=re&inputs[i][j];
 
-    results.push( re2);
+    }
+    results.push(re);
   }
   return results;
 }

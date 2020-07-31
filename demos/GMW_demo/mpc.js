@@ -22,12 +22,14 @@
   exports.compute = function (input,jiff_instance) {
     if (jiff_instance == null) {
       jiff_instance = saved_instance;
-
     }
+
     var shares=jiff_instance.gmw_share(input);
-    var xor_re=shares[1].gmw_xor(shares[2]);
-    var ci=xor_re.gmw_and(shares[1]);
-    return jiff_instance.gmw_open(ci);
+    var re = shares[1];
+    for (var i = 2; i <= jiff_instance.party_count; i++) {
+      re = re.gmw_and(shares[i]);
+    }
+    return jiff_instance.gmw_open(re);
   }
 
 
