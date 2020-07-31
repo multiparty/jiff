@@ -31,7 +31,7 @@ var c = a.gmw_xor(b);
 var output =c.gmw_xor(d);
 ```
 same for gmw_and function.
-```
+
 In this demo, we use gmw_and as an example, computing AND result for all parties' bit input.
 ## Legal inputs
 
