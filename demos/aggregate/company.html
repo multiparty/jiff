@@ -1,0 +1,71 @@
+<!-- Basic UI for running the demo in the browser -->
+
+<html>
+  <head>
+    <title>Aggregate groups under MPC</title>
+    <style>
+      .error {
+        color: #FF0000;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/dist/jiff-client.js"></script>
+
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="./client.js"></script>
+
+    <!-- Contains the MPC implementation -->
+    <script type="text/javascript" src="./mpc.js"></script>
+  </head>
+  <body>
+    <h1>Connect JIFF</h1>
+    <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
+    <!--<label for="count">Party Count<label>--> <input hidden id="count" pattern="[0-9]*" value="2"><!-- &nbsp; --><button id="connectButton" onclick="connect();">Connect</button>
+    <br/><br/>
+    <hr/>
+    <h1>Aggregate by group under MPC</h1>
+    <!-- <label for="number">Input</label><br/> -->
+    <table>
+      <tr>
+        <td>Patient's Name</td>
+        <td>Hospital</td>
+      </tr>
+      <tr>
+        <td><textarea id="names" style="font-family: monospace" rows=15>
+Victoria Meadows
+Tyler Shea
+Heather Ayala
+Jessica Johns
+Daniel Valenzuela
+Kevin Garcia
+Aaron Anderson
+Nathan Weeks
+James Hernandez
+Katherine Palmer
+Laura Moody
+Aaron Roman
+Connor Hunter
+Dawn Golden
+</textarea></td>
+    <td><textarea id="details" style="font-family: monospace" rows=15>
+BWH
+BIDMC
+BIDMC
+SEMC
+BIDMC
+BIDMC
+MGH
+SEMC
+MGH
+MGH
+BIDMC
+MGH
+MGH
+SEMC
+</textarea></td>
+      </tr>
+    </table><br/><br/>
+    <button onclick="submit();" id="button">Aggregate</button><br/>
+    <div id="output"></div>
+  </body>
+</html>
