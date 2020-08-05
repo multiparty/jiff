@@ -31,13 +31,17 @@ if (party_id != null) {
 // JIFF options
 var options = {party_count: party_count, party_id: party_id};
 options.onConnect = function (jiff_instance) {
-  var promise = mpc.compute(input);
-
-  promise.then(function (v) {
-    console.log(v);
-    jiff_instance.disconnect(false, true);
+  jiff_instance.preprocessing('cdiv', 1);
+  jiff_instance.preprocessing('open', 1);
+  jiff_instance.executePreprocessing(function() {
+    var promise = mpc.compute(input); 
+    promise.then(function (v) {
+      console.log(v);
+      jiff_instance.disconnect(false, true);
+    });
   });
 };
+
 
 // Connect
 mpc.connect('http://localhost:8080', computation_id, options);
