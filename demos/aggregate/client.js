@@ -10,12 +10,12 @@ function connect() {
   var party_count = parseInt($('#count').val());
 
   if (isNaN(party_count)) {
-    $('#output').append("<p class='error'>Party count must be a valid number!</p>");
+    $('#output').append('<p class="error">Party count must be a valid number!</p>');
     $('#connectButton').prop('disabled', false);
   } else {
     var options = { party_count: party_count};
     options.onError = function (_, error) {
-      $('#output').append("<p class='error'>"+error+'</p>');
+      $('#output').append('<p class="error">'+error+'</p>');
     };
     options.onConnect = function () {
       $('#button').attr('disabled', false); $('#output').append('<p>All parties Connected!</p>');
@@ -43,6 +43,7 @@ function connect() {
 }
 
 var CATEGORIES_COUNT = 4;
+var CATEGORIES = ['BWH', 'BIDMC', 'SEMC', 'MGH'];
 
 // eslint-disable-next-line no-unused-vars
 function submit() {
@@ -59,6 +60,7 @@ function submit() {
 }
 
 function handleResult(result) {
-  $('#output').append('<p>Result is: ' + JSON.stringify(result) + '</p>');
+  var html = JSON.stringify(result, true, ' &nbsp; ').split('\n').join('<br/>');
+  $('#output').append('<p>Result is: ' + html + '</p>');
   $('#button').attr('disabled', false);
 }

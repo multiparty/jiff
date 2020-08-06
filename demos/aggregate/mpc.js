@@ -28,14 +28,15 @@ var promises;
       jiff_instance = saved_instance;
     }
 
-    var shares = [];
+    var ids = Array(column2.length).fill(null);
+    var values = Array(column2.length).fill(null);
 
     if (jiff_instance.id === 1) {
       var groups = column2;
 
       // Assign a numeric ID for each patient corresponding to the hospital he/she was in.
       var mapping = {};
-      var ids = groups.map(function (group) {
+      ids = groups.map(function (group) {
         var id = mapping[group];
         if (id === undefined) {
           id = Object.keys(mapping).length;
@@ -43,23 +44,28 @@ var promises;
         }
         return id;
       });
-
-      shares = ids.map(function (s) { return jiff_instance.share(s); });
+      console.log(mapping);
     } else if (jiff_instance.id === 2) {
-      var values = column2.map(Number);
-      shares = values.map(function (s) { return jiff_instance.share(s); });
+      values = column2.map(Number);
     } else {
       throw new Error('JIFF party id must be either 1 or 2');
     }
+
+    var secret_ids = ids.map(function (s) {
+      return jiff_instance.share(s, null, [1, 2], [1])[1];
+    });
+    var secret_values = values.map(function (s) {
+      return jiff_instance.share(s, null, [1, 2], [2])[2];
+    });
 
     // The MPC implementation should go *HERE*
     var totals = Array(CATEGORIES_COUNT);
     for (var i = 0; i < totals.length; i++) {
       totals[i] = jiff_instance.share(0)[1];//.protocols.generate_zero();
     }
-    for (var i = 0; i < shares.length; i++) {
-      var secret_id = shares[i][1];
-      var secret_value = shares[i][2];
+    for (var i = 0; i < secret_values.length; i++) {
+      var secret_id = secret_ids[i];
+      var secret_value = secret_values[i];
       // secret_id.logLEAK('secret_id ' + i);
       // secret_value.logLEAK('secret_value ' + i);
       for (var id = 0; id < totals.length; id++) {
@@ -69,14 +75,14 @@ var promises;
 
     // Return a promise to the final output(s)
     promises = totals.map(function (s) { return jiff_instance.open(s); });
-    return Promise.all(promises); /* new Promise(function (resolve) {
+    return new Promise(function (resolve) {
       Promise.all(promises).then(function (arr) {
         var obj = {};
         for (var i = 0; i < arr.length; i++) {
-          obj[arr[i]] = arr[i];
+          obj[CATEGORIES[i]] = arr[i];
         }
         resolve(obj);
       });
-    }); */
+    });
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
