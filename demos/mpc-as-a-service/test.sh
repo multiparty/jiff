@@ -10,7 +10,7 @@ for config in tests/*.json; do
   sleep 1
 
   # run a bunch of compute parties
-  count=$(sed '3q;d' $config | sed 's/,/\n/g' | wc -l)
+  count=$(sed '3q;d' $config | (read line; wc -c <<< "${line//[^,]}"))  # -OR-  tr "," "\n" | wc -l
   count=$((count-1))
   allIDs=$serverID
   for ((j=1;j<=$count;j++)); do
