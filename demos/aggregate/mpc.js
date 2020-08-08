@@ -28,7 +28,7 @@ var promises;
       jiff_instance = saved_instance;
     }
 
-    var ids = Array(column2.length).fill(null);
+    var ids = Array(column2.length).fill(Array(CATEGORIES_COUNT).fill(null));
     var values = Array(column2.length).fill(null);
 
     if (jiff_instance.id === 1) {
@@ -39,7 +39,9 @@ var promises;
       ids = groups.map(function (group) {
         var id = mapping[group];
         if (id === undefined) {
-          id = Object.keys(mapping).length;
+          var unit_vector = Array(CATEGORIES_COUNT).fill(0);
+          unit_vector[Object.keys(mapping).length] = 1;
+          id = unit_vector;
           mapping[group] = id;
         }
         return id;
@@ -51,8 +53,10 @@ var promises;
       throw new Error('JIFF party id must be either 1 or 2');
     }
 
-    var secret_ids = ids.map(function (s) {
-      return jiff_instance.share(s, null, [1, 2], [1])[1];
+    var secret_ids = ids.map(function (id) {
+      return id.map(function (bit) {
+        return jiff_instance.share(bit, null, [1, 2], [1])[1];
+      });
     });
     var secret_values = values.map(function (s) {
       return jiff_instance.share(s, null, [1, 2], [2])[2];
@@ -69,7 +73,8 @@ var promises;
       // secret_id.logLEAK('secret_id ' + i);
       // secret_value.logLEAK('secret_value ' + i);
       for (var id = 0; id < totals.length; id++) {
-        totals[id] = totals[id].sadd(secret_id.ceq(id).smult(secret_value));
+        var is_cat = secret_id[id];  // is `id` the correct category for this value?
+        totals[id] = totals[id].sadd(is_cat.smult(secret_value));
       }
     }
 
