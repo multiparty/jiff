@@ -1,6 +1,5 @@
 (function (exports, node) {
   var saved_instance;
-  var seeds = {};
 
   /**
    * Connect to the server and initialize the jiff instance
@@ -30,40 +29,20 @@
       jiff_instance = saved_instance;
     }
 
-    // Unique prefix seed for op_ids
-    if (seeds[jiff_instance.id] == null) {
-      seeds[jiff_instance.id] = 0;
-    }
-    var seed = seeds[jiff_instance.id]++;
-
-    var final_deferred = $.Deferred();
-    var final_promise = final_deferred.promise();
-
     // Share the arrays
-    jiff_instance.share_array(input, input.length).then(function (shares) {
-      jiff_instance.seed_ids(seed);
+    var shares = jiff_instance.share_array(input, input.length);
 
-      // concatenate input arrays
-      var full_array = [];
-      for (var p = 1; p <= jiff_instance.party_count; p++) {
-        full_array = full_array.concat(shares[p]);
-      }
+    // Concatenate input arrays
+    var full_array = [];
+    for (var p = 1; p <= jiff_instance.party_count; p++) {
+      full_array = full_array.concat(shares[p]);
+    }
 
-      // shuffle new array
-      var shuffled = shuffle(full_array, jiff_instance);
+    // Shuffle new array
+    var shuffled = shuffle(full_array, jiff_instance);
 
-      // Open the array
-      var allPromises = [];
-      for (var k = 0; k < shuffled.length; k++) {
-        allPromises.push(jiff_instance.open(shuffled[k]));
-      }
-
-      Promise.all(allPromises).then(function (results) {
-        final_deferred.resolve(results);
-      });
-    });
-
-    return final_promise;
+    // Open the array
+    return jiff_instance.open_array(shuffled);
   };
 
   function shuffle(array, jiff_instance) {
