@@ -37,6 +37,7 @@ options.onConnect = function (jiff_instance) {
     var promise = mpc.compute(input); 
     promise.then(function (v) {
       console.log(v);
+      // drop mongoose share collections here
       jiff_instance.disconnect(false, true);
     });
   });

@@ -2,11 +2,8 @@ var path = require('path');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var mongoose = require('mongoose'); 
 var JIFFServer = require('../../lib/jiff-server');
 new JIFFServer(http, { logs:true });
-
-mongoose.connect("mongodb://localhost/hooks_db", {useNewUrlParser: true}); 
 
 
 // Serve static files.
