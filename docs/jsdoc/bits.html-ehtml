@@ -1,0 +1,6927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>bits - JIFF Library Documentation</title>
+    
+    
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/multiparty/jiff" target="_blank" class="menu-item" id="github_link" >Github Repo</a></h2><h2><a href="./intro.html" target="_self" class="menu-item" id="github_link" >Tutorial</a></h2><h2><a href="./contributing.html" target="_self" class="menu-item" id="github_link" >Contributing to JIFF</a></h2><h3>Classes</h3><ul><li><a href="GuardedSocket.html">GuardedSocket</a><ul class='methods'><li data-type='method'><a href="GuardedSocket.html#disconnect">disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#is_empty">is_empty</a></li><li data-type='method'><a href="GuardedSocket.html#resend_mailbox">resend_mailbox</a></li><li data-type='method'><a href="GuardedSocket.html#safe_disconnect">safe_disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#safe_emit">safe_emit</a></li></ul></li><li><a href="helpers.Deferred.html">Deferred</a><ul class='methods'><li data-type='method'><a href="helpers.Deferred.html#reject">reject</a></li><li data-type='method'><a href="helpers.Deferred.html#resolve">resolve</a></li></ul></li><li><a href="module-jiff-client-JIFFClient.html">JIFFClient</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient.html#add_to_barriers">add_to_barriers</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#apply_extension">apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#can_apply_extension">can_apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#connect">connect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#disconnect">disconnect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#emit">emit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#end_barrier">end_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#executePreprocessing">executePreprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#extension_applied">extension_applied</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#free">free</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#from_crypto_provider">from_crypto_provider</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id">gen_op_id</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2">gen_op_id2</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2_preprocessing">gen_op_id2_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id_preprocessing">gen_op_id_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#get_preprocessing">get_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_extension">has_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_preprocessing">has_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_open">internal_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_share">internal_share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isInitialized">isInitialized</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isReady">isReady</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#listen">listen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_array">open_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_ND_array">open_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessing">preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessingDaemon">preprocessingDaemon</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#remove_listener">remove_listener</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#reshare">reshare</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#seed_ids">seed_ids</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share">share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_2D_array">share_2D_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_array">share_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array">share_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_deferred">share_ND_array_deferred</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_static">share_ND_array_static</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#start_barrier">start_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#store_preprocessing">store_preprocessing</a></li></ul></li><li><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#add">add</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#bit_decomposition">bit_decomposition</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cadd">cadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdiv">cdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdivfac">cdivfac</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ceq">ceq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgt">cgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgteqn">cgteqn</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clt">clt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clteq">clteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cmult">cmult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cneq">cneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cor_bit">cor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cpow">cpow</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#csub">csub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cxor_bit">cxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#div">div</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#eq">eq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#error">error</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gt">gt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gteq">gteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#if_else">if_else</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#isConstant">isConstant</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#logLEAK">logLEAK</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt">lt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt_halfprime">lt_halfprime</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lteq">lteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#mult">mult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#neq">neq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#not">not</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#or_bit">or_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#promise_handler">promise_handler</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#refresh">refresh</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sadd">sadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sdiv">sdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#seq">seq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgt">sgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgteq">sgteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slt">slt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slteq">slteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smod">smod</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult">smult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult_bgw">smult_bgw</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sneq">sneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sor_bit">sor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ssub">ssub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sub">sub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sxor_bit">sxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#toString">toString</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#valueOf">valueOf</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#when_both_ready">when_both_ready</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#wThen">wThen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#xor_bit">xor_bit</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-jiff-client.html">jiff-client</a></li></ul><h3>Namespaces</h3><ul><li><a href="bits.html">bits</a><ul class='methods'><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.bit_composition">jiffClient.protocols.bits.bit_composition</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cadd">jiffClient.protocols.bits.cadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivl">jiffClient.protocols.bits.cdivl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivr">jiffClient.protocols.bits.cdivr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ceq">jiffClient.protocols.bits.ceq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgt">jiffClient.protocols.bits.cgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgteq">jiffClient.protocols.bits.cgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clt">jiffClient.protocols.bits.clt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clteq">jiffClient.protocols.bits.clteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cmult">jiffClient.protocols.bits.cmult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cneq">jiffClient.protocols.bits.cneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubl">jiffClient.protocols.bits.csubl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubr">jiffClient.protocols.bits.csubr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.open">jiffClient.protocols.bits.open</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.rejection_sampling">jiffClient.protocols.bits.rejection_sampling</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sadd">jiffClient.protocols.bits.sadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sdiv">jiffClient.protocols.bits.sdiv</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.seq">jiffClient.protocols.bits.seq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgt">jiffClient.protocols.bits.sgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgteq">jiffClient.protocols.bits.sgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.share">jiffClient.protocols.bits.share</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slt">jiffClient.protocols.bits.slt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slteq">jiffClient.protocols.bits.slteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.smult">jiffClient.protocols.bits.smult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sneq">jiffClient.protocols.bits.sneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ssub">jiffClient.protocols.bits.ssub</a></li></ul></li><li><a href="handlers.html">handlers</a><ul class='methods'><li data-type='method'><a href="handlers.html#.jiffClient.handlers.build_initialization_message">jiffClient.handlers.build_initialization_message</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.connected">jiffClient.handlers.connected</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.error">jiffClient.handlers.error</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.initialized">jiffClient.handlers.initialized</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_crypto_provider">jiffClient.handlers.receive_crypto_provider</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_custom">jiffClient.handlers.receive_custom</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_open">jiffClient.handlers.receive_open</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_share">jiffClient.handlers.receive_share</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.store_public_keys">jiffClient.handlers.store_public_keys</a></li></ul></li><li><a href="helpers.html">helpers</a><ul class='methods'><li data-type='method'><a href="helpers.html#.jiffClient.helpers.array_equals">jiffClient.helpers.array_equals</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bits_to_number">jiffClient.helpers.bits_to_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bLog">jiffClient.helpers.bLog</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.ceil">jiffClient.helpers.ceil</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.extended_gcd">jiffClient.helpers.extended_gcd</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.floor">jiffClient.helpers.floor</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.get_party_number">jiffClient.helpers.get_party_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.is_prime">jiffClient.helpers.is_prime</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.mod">jiffClient.helpers.mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.number_to_bits">jiffClient.helpers.number_to_bits</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.pow_mod">jiffClient.helpers.pow_mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.random">jiffClient.helpers.random</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.sort_ids">jiffClient.helpers.sort_ids</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.Zp_equals">jiffClient.helpers.Zp_equals</a></li></ul></li><li><a href="hooks.html">hooks</a><ul class='methods'><li data-type='method'><a href="hooks.html#.computeShares">computeShares</a></li><li data-type='method'><a href="hooks.html#.execute_array_hooks">execute_array_hooks</a></li></ul></li><li><a href="protocols.html">protocols</a><ul class='methods'><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_beaver_bgw">jiffClient.protocols.generate_beaver_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_and_quotient">jiffClient.protocols.generate_random_and_quotient</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_bgw">jiffClient.protocols.generate_random_bit_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_smult">jiffClient.protocols.generate_random_bit_smult</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bits">jiffClient.protocols.generate_random_bits</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_number">jiffClient.protocols.generate_random_number</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_zero">jiffClient.protocols.generate_zero</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.rejection_sampling">jiffClient.protocols.rejection_sampling</a></li></ul></li><li><a href="utils.html">utils</a><ul class='methods'><li data-type='method'><a href="utils.html#.jiffClient.utils.bit_combinator">jiffClient.utils.bit_combinator</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.many_secret_shares">jiffClient.utils.many_secret_shares</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.resolve_many_secrets">jiffClient.utils.resolve_many_secrets</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">bits</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        bits
+        </h2>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+            
+                <div class="description usertext"><p>Contains bits protocols (including rejection sampling and bits operations)</p>
+<p><b>Important: bit protocols (including bit_decomposition) are unaware of any extension specific customizations, and will operate as
+on the given shares as if they are natural numbers in Zp. Make sure to take into consideration any magnification/shift transformations
+needed to translate correctly between plain representations and extension representations of bits! </b></p></div>
+            
+
+            
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.bit_composition"><span class="type-signature">(static) </span>jiffClient.protocols.bits.bit_composition<span class="signature">(bits)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line343">line 343</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Creates a secret share of the number represented by the given array of secret shared bits.
+Requires no communication, only local operations</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>an array of the secret shares of bits, starting from least to most significant bits.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a secret share of the number represented by bits.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.cadd"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cadd<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line29">line 29</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Compute sum of bitwise secret shared number and a constant</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the bit wise secret shares</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>constant</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the constant</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for communication
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>bitwise sharing of the result. Note that the length here will be max(|bits|, |constant|) + 1
+in case of potential overflow / carry</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.cdivl"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cdivl<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line143">line 143</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Computes integer division of [secret bits] / constant</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>numerator: an array of secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>constant</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the denominator number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+    <div class="param-desc usertext">
+    
+        <p>if constant is 0.</p>
+    
+    </div>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>the quotient and remainder bits arrays, note that
+the quotient array has the same length as bits,
+and the remainder array has the same length as
+constant or bits, whichever is smaller</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.cdivr"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cdivr<span class="signature">(constant, bits, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line160">line 160</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Computes integer division of constant / [secret bits]</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>constant</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the numerator number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>denominator: an array of secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>the quotient and remainder bits arrays, note that
+the quotient array has the same length as the number of bits in constant,
+and the remainder array has the same length as bits or constant, whichever is smaller.
+Note: if bits represent 0, the returned result is the maximum
+number that fits in its bits (all 1), and the remainder
+is equal to constant</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.ceq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.ceq<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line175">line 175</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Checks whether the given bitwise secret shared number and numeric constant are equal</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>constant</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the constant number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a secret share of 1 if parameters are equal, 0 otherwise. If result is known
+(e.g. constant has a greater non-zero bit than bits' most significant bit), the result is
+returned immediately as a boolean</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">SecretShare</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.cgt"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cgt<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line203">line 203</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Checks whether given secret shared bits are greater than the given constant</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of the secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>constant</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the constant number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a secret share of 1 if bits are greater than constant, 0 otherwise, if result is known
+(e.g. constant has greater non-zero bit than bits' most significant bit), the result is
+returned immediately as a boolean</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">SecretShare</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.cgteq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cgteq<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line217">line 217</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Checks whether given secret shared bits are greater or equal to the given constant</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of the secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>constant</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the constant number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a secret share of 1 if bits are greater or equal to constant, 0 otherwise, if result is known
+(e.g. constant has greater non-zero bit than bits' most significant bit or constant is zero), the result is
+returned immediately as a boolean</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">SecretShare</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.clt"><span class="type-signature">(static) </span>jiffClient.protocols.bits.clt<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line231">line 231</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Checks whether given secret shared bits are less than the given constant</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of the secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>constant</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the constant number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a secret share of 1 if bits are less than the constant, 0 otherwise, if result is known
+(e.g. constant has greater non-zero bit than bits' most significant bit), the result is
+returned immediately as a boolean</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">SecretShare</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.clteq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.clteq<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line245">line 245</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Checks whether given secret shared bits are less or equal to the given constant</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of the secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>constant</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the constant number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a secret share of 1 if bits are less or equal to constant, 0 otherwise, if result is known
+(e.g. constant has greater non-zero bit than bits' most significant bit), the result is
+returned immediately as a boolean</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">SecretShare</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.cmult"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cmult<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line98">line 98</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Compute [secret bits] * constant</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>bitwise shared secret to multiply: lower indices represent less significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>constant</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>constant to multiply with</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for communication.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>bitwise sharing of the result, the length of the result will be bits.length + ceil(log2(constant)), except
+if constant is zero, the result will then be [ zero share ]</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.cneq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cneq<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line189">line 189</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Checks whether the given bitwise secret shared number and numeric constant are not equal</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>constant</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the constant number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a secret share of 1 if parameters are not equal, 0 otherwise. If result is known
+(e.g. constant has a greater non-zero bit than bits' most significant bit), the result is
+returned immediately as a boolean</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">SecretShare</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.csubl"><span class="type-signature">(static) </span>jiffClient.protocols.bits.csubl<span class="signature">(constant, bits, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line43">line 43</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Compute [secret bits] - [constant bits]</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>constant</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the constant</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the bit wise secret shares</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for communication.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>bitwise sharing of the result. Note that the length of the returned result is |bits|+1, where
+the bit at index 0 is the least significant bit. The bit at index 1 is the most significant bit,
+and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.csubr"><span class="type-signature">(static) </span>jiffClient.protocols.bits.csubr<span class="signature">(constant, bits, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line57">line 57</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Compute [constant bits] - [secret bits]</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>constant</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the constant</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the bit wise secret shares</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for communication.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>bitwise sharing of the result. Note that the length of the returned result is |bits|+1, where
+the bit at index 0 is the least significant bit. The bit at index 1 is the most significant bit,
+and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.open"><span class="type-signature">(static) </span>jiffClient.protocols.bits.open<span class="signature">(bits, parties, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {promise}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line374">line 374</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Opens the given array of secret shared bits.
+This works regardless of whether the represented value fit inside the corresponding field or not</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of the secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>parties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>parties to open (same as jiff_instance.open)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>auto_gen()</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>same as jiff_instance.open</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a promise to the number represented by bits</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.rejection_sampling"><span class="type-signature">(static) </span>jiffClient.protocols.bits.rejection_sampling<span class="signature">(lower_bound, upper_bound, threshold<span class="signature-attributes">opt</span>, parties<span class="signature-attributes">opt</span>, Zp<span class="signature-attributes">opt</span>, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;SecretShare>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line333">line 333</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Retrieves preprocessed rejection_sampling bits or performs the rejection sampling on the fly if crypto_provider is enabled</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>lower_bound</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the lower bound, included (can be a bigNumber if using bigNumber extension)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>upper_bound</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the upper bound, excluded (can be a bigNumber if using bigNumber extension)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>threshold</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>parties.length</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the threshold of the resulting shares after sampling</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>parties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>all_parties</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>array of party ids that want to receive (or compute if needed) the sampling shares, by default, this includes all parties</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Zp</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>jiff-instance.Zp</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the mod (if null then the default Zp for the instance is used)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>auto_gen()</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the operation id which is used to identify this operation.
+This id must be unique, and must be passed by all parties to the same instruction, to
+ensure that corresponding instructions across different parties are matched correctly</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>an array of secret shares, each representing a bit from the sampled value (from least to most significant)</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;SecretShare></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.sadd"><span class="type-signature">(static) </span>jiffClient.protocols.bits.sadd<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line71">line 71</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Compute [secret bits1] + [secret bits2]</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the first bitwise shared number: array of secrets with index 0 being least significant bit</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bits2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the second bitwise shared number (length may be different)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for communication.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>bitwise sharing of the result. Note that the length of the returned result is |bits|+1, where
+the bit at index 0 is the least significant bit</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.sdiv"><span class="type-signature">(static) </span>jiffClient.protocols.bits.sdiv<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line127">line 127</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Computes integer division of [secret bits 1] / [secret bits 2]</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bits2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the second bitwise shared number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>the quotient and remainder bits arrays, note that
+the quotient array has the same length as bits1,
+and the remainder array has the same length as bits2 or bits1, whichever is smaller.
+Note: if bits2 represent 0, the returned result is the maximum
+number that fits in the number of bits (all 1), and the remainder
+is equal to bits1</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.seq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.seq<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line257">line 257</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Checks whether the two given bitwise secret shared numbers are equal</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bits2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the second bitwise shared number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a secret share of 1 if bits are equal, 0 otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.sgt"><span class="type-signature">(static) </span>jiffClient.protocols.bits.sgt<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line281">line 281</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Checks whether the first given bitwise secret shared number is greater than the second bitwise secret shared number</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bits2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the second bitwise shared number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a secret share of 1 if the first number is greater than the second, 0 otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.sgteq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.sgteq<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line293">line 293</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Checks whether the first given bitwise secret shared number is greater than or equal to the second bitwise secret shared number</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bits2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the second bitwise shared number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a secret share of 1 if the first number is greater or equal to the second, 0 otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.share"><span class="type-signature">(static) </span>jiffClient.protocols.bits.share<span class="signature">(secret, bit_length<span class="signature-attributes">opt</span>, threshold<span class="signature-attributes">opt</span>, receivers_list<span class="signature-attributes">opt</span>, senders_list<span class="signature-attributes">opt</span>, Zp<span class="signature-attributes">opt</span>, share_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line363">line 363</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Share a number as an array of secret bits
+This takes the same parameters as jiff-instance.share, but returns an array of secret bit shares per sending party.
+Each bit array starts with the least significant bit at index 0, and most significant bit at index length-1</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>secret</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the number to share (this party's input)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bit_length</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>jiff_instance.Zp</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the number of generated bits, if the secret has less bits, it will be
+padded with zeros</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>threshold</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>receivers_list.length</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>threshold of each shared bit</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>receivers_list</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>all_parties</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>receivers of every bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>senders_list</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>all_parties</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>senders of evey bit</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Zp</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>jiff_instance.Zp</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the field of sharing for every bit</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>share_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>auto_gen()</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>synchronization id</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a map (of size equal to the number of parties)
+where the key is the party id (from 1 to n)
+and the value is an array of secret shared bits</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.slt"><span class="type-signature">(static) </span>jiffClient.protocols.bits.slt<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line305">line 305</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Checks whether the first given bitwise secret shared number is less than the second bitwise secret shared number</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bits2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the second bitwise shared number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a secret share of 1 if the first number is less than the second, 0 otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.slteq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.slteq<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line317">line 317</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Checks whether the first given bitwise secret shared number is less or equal to the second bitwise secret shared number</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bits2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the second bitwise shared number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a secret share of 1 if the first number is less than or equal to the second, 0 otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.smult"><span class="type-signature">(static) </span>jiffClient.protocols.bits.smult<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line110">line 110</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Compute [secret bits1] * [secret bits2]</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>bitwise shared secret to multiply: lower indices represent less significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bits2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>bitwise shared secret to multiply</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for communication.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>bitwise sharing of the result, the length of the result will be bits1.length + bits2.length</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.sneq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.sneq<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line269">line 269</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Checks whether the two given bitwise secret shared numbers are not equal</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>an array of secret shares of bits, starting from least to most significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bits2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the second bitwise shared number</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for multiplications.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>a secret share of 1 if bits are not equal, 0 otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".jiffClient.protocols.bits.ssub"><span class="type-signature">(static) </span>jiffClient.protocols.bits.ssub<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client_api_bits.js.html">client/api/bits.js</a>, <a href="client_api_bits.js.html#line85">line 85</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Compute [secret bits1] - [secret bits2]</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bits1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>first bitwise secret shared number: lower indices represent less significant bits</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bits2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>second bitwise secret shared number (length may be different)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>op_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>&lt;auto-generate-id></code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the base operation id to use when generating unique ids for communication.
+default value should suffice when the code of all parties executes all instructions
+in the same exact order, otherwise, a unique base name is needed here</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>bitwise sharing of the result. Note that the length of the returned result is |bits|+1, where
+the bit at index 0 is the least significant bit. The bit at index 1 is the most significant bit,
+and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">module:jiff-client~JIFFClient#SecretShare</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:02:14 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>

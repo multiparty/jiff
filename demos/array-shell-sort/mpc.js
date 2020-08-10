@@ -183,24 +183,22 @@
       permutationsByOffset = received[1];
 
       // Share the arrays
-      jiff_instance.share_array(input, input.length).then(function (shares) {
-        jiff_instance.seed_ids(this_count);
-        // sum all shared input arrays element wise
-        var array = shares[1];
-        for (var p = 2; p <= jiff_instance.party_count; p++) {
-          for (var i = 0; i < array.length; i++) {
-            array[i] = array[i].sadd(shares[p][i]);
-          }
+      var shares = jiff_instance.share_array(input, input.length);
+
+      // Sum all shared input arrays element wise
+      var array = shares[1];
+      for (var p = 2; p <= jiff_instance.party_count; p++) {
+        for (var i = 0; i < array.length; i++) {
+          array[i] = array[i].sadd(shares[p][i]);
         }
+      }
 
-        // Sort new array
-        randomizedShellSort(array, offsets, permutationsByOffset);
+      // Sort new array
+      randomizedShellSort(array, offsets, permutationsByOffset);
 
-        // Open the array
-        var promise = jiff_instance.open_array(array);
-        promise.then(function (results) {
-          final_deferred.resolve(results);
-        });
+      // Open the array
+      jiff_instance.open_array(array).then(function (results) {
+        final_deferred.resolve(results);
       });
     });
 
