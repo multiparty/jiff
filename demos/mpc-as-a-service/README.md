@@ -1,4 +1,4 @@
-#MPC As a Service
+# MPC As a Service
 
 In many circumstances, some parties might want to participate in a secure MPC protocol but not have the computational 
 resources to conduct the full protocol themselves. In this case, they might choose to outsource some of the computation 

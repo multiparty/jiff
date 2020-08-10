@@ -1,4 +1,4 @@
-#Least-Squares Regression Demo
+# Least-Squares Regression Demo
 
 Overview and instructions for executing a (linear) least-squares regression.
 
