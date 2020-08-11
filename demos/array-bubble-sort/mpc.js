@@ -1,6 +1,5 @@
 (function (exports, node) {
   var saved_instance;
-  var seeds = {};
 
   /**
    * Connect to the server and initialize the jiff instance
@@ -48,41 +47,21 @@
       jiff_instance = saved_instance;
     }
 
-    // Unique prefix seed for op_ids
-    if (seeds[jiff_instance.id] == null) {
-      seeds[jiff_instance.id] = 0;
-    }
-    var seed = seeds[jiff_instance.id]++;
-
-    var final_deferred = $.Deferred();
-    var final_promise = final_deferred.promise();
-
     // Share the arrays
-    jiff_instance.share_array(input, input.length).then(function (shares) {
-      jiff_instance.seed_ids(seed);
+    var shares = jiff_instance.share_array(input, input.length);
 
-      // sum all shared input arrays element wise
-      var array = shares[1];
-      for (var p = 2; p <= jiff_instance.party_count; p++) {
-        for (var i = 0; i < array.length; i++) {
-          array[i] = array[i].sadd(shares[p][i]);
-        }
+    // Sum all shared input arrays element wise
+    var array = shares[1];
+    for (var p = 2; p <= jiff_instance.party_count; p++) {
+      for (var i = 0; i < array.length; i++) {
+        array[i] = array[i].sadd(shares[p][i]);
       }
+    }
 
-      // sort new array
-      var sorted = bubblesort(array);
+    // Sort new array
+    var sorted = bubblesort(array);
 
-      // Open the array
-      var allPromises = [];
-      for (var k = 0; k < sorted.length; k++) {
-        allPromises.push(jiff_instance.open(sorted[k]));
-      }
-
-      Promise.all(allPromises).then(function (results) {
-        final_deferred.resolve(results);
-      });
-    });
-
-    return final_promise;
+    // Open the array
+    return jiff_instance.open_array(sorted);
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));

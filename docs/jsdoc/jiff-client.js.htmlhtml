@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>jiff-client.js - JIFF Library Documentation</title>
+    
+    
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/multiparty/jiff" target="_blank" class="menu-item" id="github_link" >Github Repo</a></h2><h2><a href="./intro.html" target="_self" class="menu-item" id="github_link" >Tutorial</a></h2><h2><a href="./contributing.html" target="_self" class="menu-item" id="github_link" >Contributing to JIFF</a></h2><h3>Classes</h3><ul><li><a href="GuardedSocket.html">GuardedSocket</a><ul class='methods'><li data-type='method'><a href="GuardedSocket.html#disconnect">disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#is_empty">is_empty</a></li><li data-type='method'><a href="GuardedSocket.html#resend_mailbox">resend_mailbox</a></li><li data-type='method'><a href="GuardedSocket.html#safe_disconnect">safe_disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#safe_emit">safe_emit</a></li></ul></li><li><a href="helpers.Deferred.html">Deferred</a><ul class='methods'><li data-type='method'><a href="helpers.Deferred.html#reject">reject</a></li><li data-type='method'><a href="helpers.Deferred.html#resolve">resolve</a></li></ul></li><li><a href="module-jiff-client-JIFFClient.html">JIFFClient</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient.html#add_to_barriers">add_to_barriers</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#apply_extension">apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#can_apply_extension">can_apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#connect">connect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#disconnect">disconnect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#emit">emit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#end_barrier">end_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#executePreprocessing">executePreprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#extension_applied">extension_applied</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#free">free</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#from_crypto_provider">from_crypto_provider</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id">gen_op_id</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2">gen_op_id2</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2_preprocessing">gen_op_id2_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id_preprocessing">gen_op_id_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#get_preprocessing">get_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_extension">has_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_preprocessing">has_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_open">internal_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_share">internal_share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isInitialized">isInitialized</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isReady">isReady</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#listen">listen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_array">open_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_ND_array">open_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessing">preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessingDaemon">preprocessingDaemon</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#remove_listener">remove_listener</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#reshare">reshare</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#seed_ids">seed_ids</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share">share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_2D_array">share_2D_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_array">share_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array">share_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_deferred">share_ND_array_deferred</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_static">share_ND_array_static</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#start_barrier">start_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#store_preprocessing">store_preprocessing</a></li></ul></li><li><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#add">add</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#bit_decomposition">bit_decomposition</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cadd">cadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdiv">cdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdivfac">cdivfac</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ceq">ceq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgt">cgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgteqn">cgteqn</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clt">clt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clteq">clteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cmult">cmult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cneq">cneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cor_bit">cor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cpow">cpow</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#csub">csub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cxor_bit">cxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#div">div</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#eq">eq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#error">error</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gt">gt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gteq">gteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#if_else">if_else</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#isConstant">isConstant</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#logLEAK">logLEAK</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt">lt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt_halfprime">lt_halfprime</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lteq">lteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#mult">mult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#neq">neq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#not">not</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#or_bit">or_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#promise_handler">promise_handler</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#refresh">refresh</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sadd">sadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sdiv">sdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#seq">seq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgt">sgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgteq">sgteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slt">slt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slteq">slteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smod">smod</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult">smult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult_bgw">smult_bgw</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sneq">sneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sor_bit">sor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ssub">ssub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sub">sub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sxor_bit">sxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#toString">toString</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#valueOf">valueOf</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#when_both_ready">when_both_ready</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#wThen">wThen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#xor_bit">xor_bit</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-jiff-client.html">jiff-client</a></li></ul><h3>Namespaces</h3><ul><li><a href="bits.html">bits</a><ul class='methods'><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.bit_composition">jiffClient.protocols.bits.bit_composition</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cadd">jiffClient.protocols.bits.cadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivl">jiffClient.protocols.bits.cdivl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivr">jiffClient.protocols.bits.cdivr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ceq">jiffClient.protocols.bits.ceq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgt">jiffClient.protocols.bits.cgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgteq">jiffClient.protocols.bits.cgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clt">jiffClient.protocols.bits.clt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clteq">jiffClient.protocols.bits.clteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cmult">jiffClient.protocols.bits.cmult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cneq">jiffClient.protocols.bits.cneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubl">jiffClient.protocols.bits.csubl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubr">jiffClient.protocols.bits.csubr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.open">jiffClient.protocols.bits.open</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.rejection_sampling">jiffClient.protocols.bits.rejection_sampling</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sadd">jiffClient.protocols.bits.sadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sdiv">jiffClient.protocols.bits.sdiv</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.seq">jiffClient.protocols.bits.seq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgt">jiffClient.protocols.bits.sgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgteq">jiffClient.protocols.bits.sgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.share">jiffClient.protocols.bits.share</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slt">jiffClient.protocols.bits.slt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slteq">jiffClient.protocols.bits.slteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.smult">jiffClient.protocols.bits.smult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sneq">jiffClient.protocols.bits.sneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ssub">jiffClient.protocols.bits.ssub</a></li></ul></li><li><a href="handlers.html">handlers</a><ul class='methods'><li data-type='method'><a href="handlers.html#.jiffClient.handlers.build_initialization_message">jiffClient.handlers.build_initialization_message</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.connected">jiffClient.handlers.connected</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.error">jiffClient.handlers.error</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.initialized">jiffClient.handlers.initialized</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_crypto_provider">jiffClient.handlers.receive_crypto_provider</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_custom">jiffClient.handlers.receive_custom</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_open">jiffClient.handlers.receive_open</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_share">jiffClient.handlers.receive_share</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.store_public_keys">jiffClient.handlers.store_public_keys</a></li></ul></li><li><a href="helpers.html">helpers</a><ul class='methods'><li data-type='method'><a href="helpers.html#.jiffClient.helpers.array_equals">jiffClient.helpers.array_equals</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bits_to_number">jiffClient.helpers.bits_to_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bLog">jiffClient.helpers.bLog</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.ceil">jiffClient.helpers.ceil</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.extended_gcd">jiffClient.helpers.extended_gcd</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.floor">jiffClient.helpers.floor</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.get_party_number">jiffClient.helpers.get_party_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.is_prime">jiffClient.helpers.is_prime</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.mod">jiffClient.helpers.mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.number_to_bits">jiffClient.helpers.number_to_bits</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.pow_mod">jiffClient.helpers.pow_mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.random">jiffClient.helpers.random</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.sort_ids">jiffClient.helpers.sort_ids</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.Zp_equals">jiffClient.helpers.Zp_equals</a></li></ul></li><li><a href="hooks.html">hooks</a><ul class='methods'><li data-type='method'><a href="hooks.html#.computeShares">computeShares</a></li><li data-type='method'><a href="hooks.html#.execute_array_hooks">execute_array_hooks</a></li></ul></li><li><a href="protocols.html">protocols</a><ul class='methods'><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_beaver_bgw">jiffClient.protocols.generate_beaver_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_and_quotient">jiffClient.protocols.generate_random_and_quotient</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_bgw">jiffClient.protocols.generate_random_bit_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_smult">jiffClient.protocols.generate_random_bit_smult</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bits">jiffClient.protocols.generate_random_bits</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_number">jiffClient.protocols.generate_random_number</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_zero">jiffClient.protocols.generate_zero</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.rejection_sampling">jiffClient.protocols.rejection_sampling</a></li></ul></li><li><a href="utils.html">utils</a><ul class='methods'><li data-type='method'><a href="utils.html#.jiffClient.utils.bit_combinator">jiffClient.utils.bit_combinator</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.many_secret_shares">jiffClient.utils.many_secret_shares</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.resolve_many_secrets">jiffClient.utils.resolve_many_secrets</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">jiff-client.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * JIFF Client.
+ *
+ * Exposes the constructor for the {@link module:jiff-client~JIFFClient} class.
+ *
+ * In the browser, this adds `JIFFClient` as a global identifier.
+ *
+ * In the browser, this can be accessed via:
+ * &lt;pre>&lt;code>
+ *   &amp;lt;script src="jiff-client.js"&amp;gt;&amp;lt;/script&amp;gt;
+ *   &amp;lt;script type="text/javascript"&amp;gt;
+ *     var jiffClientInstance = new JIFFClient(hostname, computationId, options);
+ *   &amp;lt;/script&amp;gt;
+ * &lt;/code>&lt;/pre>
+ *
+ * In node.js, this can be accessed via:
+ * &lt;pre>&lt;code>
+ *   const JIFFClient = require('jiffClient');
+ *   const jiffClientInstance = new JIFFClient(hostname, computationId, options);
+ *
+ * &lt;/code>&lt;/pre>
+ *
+ * @module jiff-client
+ * @alias jiff-client
+ */
+
+// browserify bundles this into our code bundle
+var sodium = require('libsodium-wrappers');
+
+// utils and helpers
+var constants = require('./client/util/constants.js');
+var helpers = require('./client/util/helpers.js');
+var utils = require('./client/util/utils.js');
+var linkedList = require('./common/linkedlist.js');
+
+// hooks
+var Hooks = require('./client/arch/hooks.js');
+
+// extensions management
+var extensions = require('./client/arch/extensions.js');
+
+// op ids and other counters
+var counters = require('./client/arch/counters.js');
+
+// socket and events
+var guardedSocket = require('./client/socket/mailbox.js');
+var internalSocket = require('./client/socket/internal.js');
+var socketEvents = require('./client/socket/events.js');
+
+// handlers for communication
+var handlers = require('./client/handlers.js');
+
+// secret shares
+var SecretShareMetaClass = require('./client/share.js');
+var share_helpers = require('./client/shareHelpers.js');
+
+// jiff client instance API
+var api = require('./client/api.js');
+
+// preprocessing
+var preprocessingMap = require('./client/preprocessing/map.js');
+var preprocessingAPI = require('./client/preprocessing/api.js');
+var preprocessingDaemon = require('./client/preprocessing/daemon.js');
+
+/**
+ * Creates a new jiff client instance.
+ * @class
+ * @name JIFFClient
+ * @param {!string} hostname - server hostname/ip and port.
+ * @param {!string} computation_id - the id of the computation of this instance.
+ * @param {?object} [options={}] - javascript object with additional options.
+ *                           all parameters are optional, However, private and public key must either be both provided or neither of them provided.
+ &lt;pre>
+ {
+   "party_id": number,
+   "party_count": number,
+   "secret_key": Uint8Array to be used with libsodium-wrappers [(check Library Specs)]{@link https://download.libsodium.org/doc/public-key_cryptography/authenticated_encryption.html},
+   "public_key": Uint8Array to be used with libsodium-wrappers [(check Library Specs)]{@link https://download.libsodium.org/doc/public-key_cryptography/authenticated_encryption.html},
+   "public_keys": { 1: "Uint8Array PublicKey", 2: "Uint8Array PublicKey", ... },
+   "Zp": default mod to use (prime number),
+   "autoConnect": true/false,
+   "hooks": { 'check out &lt;a href="hooks.html">hooks documentation&lt;/a>' },
+   "listeners" : A map from custom tags to listeners (of type function(sender_id, message_string)) that handle custom messages with that tag.
+   "onConnect": function(jiff_instance),
+   "onError": function(label, error): called when errors occured in client code or during handling requests from this client at the server side
+                                      label is a string indicating where the error occured, and error is a string or an exception object.
+   "safemod": boolean (whether or not to check if provided Zp is prime, may be slow for big primes, defaults to false),
+   "crypto_provider": a boolean that flags whether to get beaver triplets and other preprocessing entities from the server (defaults to false),
+   "socketOptions": an object, passed directly to socket.io constructor,
+   "sodium": boolean, if false messages between clients will not be encrypted (useful for debugging),
+   "maxInitializationRetries": how many consecutive times to retry to initialize with the server if initialization fails, defaults to 2,
+   "preprocessingBatchSize": how many base level preprocessing tasks to execute in parallel.
+ }
+ &lt;/pre>
+ *
+ * @example
+ * var JIFFClient = require('jiffClient'); // only for node.js
+ * &lt;script src="jiff-client.js">&lt;/script> // for the browser
+ * // build a jiff instance which will connect to a server running on the local machine
+ * var instance = new JIFFClient('http://localhost:8080', 'computation-1', {party_count: 2});
+ */
+function JIFFClient(hostname, computation_id, options) {
+  var jiffClient = this;
+  options = Object.assign({}, options);
+
+  /**
+   * The server hostname, ends with a slash, includes port and protocol (http/https).
+   * @type {!string}
+   */
+  this.hostname = hostname.trim();
+  if (!this.hostname.endsWith('/')) {
+    this.hostname = this.hostname + '/';
+  }
+
+  /**
+   * Stores the computation id.
+   * @type {!string}
+   */
+  this.computation_id = computation_id;
+
+  /**
+   * Private. Do not use directly externally; use isReady() instead.
+   * @type {!boolean}
+   * @see {@link module:jiff-client~JIFFClient#isReady}
+   */
+  this.__ready = false;
+
+  /**
+   * Private. Do not use directly externally; use isInitialized() instead.
+   * @type {!boolean}
+   * @see {@link module:jiff-client~JIFFClient#isInitialized}
+   */
+  this.__initialized = false;
+
+  /**
+   * Returns whether this instance is capable of starting the computation.
+   * In other words, the public keys for all parties and servers are known,
+   * and this party successfully initialized with the server.
+   * @returns {!boolean}
+   */
+  this.isReady = function () {
+    return this.__ready;
+  };
+
+  /**
+   * Returns whether this instance initialized successfully with the server.
+   * Note that this can be true even when isReady() returns false, in case where some other parties have not
+   * initialized yet!
+   * @returns {!boolean}
+   */
+  this.isInitialized = function () {
+    return this.__initialized;
+  };
+
+  /**
+   * Helper functions [DO NOT MODIFY UNLESS YOU KNOW WHAT YOU ARE DOING].
+   * @type {!helpers}
+   */
+  this.helpers = {};
+  helpers(this);
+
+  /**
+   * Shallow copy of the options passed to the constructor.
+   * @type {!Object}
+   */
+  this.options = options;
+
+  // Parse and verify options
+  options.maxInitializationRetries = options.maxInitializationRetries || constants.maxInitializationRetries;
+  if (typeof(options.Zp) === 'number' &amp;&amp; options.safemod !== false) { // big numbers are checked by extension
+    if (!this.helpers.is_prime(options.Zp)) {
+      throw new Error('Zp = ' + options.Zp + ' is not prime.  Please use a prime number for the modulus or set safemod to false.');
+    }
+  }
+
+  /**
+   * The default Zp for this instance.
+   * @type {!number}
+   */
+  this.Zp = options.Zp || constants.gZp;
+
+  /**
+   * The id of this party.
+   * @type {number}
+   */
+  this.id = options.party_id;
+
+  /**
+   * Total party count in the computation, parties will take ids between 1 to party_count (inclusive).
+   * @type {number}
+   */
+  this.party_count = options.party_count;
+
+  /**
+   * sodium wrappers either imported via require (if in nodejs) or from the bundle (in the browser).
+   * This will be false if options.sodium is false.
+   * @see {@link https://www.npmjs.com/package/libsodium-wrappers}
+   * @type {?sodium}
+   */
+  this.sodium_ = options.sodium !== false ? sodium : false;
+
+  /**
+   * A map from party id to public key. Where key is the party id (number), and
+   * value is the public key, which by default follows libsodium's specs (Uint8Array).
+   * @see {@link https://download.libsodium.org/doc/public-key_cryptography/authenticated_encryption.html}
+   * @type {!object}
+   */
+  this.keymap = Object.assign({}, options.public_keys);
+
+  /**
+   * The secret key of this party, by default this follows libsodium's specs.
+   * @see {@link https://download.libsodium.org/doc/public-key_cryptography/authenticated_encryption.html}
+   * @type {?Uint8Array}
+   */
+  this.secret_key = options.secret_key;
+
+  /**
+   * The public key of this party, by default this follows libsodium's specs.
+   * @see {@link https://download.libsodium.org/doc/public-key_cryptography/authenticated_encryption.html}
+   * @type {?Uint8Array}
+   */
+  this.public_key = options.public_key;
+
+  /**
+   * Flags whether to use the server as a fallback for objects that were not pre-processed properly
+   * @type {!boolean}
+   */
+  this.crypto_provider = (options.crypto_provider === true);
+
+  /**
+   * Stores messages that are received with a signature prior to acquiring the public keys of the sender.
+   * { 'party_id': [ { 'label': 'share/open/custom', &lt;other attributes of the message> } ] }
+   * @type {object}
+   */
+  this.messagesWaitingKeys = {};
+
+  /**
+   * A map from tags to listeners (functions that take a sender_id and a string message).
+   *
+   * Stores listeners that are attached to this JIFF instance, listeners listen to custom messages sent by other parties.
+   * @type {!object}
+   */
+  this.listeners = Object.assign({}, options.listeners);
+
+  /**
+   * Stores custom messages that are received before their listeners are set. Messages are stored in order.
+   * { 'tag' => [ { "sender_id": &lt;sender_id>, "message": &lt;message> }, ... ] }
+   *
+   * Once a listener has been set, the corresponding messages are sent to it in order.
+   * @type {!object}
+   */
+  this.custom_messages_mailbox = {};
+
+  /**
+   * Stores all promises created within some barrier.
+   * @type {!object}
+   */
+  this.barriers = {};
+
+  /**
+   * Stores the parties and callbacks for every .wait_for() registered by the user.
+   * @type {!Array}
+   */
+  this.wait_callbacks = [];
+
+  /**
+   * Counts how many times JIFF attempted to initialize with the server
+   * without success consecutively.
+   * @type {!number}
+   *
+   */
+  this.initialization_counter = 0;
+
+  /**
+   * Utility functions
+   * @type {!utils}
+   */
+  this.utils = {};
+  utils(this);
+
+  /**
+   * An array containing the names (jiff-client-[name].js) of the extensions that are
+   * applied to this instance.
+   * @type {string[]}
+   */
+  this.extensions = ['base'];
+
+  /**
+   * Internal helpers for operations inside/on a share. Modify existing helpers or add more in your extensions
+   * to avoid having to re-write and duplicate the code for primitives.
+   * @type {!object}
+   */
+  this.share_helpers = share_helpers;
+
+  /**
+   * The constructor function used by JIFF to create a new share. This can be overloaded by extensions to create custom shares.
+   * Modifying this will modify how shares are generated in the BASE JIFF implementation.
+   * A share is a value/promise wrapped with a share object.
+   * A share also has methods for performing operations.
+   * @constructor
+   * @param {number|promise} value - the value of the share, or a promise to it.
+   * @param {Array} holders - the parties that hold all the corresponding shares (must be sorted).
+   * @param {number} threshold - the min number of parties needed to reconstruct the secret.
+   * @param {number} Zp - the mod under which this share was created.
+   *
+   * @example
+   * // A share whose value is 10: the secret is still unknown, 10 is only one share
+   * var share = new jiffClient.SecretShare(10, [1, 2, 3], 3, jiffClient.Zp);
+   *
+   * @example
+   * // A share whose value depends on some promise
+   * var share = new jiffClient.SecretShare(promise, [1, 2, 3, 4], 4, jiffClient.Zp);
+   */
+  this.SecretShare = SecretShareMetaClass(this);
+
+  /**
+   * A collection of useful protocols to be used during computation or preprocessing: extensions are encouraged to add useful
+   * common protocols here, under a sub namespace corresponding to the extension name.
+   * @type {!protocols}
+   */
+  this.protocols = {};
+
+  /**
+   * A collection of useful protocols for manipulating bitwise shared numbers, and transforming them from and to regular numeric shares.
+   * @member {!bits} bits
+   * @memberof protocols
+   */
+  this.protocols.bits = {};
+
+  /**
+   * Stores pre-computed values (beaver triples, random bits, etc) used to aid/speed up the main processes.
+   * @type {!object}
+   */
+  this.preprocessing_table = {};
+
+  /**
+   * Sets batch size for base level preprocessing tasks
+   * @type {!Number}
+   */
+  this.preprocessingBatchSize = options.preprocessingBatchSize || 10;
+
+  /**
+   * maps all primitive operations to the other operations they are dependent on, until leaves are primitives for which preprocessing protocols are defined,
+   * this map is traversed during preprocessing to guide preprocessing of high level operations. Extensions should modify this map to reflect
+   * any required changes to preprocessing of modified primitives
+   * @type {!object}
+   */
+  this.preprocessing_function_map = {};
+
+  /**
+   * Store the default preprocessing protocols for each type of preprocessing value
+   * @type {!object}
+   */
+  this.default_preprocessing_protocols = {};
+
+  /**
+   * Stores currently executing preprocessing tasks.
+   * @type {!linkedlist}
+   */
+  this.currentPreprocessingTasks = linkedList();
+
+  /**
+   * Callback to execute when preprocessing is done!
+   * @type {?function}
+   */
+  this.preprocessingCallback = null;
+
+  /**
+   * Used for logging/debugging
+   * @type {!Array}
+   */
+  this.logs = [];
+
+  /**
+   * A map from open operation id to the corresponding shares received for that open operation
+   * @type {!object}
+   */
+  this.shares = {};
+
+  /**
+   * A map from some message operation id to a deferred resolved when that message is received.
+   * @type {!object}
+   */
+  this.deferreds = {};
+
+  /**
+   * Store sharing and shares counter which keeps track of the count of
+   * sharing operations (share and open) and the total number of shares
+   * respectively (used to get a unique id for each share operation and
+   * share object).
+   * @type {!object}
+   */
+  this.counters = {};
+
+  /**
+   * A prefix attached to all op_ids, can be changed using {@link module:jiff-client~JIFFClient#seed_ids}
+   * to guarantee uniqueness of auto generate ids in a user-side callback
+   * or event handler.
+   * @type {string}
+   * @see {@link module:jiff-client~JIFFClient#seed_ids}
+   */
+  this.op_id_seed = '';
+
+  /**
+   * The hooks for this instance.
+   * Checkout the &lt;a href="hooks.html">hooks documentation&lt;/a>
+   * @type {!hooks}
+   */
+  this.hooks = new Hooks(this);
+
+  /**
+   * Contains handlers for communication events
+   * @type {!handlers}
+   */
+  this.handlers = {};
+
+  // Add user facing API
+  api(this);
+
+  // Preprocessing
+  preprocessingMap(this);
+  preprocessingAPI(this);
+  preprocessingDaemon(this);
+
+  if (options.__internal_socket == null) {
+    /**
+     * Socket wrapper between this instance and the server, based on sockets.io
+     * @type {!GuardedSocket}
+     */
+    this.socket = guardedSocket(this);
+  } else {
+    this.socket = internalSocket(this, options.__internal_socket);
+  }
+
+  // set up counters for op_ids
+  counters(this);
+
+  // set up socket event handlers
+  handlers(this);
+  this.initSocket();
+
+  /**
+   * Connect to the server and starts listening.
+   */
+  this.connect = function () {
+    // Ask socket to connect, which will automatically trigger a call to 'initialize()' when connection is established!
+    if (jiffClient.sodium_ === false) {
+      jiffClient.socket.connect();
+    } else {
+      jiffClient.sodium_.ready.then(function () {
+        jiffClient.socket.connect();
+      });
+    }
+  };
+
+  // Connect when all is done
+  if (options.autoConnect !== false) {
+    this.connect();
+  }
+}
+
+// Add extension management to prototype
+extensions(JIFFClient);
+
+// Add socket event handlers to prototype
+socketEvents(JIFFClient);
+
+// export JIFFClient class
+module.exports = JIFFClient;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:19:37 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>
