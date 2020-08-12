@@ -47,8 +47,8 @@
       }
     },
      "&2": {
-      "count": 100,
-      "parallel": 3,
+      "count": 300,
+      "parallel": 4,
       "options": {
         "Zp": 2,
         "party_count": 3
