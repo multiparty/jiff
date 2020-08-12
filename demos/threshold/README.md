@@ -1,4 +1,4 @@
-#Threshold Demo
+# Threshold Demo
 
 Imagine you have many parties with large quantities of data, where some data collection or analysis is done by a smaller
 number of more powerful entities. We consider this situation here in a simple example where *"lower"* parties submit 
