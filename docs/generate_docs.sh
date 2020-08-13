@@ -23,6 +23,7 @@ mv docs/jsdoc/index.html docs/jsdoc/hooks-overview.html
 sed -i -e 's|lib/ext/README.md|extensions.html|g' docs/jsdoc/*.html
 sed -i -e 's|tests/suite/README.md|tests.html|g' docs/jsdoc/*.html
 sed -i -e 's|lib/ext/Hooks.md|hooks-overview.html|g' docs/jsdoc/*.html
-sed -i -e 's|Hooks.md|hooks.html|g' docs/jsdoc/*.html
+sed -i -e 's|hooks.html|hooks-overview.html|g' docs/jsdoc/hooks.html
 sed -i -e 's|CONTRIBUTING.md|contributing.html|g' docs/jsdoc/*.html
 sed -i -e 's|https://github.com/multiparty/jiff/tree/master/tests.html|tests.html|g' docs/jsdoc/contributing.html
+grep -rl \"module:jiff-client~JIFFClient#\" docs/jsdoc/*.html | xargs sed -i 'html' 's/module:jiff-client~JIFFClient#//g'
