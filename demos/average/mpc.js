@@ -16,51 +16,43 @@
       opt.hooks = {
         'getPreprocessing': 
           function(instance, op_id) {
-            Share.find({op_id: op_id}, (err, allShares) => {
-              if (err) {
-                console.log(err); 
-                throw err; 
-              }
-              if (allShares.length !== 0) {
-                var retShares = []; 
-                allShares.forEach(share => {
-                  var newShare = JSON.parse(JSON.stringify(share));
-                  if (share['value'] !== 'RETRY') {
-                    newShare['value'] = parseInt(share['value']);   
-                  }
-                  delete newShare['_id']; 
-                  delete newShare['op_id']; 
-
-                  // // check that we are not pushing any duplicates
-                   var add = true;  
-                   retShares.forEach(oneShare => {
-                     if (oneShare['value'] === newShare['value']) {
-                       add = false; 
-                     }
-                   }); 
-                   if (add) {
-                    retShares.push(newShare); 
-                   }
-                });
-                // var values = instance.preprocessing_table[op_id];
-                // if (values != null) {
-                //   return values; 
-                // }
-                if (retShares) {
-                    // if only one share, we want to return obj, if multiple return array of objects
-                    return retShares.length === 1 ? retShares[0] : retShares
+            return new Promise((resolve, reject) => {
+                Share.find({ op_id: op_id, partyID: instance.id }).exec().then(allShares => {
+                // var values = instance.preprocessing_table[op_id];              
+                var retShares = [];
+                if (allShares.length !== 0) {
+                  allShares.forEach(share => {
+                    // check for on demand passing for share 
+                    if (share["onDemand"]) {
+                      retShares.push({ ondemand: share['onDemand'] });
+                    }
+                    else {
+                      var value;
+                      if (share['value'] !== 'RETRY') {
+                        value = parseInt(share['value']);
+                      }
+                      var newShare = new instance.SecretShare(value, share['holders'], share['threshold'], share['Zp']);
+                      retShares.push(newShare);
+                    }
+                  });
+                  // console.log(retShares, op_id, instance.id, "---", values); 
+                  resolve(retShares.length === 1 ? retShares[0] : retShares);
                 }
-                return []; 
-              }
-              return []; 
-            });
+                else {
+                  throw new Error('No preprocessed value(s) that correspond to the op_id "' + op_id + '"');
+                }
+              }).catch(err => {
+                console.log(err); 
+                throw err;
+              });
+            })          
           }, 
         'storePreprocessing': 
           function(instance, op_id, share) {
             if (share != null) {
               // instance.preprocessing_table[op_id] = share;
               // have to overwrite any shares with existing op_id 
-              Share.deleteMany({op_id: op_id}, (err, numRemoved) => {
+              Share.deleteMany({op_id: op_id, partyID: instance.id}, (err, numRemoved) => {
                 if (err) {
                   throw err
                 }
@@ -77,10 +69,12 @@
                       value: oneShare['value'], 
                       holders: oneShare['holders'], 
                       threshold: oneShare['threshold'], 
-                      Zp: oneShare['Zp']
+                      Zp: oneShare['Zp'], 
+                      partyID: instance.id, 
+                      onDemand: oneShare.ondemand ? oneShare.ondemand : false
                     }, (err, share) => {
                       if (err) {
-                        throw err; 
+                        throw err;
                       }
                     }); 
                   });

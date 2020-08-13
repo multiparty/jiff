@@ -7,7 +7,9 @@ var shareSchema = mongoose.Schema({
     value: String, 
     holders: Array, 
     threshold: Number, 
-    Zp: Number
+    Zp: Number, 
+    partyID: Number, 
+    onDemand: Boolean
 })
 
 
