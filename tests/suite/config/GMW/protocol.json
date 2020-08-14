@@ -1,5 +1,5 @@
 {
-  "tests": [ "^","^2", "&","&2"],
+  "tests": ["^","^2","&","&2"],
   "suiteConf": {
     "port": 3001,
     "generation": {
@@ -21,6 +21,7 @@
         "party_count": 2
       }
     },
+
     "^": {
       "count": 100,
       "parallel": 25,
@@ -38,22 +39,24 @@
         "party_count": 2
       }
     },
+
     "&": {
-      "count": 50,
-      "parallel": 5,
+      "count": 100,
+      "parallel": 1,
       "options": {
         "Zp": 2,
-        "party_count": 6
+        "party_count": 2
       }
     },
-     "&2": {
-      "count": 300,
-      "parallel": 4,
+    "&2": {
+      "count": 400,
+      "parallel": 1,
       "options": {
         "Zp": 2,
-        "party_count": 3
+        "party_count": 4
       }
     }
+
 
 
   }
