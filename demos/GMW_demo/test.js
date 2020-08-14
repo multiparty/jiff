@@ -4,10 +4,10 @@ var mpc = require('./mpc.js');
 
 // Generic Testing Parameters
 var showProgress = true;
-var parallelismDegree = 4; // Max number of test cases running in parallel
-var Zp = 13;
-var n = 100;
-var party_count = 4;
+var parallelismDegree = 1; // Max number of test cases running in parallel
+var Zp = 2;
+var n = 400;
+var party_count = 3;
 // Parameters specific to this demo
 var maxValue = 2;
 /**
@@ -27,7 +27,7 @@ function generateInputs(party_count) {
 
   for (i = 0; i < party_count; i++) {
     for (var j = 0; j < n; j++) {
-      inputs[i+1].push(Math.floor((Math.random() * maxValue)));
+      inputs[i+1].push(Math.floor((Math.random() * maxValue)));//
     }
   }
   return inputs;
