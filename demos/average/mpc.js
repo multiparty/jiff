@@ -13,77 +13,77 @@
       mongoose.connect("mongodb://localhost/hooks_db", {useNewUrlParser: true}); 
       
       var Share = require('./preprocess.js'); 
-      opt.hooks = {
-        'getPreprocessing': 
-          function(instance, op_id) {
-            return new Promise((resolve, reject) => {
-                Share.find({ op_id: op_id, partyID: instance.id }).exec().then(allShares => {
-                // var values = instance.preprocessing_table[op_id];              
-                var retShares = [];
-                if (allShares.length !== 0) {
-                  allShares.forEach(share => {
-                    // check for on demand passing for share 
-                    if (share["onDemand"]) {
-                      retShares.push({ ondemand: share['onDemand'] });
-                    }
-                    else {
-                      var value;
-                      if (share['value'] !== 'RETRY') {
-                        value = parseInt(share['value']);
-                      }
-                      var newShare = new instance.SecretShare(value, share['holders'], share['threshold'], share['Zp']);
-                      retShares.push(newShare);
-                    }
-                  });
-                  // console.log(retShares, op_id, instance.id, "---", values); 
-                  resolve(retShares.length === 1 ? retShares[0] : retShares);
-                }
-                else {
-                  throw new Error('No preprocessed value(s) that correspond to the op_id "' + op_id + '"');
-                }
-              }).catch(err => {
-                console.log(err); 
-                throw err;
-              });
-            })          
-          }, 
-        'storePreprocessing': 
-          function(instance, op_id, share) {
-            if (share != null) {
-              // instance.preprocessing_table[op_id] = share;
-              // have to overwrite any shares with existing op_id 
-              Share.deleteMany({op_id: op_id, partyID: instance.id}, (err, numRemoved) => {
-                if (err) {
-                  throw err
-                }
-                else {
-                  // now create the shares
-                  // condition handles if shares aren't in an array, so we will append the share to an array for iteratin
-                  if (!share[0]) {
-                    share = [share]; 
-                  }
-                  share.forEach(oneShare => {
-                    Share.create({
-                      op_id: op_id, 
-                      ready: oneShare['ready'], 
-                      value: oneShare['value'], 
-                      holders: oneShare['holders'], 
-                      threshold: oneShare['threshold'], 
-                      Zp: oneShare['Zp'], 
-                      partyID: instance.id, 
-                      onDemand: oneShare.ondemand ? oneShare.ondemand : false
-                    }, (err, share) => {
-                      if (err) {
-                        throw err;
-                      }
-                    }); 
-                  });
+      // opt.hooks = {
+      //   'getPreprocessing': 
+      //     function(instance, op_id) {
+      //       return new Promise((resolve, reject) => {
+      //           Share.find({ op_id: op_id, partyID: instance.id }).exec().then(allShares => {
+      //           // var values = instance.preprocessing_table[op_id];              
+      //           var retShares = [];
+      //           if (allShares.length !== 0) {
+      //             allShares.forEach(share => {
+      //               // check for on demand passing for share 
+      //               if (share["onDemand"]) {
+      //                 retShares.push({ ondemand: share['onDemand'] });
+      //               }
+      //               else {
+      //                 var value;
+      //                 if (share['value'] !== 'RETRY') {
+      //                   value = parseInt(share['value']);
+      //                 }
+      //                 var newShare = new instance.SecretShare(value, share['holders'], share['threshold'], share['Zp']);
+      //                 retShares.push(newShare);
+      //               }
+      //             });
+      //             // console.log(retShares, op_id, instance.id, "---", values); 
+      //             resolve(retShares.length === 1 ? retShares[0] : retShares);
+      //           }
+      //           else {
+      //             throw new Error('No preprocessed value(s) that correspond to the op_id "' + op_id + '"');
+      //           }
+      //         }).catch(err => {
+      //           console.log(err); 
+      //           throw err;
+      //         });
+      //       })          
+      //     }, 
+      //   'storePreprocessing': 
+      //     function(instance, op_id, share) {
+      //       if (share != null) {
+      //         // instance.preprocessing_table[op_id] = share;
+      //         // have to overwrite any shares with existing op_id 
+      //         Share.deleteMany({op_id: op_id, partyID: instance.id}, (err, numRemoved) => {
+      //           if (err) {
+      //             throw err
+      //           }
+      //           else {
+      //             // now create the shares
+      //             // condition handles if shares aren't in an array, so we will append the share to an array for iteratin
+      //             if (!share[0]) {
+      //               share = [share]; 
+      //             }
+      //             share.forEach(oneShare => {
+      //               Share.create({
+      //                 op_id: op_id, 
+      //                 ready: oneShare['ready'], 
+      //                 value: oneShare['value'], 
+      //                 holders: oneShare['holders'], 
+      //                 threshold: oneShare['threshold'], 
+      //                 Zp: oneShare['Zp'], 
+      //                 partyID: instance.id, 
+      //                 onDemand: oneShare.ondemand ? oneShare.ondemand : false
+      //               }, (err, share) => {
+      //                 if (err) {
+      //                   throw err;
+      //                 }
+      //               }); 
+      //             });
                   
-                }
-              })
-            }
-        }
-      }
+      //           }
+      //         })
+      //       }
+      //   }
+      // }
     }
 
     // Added options goes here
