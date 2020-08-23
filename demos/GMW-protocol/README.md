@@ -4,7 +4,7 @@ Description and guide for computing AND or XOR with secure MPC under GMW protoco
 
 ## protocol 
 
-The implementation of the following protocol may be found in jiff/demos/GMW_demo/mpc.js lines 27 through 32.
+The implementation of the following protocol may be found in jiff/demos/GMW-protocol/mpc.js lines 27 through 32.
 
 Input: arbitrary number of parties P1,...Pn with bit inputs x1,...xn
 
@@ -40,15 +40,15 @@ This instantiation of XOR/AND only supports 0/1 as inputs.
 ## Running Demo
 1. Running a server:
     ```shell
-    node demos/GMW_demo/server.js
+    node demos/GMW-protocol/server.js
     ```
-2. Either open browser based parties by going to *http://localhost:8080/demos/GMW_demo/client.html* in the browser, or a node.js party by running 
+2. Either open browser based parties by going to *http://localhost:8080/demos/GMW-protocol/client.html* in the browser, or a node.js party by running 
     ```shell
-    node demos/GMW_demo/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
+    node demos/GMW-protocol/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
 
 3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.
     ```shell
-    npm run-script test-demo -- demos/GMW_demo/test.js
+    npm run-script test-demo -- demos/GMW-protocol/test.js
     ```
 ## File structure
 The demo consists of the following parts:

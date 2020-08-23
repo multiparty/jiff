@@ -17,6 +17,6 @@ http.listen(8080, function () {
   console.log('listening on *:8080');
 });
 
-console.log('Direct your browser to http://localhost:8080/demos/GMW_demo/client.html.');
-console.log('To run a node.js based party: node demos/GMW_demo/party <input>');
+console.log('Direct your browser to http://localhost:8080/demos/GMW-protocol/client.html.');
+console.log('To run a node.js based party: node demos/GMW-protocol/party <input>');
 console.log();
