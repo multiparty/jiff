@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<head>
+  <title>ws Library Testing</title>
+
+  <script type="module">
+    var ws = null
+
+    if (typeof WebSocket !== 'undefined') {
+      ws = WebSocket
+    } else if (typeof MozWebSocket !== 'undefined') {
+      ws = MozWebSocket
+    } else if (typeof global !== 'undefined') {
+      ws = global.WebSocket || global.MozWebSocket
+    } else if (typeof window !== 'undefined') {
+      ws = window.WebSocket || window.MozWebSocket
+    } else if (typeof self !== 'undefined') {
+      ws = self.WebSocket || self.MozWebSocket
+    }
+
+    const webSocket = new ws('ws://localhost:8080');
+
+    webSocket.onopen = function open() {
+      console.log('connected');
+      webSocket.send(Date.now());
+    };
+
+    webSocket.onclose = function close() {
+      console.log('disconnected');
+    };
+
+    webSocket.onmessage = function incoming(data) {
+      console.log(`Roundtrip time: ${Date.now() - data.data} ms`);
+
+      setTimeout(function timeout() {
+        webSocket.send(Date.now());
+      }, 500);
+    };
+  </script>
+</head>
+
+</html>
