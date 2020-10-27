@@ -18,23 +18,14 @@
   "license": "MIT",
   "author": "Kinan Dak Albab <babman@bu.edu> (http://cs-people.bu.edu/babman/)",
   "contributors": [
-    {
-      "name": "Rawane Issa",
-      "email": "ra1issa@bu.edu",
-      "url": "http://cs-people.bu.edu/ra1issa/"
-    },
-    {
-      "name": "Andrei Lapets",
-      "email": "lapets@bu.edu",
-      "url": "http://cs-people.bu.edu/lapets/"
-    }
+    "Rawane Issa <ra1issa@bu.edu> (http://cs-people.bu.edu/ra1issa/)",
+    "Andrei Lapets <lapets@bu.edu> (http://cs-people.bu.edu/lapets/)"
   ],
   "main": "lib/jiff-server.js",
   "directories": {
+    "doc": "docs",
     "lib": "lib",
-    "test": "tests",
-    "example": "demos",
-    "doc": "docs/jsdoc"
+    "test": "tests"
   },
   "repository": {
     "type": "git",
@@ -43,25 +34,28 @@
   "scripts": {
     "test": "./tests/suite/test.sh",
     "suite": "./tests/suite/suite.sh",
-    "gen-docs": "./node_modules/.bin/jsdoc -r -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/CONTRIBUTING.md/CONTRIBUTING.html/g' docs/jsdoc/*.html && grep -rl \"module:jiff-client~JIFFClient#\" docs/jsdoc/*.html | xargs sed -i 'html' 's/module:jiff-client~JIFFClient#//g'",
+    "gen-docs": "jsdoc -r -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/CONTRIBUTING.md/CONTRIBUTING.html/g' docs/jsdoc/*.html && grep -rl \"module:jiff-client~JIFFClient#\" docs/jsdoc/*.html | xargs sed -i 'html' 's/module:jiff-client~JIFFClient#//g'",
     "test-demo": "./demos/run-test.sh",
     "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit",
-    "lint": "./node_modules/.bin/eslint .",
+    "lint": "eslint .",
     "tutorial": "npm install && cd tutorials && node index.js",
-    "build": "./node_modules/.bin/browserify lib/jiff-client.js --debug -s JIFFClient -o dist/jiff-client.js"
+    "build": "browserify lib/jiff-client.js --debug -s JIFFClient -o dist/jiff-client.js"
   },
   "dependencies": {
     "bignumber.js": "^5.0.0",
     "cross-env": "^5.0.5",
     "docdash": "^1.1.1",
     "increase-memory-limit": "^1.0.3",
+    "isomorphic-ws": "^4.0.1",
     "jquery-deferred": "^0.3.1",
     "libsodium-wrappers": "^0.7.2",
     "mathjs": "^5.0.4",
     "numeric": "^1.2.6",
     "request": "^2.88.0",
     "socket.io": "^2.2.0",
-    "socket.io-client": "^2.2.0"
+    "socket.io-client": "^2.2.0",
+    "websocket": "^1.0.32",
+    "ws": "^7.3.1"
   },
   "devDependencies": {
     "browserify": "^16.5.0",
