@@ -15,7 +15,7 @@ node_js:
   - '10'
 script:
   - while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
-  - if [ "$DEMOS" == "TRUE" ]; then timeout -s9 48m npm run coverage-demo -- \*; else timeout -s9 48m npm run coverage -- "$TEST_NAME" "$TEST_SUITE"; fi
+  - if [ "$DEMOS" == "TRUE" ]; then timeout -s9 48m npm run coverage:demo -- \*; else timeout -s9 48m npm run coverage -- "$TEST_NAME" "$TEST_SUITE"; fi
   - kill %1
 
 jobs:
