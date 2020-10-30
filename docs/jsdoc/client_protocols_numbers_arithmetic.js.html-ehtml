@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>client/protocols/numbers/arithmetic.js - JIFF Library Documentation</title>
+    
+    
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/multiparty/jiff" target="_blank" class="menu-item" id="github_link" >Github Repo</a></h2><h2><a href="./intro.html" target="_self" class="menu-item" id="github_link" >Tutorial</a></h2><h2><a href="./contributing.html" target="_self" class="menu-item" id="github_link" >Contributing to JIFF</a></h2><h3>Classes</h3><ul><li><a href="GuardedSocket.html">GuardedSocket</a><ul class='methods'><li data-type='method'><a href="GuardedSocket.html#disconnect">disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#is_empty">is_empty</a></li><li data-type='method'><a href="GuardedSocket.html#resend_mailbox">resend_mailbox</a></li><li data-type='method'><a href="GuardedSocket.html#safe_disconnect">safe_disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#safe_emit">safe_emit</a></li></ul></li><li><a href="helpers.Deferred.html">Deferred</a><ul class='methods'><li data-type='method'><a href="helpers.Deferred.html#reject">reject</a></li><li data-type='method'><a href="helpers.Deferred.html#resolve">resolve</a></li></ul></li><li><a href="module-jiff-client-JIFFClient.html">JIFFClient</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient.html#add_to_barriers">add_to_barriers</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#apply_extension">apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#can_apply_extension">can_apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#connect">connect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#disconnect">disconnect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#emit">emit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#end_barrier">end_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#executePreprocessing">executePreprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#extension_applied">extension_applied</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#free">free</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#from_crypto_provider">from_crypto_provider</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id">gen_op_id</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2">gen_op_id2</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2_preprocessing">gen_op_id2_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id_preprocessing">gen_op_id_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#get_preprocessing">get_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_extension">has_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_preprocessing">has_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_open">internal_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_share">internal_share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isInitialized">isInitialized</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isReady">isReady</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#listen">listen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_array">open_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_ND_array">open_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessing">preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessingDaemon">preprocessingDaemon</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#remove_listener">remove_listener</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#reshare">reshare</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#seed_ids">seed_ids</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share">share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_2D_array">share_2D_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_array">share_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array">share_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_deferred">share_ND_array_deferred</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_static">share_ND_array_static</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#start_barrier">start_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#store_preprocessing">store_preprocessing</a></li></ul></li><li><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#add">add</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#bit_decomposition">bit_decomposition</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cadd">cadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdiv">cdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdivfac">cdivfac</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ceq">ceq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgt">cgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgteqn">cgteqn</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clt">clt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clteq">clteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cmult">cmult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cneq">cneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cor_bit">cor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cpow">cpow</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#csub">csub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cxor_bit">cxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#div">div</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#eq">eq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#error">error</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gt">gt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gteq">gteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#if_else">if_else</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#isConstant">isConstant</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#logLEAK">logLEAK</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt">lt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt_halfprime">lt_halfprime</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lteq">lteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#mult">mult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#neq">neq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#not">not</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#or_bit">or_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#promise_handler">promise_handler</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#refresh">refresh</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sadd">sadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sdiv">sdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#seq">seq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgt">sgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgteq">sgteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slt">slt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slteq">slteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smod">smod</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult">smult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult_bgw">smult_bgw</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sneq">sneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sor_bit">sor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ssub">ssub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sub">sub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sxor_bit">sxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#toString">toString</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#valueOf">valueOf</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#when_both_ready">when_both_ready</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#wThen">wThen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#xor_bit">xor_bit</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-jiff-client.html">jiff-client</a></li></ul><h3>Namespaces</h3><ul><li><a href="bits.html">bits</a><ul class='methods'><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.bit_composition">jiffClient.protocols.bits.bit_composition</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cadd">jiffClient.protocols.bits.cadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivl">jiffClient.protocols.bits.cdivl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivr">jiffClient.protocols.bits.cdivr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ceq">jiffClient.protocols.bits.ceq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgt">jiffClient.protocols.bits.cgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgteq">jiffClient.protocols.bits.cgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clt">jiffClient.protocols.bits.clt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clteq">jiffClient.protocols.bits.clteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cmult">jiffClient.protocols.bits.cmult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cneq">jiffClient.protocols.bits.cneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubl">jiffClient.protocols.bits.csubl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubr">jiffClient.protocols.bits.csubr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.open">jiffClient.protocols.bits.open</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.rejection_sampling">jiffClient.protocols.bits.rejection_sampling</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sadd">jiffClient.protocols.bits.sadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sdiv">jiffClient.protocols.bits.sdiv</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.seq">jiffClient.protocols.bits.seq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgt">jiffClient.protocols.bits.sgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgteq">jiffClient.protocols.bits.sgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.share">jiffClient.protocols.bits.share</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slt">jiffClient.protocols.bits.slt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slteq">jiffClient.protocols.bits.slteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.smult">jiffClient.protocols.bits.smult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sneq">jiffClient.protocols.bits.sneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ssub">jiffClient.protocols.bits.ssub</a></li></ul></li><li><a href="handlers.html">handlers</a><ul class='methods'><li data-type='method'><a href="handlers.html#.jiffClient.handlers.build_initialization_message">jiffClient.handlers.build_initialization_message</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.connected">jiffClient.handlers.connected</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.error">jiffClient.handlers.error</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.initialized">jiffClient.handlers.initialized</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_crypto_provider">jiffClient.handlers.receive_crypto_provider</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_custom">jiffClient.handlers.receive_custom</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_open">jiffClient.handlers.receive_open</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_share">jiffClient.handlers.receive_share</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.store_public_keys">jiffClient.handlers.store_public_keys</a></li></ul></li><li><a href="helpers.html">helpers</a><ul class='methods'><li data-type='method'><a href="helpers.html#.jiffClient.helpers.array_equals">jiffClient.helpers.array_equals</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bits_to_number">jiffClient.helpers.bits_to_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bLog">jiffClient.helpers.bLog</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.ceil">jiffClient.helpers.ceil</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.extended_gcd">jiffClient.helpers.extended_gcd</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.floor">jiffClient.helpers.floor</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.get_party_number">jiffClient.helpers.get_party_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.is_prime">jiffClient.helpers.is_prime</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.mod">jiffClient.helpers.mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.number_to_bits">jiffClient.helpers.number_to_bits</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.pow_mod">jiffClient.helpers.pow_mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.random">jiffClient.helpers.random</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.sort_ids">jiffClient.helpers.sort_ids</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.Zp_equals">jiffClient.helpers.Zp_equals</a></li></ul></li><li><a href="hooks.html">hooks</a><ul class='methods'><li data-type='method'><a href="hooks.html#.computeShares">computeShares</a></li><li data-type='method'><a href="hooks.html#.execute_array_hooks">execute_array_hooks</a></li></ul></li><li><a href="protocols.html">protocols</a><ul class='methods'><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_beaver_bgw">jiffClient.protocols.generate_beaver_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_and_quotient">jiffClient.protocols.generate_random_and_quotient</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_bgw">jiffClient.protocols.generate_random_bit_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_smult">jiffClient.protocols.generate_random_bit_smult</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bits">jiffClient.protocols.generate_random_bits</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_number">jiffClient.protocols.generate_random_number</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_zero">jiffClient.protocols.generate_zero</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.rejection_sampling">jiffClient.protocols.rejection_sampling</a></li></ul></li><li><a href="utils.html">utils</a><ul class='methods'><li data-type='method'><a href="utils.html#.jiffClient.utils.bit_combinator">jiffClient.utils.bit_combinator</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.many_secret_shares">jiffClient.utils.many_secret_shares</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.resolve_many_secrets">jiffClient.utils.resolve_many_secrets</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">client/protocols/numbers/arithmetic.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// Arithmetic operations on shares
+module.exports = function (SecretShare) {
+  /**
+   * Addition with a constant.
+   * @method cadd
+   * @param {number} cst - the constant to add.
+   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
+   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @instance
+   */
+  SecretShare.prototype.cadd = function (cst) {
+    if (!(this.isConstant(cst))) {
+      throw new Error('parameter should be a number (+)');
+    }
+
+    var self = this;
+    var ready = function () {
+      return self.jiff.helpers.mod(self.jiff.share_helpers['+'](self.value, cst), self.Zp);
+    };
+
+    return new this.jiff.SecretShare(this.wThen(ready), this.holders, this.threshold, this.Zp);
+  };
+
+  /**
+   * Subtraction with a constant.
+   * @method csub
+   * @param {number} cst - the constant to subtract from this share.
+   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
+   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @instance
+   */
+  SecretShare.prototype.csub = function (cst) {
+    if (!(this.isConstant(cst))) {
+      throw new Error('parameter should be a number (-)');
+    }
+
+    var self = this;
+    var ready = function () {
+      return self.jiff.helpers.mod(self.jiff.share_helpers['-'](self.value, cst), self.Zp);
+    };
+
+    return new this.jiff.SecretShare(this.wThen(ready), this.holders, this.threshold, this.Zp);
+  };
+
+  /**
+   * Multiplication by a constant.
+   * @method cmult
+   * @param {number} cst - the constant to multiply to this share.
+   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
+   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @instance
+   */
+  SecretShare.prototype.cmult = function (cst) {
+    if (!(this.isConstant(cst))) {
+      throw new Error('parameter should be a number (*)');
+    }
+
+    var self = this;
+    var ready = function () {
+      return self.jiff.helpers.mod(self.jiff.share_helpers['*'](self.value, cst), self.Zp);
+    };
+
+    return new this.jiff.SecretShare(this.wThen(ready), this.holders, this.threshold, this.Zp);
+  };
+
+  /**
+   * Division by a constant factor of the number represented by the share.
+   * @method cdivfac
+   * @param {number} cst - the constant by which to divide the share.
+   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
+   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @instance
+   */
+  SecretShare.prototype.cdivfac = function (cst) {
+    if (!(this.isConstant(cst))) {
+      throw new Error('Parameter should be a number (cdivfac)');
+    }
+
+    var inv = this.jiff.helpers.extended_gcd(cst, this.Zp)[0];
+
+    var self = this;
+    var ready = function () {
+      return self.jiff.helpers.mod(self.jiff.share_helpers['*'](self.value, inv), self.Zp);
+    };
+
+    return new this.jiff.SecretShare(this.wThen(ready), this.holders, this.threshold, this.Zp);
+  };
+
+  /**
+   * Addition of two secret shares.
+   * @method sadd
+   * @param {module:jiff-client~JIFFClient#SecretShare} o - the share to add to this share.
+   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
+   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @instance
+   *
+   * @example
+   * // share a value with all parties, and sum the values of all shares
+   * var shares = jiff_instance.share(x);
+   * var sum = shares[1];
+   * for (var i = 2; i &lt;= jiff_instance.party_count; i++) {
+   *  sum = sum.sadd(shares[i]);
+   * }
+   *
+   */
+  SecretShare.prototype.sadd = function (o) {
+    if (!(o.jiff === this.jiff)) {
+      throw new Error('shares do not belong to the same instance (+)');
+    }
+    if (!this.jiff.helpers.Zp_equals(this, o)) {
+      throw new Error('shares must belong to the same field (+)');
+    }
+    if (!this.jiff.helpers.array_equals(this.holders, o.holders)) {
+      throw new Error('shares must be held by the same parties (+)');
+    }
+
+    // add the two shares when ready locally
+    var self = this;
+    var ready = function () {
+      return self.jiff.helpers.mod(self.jiff.share_helpers['+'](self.value, o.value), self.Zp);
+    };
+
+    // promise to execute ready_add when both are ready
+    return new this.jiff.SecretShare(this.when_both_ready(o, ready), this.holders, Math.max(this.threshold, o.threshold), this.Zp);
+  };
+
+  /**
+   * Subtraction of two secret shares.
+   * @method ssub
+   * @param {module:jiff-client~JIFFClient#SecretShare} o - the share to subtract from this share.
+   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
+   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @instance
+   */
+  SecretShare.prototype.ssub = function (o) {
+    if (!(o.jiff === this.jiff)) {
+      throw new Error('shares do not belong to the same instance (-)');
+    }
+    if (!this.jiff.helpers.Zp_equals(this, o)) {
+      throw new Error('shares must belong to the same field (-)');
+    }
+    if (!this.jiff.helpers.array_equals(this.holders, o.holders)) {
+      throw new Error('shares must be held by the same parties (-)');
+    }
+
+    // subtract the two shares when ready locally
+    var self = this;
+    var ready = function () {
+      return self.jiff.helpers.mod(self.jiff.share_helpers['-'](self.value, o.value), self.Zp);
+    };
+
+    // promise to execute ready_add when both are ready
+    return new this.jiff.SecretShare(this.when_both_ready(o, ready), this.holders, Math.max(this.threshold, o.threshold), this.Zp);
+  };
+
+  /**
+   * Multiplication of two secret shares through Beaver Triplets.
+   * @method smult
+   * @param {module:jiff-client~JIFFClient#SecretShare} o - the share to multiply with.
+   * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this multiplication (and internally, the corresponding beaver triplet).
+   *                         This id must be unique, and must be passed by all parties to the same instruction.
+   *                         this ensures that every party gets a share from the same triplet for every matching instruction. An automatic id
+   *                         is generated by increasing a local counter, default ids suffice when all parties execute the
+   *                         instructions in the same order.
+   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
+   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @instance
+   */
+  SecretShare.prototype.smult = function (o, op_id) {
+    if (!(o.jiff === this.jiff)) {
+      throw new Error('shares do not belong to the same instance (*)');
+    }
+    if (!this.jiff.helpers.Zp_equals(this, o)) {
+      throw new Error('shares must belong to the same field (*)');
+    }
+    if (!this.jiff.helpers.array_equals(this.holders, o.holders)) {
+      throw new Error('shares must be held by the same parties (*)');
+    }
+
+    if (op_id == null) {
+      op_id = this.jiff.counters.gen_op_id('smult', this.holders);
+    }
+
+    // final result
+    var final_deferred = new this.jiff.helpers.Deferred();
+    var final_promise = final_deferred.promise;
+    var result = new this.jiff.SecretShare(final_promise, this.holders, Math.max(this.threshold, o.threshold), this.Zp);
+
+    // called when triplet is ready
+    var self = this;
+    var ready_triplet = function (triplet) {
+      var a = triplet[0];
+      var b = triplet[1];
+      var c = triplet[2];
+
+      // d = s - a. e = o - b.
+      var d = self.isadd(a.icmult(-1));
+      var e = o.isadd(b.icmult(-1));
+
+      // Open d and e.
+      // The only communication cost.
+      var e_promise = self.jiff.internal_open(e, e.holders, op_id + ':open1');
+      var d_promise = self.jiff.internal_open(d, d.holders, op_id + ':open2');
+      Promise.all([e_promise, d_promise]).then(function (arr) {
+        var e_open = arr[0];
+        var d_open = arr[1];
+
+        // result_share = d_open * e_open + d_open * b_share + e_open * a_share + c.
+        var t1 = self.jiff.helpers.mod(self.jiff.share_helpers['*'](d_open, e_open), self.Zp);
+        var t2 = b.icmult(d_open);
+        var t3 = a.icmult(e_open);
+
+        // All this happens locally.
+        var final_result = t2.icadd(t1);
+        final_result = final_result.isadd(t3);
+        final_result = final_result.isadd(c);
+
+        final_result.wThen(final_deferred.resolve);
+      });
+    };
+
+    // Get shares of triplets.
+    var triplet = this.jiff.get_preprocessing(op_id + ':triplet');
+    if (triplet == null) {
+      var promise = this.jiff.from_crypto_provider('triplet', this.holders, Math.max(this.threshold, o.threshold), this.Zp, op_id + ':triplet');
+      promise.then(function (msg) {
+        ready_triplet(msg['shares']);
+      });
+    } else {
+      ready_triplet(triplet);
+    }
+
+    return result;
+  };
+
+  /**
+   * Multiplication of two secret shares through BGW protocol.
+   * @method smult_bgw
+   * @param {module:jiff-client~JIFFClient#SecretShare} o - the share to multiply with.
+   * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this multiplication (and internally, the corresponding beaver triplet).
+   *                         This id must be unique, and must be passed by all parties to the same instruction.
+   *                         this ensures that every party gets a share from the same triplet for every matching instruction. An automatic id
+   *                         is generated by increasing a local counter, default ids suffice when all parties execute the
+   *                         instructions in the same order.
+   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
+   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @instance
+   */
+  SecretShare.prototype.smult_bgw = function (o, op_id) {
+    if (!(o.jiff === this.jiff)) {
+      throw new Error('shares do not belong to the same instance (bgw*)');
+    }
+    if (!this.jiff.helpers.Zp_equals(this, o)) {
+      throw new Error('shares must belong to the same field (bgw*)');
+    }
+    if (!this.jiff.helpers.array_equals(this.holders, o.holders)) {
+      throw new Error('shares must be held by the same parties (bgw*)');
+    }
+    if ((this.threshold - 1) + (o.threshold - 1) > this.holders.length - 1) {
+      throw new Error('threshold too high for BGW (*)');
+    }
+
+    if (op_id == null) {
+      op_id = this.jiff.counters.gen_op_id('smult_bgw', this.holders);
+    }
+
+    // ensure thresholds are fine
+    var new_threshold = (this.threshold - 1) + (o.threshold - 1) + 1;
+    if (new_threshold > this.holders) {
+      var errorMsg = 'Threshold too large for smult_bgw: ' + new_threshold;
+      errorMsg += '. Shares: ' + this.toString() + ', ' + o.toString();
+      throw new Error(errorMsg);
+    }
+
+    // multiply via the BGW protocol
+    var self = this;
+    var ready = function () {
+      return self.jiff.helpers.mod(self.jiff.share_helpers['*'](self.value, o.value), self.Zp);
+    };
+
+    // reshare to reduce threshold and return when ready
+    var result = new this.jiff.SecretShare(this.when_both_ready(o, ready), this.holders, new_threshold, this.Zp);
+    return this.jiff.reshare(result, Math.max(this.threshold, o.threshold), result.holders, result.holders, result.Zp, op_id + ':threshold');
+  };
+
+  /**
+   * Integer divison with two shares (this / o)
+   * @method sdiv
+   * @param {module:jiff-client~JIFFClient#SecretShare} o - the share to divide by.
+   * @param {number} [l=ceil(log_2(this.Zp))] - the maximum bit length of either operands.
+   * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
+   *                         This id must be unique, and must be passed by all parties to the same instruction, to
+   *                         ensure that corresponding instructions across different parties are matched correctly.
+   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
+   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @instance
+   */
+  SecretShare.prototype.sdiv = function (o, l, op_id) {
+    if (!(o.jiff === this.jiff)) {
+      throw new Error('shares do not belong to the same instance (!=)');
+    }
+    if (!this.jiff.helpers.Zp_equals(this, o)) {
+      throw new Error('shares must belong to the same field (!=)');
+    }
+    if (!this.jiff.helpers.array_equals(this.holders, o.holders)) {
+      throw new Error('shares must be held by the same parties (!=)');
+    }
+
+    if (op_id == null) {
+      op_id = this.jiff.counters.gen_op_id('sdiv', this.holders);
+    }
+
+    // figure out maximum output bit length
+    var lZp = this.jiff.share_helpers['ceil'](this.jiff.helpers.bLog(this.Zp, 2));
+    l = (l != null &amp;&amp; l &lt; lZp) ? l : lZp;
+
+    // Convert to bits
+    var dividend_bits = this.bit_decomposition(op_id + ':decomposition1').slice(0, l);
+    var divisor_bits = o.bit_decomposition(op_id + ':decomposition2').slice(0, l);
+
+    // Compute by long division
+    var quotient_bits = this.jiff.protocols.bits.sdiv(dividend_bits, divisor_bits, op_id + ':bits.sdiv').quotient;
+
+    // Convert to number and return
+    return this.jiff.protocols.bits.bit_composition(quotient_bits);
+  };
+
+  /**
+   * Integer divison with a share and a constant (this / cst).
+   * @method cdiv
+   * @param {module:jiff-client~JIFFClient#SecretShare} cst - the constant to divide by.
+   * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
+   *                         This id must be unique, and must be passed by all parties to the same instruction, to
+   *                         ensure that corresponding instructions across different parties are matched correctly.
+   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
+   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @instance
+   */
+  SecretShare.prototype.cdiv = function (cst, op_id) {
+    if (!(this.isConstant(cst))) {
+      throw new Error('parameter should be a number (/)');
+    }
+
+    if (this.jiff.share_helpers['&lt;='](cst, 0)) {
+      throw new Error('divisor must be > 0 (cst/): ' + cst);
+    }
+
+    if (this.jiff.share_helpers['&lt;='](this.Zp, cst)) {
+      throw new Error('divisor must be &lt; share.Zp (' + this.Zp + ') in (cst/): ' + cst);
+    }
+
+    if (op_id == null) {
+      op_id = this.jiff.counters.gen_op_id('cdiv', this.holders);
+    }
+
+    // Allocate share for result to which the answer will be resolved once available
+    var final_deferred = new this.jiff.helpers.Deferred();
+    var final_promise = final_deferred.promise;
+    var result = new this.jiff.SecretShare(final_promise, this.holders, this.threshold, this.Zp);
+
+    // Execute protocol when random in noise in [0, Zp) and quotient floor(noise/constant) is ready!
+    var self = this;
+    var ready_quotient = function (noise, nOVERc) {
+      // Use noise
+      var noisyX = self.isadd(noise);
+      self.jiff.internal_open(noisyX, noisyX.holders, op_id + ':open').then(function (noisyX) {
+        var wrapped = self.icgt(noisyX, op_id + ':wrap_cgt'); // 1 => x + noise wrapped around Zp, 0 otherwise
+
+        // if we did not wrap
+        var noWrapDiv = self.jiff.share_helpers['floor/'](noisyX, cst);
+        var unCorrectedQuotient = nOVERc.icmult(-1).icadd(noWrapDiv).icsub(1);
+        var verify = self.issub(unCorrectedQuotient.icmult(cst));
+        var isNotCorrect = verify.icgteq(cst, op_id + ':cor1');
+        var noWrapAnswer = unCorrectedQuotient.isadd(isNotCorrect); // if incorrect => isNotCorrect = 1 => quotient = unCorrectedQuotient - 1
+
+        // if we wrapped
+        var wrapDiv = self.jiff.share_helpers['floor/'](self.jiff.share_helpers['+'](noisyX, self.Zp), cst);
+        unCorrectedQuotient = nOVERc.icmult(-1).icadd(wrapDiv).icsub(1);
+        verify = self.issub(unCorrectedQuotient.icmult(cst));
+        isNotCorrect = verify.icgteq(cst, op_id + ':cor2');
+        var wrapAnswer = unCorrectedQuotient.isadd(isNotCorrect); // if incorrect => isNotCorrect = 1 => quotient = unCorrectedQuotient - 1
+
+        var answer = noWrapAnswer.isadd(wrapped.ismult(wrapAnswer.issub(noWrapAnswer), op_id + ':smult'));
+        answer.wThen(final_deferred.resolve);
+      });
+    };
+
+    // Preprocessing cases
+    var quotient = this.jiff.get_preprocessing(op_id + ':quotient');
+    if (quotient == null) { // case 1: no preprocessing with crypto provider!
+      var promise = this.jiff.from_crypto_provider('quotient', this.holders, this.threshold, this.Zp, op_id + ':quotient', {constant: cst});
+      promise.then(function (msg) {
+        ready_quotient(msg['shares'][0], msg['shares'][1]);
+      });
+    } else if (quotient.ondemand === true) { // case 2: constant was not available at preprocessing time, must do it now!
+      this.jiff.preprocessing('quotient', 1, null, this.threshold, this.holders, this.holders, this.Zp, [op_id + ':quotient'], {constant: cst, namespace: 'base'});
+      this.jiff.executePreprocessing(function () {
+        var quotient = self.jiff.get_preprocessing(op_id + ':quotient');
+        ready_quotient(quotient.r, quotient.q);
+      });
+    } else { // case 3: preprocessing is completed!
+      ready_quotient(quotient.r, quotient.q);
+    }
+
+    // special case, if result is zero, sometimes we will get to -1 due to how correction happens above (.csub(1) and then compare)
+    var zeroIt = this.iclt(cst, op_id + ':zero_check').inot();
+    return result.ismult(zeroIt, op_id + ':zero_it');
+  };
+
+  /**
+   * Remainder with two shares (this % o)
+   * @method smod
+   * @param {module:jiff-client~JIFFClient#SecretShare} o - the modulus to apply
+   * @param {number} [l=ceil(log_2(this.Zp))] - the maximum bit length of either operands.
+   * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
+   *                         This id must be unique, and must be passed by all parties to the same instruction, to
+   *                         ensure that corresponding instructions across different parties are matched correctly.
+   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
+   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @instance
+   */
+  SecretShare.prototype.smod = function (o, l, op_id) {
+    if (!(o.jiff === this.jiff)) {
+      throw new Error('shares do not belong to the same instance (!=)');
+    }
+    if (!this.jiff.helpers.Zp_equals(this, o)) {
+      throw new Error('shares must belong to the same field (!=)');
+    }
+    if (!this.jiff.helpers.array_equals(this.holders, o.holders)) {
+      throw new Error('shares must be held by the same parties (!=)');
+    }
+
+    if (op_id == null) {
+      op_id = this.jiff.counters.gen_op_id('smod', this.holders);
+    }
+
+    // figure out maximum output bit length
+    var lZp = this.jiff.share_helpers['ceil'](this.jiff.helpers.bLog(this.Zp, 2));
+    l = (l != null &amp;&amp; l &lt; lZp) ? l : lZp;
+
+    // Convert to bits
+    var dividend_bits = this.bit_decomposition(op_id + ':decomposition1').slice(0, l);
+    var divisor_bits = o.bit_decomposition(op_id + ':decomposition2').slice(0, l);
+
+    // Compute by long division
+    var remainder_bits = this.jiff.protocols.bits.sdiv(dividend_bits, divisor_bits, op_id + ':bits.sdiv').remainder;
+
+    // Convert to number and return
+    return this.jiff.protocols.bits.bit_composition(remainder_bits);
+  };
+
+  /**
+   * Fast (modular) exponentiation with constant exponent via repeated squaring.
+   * @method cpow
+   * @param {number} cst - the constant to multiply to this share.
+   * @param {string} [op_id=auto_gen()] - the operation id which is used to identify this operation.
+   *                         This id must be unique, and must be passed by all parties to the same instruction, to
+   *                         ensure that corresponding instructions across different parties are matched correctly.
+   * @return {module:jiff-client~JIFFClient#SecretShare} this party's share of the result.
+   * @memberof module:jiff-client~JIFFClient#SecretShare
+   * @instance
+   */
+  SecretShare.prototype.cpow = function (cst, op_id) {
+    if (!(this.isConstant(cst))) {
+      throw new Error('parameter should be a number (*)');
+    }
+
+    if (op_id == null) {
+      op_id = this.jiff.counters.gen_op_id('cpow', this.holders);
+    }
+
+    // handle big numbers
+    var one = 1;
+    if (this.jiff.has_extension('bignumber')) {
+      one = this.jiff.helpers.BigNumber(1);
+      cst = this.jiff.helpers.BigNumber(cst);
+    }
+
+    // ensure exponent is non-negative
+    if (this.jiff.share_helpers['&lt;'](cst, 0)) {
+      throw new Error('cpow supports non-negative exponents only, given ' + cst.toString());
+    }
+
+    // begin protocol
+    var evens = this;
+    var odds = new this.jiff.SecretShare(one, this.holders, this.threshold, this.Zp);
+
+    // special case
+    if (cst.toString() === '0') {
+      return odds;
+    }
+
+    for (var i = 0; this.jiff.share_helpers['&lt;'](1, cst); i++) {
+      if (this.jiff.share_helpers['even'](cst)) {
+        evens = evens.ismult(evens, op_id + ':smult0:'+i);
+        cst = this.jiff.share_helpers['/'](cst, 2);
+      } else {
+        odds = evens.ismult(odds, op_id + ':smult0:'+i);
+        evens = evens.ismult(evens, op_id + ':smult1:'+i);
+        cst = this.jiff.share_helpers['/'](this.jiff.share_helpers['-'](cst, 1), 2);
+      }
+    }
+
+    return evens.ismult(odds, op_id + ':smult0:' + i);
+  };
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:02:14 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>

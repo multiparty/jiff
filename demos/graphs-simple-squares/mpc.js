@@ -70,7 +70,7 @@
 
     zero = zero.cmult(precision); // increase precision
 
-    // share input with all parties
+    // Share input with all parties
     jiff_instance.share_array(values).then(function (inputs) {
       jiff_instance.seed_ids(op_id_seed);
       var xAvg = zero;

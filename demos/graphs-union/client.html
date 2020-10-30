@@ -1,0 +1,75 @@
+<!-- Basic UI for running the demo in the browser -->
+
+<html>
+  <head>
+    <title>Graph Union Under MPC</title>
+    <style>
+      .error {
+        color: #FF0000;
+      }
+      #inputText {
+        font-size: 10pt;
+        font-family: monospace;
+      }
+      .links line {
+        stroke: #999;
+        stroke-opacity: 0.6;
+      }
+      .nodes circle {
+        stroke: #fff;
+        stroke-width: 1.5px;
+      }
+      text {
+        pointer-events: none;
+        text-anchor: middle;
+        fill: white;
+      }
+      svg {
+        border: solid;
+        border-width: 1px;
+      }
+    </style>
+    <script type="text/javascript" src="/dist/jiff-client.js"></script>
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+    <!-- Contains the plotting engine -->
+    <script type="text/javascript" src="./graph.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3-selection.v1.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3-drag.v1.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3-dispatch.v1.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3-quadtree.v1.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3-timer.v1.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3-force.v2.min.js"></script>
+
+    <!-- Contains UI Handlers and Input Checks -->
+    <script type="text/javascript" src="./client.js"></script>
+
+    <!-- Contains the MPC implementation -->
+    <script type="text/javascript" src="./mpc.js"></script>
+  </head>
+  <body onload="updateGraph(document.getElementById('inputText').value);">
+    <h1>Connect JIFF</h1>
+    <label for="computation_id">Computation ID</label> <input id="computation_id" value="test"></input><br/><br/>
+    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*" value="2"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
+    <br/><br/>
+    <hr/>
+
+    <h1>Graph Union under MPC</h1>
+    <label for="inputText">Enter an adjacency matrix of a graph.  Parties anonomously add each of their known edges to a master graph and reveal this union.</label> <br/><br/>
+    <textarea id="inputText" rows="9" cols="24" onkeyup="updateGraph(this.value);">
+[
+  [0, 1, 1, 0, 0, 0],
+  [1, 0, 1, 0, 0, 0],
+  [1, 1, 0, 1, 0, 0],
+  [0, 0, 1, 0, 1, 0],
+  [0, 0, 0, 1, 0, 1],
+  [0, 0, 0, 0, 1, 0]
+]
+</textarea> &nbsp; &nbsp; &nbsp; &nbsp;
+    <svg width="250" height="250"></svg><br/>
+    <button onclick="submit();" disabled="disabled" id="processButton">Submit</button>
+    <div id="output"></div>
+  </body>
+</html>

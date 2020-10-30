@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var JIFFServer = require('../../lib/jiff-server');
-new JIFFServer(http, { logs:true });
+new JIFFServer(http, { logs: true, sodium: false });
 
 // Serve static files.
 app.use('/demos', express.static(path.join(__dirname, '..', '..', 'demos')));

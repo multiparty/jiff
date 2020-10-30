@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Home - JIFF Library Documentation</title>
+    
+    
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/multiparty/jiff" target="_blank" class="menu-item" id="github_link" >Github Repo</a></h2><h2><a href="./intro.html" target="_self" class="menu-item" id="github_link" >Tutorial</a></h2><h2><a href="./contributing.html" target="_self" class="menu-item" id="github_link" >Contributing to JIFF</a></h2><h3>Classes</h3><ul><li><a href="GuardedSocket.html">GuardedSocket</a><ul class='methods'><li data-type='method'><a href="GuardedSocket.html#disconnect">disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#is_empty">is_empty</a></li><li data-type='method'><a href="GuardedSocket.html#resend_mailbox">resend_mailbox</a></li><li data-type='method'><a href="GuardedSocket.html#safe_disconnect">safe_disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#safe_emit">safe_emit</a></li></ul></li><li><a href="helpers.Deferred.html">Deferred</a><ul class='methods'><li data-type='method'><a href="helpers.Deferred.html#reject">reject</a></li><li data-type='method'><a href="helpers.Deferred.html#resolve">resolve</a></li></ul></li><li><a href="module-jiff-client-JIFFClient.html">JIFFClient</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient.html#add_to_barriers">add_to_barriers</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#apply_extension">apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#can_apply_extension">can_apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#connect">connect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#disconnect">disconnect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#emit">emit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#end_barrier">end_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#executePreprocessing">executePreprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#extension_applied">extension_applied</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#free">free</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#from_crypto_provider">from_crypto_provider</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id">gen_op_id</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2">gen_op_id2</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2_preprocessing">gen_op_id2_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id_preprocessing">gen_op_id_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#get_preprocessing">get_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_extension">has_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_preprocessing">has_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_open">internal_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_share">internal_share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isInitialized">isInitialized</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isReady">isReady</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#listen">listen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_array">open_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_ND_array">open_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessing">preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessingDaemon">preprocessingDaemon</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#remove_listener">remove_listener</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#reshare">reshare</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#seed_ids">seed_ids</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share">share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_2D_array">share_2D_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_array">share_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array">share_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_deferred">share_ND_array_deferred</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_static">share_ND_array_static</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#start_barrier">start_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#store_preprocessing">store_preprocessing</a></li></ul></li><li><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#add">add</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#bit_decomposition">bit_decomposition</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cadd">cadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdiv">cdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdivfac">cdivfac</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ceq">ceq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgt">cgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgteqn">cgteqn</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clt">clt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clteq">clteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cmult">cmult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cneq">cneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cor_bit">cor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cpow">cpow</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#csub">csub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cxor_bit">cxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#div">div</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#eq">eq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#error">error</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gt">gt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gteq">gteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#if_else">if_else</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#isConstant">isConstant</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#logLEAK">logLEAK</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt">lt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt_halfprime">lt_halfprime</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lteq">lteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#mult">mult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#neq">neq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#not">not</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#or_bit">or_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#promise_handler">promise_handler</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#refresh">refresh</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sadd">sadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sdiv">sdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#seq">seq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgt">sgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgteq">sgteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slt">slt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slteq">slteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smod">smod</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult">smult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult_bgw">smult_bgw</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sneq">sneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sor_bit">sor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ssub">ssub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sub">sub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sxor_bit">sxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#toString">toString</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#valueOf">valueOf</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#when_both_ready">when_both_ready</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#wThen">wThen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#xor_bit">xor_bit</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-jiff-client.html">jiff-client</a></li></ul><h3>Namespaces</h3><ul><li><a href="bits.html">bits</a><ul class='methods'><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.bit_composition">jiffClient.protocols.bits.bit_composition</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cadd">jiffClient.protocols.bits.cadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivl">jiffClient.protocols.bits.cdivl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivr">jiffClient.protocols.bits.cdivr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ceq">jiffClient.protocols.bits.ceq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgt">jiffClient.protocols.bits.cgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgteq">jiffClient.protocols.bits.cgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clt">jiffClient.protocols.bits.clt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clteq">jiffClient.protocols.bits.clteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cmult">jiffClient.protocols.bits.cmult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cneq">jiffClient.protocols.bits.cneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubl">jiffClient.protocols.bits.csubl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubr">jiffClient.protocols.bits.csubr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.open">jiffClient.protocols.bits.open</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.rejection_sampling">jiffClient.protocols.bits.rejection_sampling</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sadd">jiffClient.protocols.bits.sadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sdiv">jiffClient.protocols.bits.sdiv</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.seq">jiffClient.protocols.bits.seq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgt">jiffClient.protocols.bits.sgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgteq">jiffClient.protocols.bits.sgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.share">jiffClient.protocols.bits.share</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slt">jiffClient.protocols.bits.slt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slteq">jiffClient.protocols.bits.slteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.smult">jiffClient.protocols.bits.smult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sneq">jiffClient.protocols.bits.sneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ssub">jiffClient.protocols.bits.ssub</a></li></ul></li><li><a href="handlers.html">handlers</a><ul class='methods'><li data-type='method'><a href="handlers.html#.jiffClient.handlers.build_initialization_message">jiffClient.handlers.build_initialization_message</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.connected">jiffClient.handlers.connected</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.error">jiffClient.handlers.error</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.initialized">jiffClient.handlers.initialized</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_crypto_provider">jiffClient.handlers.receive_crypto_provider</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_custom">jiffClient.handlers.receive_custom</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_open">jiffClient.handlers.receive_open</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_share">jiffClient.handlers.receive_share</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.store_public_keys">jiffClient.handlers.store_public_keys</a></li></ul></li><li><a href="helpers.html">helpers</a><ul class='methods'><li data-type='method'><a href="helpers.html#.jiffClient.helpers.array_equals">jiffClient.helpers.array_equals</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bits_to_number">jiffClient.helpers.bits_to_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bLog">jiffClient.helpers.bLog</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.ceil">jiffClient.helpers.ceil</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.extended_gcd">jiffClient.helpers.extended_gcd</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.floor">jiffClient.helpers.floor</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.get_party_number">jiffClient.helpers.get_party_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.is_prime">jiffClient.helpers.is_prime</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.mod">jiffClient.helpers.mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.number_to_bits">jiffClient.helpers.number_to_bits</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.pow_mod">jiffClient.helpers.pow_mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.random">jiffClient.helpers.random</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.sort_ids">jiffClient.helpers.sort_ids</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.Zp_equals">jiffClient.helpers.Zp_equals</a></li></ul></li><li><a href="hooks.html">hooks</a><ul class='methods'><li data-type='method'><a href="hooks.html#.computeShares">computeShares</a></li><li data-type='method'><a href="hooks.html#.execute_array_hooks">execute_array_hooks</a></li></ul></li><li><a href="protocols.html">protocols</a><ul class='methods'><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_beaver_bgw">jiffClient.protocols.generate_beaver_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_and_quotient">jiffClient.protocols.generate_random_and_quotient</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_bgw">jiffClient.protocols.generate_random_bit_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_smult">jiffClient.protocols.generate_random_bit_smult</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bits">jiffClient.protocols.generate_random_bits</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_number">jiffClient.protocols.generate_random_number</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_zero">jiffClient.protocols.generate_zero</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.rejection_sampling">jiffClient.protocols.rejection_sampling</a></li></ul></li><li><a href="utils.html">utils</a><ul class='methods'><li data-type='method'><a href="utils.html#.jiffClient.utils.bit_combinator">jiffClient.utils.bit_combinator</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.many_secret_shares">jiffClient.utils.many_secret_shares</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.resolve_many_secrets">jiffClient.utils.resolve_many_secrets</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+
+
+    <section class="package">
+        <h3> </h3>		
+    </section>
+
+
+
+
+
+
+
+
+
+    
+
+
+
+    <section class="readme usertext">
+        <article><h1>JIFF</h1>
+<p><a href="https://travis-ci.org/multiparty/jiff"><img src="https://travis-ci.org/multiparty/jiff.svg?branch=master" alt="Build Status"></a></p>
+<p>JIFF is a JavaScript library for building applications that rely on secure multi-party computation. JIFF is built to be highly flexible with a focus on usability, with the ability to be run in the browser, on mobile phones, or via Node.js. JIFF is designed so that developers need not be familiar with MPC techniques or know the details of cryptographic protocols in order to build secure applications.</p>
+<h2>Requirements</h2>
+<h3>Server</h3>
+<p>Running the server requires <a href="https://nodejs.org/en/">Node</a> and <a href="https://www.npmjs.com/">npm</a>.</p>
+<h3>Client</h3>
+<p>For browsers, we provide a bundle including the base client side library and its dependencies (<a href="https://www.npmjs.com/package/libsodium-wrappers">libsodium-wrappers</a> and socket.io). Extensions have to be imported separately.</p>
+<p>For node.js clients, npm install should install all the required dependencies.</p>
+<h2>Installation</h2>
+<h3>Server</h3>
+<p>Run npm from inside the project directory to automatically install the dependencies listed in <code>package.json</code>:</p>
+<pre class="prettyprint source lang-shell"><code>npm install
+</code></pre>
+<h3>Client - Browser</h3>
+<p>Make sure to include the library bundle:</p>
+<pre class="prettyprint source lang-html"><code>&lt;!-- exposes JIFFClient to the global scope -->
+&lt;script src=&quot;/dist/jiff-client.js&quot;>&lt;/script>
+</code></pre>
+<p>Then inside a script tag (and after the page loads), initialize a JIFF object and set up a computation:</p>
+<pre class="prettyprint source lang-javascript"><code>var instance = new JIFFClient(&quot;http://localhost:8080&quot;, &quot;&lt;computation_id>&quot;, parties);
+</code></pre>
+<p>The instance object provides methods for sharing, opening, and performing operations on shares.</p>
+<h3>Client - node.js</h3>
+<p>In node.js you must include the library (either the bundle or the source) and then use it:</p>
+<pre class="prettyprint source lang-javascript"><code>var JIFFClient = require('./dist/jiff-client.js');
+var instance = new JIFFClient(&quot;http://localhost:8000&quot;, &quot;&lt;computation_id>&quot;, parties);
+</code></pre>
+<h2>Project Layout</h2>
+<pre><code>├─ demos/               Example of common jiff use-cases and functionality
+├─ docs/                JSDoc config and generated docs
+├─ lib/                 Libraries for both client and server-side jiff instances
+│  ├─ client/           Implementation of the client side library
+│  ├─ server/           Implementation of the server side library
+│  ├─ ext/              Extended functionality for use cases (e.g. negative numbers): Includes server and client extensions
+│  ├─ common/           Some common helpers between both client and server code
+│  ├─ jiff-client.js    Main module for the client side library, include this (or the bundle under dist/) in your projects
+│  └─ jiff-server.js    Main module for the server side library, include this in your server code
+├─ test/                Unit testing for base Jiff, demos, and extensions
+│  ├─ dev/              Limited tests for testing some features under development
+│  ├─ live/             Template and setup for live coding with JIFF with nodejs's command line shell (REPL)
+│  └─ suite/            Base Jiff and extension tests (See test/suite/README.md)
+├─ tutorial/            Contains interactive tutorial files that can be run locally to learn JIFF!
+</code></pre>
+<h2>Running Tutorials</h2>
+<p>Clone the github repo, and run <code>npm run tutorial</code> inside its root directory.</p>
+<p>On your terminal, you will see a list of &quot;Routes/Documents&quot;. Open either document in your browser to go through the tutorial.</p>
+<p>Each document is an independent tutorial. However, beginners are encouraged to view them in order.</p>
+<h2>Running Demos and Examples</h2>
+<p>Run a sample server from one of the demos under <code>demos</code> in the following way:</p>
+<pre class="prettyprint source lang-shell"><code>node index.js demos/&lt;demo-name>/server  # alternative way 1
+node demos/&lt;demo-name>/server.js  # alternative way 2
+</code></pre>
+<p>The output from the example server will direct you to open <code>localhost:8080/demos/&lt;demo-name&gt;/client.html</code> in a browser (you must open
+an instance in a separate window/tab for every distinct party participating in the protocol).
+You can then proceed with the protocol using the client interfaces.</p>
+<p>Note that you can run Node.js parties that can also participate in the protocol by executing (e.g., a separate terminal for each party):</p>
+<pre class="prettyprint source lang-shell"><code>node demos/&lt;demo-name>/party.js &lt;input-value>
+</code></pre>
+<h2>Documentation</h2>
+<p>The latest documentation can be viewed on the <a href="https://multiparty.org/jiff/">project page</a>. The documentation can be generated using <a href="http://usejsdoc.org/">JSDoc</a>; you will find these docs in <code>docs/jsdocs/</code>:</p>
+<pre class="prettyprint source lang-shell"><code>./node_modules/.bin/jsdoc -r -c docs/jsdoc.conf.json
+npm run-script gen-docs # shortcut
+</code></pre>
+<h3>Where to Look in the Docs</h3>
+<p>The documentation for the client side library is separated into the distinct modules, namespaces, and classes:</p>
+<pre><code>├─ modules
+│  └─ jiff-client            Parent module: represents the exposed JIFFClient global variable
+├─ classes
+│  ├─ JIFFClient             Represents a client side jiff instance including the main API of JIFF
+│  ├─ SecretShare            Contains the API for SecretShare objects
+│  ├─ GuardedSocket          Internal wrapper around socket.io for added reliability
+│  └─ Deferred               Polyfill to construct deferred from native Promises
+├─ namespaces
+│  ├─ protocols              Common protocols exposed by jiff client instances, suitable for preprocessing
+│  ├─ bits                   Primitives for operating on bit-wise shared secrets (hybrid protocols)
+│  └─ hooks                  Available hooks that can be used by users to customize behavior
+</code></pre>
+<h2>Running Tests</h2>
+<p>All of the JIFF library test cases can be run in the following way:</p>
+<pre class="prettyprint source lang-shell"><code>npm test
+</code></pre>
+<p>Demos are accompanied by test cases. The following command can be used to run the demo servers and test cases:</p>
+<pre class="prettyprint source lang-shell"><code>npm run-script test-demo -- demos/&lt;demo-name>
+</code></pre>
+<p>The command assumes that the server is located at demos/<demo-name>/server.js and the test cases are located at demos/<demo-name>/test.js
+See demos/run-test.sh for instructions on running test cases located in different directories or with different names.</p>
+<p>See the <a href="tests/suite/README.md">testing suite framework documentation</a> for more details on running and creating tests for the JIFF library.</p>
+<h2>Bundling</h2>
+<p>If you made changes to the library and would like to bundle it again into a single browser-friendly file, you can run this command:</p>
+<pre class="prettyprint source lang-shell"><code>npm run-script build # will override dist/jiff-client.js
+</code></pre>
+<h2>Development</h2>
+<p>The JIFF libraries allow developers to customize or extend their functionality by introducing new <em>hooks</em>. Multiple hooks can be combined to form a library <em>extension</em>.</p>
+<h3>Hooks</h3>
+<p>The JIFF client and server libraries support hooks. Hooks can be provided in the options parameter during instantiation or afterwards. Hooks allow the introduction of custom functionality to be executed at critical times during the computation, or the introduction of different implementations of specified primitives and operations (e.g. using a different sharing scheme).</p>
+<p>The client-side <a href="hooks.html">hooks documentation</a> provides more details. If hooks are used to provide important reusable functionality, then it is recommended to bundle these hooks within a JIFF extension.</p>
+<h3>Extensions</h3>
+<p>JIFF supports implementing extensions on top of the base implementations that can provide additional extended functionality. Some extensions can be found under <code>lib/ext</code>. Two important modules are implemented and provided in this repository: bignumbers and fixed point arithmetic.</p>
+<p>See the <a href="extensions.html">extensions documentation</a> and the documentation inside <code>src/ext/jiff-client-bignumber.js</code> for instructions on how to create additional extensions.</p>
+<p>Both client and server libraries support extensions. Some extensions require customizing both the server and client libraries to behave properly (such as the bignumbers extension). Other extensions may require only server or client-side modifications (e.g., the fixed point arithmetic module is only client-side). A server that wants to participate in the computation would require only the client-side extension to use the additional functionality (unless, of course, that extension depends on additional server-side modifications as in bignumbers).</p>
+<p>For examples on how to use an extension, see the following files:</p>
+<ol>
+<li><code>demos/sum-fixed/server.js</code>: using the server with the Node bignumber.js module.</li>
+<li><code>demos/sum-fixed/client.html</code>: using fixed point arithmetic extension in the browser.</li>
+</ol>
+<p>Run the bignumber test suite in the following way:</p>
+<pre class="prettyprint source lang-shell"><code>npm run-script test-bignumber
+</code></pre>
+<h2>How to Contribute</h2>
+<p>Check out our contribution guidelines and resources @ <a href="CONTRIBUTING.md">contributing</a>.</p>
+<h1>For Cryptographers</h1>
+<h2>Security Model and Assumptions</h2>
+<p>JIFF is secure against semi-honest adversaries.</p>
+<p>JIFF's default preprocessing protocol for beaver triples generation is based on bgw. All protocols that depend on triplets/multiplication are
+secure with an honest majority in the preprocessing phase, and against a dishonest majority in the online stage. This is important, since the parties
+performing the preprocessing may be different than the ones carrying out the online computation.</p>
+<p>If preprocessing is not used, and <code>crypto_provider</code> option is set to true during instance creation, JIFF will acquire all required
+corelated randomness and preprocessing material from the server. This yields an asymetric trust model, where the computation is secure
+against a dishonest majority of non-server parties, but insecure against coalitions of one or more party plus the server. Conretely, this
+reduces to more traditional models in certain cases. For example, if the computation is made out of two parties and a server, this becomes
+equivalent to 3-party computation with honest majority.</p>
+<h2>Costs of Operations: [OUTDATED]</h2>
+<p>Below is a table of the current costs of operations in the <em>base</em> JIFF without extensions:</p>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Rounds</th>
+<th>Total Messages</th>
+<th>Preprocessing Rounds</th>
+<th>Preprocessing Total Messages</th>
+<th>Dependenices</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Share</td>
+<td>1</td>
+<td>senders * receivers</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Open</td>
+<td>2</td>
+<td>sender + sender * receivers</td>
+<td>1</td>
+<td>senders * senders</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>+, -, c+, c-, c*</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>*</td>
+<td>2</td>
+<td>2*parties + parties*(parties-1)</td>
+<td>2</td>
+<td>2 * (parties * parties - 1)</td>
+<td>triplet,open</td>
+</tr>
+<tr>
+<td>&lt;, &lt;=, &gt;, &gt;=</td>
+<td>2*(bits+3)</td>
+<td>O( bits * parties^2 )</td>
+<td>3</td>
+<td>bits * (2*parties + parties^2)</td>
+<td>*, open</td>
+</tr>
+<tr>
+<td>c&lt;, c&lt;=, c&gt;, c&gt;=</td>
+<td>2*(bits+3)</td>
+<td>O( bits * parties^2 )</td>
+<td>3</td>
+<td>bits * (2*parties + parties^2)</td>
+<td>*, open</td>
+</tr>
+<tr>
+<td>=, c=, !=, c!=</td>
+<td>2*(bits+4)</td>
+<td>O( bits * parties^2 )</td>
+<td>3</td>
+<td>2*bits * (2*parties + parties^2)</td>
+<td>c&lt;, c&gt;, *</td>
+</tr>
+<tr>
+<td>/</td>
+<td>bits^2 + 5*bits</td>
+<td>O( bits^2 * parties^2 )</td>
+<td>3</td>
+<td>bits*(2*bits * (2*parties + parties^2))</td>
+<td>&lt;, c&lt;, *</td>
+</tr>
+<tr>
+<td>c/</td>
+<td>2*(bits+3) + 5</td>
+<td>O( bits * parties^2 )</td>
+<td>3</td>
+<td>4 * bits * (2*parties + parties^2)</td>
+<td>open, *, c&lt;</td>
+</tr>
+<tr>
+<td>bits+</td>
+<td>8*bits</td>
+<td>O( parties^2 * bits )</td>
+<td>2</td>
+<td>8 * bits * (parties * parties - 1)</td>
+<td>triplet,open</td>
+</tr>
+<tr>
+<td>bits-</td>
+<td>8*bits</td>
+<td>O( parties^2 * bits )</td>
+<td>2</td>
+<td>8 * bits * (parties * parties - 1)</td>
+<td>triplet,open</td>
+</tr>
+<tr>
+<td>bits*</td>
+<td>12*bits</td>
+<td>O( parties^4 * bits^2 )</td>
+<td>2</td>
+<td>12 * bits^2 * (parties * parties - 1)^2</td>
+<td>triplet,open</td>
+</tr>
+<tr>
+<td>bits/</td>
+<td>25*bits^2</td>
+<td>O( parties^2 * bits^2 )</td>
+<td>2</td>
+<td>25 * bits^2 * (parties * parties - 1)</td>
+<td>triplet,open</td>
+</tr>
+</tbody>
+</table>
+<p>Some exact costs not shown in the table:</p>
+<ol>
+<li>Exact total number of messages for secret inequalities is: 3*(parties + parties^2 + (bits+1) * (2*parties + parties*(parties-1))) + 2*parties + parties*(parties-1)</li>
+<li>Exact total number of messages for constant inequalities is: 2*(parties + parties^2 + (bits+1) * (2*parties + parties*(parties-1))) + 2*parties + parties*(parties-1)</li>
+<li>Exact total number of messages for equality checks: 2*(*(parties + parties^2 + (bits+1) * (2*parties + parties*(parties-1))) + 2*parties + parties*(parties-1)) + 2*parties + parties*(parties-1)</li>
+<li>Exact total number of messages for division is: bits * ( 5*(parties + parties^2 + (bits+1) * (2*parties + parties*(parties-1))) + 2*parties + parties*(parties-1) + 2*parties + parties*(parties-1) )</li>
+<li>Exact total number of messages for constant division is: 1 + 7*parties + 4*parties^2 + 8*(parties + parties^2 + (bits+1) * (2*parties + parties*(parties-1)))</li>
+</ol>
+<p>Dependenices:</p>
+<ol>
+<li>Multiplication has one message to synchronize beaver triplets and one open in sequence.</li>
+<li>inequality tests has 3 less than half primes in parallel, each has an open and as many multiplication in sequence as bits.</li>
+<li>constant inequality test has 2 less than half primes in parallel.</li>
+<li>equality and constant equality tests have 2 inequalities in parallel, sequenced with a multiplication.</li>
+<li>division has as many sequential iterations as bits, each iteration contains a constant inequality, secret inequality, and multiplication.</li>
+<li>constant division has one open sequenced with 4 parallel constant inequality checks and two multiplications.</li>
+<li>Secret XORs and ORs are equivalent to a single multiplication, constant XORs and ORs are free.</li>
+</ol>
+<h2>Information and Collaborators</h2>
+<p>More information about this project, including collaborators and publications, can be found at <a href="https://multiparty.org/">multiparty.org</a>.</p></article>
+    </section>
+
+
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:19:37 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>

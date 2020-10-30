@@ -36,7 +36,7 @@ else
       (cd "$TESTDIR" && ./test.sh)
       exit $?
     else
-      # genric demo, run genric tests
+      # generic demo, run generic tests
 
       # Run server
       if [[ $NAME != "web-mpc" ]]; then
@@ -49,7 +49,7 @@ else
       fi
 
       # Run test
-      ./node_modules/.bin/mocha --full-trace --reporter spec ${TESTDIR}/test.js
+      ./node_modules/.bin/mocha --full-trace --reporter spec ${TESTDIR}/test.js  # add --inspect--brk to debug
       EXIT_CODE=$?
 
       kill $(ps aux | grep " ${TESTDIR}/server\.js" | awk '{ print $2}')
