@@ -1,7 +1,9 @@
 #!/bin/sh
 
-node party.js 10 3 test10 >> output
-node party.js 100 3 test100 >> output
-node party.js 500 3 test500 >> output
+node party.js 10 stdev stdevtest10 >> logtimes/stdev.log
+node party.js 100 stdev stdevtest100 >> logtimes/stdev.log
+node party.js 500 stdev stdevtest500 >> logtimes/stdev.log
 
-
+node party.js 10 sum sumtest10 >> logtimes/sum.log
+node party.js 100 sum sumtest100 >> logtimes/sum.log
+node party.js 500 sum sumtest500 >> logtimes/sum.log
