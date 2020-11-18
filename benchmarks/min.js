@@ -47,7 +47,7 @@
     shares = shares[1].concat(shares[2]).concat(shares[3]);
 
     var min = shares[0];
-    for (var i = 1; i < jiff_instance.party_count; i++) {
+    for (var i = 1; i < shares.length; i++) {
       var cmp = min.slt(shares[i]);
       min = cmp.if_else(min, shares[i]);
     }

@@ -12,11 +12,11 @@ var max = require('./max');
 var min = require('./min');
 var avg = require('./avg');
 
-var computation_map = {'stdev': stdev,
-                        'sum': sum,
-                        'max': max,
-                        'min': min,
-                        'avg': avg};
+var computation_map = {stdev: stdev,
+  sum: sum,
+  max: max,
+  min: min,
+  avg: avg};
 
 // Read Command line arguments, determine number of inputs to generate
 var input = Number(process.argv[2]);
