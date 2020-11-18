@@ -46,12 +46,12 @@
     var shares = await jiff_instance.share_array(input);
     shares = shares[1].concat(shares[2]).concat(shares[3]);
 
-    var min = shares[0];
+    var max = shares[0];
     for (var i = 1; i < shares.length; i++) {
-      var cmp = min.sgt(shares[i]);
-      min = cmp.if_else(min, shares[i]);
+      var cmp = max.sgt(shares[i]);
+      max = cmp.if_else(max, shares[i]);
     }
 
-    return min.open();
+    return max.open();
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
