@@ -1,25 +1,13 @@
 (function (exports, node) {
   var saved_instance;
 
-  function truncate(num, accuracy) {
-    var numStr = num.toString();
-    var numParts = numStr.split('.');
-    var truncdNum;
-    if (numParts.length > 1) {
-      truncdNum = numParts[0] + '.' + numParts[1].substring(0, accuracy);
-    } else {
-      truncdNum = numParts[0]
-    }
-    return truncdNum;
-  }
-
   /**
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
     var opt = Object.assign({}, options);
-    opt.crypto_provider = true;
     opt.warn = false;
+    opt.crypto_provider = true;
 
     // Added options goes here
     if (node) {
@@ -41,7 +29,7 @@
     // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_fixedpoint, opt); // Max bits after decimal allowed
     // eslint-disable-next-line no-undef
-    saved_instance.apply_extension(jiff_negativenumber, opt);
+    saved_instance.apply_extension(jiff_negativenumber, opt); // Max bits after decimal allowed
     saved_instance.connect();
 
     return saved_instance;
@@ -55,58 +43,15 @@
       jiff_instance = saved_instance;
     }
 
-    // All operations are fixed point with this precision.
-    // Everything is floored down to the closest fixed point
-    // number.
-    var n = jiff_instance.party_count;
-    var precision = jiff_instance.decimal_digits;
-    input = input.map(x => {return jiff_instance.helpers.BigNumber(x)});
-
-    // We need to building blocks:
-    // 1) input --> used to compute the average of the inputs (squared).
-    // 2) n * input^2 --> used to compute the average of the squared inputs.
-    var input_squared = input.map(x => { y = truncate(x.times(x), precision);
-      return jiff_instance.helpers.BigNumber(y);
-    });
-
-    // Secret share the two building blocks!
     var shares = await jiff_instance.share_array(input);
     shares = shares[1].concat(shares[2]).concat(shares[3]);
-    var squared_shares = await jiff_instance.share_array(input_squared);
-    squared_shares = squared_shares[1].concat(squared_shares[2]).concat(squared_shares[3]);
 
-    // Sum both kinds of building blocks.
-    var sum = shares[0];
-    var sum_squares = squared_shares[0];
+    var min = shares[0];
     for (var i = 1; i < jiff_instance.party_count; i++) {
-      sum = sum.sadd(shares[i]);
-      sum_squares = sum_squares.sadd(squared_shares[i]);
+      var cmp = min.sgt(shares[i]);
+      min = cmp.if_else(min, shares[i]);
     }
 
-    // Compute square of the sum of inputs.
-    // We do not need to perform expensive fixed point shift under MPC
-    // We can do that in the clear after opening.
-    var shift = jiff_instance.helpers.magnitude(precision);
-    var squared_sum = sum.smult(sum, undefined, false);
-    sum_squares = sum_squares.cmult(n, undefined, false);
-
-    // Now, both sums have the fixed point shifted by the same amount,
-    // we can operate on them consistently.
-    var diff = sum_squares.ssub(squared_sum);
-    return jiff_instance.open(diff).then(function (diff) {
-      // diff is a BigNumber.
-      // Now, we have the value of:
-      // (n*Sum(input^2) - Sum(input)^2) * shift
-      // We want to compute sqrt(Sum(input^2) / n - Sum(input)^2/n^2)
-      diff = truncate(diff.div(shift), precision);
-      diff = jiff_instance.helpers.BigNumber(diff);
-      // * shift is gone, now devide by n^2.
-      diff = truncate(diff.div(Math.pow(n, 2)), precision);
-      diff = jiff_instance.helpers.BigNumber(diff);
-      // Now we have Avg(input^2) - Avg(input)^2
-      // Square root and we are done.
-      diff = truncate(diff.sqrt(), precision);
-      return jiff_instance.helpers.BigNumber(diff);
-    });
+    return min.open();
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
