@@ -13,7 +13,7 @@ function connect() {
     $('#output').append("<p class='error'>Party count must be a valid number!</p>");
     $('#connectButton').prop('disabled', false);
   } else {
-    var options = { party_count: party_count, party_id: !window.location.href.includes("party2")? 1 : 2 };
+    var options = { party_count: party_count };
     options.onError = function (_, error) {
       $('#output').append("<p class='error'>"+error+'</p>');
     };
@@ -39,15 +39,13 @@ function connect() {
     hostname = hostname + ':' + port;
     // eslint-disable-next-line no-undef
     mpc.connect(hostname, computation_id, options);
-
-    setTimeout(submit, 250);
   }
 }
 
-var j=0;
 // eslint-disable-next-line no-unused-vars
 function submit() {
-  var input = parseInt($('#number').val());//+(j++);
+  var input = parseInt($('#number').val());
+  var bit_length = parseInt($('#bitlength').val());
 
   if (isNaN(input)) {
     $('#output').append("<p class='error'>Input a valid number!</p>");
@@ -57,7 +55,7 @@ function submit() {
     $('#button').attr('disabled', true);
     $('#output').append('<p>Starting...</p>');
     // eslint-disable-next-line no-undef
-    var promise = mpc.compute(input);
+    var promise = mpc.compute(input, bit_length);
     promise.then(handleResult);
   }
 }
@@ -65,11 +63,4 @@ function submit() {
 function handleResult(result) {
   $('#output').append('<p>Result is: ' + result + '</p>');
   $('#button').attr('disabled', false);
-
-  setTimeout(submit, 250);
-}
-
-setTimeout(connect, 750);
-if (!window.location.href.includes("party2")) {
-  window.open("http://localhost:8080/demos/GMW-arithmetic/client.html#party2");
 }
