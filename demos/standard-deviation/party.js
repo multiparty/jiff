@@ -10,8 +10,8 @@ var mpc = require('./mpc');
 
 // Read Command line arguments
 var input = Number(process.argv[2]);
-if (input < 0 || input > 100) {
-  console.log('input must be between 0 and 100 inclusive');
+if (input < -999 || input > 999) {
+  console.log('input must be between -999 and 999 inclusive');
   return;
 }
 

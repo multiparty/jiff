@@ -48,7 +48,7 @@ function submit() {
 
   if (isNaN(input)) {
     $('#output').append("<p class='error'>Input a valid number!</p>");
-  } else if (100 < input || input < 0) {
+  } else if (999 < input || input < -999) {
     $('#output').append("<p class='error'>Input a number between 0 and 100!</p>");
   } else {
     $('#button').attr('disabled', true);

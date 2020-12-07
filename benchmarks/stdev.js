@@ -24,13 +24,13 @@
     // Added options goes here
     if (node) {
       // eslint-disable-next-line no-undef
-      JIFFClient = require('../../lib/jiff-client');
+      JIFFClient = require('../lib/jiff-client');
       // eslint-disable-next-line no-undef
-      jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
+      jiff_bignumber = require('../lib/ext/jiff-client-bignumber');
       // eslint-disable-next-line no-undef
-      jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
+      jiff_fixedpoint = require('../lib/ext/jiff-client-fixedpoint');
       // eslint-disable-next-line no-undef
-      jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber');
+      jiff_negativenumber = require('../lib/ext/jiff-client-negativenumber');
     }
 
     opt.autoConnect = false;
@@ -50,7 +50,7 @@
   /**
    * The MPC computation
    */
-  exports.compute = function (input, jiff_instance) {
+  exports.compute = async function (input, jiff_instance) {
     if (jiff_instance == null) {
       jiff_instance = saved_instance;
     }
@@ -60,22 +60,25 @@
     // number.
     var n = jiff_instance.party_count;
     var precision = jiff_instance.decimal_digits;
-    input = jiff_instance.helpers.BigNumber(input);
+    input = input.map(x => {return jiff_instance.helpers.BigNumber(x)});
 
     // We need to building blocks:
     // 1) input --> used to compute the average of the inputs (squared).
     // 2) n * input^2 --> used to compute the average of the squared inputs.
-    var input_squared = truncate(input.times(input), precision);
-    input_squared = jiff_instance.helpers.BigNumber(input_squared);
+    var input_squared = input.map(x => { y = truncate(x.times(x), precision);
+      return jiff_instance.helpers.BigNumber(y);
+    });
 
     // Secret share the two building blocks!
-    var shares = jiff_instance.share(input);
-    var squared_shares = jiff_instance.share(input_squared);
+    var shares = await jiff_instance.share_array(input);
+    shares = shares[1].concat(shares[2]).concat(shares[3]);
+    var squared_shares = await jiff_instance.share_array(input_squared);
+    squared_shares = squared_shares[1].concat(squared_shares[2]).concat(squared_shares[3]);
 
     // Sum both kinds of building blocks.
-    var sum = shares[1];
-    var sum_squares = squared_shares[1];
-    for (var i = 2; i <= jiff_instance.party_count; i++) {
+    var sum = shares[0];
+    var sum_squares = squared_shares[0];
+    for (var i = 1; i < jiff_instance.party_count; i++) {
       sum = sum.sadd(shares[i]);
       sum_squares = sum_squares.sadd(squared_shares[i]);
     }
