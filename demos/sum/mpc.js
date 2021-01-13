@@ -5,6 +5,7 @@
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
+    console.log("here")
     var opt = Object.assign({}, options);
     opt.crypto_provider = true;
 

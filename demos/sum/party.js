@@ -7,6 +7,8 @@ process.on('unhandledRejection', function (reason) {
   console.log('Unhandled Rejection', reason);
 });
 
+console.log("here")
+
 /**
  * Do not change this unless you have to.
  * This code parses input command line arguments,
@@ -49,4 +51,6 @@ options.onConnect = function (jiff_instance) {
 };
 
 // Connect
-mpc.connect('http://localhost:8080', computation_id, options);
+console.log("here")
+mpc.connect('http://ec2-54-210-136-172.compute-1.amazonaws.com:8080', computation_id, options);
+// mpc.connect('http://localhost:8080', computation_id, options);
