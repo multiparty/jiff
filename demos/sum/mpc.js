@@ -5,17 +5,23 @@
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
-    console.log("here")
     var opt = Object.assign({}, options);
     opt.crypto_provider = true;
 
     if (node) {
       // eslint-disable-next-line no-undef
       JIFFClient = require('../../lib/jiff-client');
+      // eslint-disable-next-line no-undef
+      jiff_websockets = require('../../lib/ext/jiff-client-websockets.js');
     }
 
+    opt.autoConnect = false;
     // eslint-disable-next-line no-undef
     saved_instance = new JIFFClient(hostname, computation_id, opt);
+    // eslint-disable-next-line no-undef
+    saved_instance.apply_extension(jiff_websockets, opt);
+    saved_instance.connect();
+
     return saved_instance;
   };
 

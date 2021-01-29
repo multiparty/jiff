@@ -52,5 +52,5 @@ options.onConnect = function (jiff_instance) {
 
 // Connect
 console.log("here")
-mpc.connect('http://ec2-54-210-136-172.compute-1.amazonaws.com:8080', computation_id, options);
-// mpc.connect('http://localhost:8080', computation_id, options);
+//mpc.connect('http://ec2-54-210-136-172.compute-1.amazonaws.com:8080', computation_id, options);
+mpc.connect('http://localhost:8080', computation_id, options);
