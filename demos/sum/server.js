@@ -10,7 +10,10 @@ app.use('/dist', express.static(path.join(__dirname, '..', '..', 'dist')));
 app.use('/lib/ext', express.static(path.join(__dirname, '..', '..', 'lib', 'ext')));
 
 var JIFFServer = require('../../lib/jiff-server.js');
-new JIFFServer(http, { logs: true });
+var jiff_instance = new JIFFServer(http, { logs: true });
+
+var jiffWebsocketServer = require('../../lib/ext/jiff-server-websockets');
+jiff_instance.apply_extension(jiffWebsocketServer);
 
 // Serve static files.
 http.listen(8080, function () {

@@ -15,7 +15,7 @@
       jiff_websockets = require('../../lib/ext/jiff-client-websockets.js');
     }
 
-    opt.autoConnect = false;
+    opt.autoConnect = true;
     // eslint-disable-next-line no-undef
     saved_instance = new JIFFClient(hostname, computation_id, opt);
     // eslint-disable-next-line no-undef
