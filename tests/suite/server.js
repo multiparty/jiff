@@ -7,11 +7,14 @@ var http = require('http').Server(app);
 var jiffServer = require('../../lib/jiff-server');
 var jiffRestAPIServer =  require('../../lib/ext/jiff-server-restful');
 var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
+var jiffWebSocketServer = require('../../lib/ext/jiff-server-websockets');
 
 var options = {
   logs: true,
   app: app
 };
+
+console.log("Extensions: " + extensions);
 
 var jiff_instance = new jiffServer(http, options);
 if (extensions != null && (extensions.indexOf('bigNumber') > -1 || extensions.indexOf('fixedpoint') > -1)) {
@@ -22,6 +25,9 @@ if (extensions != null && extensions.indexOf('restAPI') > -1) {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   jiff_instance.apply_extension(jiffRestAPIServer, options);
+}
+if (extensions != null && extensions.indexOf('websocket') > -1) {
+  jiff_instance.apply_extension(jiffWebSocketServer, options);
 }
 
 // Serve static files.
