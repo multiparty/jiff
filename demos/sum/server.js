@@ -8,7 +8,6 @@ var http = require('http').Server(app);
 app.use('/demos', express.static(path.join(__dirname, '..', '..', 'demos')));
 app.use('/dist', express.static(path.join(__dirname, '..', '..', 'dist')));
 app.use('/lib/ext', express.static(path.join(__dirname, '..', '..', 'lib', 'ext')));
-app.use('/lib/common/linkedlist.js', express.static(path.join(__dirname, '..', '..', 'lib', 'common', 'linkedlist.js')));
 
 console.log(path.join(__dirname, '..', '..', 'lib', 'common', 'linkedlist.js'))
 
