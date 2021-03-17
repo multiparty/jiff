@@ -9,8 +9,11 @@ app.use('/demos', express.static(path.join(__dirname, '..', '..', 'demos')));
 app.use('/dist', express.static(path.join(__dirname, '..', '..', 'dist')));
 app.use('/lib/ext', express.static(path.join(__dirname, '..', '..', 'lib', 'ext')));
 
+console.log(path.join(__dirname, '..', '..', 'lib', 'common', 'linkedlist.js'))
+
 var JIFFServer = require('../../lib/jiff-server.js');
 var jiff_instance = new JIFFServer(http, { logs: true });
+
 
 var jiffWebsocketServer = require('../../lib/ext/jiff-server-websockets');
 jiff_instance.apply_extension(jiffWebsocketServer);
