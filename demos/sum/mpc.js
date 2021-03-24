@@ -19,7 +19,7 @@
     // eslint-disable-next-line no-undef
     saved_instance = new JIFFClient(hostname, computation_id, opt);
     // eslint-disable-next-line no-undef
-    saved_instance.apply_extension(JIFFClient.jiff_websockets, opt);
+    saved_instance.apply_extension(jiff_websockets, opt);
     saved_instance.connect();
 
     return saved_instance;
