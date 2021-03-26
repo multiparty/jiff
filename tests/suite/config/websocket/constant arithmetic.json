@@ -2,7 +2,7 @@
   "tests": [ "+", "-", "*", "|", "^", "cdivfac", "/Zp127", "/Zp2039", "cpow-acc", "cpow-inacc" ],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ "websocket" ],
+    "extensions": [ "jiff_websockets" ],
     "generation": {
       "file": "config/base/generation.js",
       "function": "generateConstantArithmeticInputs"

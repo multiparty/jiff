@@ -8,7 +8,7 @@ var extensions = {
   negativeNumber: require('../../lib/ext/jiff-client-negativenumber'),
   restAPI: require('../../lib/ext/jiff-client-restful'),
   debugging: require('../../lib/ext/jiff-client-debugging.js'),
-  websocket: require('../../lib/ext/jiff-client-websockets')
+  jiff_websockets: require('../../lib/ext/jiff-client-websockets')
 };
 
 // Create the jiff instances for tests
