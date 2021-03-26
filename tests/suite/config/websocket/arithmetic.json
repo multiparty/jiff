@@ -4,7 +4,7 @@
     "port": 3001,
     "extensions": [ "websocket" ],
     "generation": {
-      "file": "config/websocket/generation.js",
+      "file": "config/base/generation.js",
       "function": "generateArithmeticInputs"
     },
     "computation": {

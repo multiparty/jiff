@@ -14,8 +14,6 @@ var options = {
   app: app
 };
 
-console.log("Extensions: " + extensions);
-
 var jiff_instance = new jiffServer(http, options);
 if (extensions != null && (extensions.indexOf('bigNumber') > -1 || extensions.indexOf('fixedpoint') > -1)) {
   jiff_instance.apply_extension(jiffBigNumberServer, options);
