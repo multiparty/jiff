@@ -16,7 +16,7 @@
       // eslint-disable-next-line no-undef,no-global-assign
       $ = require('jquery-deferred');
       // eslint-disable-next-line no-undef
-      JIFFClient.jiff_websockets = require('../../lib/ext/jiff-client-websockets.js');
+      jiff_websockets = require('../../lib/ext/jiff-client-websockets.js');
     }
 
     // eslint-disable-next-line no-undef
