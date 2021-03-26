@@ -15,6 +15,10 @@ MPC protocols for the comparison of secret shares.
 NOTE: As currently implemented, the input array is hard-coded into the MPC protocol as player 1's input. 
 If player 1 inputs the search integer and player 2 inputs the array, the protocol will not perform as expected. 
 
+This demo also includes the use of the jiff_websockets extension. This extension allows JIFF to use the ws WebSocket library
+instead of socket.io. The jiff_websockets extension requires that the distribution file be included in client.html as opposed
+to lib/ext/jiff-client-websockets.
+
 ## Running Demo
 
 1. Running a server:
