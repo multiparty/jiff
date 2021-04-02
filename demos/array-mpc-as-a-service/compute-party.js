@@ -39,12 +39,12 @@ var jiffClient = new JIFFClient('http://localhost:8080', computation_id, {
 // the computation code
 var compute = function () {
   jiffClient.wait_for(all_parties, function () {
-    var i, j, p, p_id;
+    var p, p_id;
 
     // We are a compute party, we do not have any input (thus secret is null),
     // we will receive shares of inputs from all the input_parties.
     var skeletons = {};
-    for (i = 0; i < config.input_parties.length; i++) {
+    for (let i = 0; i < config.input_parties.length; i++) {
       p_id = config.input_parties[i];
       skeletons[p_id] = Array(config.input_length).fill(null);  // Assume arrays of three
     }
@@ -55,14 +55,14 @@ var compute = function () {
      */
     function sadd_array(arr) {
       var sum = arr[0];
-      for (i = 1; i < arr.length; i++) {
+      for (let i = 1; i < arr.length; i++) {
         sum = sum.sadd(arr[i]);
       }
       return sum;
     }
 
     var partial_sums = [];
-    for (i = 0; i < config.input_parties.length; i++) {
+    for (let i = 0; i < config.input_parties.length; i++) {
       p = config.input_parties[i];
       partial_sums[i] = sadd_array(shares[p]);
     }
@@ -73,9 +73,9 @@ var compute = function () {
      * Compute the inner product
      */
     var pairwise_product = shares[config.input_parties[0]];
-    for (i = 1; i < config.input_parties.length; i++) {
+    for (let i = 1; i < config.input_parties.length; i++) {
       p = config.input_parties[i];
-      for (j = 0; j < pairwise_product.length; j++) {
+      for (let j = 0; j < pairwise_product.length; j++) {
         pairwise_product[j] = pairwise_product[j].smult(shares[p][j]);
       }
     }
