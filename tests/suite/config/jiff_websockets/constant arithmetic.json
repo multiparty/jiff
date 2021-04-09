@@ -1,0 +1,79 @@
+{
+  "tests": [ "+", "-", "*", "|", "^", "cdivfac", "/Zp127", "/Zp2039", "cpow-acc", "cpow-inacc" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "jiff_websockets" ],
+    "generation": {
+      "file": "config/base/generation.js",
+      "function": "generateConstantArithmeticInputs"
+    },
+    "computation": {
+      "file": "computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 100,
+      "parallel": 50,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 3
+      }
+    },
+    "/Zp127": {
+      "alias": "/",
+      "ondemand": false,
+      "count": 8,
+      "parallel": 3,
+      "options": {
+        "Zp": 127,
+        "party_count": 3
+      }
+    },
+    "/Zp2039": {
+      "alias": "/",
+      "count": 5,
+      "parallel": 3,
+      "options": {
+        "Zp": 2039,
+        "party_count": 3
+      }
+    },
+    "cpow-acc": {
+      "alias": "cpow",
+      "count": 15,
+      "accuratePreprocessing": true,
+      "parallel": 5,
+      "options": {
+        "Zp": 2039,
+        "party_count": 3
+      },
+      "inputs": [
+        {"1": 1031, "constant":  0},
+        {"1": 31, "constant":  1},
+        {"1": 8, "constant":  2},
+        {"1": 123, "constant":  3}
+      ]
+    },
+    "cpow-inacc": {
+      "alias": "cpow",
+      "count": 10,
+      "accuratePreprocessing": false,
+      "parallel": 5,
+      "options": {
+        "Zp": 2039,
+        "party_count": 3
+      },
+      "inputs": [
+        {"1": 1031, "constant":  0},
+        {"1": 31, "constant":  1},
+        {"1": 8, "constant":  2},
+        {"1": 123, "constant":  3},
+        {"1": 401, "constant":  1023},
+        {"1": 91, "constant":  2039}
+      ]
+    }
+  }
+}

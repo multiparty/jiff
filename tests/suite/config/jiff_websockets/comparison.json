@@ -1,0 +1,26 @@
+{
+  "tests": [ "<", "<=", ">", ">=", "==", "!=" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "jiff_websockets" ],
+    "generation": {
+      "file": "config/base/generation.js",
+      "function": "generateComparisonInputs"
+    },
+    "computation": {
+      "file": "computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 15,
+      "parallel": 5,
+      "options": {
+        "Zp": 2039,
+        "party_count": 3
+      }
+    }
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "tests": [ "share2", "share3", "share4", "share5", "share10", "reshare-threshold4", "reshare-threshold5", "reshare-parties4", "reshare-parties5", "reshare-parties7" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "jiff_websockets" ],
+    "generation": {
+      "file": "config/base/generation.js",
+      "function": "generateShareInputs"
+    },
+    "computation": {
+      "file": "./computations-share.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "share2": {
+      "count": 100,
+      "parallel": 25,
+      "options": {
+        "Zp": 2039,
+        "party_count": 2
+      }
+    },
+    "share3": {
+      "count": 100,
+      "parallel": 25,
+      "options": {
+        "Zp": 2039,
+        "party_count": 3
+      }
+    },
+    "share4": {
+      "count": 50,
+      "parallel": 20,
+      "options": {
+        "Zp": 2039,
+        "party_count": 4
+      }
+    },
+    "share5": {
+      "count": 30,
+      "parallel": 15,
+      "options": {
+        "Zp": 2039,
+        "party_count": 5
+      }
+    },
+    "share10": {
+      "count": 10,
+      "parallel": 5,
+      "options": {
+        "Zp": 2039,
+        "party_count": 10
+      }
+    },
+    "reshare-threshold4": {
+      "count": 100,
+      "parallel": 25,
+      "options": {
+        "Zp": 2039,
+        "party_count": 4
+      }
+    },
+    "reshare-threshold5": {
+      "count": 50,
+      "parallel": 20,
+      "options": {
+        "Zp": 2039,
+        "party_count": 5
+      }
+    },
+    "reshare-parties4": {
+      "count": 100,
+      "parallel": 20,
+      "options": {
+        "Zp": 2039,
+        "party_count": 4
+      }
+    },
+    "reshare-parties5": {
+      "count": 50,
+      "parallel": 20,
+      "options": {
+        "Zp": 2039,
+        "party_count": 5
+      }
+    },
+    "reshare-parties7": {
+      "count": 20,
+      "parallel": 10,
+      "options": {
+        "Zp": 2039,
+        "party_count": 7
+      }
+    }
+  }
+}

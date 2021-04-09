@@ -1,0 +1,50 @@
+{
+  "tests": [ "+", "-", "*", "*bgw", "|", "^", "!", "/", "%" ],
+  "suiteConf": {
+    "port": 3001,
+    "extensions": [ "jiff_websockets" ],
+    "generation": {
+      "file": "config/base/generation.js",
+      "function": "generateArithmeticInputs"
+    },
+    "computation": {
+      "file": "computations.js",
+      "function": "compute"
+    }
+  },
+
+  "testConf": {
+    "default": {
+      "count": 100,
+      "parallel": 25,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 3
+      }
+    },
+    "*bgw": {
+      "count": 100,
+      "parallel": 25,
+      "options": {
+        "Zp": 16777729,
+        "party_count": 4
+      }
+    },
+    "/": {
+      "count": 8,
+      "parallel": 3,
+      "options": {
+        "Zp": 23,
+        "party_count": 3
+      }
+    },
+    "%": {
+      "count": 3,
+      "parallel": 3,
+      "options": {
+        "Zp": 31,
+        "party_count": 3
+      }
+    }
+  }
+}

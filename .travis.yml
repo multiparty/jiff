@@ -17,6 +17,7 @@ env:
 - TEST_NAME='negativeNumber' TEST_SUITE=''
 - TEST_NAME='bigNumber-negativeNumber' TEST_SUITE=''
 - TEST_NAME='restAPI' TEST_SUITE=''
+- TEST_NAME='jiff_websockets' TEST_SUITE=''
 - TEST_NAME='bits' TEST_SUITE=''
 - TEST_NAME='fixedpoint' TEST_SUITE='share'
 - TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
