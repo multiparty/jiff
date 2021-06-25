@@ -162,7 +162,7 @@ function parallelSearch() {
   var elementShare = jiff_instance.share(null, 2, [1, 3], [3]);
 
   // partition and share with clique
-  var partition = input.slice(input.length/2);
+  var partition = input.slice(0,input.length/2);
   var promise = jiff_instance.share_array(partition, null, 2, [1, 3], [1]);
   promise.then(function (array) {
     var intermediate1 = linear_search(array[1], elementShare[3]);

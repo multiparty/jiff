@@ -14,6 +14,7 @@
   <script src="/bignumber.js/bignumber.min.js"></script>
   <script src="/lib/ext/jiff-client-bignumber.js"></script>
   <script src="/lib/ext/jiff-client-fixedpoint.js"></script>
+  <script src="/lib/ext/jiff-client-negativenumber.js"></script>
 
   <!-- Contains UI Handlers and Input Checks -->
   <script type="text/javascript" src="./client.js"></script>
@@ -28,7 +29,7 @@
   <br/><br/>
   <hr/>
   <h1>Standard deviation of fixed point rational numbers under MPC</h1>
-  <label for="number">Enter your fixedpoint number (between 0 and 100 with 3 digits of accuracy)</label> <input id="number" pattern="[0-9]+(.[0-9]+|)"> &nbsp; <button onclick="submit();" disabled="disabled" id="button">Sum</button><br/>
+  <label for="number">Enter your fixedpoint number (between -999 and 999 (inclusive) with no more than 3 decimal digits)</label> <input id="number" pattern="(-|+)?[0-9]+(.[0-9]+|)"> &nbsp; <button onclick="submit();" disabled="disabled" id="button">Sum</button><br/>
   <div id="output"></div>
 </body>
 </html>

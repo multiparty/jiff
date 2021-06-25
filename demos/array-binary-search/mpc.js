@@ -15,11 +15,15 @@
       JIFFClient = require('../../lib/jiff-client');
       // eslint-disable-next-line no-undef,no-global-assign
       $ = require('jquery-deferred');
+      // eslint-disable-next-line no-undef
+      jiff_websockets = require('../../lib/ext/jiff-client-websockets.js');
     }
 
     // eslint-disable-next-line no-undef
     saved_instance = new JIFFClient(hostname, computation_id, opt);
     // if you need any extensions, put them here
+    // eslint-disable-next-line no-undef
+    saved_instance.apply_extension(jiff_websockets, opt);
 
     return saved_instance;
   };

@@ -153,7 +153,6 @@
 
           // var eig_copy = Object.assign({}, eig);
           console.log(eig);
-          console.log('here');
           console.log(eig.E);
           console.log('find the two largest eigenvalues');
           // Fix sorting 6/11
