@@ -2,8 +2,18 @@ var path = require('path');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
+
 var JIFFServer = require('../../lib/jiff-server');
-new JIFFServer(http, { logs:false });
+new JIFFServer(http, {
+  logs: false,
+  hooks: {
+    log: function (_, label) {
+      if (['share', 'open', 'crypto_provider'].indexOf(label) === -1) {
+        console.log.apply(console, Array.from(arguments).slice(1));
+      }
+    }
+  }
+});
 
 // Serve static files.
 app.use('/demos', express.static(path.join(__dirname, '..', '..', 'demos')));

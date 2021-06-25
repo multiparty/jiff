@@ -34,6 +34,9 @@
   "scripts": {
     "test": "./tests/suite/test.sh",
     "suite": "./tests/suite/suite.sh",
+    "coverage": "nyc --no-clean npm run test",
+    "coverage:report": "nyc report --reporter=text-lcov | coveralls",
+    "coverage:demo": "nyc --no-clean npm run test-demo",
     "gen-docs": "jsdoc -r -c docs/jsdoc.conf.json && sed -i -e 's/lib\\/ext\\/README.md/extensions.html/g' docs/jsdoc/*.html && sed -i -e 's/lib\\/ext\\/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/Hooks.md/hooks.html/g' docs/jsdoc/*.html && sed -i -e 's/CONTRIBUTING.md/CONTRIBUTING.html/g' docs/jsdoc/*.html && grep -rl \"module:jiff-client~JIFFClient#\" docs/jsdoc/*.html | xargs sed -i 'html' 's/module:jiff-client~JIFFClient#//g'",
     "test-demo": "./demos/run-test.sh",
     "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit",
@@ -60,6 +63,7 @@
   "devDependencies": {
     "browserify": "^16.5.2",
     "chai": "^4.1.2",
+    "coveralls": "^3.0.9",
     "eslint": "^4.19.1",
     "eslint-plugin-requirejs": "^2.0.1",
     "express": "^4.16.3",
@@ -67,6 +71,8 @@
     "marked": "^0.7.0",
     "minimist": "^1.2.0",
     "mocha": "^4.1.0",
-    "neptune-notebook": "^1.3.1"
+    "mocha-lcov-reporter": "^1.3.0",
+    "neptune-notebook": "^1.3.1",
+    "nyc": "^15.0.0"
   }
 }
