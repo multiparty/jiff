@@ -45,12 +45,12 @@ jobs:
           name: 4
           paths:
             - .nyc_output
-    - env: TEST_NAME='bigNumber-negativeNumber' TEST_SUITE=''
-      workspaces:
-        create:
-          name: 5
-          paths:
-            - .nyc_output
+    # - env: TEST_NAME='bigNumber-negativeNumber' TEST_SUITE=''
+    #   workspaces:
+    #     create:
+    #       name: 5
+    #       paths:
+    #         - .nyc_output
     - env: TEST_NAME='restAPI' TEST_SUITE=''
       workspaces:
         create:
@@ -64,85 +64,85 @@ jobs:
           name: 7
           paths:
             - .nyc_output
-    - name: TEST_NAME='bits' TEST_SUITE=''
-      env: TEST_NAME='bits' TEST_SUITE=''
-      workspaces:
-        create:
-          name: 8
-          paths:
-            - .nyc_output
-    - env: TEST_NAME='fixedpoint' TEST_SUITE='share'
-      workspaces:
-        create:
-          name: 9
-          paths:
-            - .nyc_output
-    - env: TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
-      workspaces:
-        create:
-          name: 10
-          paths:
-            - .nyc_output
-    - env: TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
-      workspaces:
-        create:
-          name: 11
-          paths:
-            - .nyc_output
-    - env: TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
-      workspaces:
-        create:
-          name: 12
-          paths:
-            - .nyc_output
-    - env: TEST_NAME='fixedpoint' TEST_SUITE='comparison'
-      workspaces:
-        create:
-          name: 13
-          paths:
-            - .nyc_output
+    # - name: TEST_NAME='bits' TEST_SUITE=''
+    #   env: TEST_NAME='bits' TEST_SUITE=''
+    #   workspaces:
+    #     create:
+    #       name: 8
+    #       paths:
+    #         - .nyc_output
+    # - env: TEST_NAME='fixedpoint' TEST_SUITE='share'
+    #   workspaces:
+    #     create:
+    #       name: 9
+    #       paths:
+    #         - .nyc_output
+    # - env: TEST_NAME='fixedpoint' TEST_SUITE='arithmetic'
+    #   workspaces:
+    #     create:
+    #       name: 10
+    #       paths:
+    #         - .nyc_output
+    # - env: TEST_NAME='fixedpoint' TEST_SUITE='constant arithmetic'
+    #   workspaces:
+    #     create:
+    #       name: 11
+    #       paths:
+    #         - .nyc_output
+    # - env: TEST_NAME='fixedpoint' TEST_SUITE='constant comparison'
+    #   workspaces:
+    #     create:
+    #       name: 12
+    #       paths:
+    #         - .nyc_output
+    # - env: TEST_NAME='fixedpoint' TEST_SUITE='comparison'
+    #   workspaces:
+    #     create:
+    #       name: 13
+    #       paths:
+    #         - .nyc_output
     - env: TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
       workspaces:
         create:
           name: 14
           paths:
             - .nyc_output
-    - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='share'
-      workspaces:
-        create:
-          name: 15
-          paths:
-            - .nyc_output
-    - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='arithmetic'
-      workspaces:
-        create:
-          name: 16
-          paths:
-            - .nyc_output
-    - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant arithmetic'
-      workspaces:
-        create:
-          name: 17
-          paths:
-            - .nyc_output
-    - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant comparison'
-      workspaces:
-        create:
-          name: 18
-          paths:
-            - .nyc_output
-    - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='comparison'
-      workspaces:
-        create:
-          name: 19
-          paths:
-            - .nyc_output
-    - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
-      workspaces:
-        create:
-          name: 20
-          paths:
-            - .nyc_output
+    # - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='share'
+    #   workspaces:
+    #     create:
+    #       name: 15
+    #       paths:
+    #         - .nyc_output
+    # - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='arithmetic'
+    #   workspaces:
+    #     create:
+    #       name: 16
+    #       paths:
+    #         - .nyc_output
+    # - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant arithmetic'
+    #   workspaces:
+    #     create:
+    #       name: 17
+    #       paths:
+    #         - .nyc_output
+    # - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='constant comparison'
+    #   workspaces:
+    #     create:
+    #       name: 18
+    #       paths:
+    #         - .nyc_output
+    # - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='comparison'
+    #   workspaces:
+    #     create:
+    #       name: 19
+    #       paths:
+    #         - .nyc_output
+    # - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='ifelse'
+    #   workspaces:
+    #     create:
+    #       name: 20
+    #       paths:
+    #         - .nyc_output
     - stage: report
       script: npm run coverage:report
       workspaces:
