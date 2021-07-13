@@ -1,4 +1,4 @@
-**/node_modules/
+node_modules/
 docs/
 dist/
-tutorials/static/js
+tutorials/static/

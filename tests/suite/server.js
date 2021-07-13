@@ -10,8 +10,15 @@ var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
 var jiffWebSocketServer = require('../../lib/ext/jiff-server-websockets');
 
 var options = {
-  logs: true,
-  app: app
+  logs: false,
+  app: app,
+  hooks: {
+    log: function (_, label) {
+      if (['share', 'open', 'crypto_provider'].indexOf(label) === -1) {
+        console.log.apply(console, Array.from(arguments).slice(1));
+      }
+    }
+  }
 };
 
 var jiff_instance = new jiffServer(http, options);
