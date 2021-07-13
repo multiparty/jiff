@@ -27,43 +27,43 @@ jobs:
           name: 1
           paths:
             - .nyc_output
-    - env: TEST_NAME='base' TEST_SUITE=''
-      workspaces:
-        create:
-          name: 2
-          paths:
-            - .nyc_output
-    - env: TEST_NAME='bigNumber' TEST_SUITE=''
-      workspaces:
-        create:
-          name: 3
-          paths:
-            - .nyc_output
-    - env: TEST_NAME='negativeNumber' TEST_SUITE=''
-      workspaces:
-        create:
-          name: 4
-          paths:
-            - .nyc_output
+    # - env: TEST_NAME='base' TEST_SUITE=''
+    #   workspaces:
+    #     create:
+    #       name: 2
+    #       paths:
+    #         - .nyc_output
+    # - env: TEST_NAME='bigNumber' TEST_SUITE=''
+    #   workspaces:
+    #     create:
+    #       name: 3
+    #       paths:
+    #         - .nyc_output
+    # - env: TEST_NAME='negativeNumber' TEST_SUITE=''
+    #   workspaces:
+    #     create:
+    #       name: 4
+    #       paths:
+    #         - .nyc_output
     # - env: TEST_NAME='bigNumber-negativeNumber' TEST_SUITE=''
     #   workspaces:
     #     create:
     #       name: 5
     #       paths:
     #         - .nyc_output
-    - env: TEST_NAME='restAPI' TEST_SUITE=''
-      workspaces:
-        create:
-          name: 6
-          paths:
-            - .nyc_output
-    - name: TEST_NAME='jiff_websockets' TEST_SUITE=''
-      env: TEST_NAME='jiff_websockets' TEST_SUITE=''
-      workspaces:
-        create:
-          name: 7
-          paths:
-            - .nyc_output
+    # - env: TEST_NAME='restAPI' TEST_SUITE=''
+    #   workspaces:
+    #     create:
+    #       name: 6
+    #       paths:
+    #         - .nyc_output
+    # - name: TEST_NAME='jiff_websockets' TEST_SUITE=''
+    #   env: TEST_NAME='jiff_websockets' TEST_SUITE=''
+    #   workspaces:
+    #     create:
+    #       name: 7
+    #       paths:
+    #         - .nyc_output
     # - name: TEST_NAME='bits' TEST_SUITE=''
     #   env: TEST_NAME='bits' TEST_SUITE=''
     #   workspaces:
@@ -101,12 +101,12 @@ jobs:
     #       name: 13
     #       paths:
     #         - .nyc_output
-    - env: TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
-      workspaces:
-        create:
-          name: 14
-          paths:
-            - .nyc_output
+    # - env: TEST_NAME='fixedpoint' TEST_SUITE='ifelse'
+    #   workspaces:
+    #     create:
+    #       name: 14
+    #       paths:
+    #         - .nyc_output
     # - env: TEST_NAME='fixedpoint-negativeNumber' TEST_SUITE='share'
     #   workspaces:
     #     create:
