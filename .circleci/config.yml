@@ -50,6 +50,15 @@ commands:
             while sleep 9m; do echo "=====[ $SECONDS seconds still running ]====="; done &
             npm run test -- "<<parameters.TEST_NAME>>" "<<parameters.TEST_SUITE>>";
             kill %1
+  run-demo:
+    parameters:
+      DEMO_NAME:
+        default: "*"
+        type: string
+    steps:
+      - run:
+          name: "Run demo"
+          command: npm run-script test-demo -- \*
 
 jobs:
   test:
@@ -70,6 +79,20 @@ jobs:
       - run-test:
           TEST_NAME: << parameters.TEST_NAME >>
           TEST_SUITE: << parameters.TEST_SUITE >>
+  run-demos:
+    parameters:
+      DEMO_NAME:
+        default: "*"
+        type: string
+    docker:
+      - image: cimg/node:current
+    steps:
+      - checkout-code
+      - restore-deps
+      - install-deps
+      - cache-deps
+      - run-demo:
+          DEMO_NAME: << parameters.DEMO_NAME >>
 
 workflows:
   base:
@@ -222,3 +245,6 @@ workflows:
           name: "fixedpoint-negativeNumber-ifelse"
           TEST_NAME: "fixedpoint-negativeNumber"
           TEST_SUITE: "ifelse"
+  demos:
+    jobs:
+      - run-demos
