@@ -4,18 +4,32 @@
 version: 2.1
 
 commands:
+  checkout-code:
+    steps:
+    - run:
+        name: Checkout code
+        command: |
+          mkdir ~/.ssh
+          chmod 0700 ~/.ssh
+          sudo printf "%s" "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==" >> ~/.ssh/known_hosts
+          sudo chmod 0600 ~/.ssh/known_hosts
+          cd /home/circleci
+          rm -r -f project
+          git clone $CIRCLE_REPOSITORY_URL -b ${CIRCLE_BRANCH} --single-branch --depth 1
+          mv jiff/ project/
+          cd project/
   restore-deps:
     steps:
-    - restore_cache:
-        keys:
-          - deps-{{ checksum "package-lock.json" }}
-          - deps-
+      - restore_cache:
+          keys:
+            - deps-{{ checksum "package-lock.json" }}
+            - deps-
   cache-deps:
     steps:
-    - save_cache:
-        key: deps-{{ checksum "package-lock.json" }}
-        paths:
-          - node_modules
+      - save_cache:
+          key: deps-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
   install-deps:
     steps:
       - run:
@@ -49,7 +63,7 @@ jobs:
     docker:
       - image: cimg/node:current
     steps:
-      - checkout
+      - checkout-code
       - restore-deps
       - install-deps
       - cache-deps
