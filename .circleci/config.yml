@@ -102,11 +102,54 @@ workflows:
       - test:
           name: "jiff_websockets"
           TEST_NAME: "jiff_websockets"
-  bits:
+  bits-arithmetic:
     jobs:
       - test:
-          name: "bits"
+          name: "bits-arithmetic"
           TEST_NAME: "bits"
+          TEST_SUITE: "arithmetic"
+  bits-constant-arithmetic:
+    jobs:
+      - test:
+          name: "bits-constant-arithmetic"
+          TEST_NAME: "bits"
+          TEST_SUITE: "constant arithmetic"
+  bits-arithmetic-lengths:
+    jobs:
+      - test:
+          name: "bits-arithmetic-lengths"
+          TEST_NAME: "bits"
+          TEST_SUITE: "arithmetic lengths"
+  bits-constant-comparison:
+    jobs:
+      - test:
+          name: "bits-constant-comparison"
+          TEST_NAME: "bits"
+          TEST_SUITE: "constant comparison"
+  bits-comparison:
+    jobs:
+      - test:
+          name: "bits-comparison"
+          TEST_NAME: "bits"
+          TEST_SUITE: "comparison"
+  bits-decomposition:
+    jobs:
+      - test:
+          name: "bits-decomposition"
+          TEST_NAME: "bits"
+          TEST_SUITE: "decomposition"
+  bits-comparison-lengths:
+    jobs:
+      - test:
+          name: "bits-comparison-lengths"
+          TEST_NAME: "bits"
+          TEST_SUITE: "comparison lengths"
+  bits-rejection-sampling:
+    jobs:
+      - test:
+          name: "bits-rejection-sampling"
+          TEST_NAME: "bits"
+          TEST_SUITE: "rejection sampling"
   fixedpoint-share:
     jobs:
       - test:
