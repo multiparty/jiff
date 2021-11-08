@@ -1,7 +1,8 @@
-var ChildProcess = require('../../tests/utils/process.js');
+const child_process = require('child_process');
 var Zp = require('../../lib/client/util/constants.js').gZp;
 
-var TEST_COUNT = 5;
+var PARTY_COUNTS = [10,20];
+var TEST_COUNT = 2;
 
 // Make sure we are working in the correct directory
 process.chdir(__dirname);
@@ -17,101 +18,114 @@ var generateInputs = function (count) {
   }
   return {inputs: inputs, output: sum};
 };
-var runInputParties =function (inputs, done, callback) {
-  var promises = [];
-  for (var i = 0; i < inputs.length; i++) {
-    var child = new ChildProcess('node', ['input-party.js', inputs[i].toString()], done, callback);
-    promises.push(child.promise());
-  }
 
-  return Promise.all(promises);
+var runInputParty =function (input) {
+  return child_process.spawn('node', ['input-party.js', input]);
 };
-var runServer = function (done, callback) {
-  var child = new ChildProcess('node', ['server.js'], done, callback);
-  return child.promise();
+var runServer = function () {
+  return child_process.spawn('node', ['server.js']);
 };
-var runAnalyst = function (done, callback) {
-  var child = new ChildProcess('node', ['analyst.js'], done, callback);
-  return child.promise();
+var runAnalyst = function () {
+  return child_process.spawn('node', ['analyst.js']);
 };
-var checkOutput = function (output, analyst, server) {
-  // wait until server and analyst are finished
-  return Promise.all([analyst, server]).then(function (results) {
-    var resultLine = results[0][results[0].length-1].trim();
-    var found = parseInt(resultLine.substring('SUM IS: '.length).trim());
-    if (output !== found) {
-      return new Error('Expected output ' + output + '. found ' + found);
+
+var runTest = async function(parties, disconnect) {
+  var res = generateInputs(parties);
+  var inputs = res.inputs;
+  var expectedSum = res.output;
+
+  // Run server
+  var serverProcess = runServer();
+  var serverExit = new Promise((resolve) => {
+    serverProcess.on('exit', () => {
+      resolve();
+    });
+  });
+  var serverStart = new Promise((resolve) => {
+    serverProcess.stdout.on('data', (data) => {
+      if (data.includes("listening on")) {
+        resolve();
+      }
+    });
+  });
+
+  // Run analyst when server is set up
+  await serverStart;
+  var analystProcess = runAnalyst();
+  var analystStartResolve;
+  var analystStart = new Promise((resolve) => {
+    analystStartResolve = resolve;
+  });
+  analystProcess.stdout.on('data', (data) => {
+    if (data.includes('Computation initialized!')) {
+      if (disconnect) {
+        analystProcess.kill();
+      }
+      analystStartResolve();
     }
   });
-};
 
-// eslint-disable-next-line no-undef
-describe('web-mpc', function () {
-  this.timeout(0);
-
-  for (var i = 0; i < TEST_COUNT; i++) {
-    // eslint-disable-next-line no-undef
-    it('10 input parties - no disconnect', function (done) {
-      var res = generateInputs(10);
-      var inputs = res.inputs;
-      var output = res.output;
-
-      var server = runServer(done, function (serverProcess, data) {
-        if (data.startsWith('listening on')) {
-          // server started: run analyst
-          var analyst = runAnalyst(done, function (analystProcess, data) {
-            if (data.startsWith('Computation initialized!')) {
-              // analyst initialized computation: run input parties
-              var inputParties = runInputParties(inputs, done);
-              inputParties.then(function () {
-                // input parties submitted their inputs! analyst should issue start!
-                analystProcess.write('\n');
-              });
-            }
-          });
-
-          // Make sure analyst output is good!
-          checkOutput(output, analyst, server).then(done);
-        }
+  // Run input parties when analyst is set up
+  await analystStart;
+  var inputProcesses = [];
+  var inputPromises = [];
+  for (var i = 0; i < inputs.length; i++) {
+    inputProcesses[i] = runInputParty(inputs[i].toString());
+    inputPromises[i] = new Promise((resolve) => {
+      inputProcesses[i].on('exit', () => {
+        resolve();
       });
     });
   }
 
-  for (i = 0; i < TEST_COUNT; i++) {
-    // eslint-disable-next-line no-undef
-    it('20 input parties - with disconnect', function (done) {
-      var res = generateInputs(20);
-      var inputs = res.inputs;
-      var output = res.output;
-
-      runServer(done, function (serverProcess, data) {
-        if (data.startsWith('listening on')) {
-          // server started: run analyst
-          var analyst = runAnalyst(done, function (analystProcess, data) {
-            if (data.startsWith('Computation initialized!')) {
-              // analyst initialized computation: kill analyst, and then start input parties
-              analystProcess.kill();
-              analyst.then(function () {
-                var inputParties = runInputParties(inputs, done);
-                inputParties.then(function () {
-                  // input parties submitted their inputs! analyst should issue start!
-                  var analyst = runAnalyst(done, function (analystProcess, data) {
-                    if (data.startsWith('Computation initialized!')) {
-                      analystProcess.write('\n');
-                    }
-                  });
-
-                  // Make sure analyst output is good!
-                  checkOutput(output, analyst).then(function (result) {
-                    serverProcess.kill(); // avoiding waiting a long time
-                    done(result);
-                  });
-                });
-              });
-            }
-          });
-        }
-      });
+  // Restart analyst if needed and start computation
+  await Promise.all(inputPromises);
+  if (disconnect) {
+    analystProcess = runAnalyst();
+    analystStart = new Promise((resolve) => {
+      analystStartResolve = resolve;
     });
+  }
+  var analystExitResolve;
+  var analystExit = new Promise((resolve) => {
+    analystExitResolve = resolve;
+  });
+  analystProcess.stdout.on('data', (data) => {
+    if (data.includes('Computation initialized!')) {
+      analystStartResolve();
+    } else if (data.includes('SUM IS:')) {
+      var outputSum = parseInt(data.toString().substring('SUM IS: '.length).trim());
+      analystExitResolve(outputSum);
+    }
+  });
+  await analystStart;
+  analystProcess.stdin.write('\n');
+
+  // Check results
+  await serverExit;
+  analystExit.then((outputSum) => {
+    if (outputSum != expectedSum) {
+      throw new Error("Expected ", expectedSum, ", got ", outputSum);
+    }
+  });
+}
+
+// eslint-disable-next-line no-undef
+describe('web-mpc', async function () {
+  this.timeout(0);
+
+  for (var parties of PARTY_COUNTS) {
+    for (var i = 0; i < TEST_COUNT; i++) {
+      // eslint-disable-next-line no-undef
+      it(parties + ' input parties - no disconnect', async function () {
+        await runTest(parties, false);
+      });
+    }
+    for (var i = 0; i < TEST_COUNT; i++) {
+      // eslint-disable-next-line no-undef
+      it(parties + ' input parties - with disconnect', async function () {
+        await runTest(parties, true);
+      });
+    }
   }
 });
