@@ -65,7 +65,7 @@ Until JIFF is on NPM, you will have to clone the JIFF repo, and install all depe
 ```command-line
 git clone https://github.com/multiparty/jiff
 cd jiff
-git checkout PF_documentation_updates # to use the documentation branch!
+git checkout docs # to use the documentation branch!
 npm install # to install all dependencies
 ```
 
