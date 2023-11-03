@@ -21,7 +21,7 @@
     "Rawane Issa <ra1issa@bu.edu> (http://cs-people.bu.edu/ra1issa/)",
     "Andrei Lapets <lapets@bu.edu> (http://cs-people.bu.edu/lapets/)"
   ],
-  "main": "lib/jiff-server.js",
+  "main": "lib/index.js",
   "directories": {
     "doc": "docs",
     "lib": "lib",

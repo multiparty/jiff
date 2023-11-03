@@ -16,34 +16,95 @@ For browsers, we provide a bundle including the base client side library and its
 
 For node.js clients, npm install should install all the required dependencies.
 
+You can use browserify or similar tools to require JIFF via npm and bundle it with your browser-side JS.
+
 ## Installation
 
-### Server
-
-Run npm from inside the project directory to automatically install the dependencies listed in `package.json`:
+Add JIFF as a dependency to your project:
 ```shell
-npm install
+npm install jiff-mpc
+```
+
+### Node.js
+
+After installing JIFF via npm, you can require the server module in your server
+code using:
+```javascript
+const { JIFFServer } = require('jiff-mpc');
+
+// create the JIFF server.
+const jiffServer = new JIFFServer(http, options);
+
+// listen for connections.
+http.listen(port, cb);
+```
+
+Similarly, you can require the client module in your node.js clients using:
+```javascript
+const { JIFFClient } = require('jiff-mpc');
+
+// create a jiff client.
+const jiffClient = new JIFFClient("<server address>", "<computation_id>", <options>);
+
+// perform some computation.
+let shares = jiffClient.share(<secret>);
+...
 ```
 
 ### Client - Browser
 
-Make sure to include the library bundle:
+To use our bundle, include the provided pre-built JS file in a script tag. Make sure
+that you set up your web-server to serve this JS file.
 ```html
 <!-- exposes JIFFClient to the global scope -->
 <script src="/dist/jiff-client.js"></script>
 ```
+
 Then inside a script tag (and after the page loads), initialize a JIFF object and set up a computation:
 ```javascript
-var instance = new JIFFClient("http://localhost:8080", "<computation_id>", parties);
+const jiffClient = new JIFFClient("<server address>", "<computation_id>", <options>);
 ```
-The instance object provides methods for sharing, opening, and performing operations on shares.
+The jiffClient object provides methods for sharing, opening, and performing operations on shares.
 
-### Client - node.js
+Alternatively, you can use the same code for both Node.js and browser-based clients, using tools
+such as [browserify](https://browserify.readthedocs.io/en/latest/readme/).
 
-In node.js you must include the library (either the bundle or the source) and then use it:
+To do this, require JIFF from npm in your client JS code normally, e.g. using `const { JIFFClient } = require('jiff-mpc');`,
+and then build your JS code into a bundle using browserify. You can then serve that bundle
+via your web server, and include it in your HTML using script tags.
+
+To see an example of this, look at this [JIFF standalone example repo](https://github.com/multiparty/jiff-standalone-example).
+
+### Extensions
+
+If you want to support more complex data types, such as Fixedpoint numbers or infinite precision integers,
+you should apply the corresponding extension to your client and/or server JIFF instances.
+
+The extensions can be imported via npm, bundled into web clients via browserify, or included directly via
+script tags into the browser.
+
 ```javascript
-var JIFFClient = require('./dist/jiff-client.js');
-var instance = new JIFFClient("http://localhost:8000", "<computation_id>", parties);
+// Server
+const { JIFFServer, JIFFServerBigNumber } = require('jiff-mpc');
+const jiffServer = new JIFFServer(http, options);
+jiffServer.apply_extension(JIFFServerBigNumber);
+
+// Client using node.js or browserify.
+const { JIFFClient, JIFFClientBigNumber } = require('jiff-mpc');
+const jiffClient = new JIFFClient("<server address>", "<computation_id>", {
+  autoConnect: false,
+  <other options>
+});
+jiffClient.apply_extension(JIFFClientBigNumber, options);
+jiffClient.connect();
+```
+
+```html
+<!-- Plain JS without browserify -->
+<!-- include the extension and any of its dependencies directly using script tags -->
+<!-- make sure your web server serves these files at the corresponding URLs -->
+<script src="/bignumber.js/bignumber.min.js"></script>
+<script src="/lib/ext/jiff-client-bignumber.js"></script>
 ```
 
 ## Project Layout
@@ -75,8 +136,7 @@ Each document is an independent tutorial. However, beginners are encouraged to v
 
 Run a sample server from one of the demos under `demos` in the following way:
 ```shell
-node index.js demos/<demo-name>/server  # alternative way 1
-node demos/<demo-name>/server.js  # alternative way 2
+node demos/<demo-name>/server.js
 ```
 The output from the example server will direct you to open `localhost:8080/demos/<demo-name>/client.html` in a browser (you must open
 an instance in a separate window/tab for every distinct party participating in the protocol).
