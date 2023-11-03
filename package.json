@@ -1,6 +1,6 @@
 {
   "name": "jiff-mpc",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Server/client library for building MPC applications using JavaScript; handles relaying shares between parties.",
   "keywords": [
     "secure-multiparty-computation",
