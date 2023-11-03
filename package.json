@@ -31,10 +31,12 @@
     "type": "git",
     "url": "git+https://github.com/multiparty/jiff-server.git"
   },
-  "files": {
-    "include": ["dist/", "lib/", "README.md", "LICENSE"],
-    "exclude": ["demos/", "docs/", "tests/", "tutorials/", "lib/ext/Hooks.md", "lib/ext/README.md"]
-  },
+  "files": [
+    "dist/",
+    "lib/",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "test": "./tests/suite/test.sh",
     "suite": "./tests/suite/suite.sh",
