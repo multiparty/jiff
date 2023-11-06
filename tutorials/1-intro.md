@@ -39,9 +39,7 @@ keys, this behavior can be customized by developers.
 
 This consists a paradigm shift compared to the traditional _peer-to-peer_ view of MPC, where all parties behave symmetrically and execute similar instructions.
 
-```neptune[inject=true,language=html]
-<img src="/static/images/jiff-server.png" alt="JIFF computation model" style="width: 80%; max-width: 1400px; margin-left: auto; margin-right: auto; display: block;"/>
-```
+<img src="./static/images/jiff-server.png" alt="JIFF computation model" style="width: 80%; max-width: 1400px; margin-left: auto; margin-right: auto; display: block;"/>
 
 # Why Use JIFF?
 Good reasons to use JIFF:
