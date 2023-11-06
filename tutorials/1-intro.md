@@ -92,7 +92,7 @@ Then we setup a JIFF server on top of our running http server.
 ```neptune[title=Server,env=server]
 var JIFFServer = require('../../../../../lib/jiff-server.js'); // replace this with your actual path to jiff-server.js
 var jiffServer = new JIFFServer(server, { logs:true });
-Console.log('Server is running on port 9111');
+console.log('Server is running on port 9111');
 ```
 
 ## Defining a JIFF Client
@@ -126,7 +126,7 @@ All these are optional. The server will attempt to fill in any unprovided option
 
 ```neptune[title=Party&nbsp;1,frame=frame2,scope=1]
 function onConnect() {
-  Console.log('All parties connected!');
+  console.log('All parties connected!');
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect };
@@ -135,7 +135,7 @@ var jiffClient = new JIFFClient('http://localhost:9111', 'our-setup-application'
 
 ```neptune[title=Party&nbsp;2,frame=frame2,scope=2]
 function onConnect() {
-  Console.log('All parties connected!');
+  console.log('All parties connected!');
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect };
@@ -144,7 +144,7 @@ var jiffClient = new JIFFClient('http://localhost:9111', 'our-setup-application'
 
 ```neptune[title=Party&nbsp;3,frame=frame2,scope=3]
 function onConnect() {
-  Console.log('All parties connected!');
+  console.log('All parties connected!');
 }
 
 var options = { party_count: 3, crypto_provider: true, onConnect: onConnect };
@@ -176,8 +176,8 @@ jiffClient.wait_for([1, 2, 3], function () {
   }
 
   Promise.all(results).then(function (results) {
-    Console.log('options', options);
-    Console.log('results', results);
+    console.log('options', options);
+    console.log('results', results);
   });
 });
 ```
@@ -195,8 +195,8 @@ jiffClient.wait_for([1, 2, 3], function () {
   }
 
   Promise.all(results).then(function (results) {
-    Console.log('options', options);
-    Console.log('results', results);
+    console.log('options', options);
+    console.log('results', results);
   });
 });
 ```
@@ -214,8 +214,8 @@ jiffClient.wait_for([1, 2, 3], function () {
   }
 
   Promise.all(results).then(function (results) {
-    Console.log('options', options);
-    Console.log('results', results);
+    console.log('options', options);
+    console.log('results', results);
   });
 });
 ```
@@ -233,7 +233,7 @@ rarely involves one party.
 The share function takes several optional parameters that can help customize its behavior.
 
 ```neptune[title=Share,scope=1,frame=frame4]
-Console.log(jiffClient.share.toString().split('\n')[0]);
+console.log(jiffClient.share.toString().split('\n')[0]);
 ```
 
 JIFF's documentation explain what these parameters mean.
@@ -253,11 +253,11 @@ All operations on that SecretShare are scheduled to execute after the promise is
 
 ```neptune[title=Party&nbsp;1,frame=frame5,scope=1]
 var shares = jiffClient.share(10, 2, [1, 2], [1, 2]);
-Console.log(Object.keys(shares));
-Console.log(shares[1].toString());
-Console.log(shares[2].toString(), shares[2].value.toString());
+console.log(Object.keys(shares));
+console.log(shares[1].toString());
+console.log(shares[2].toString(), shares[2].value.toString());
 shares[2].wThen(function (value) {
-  Console.log('share resolved with value', value);
+  console.log('share resolved with value', value);
 });
 ```
 ```neptune[title=Party&nbsp;2,frame=frame5,scope=2]
@@ -273,24 +273,24 @@ arguments.
 Because open involves asynchronous communication, a promise to the actual result is returned, which will be resolved when the result is available.
 
 ```neptune[title=Party&nbsp;1,frame=frame6,scope=1]
-Console.log(jiffClient.open.toString().split('\n')[0]);
+console.log(jiffClient.open.toString().split('\n')[0]);
 var promise = jiffClient.open(shares[1], [1, 3]);
-Console.log(promise.toString());
+console.log(promise.toString());
 promise.then(function (result) {
-  Console.log(result);
+  console.log(result);
 });
 ```
 ```neptune[title=Party&nbsp;2,frame=frame6,scope=2]
 var promise = jiffClient.open(shares[1], [1, 3]);
-Console.log(promise == null);
+console.log(promise == null);
 ```
 ```neptune[title=Party&nbsp;3,frame=frame6,scope=3]
 // party 3 did not receive a share of this input, but it can still receive the output
 // by calling receive_open!
 var promise = jiffClient.receive_open([1, 2], [1, 3]);
-Console.log(promise.toString());
+console.log(promise.toString());
 promise.then(function (result) {
-  Console.log(result);
+  console.log(result);
 });
 ```
 
