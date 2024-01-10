@@ -78,21 +78,21 @@
 
 
     <section class="readme usertext">
-        <article><h1 id="jiff">JIFF</h1>
+        <article><h1>JIFF</h1>
 <p><a href="https://app.circleci.com/pipelines/github/multiparty/jiff"><img src="https://circleci.com/gh/multiparty/jiff.svg?style=shield" alt="CircleCI Build Status"></a></p>
 <p>JIFF is a JavaScript library for building applications that rely on secure multi-party computation. JIFF is built to be highly flexible with a focus on usability, with the ability to be run in the browser, on mobile phones, or via Node.js. JIFF is designed so that developers need not be familiar with MPC techniques or know the details of cryptographic protocols in order to build secure applications.</p>
-<h2 id="requirements">Requirements</h2>
-<h3 id="server">Server</h3>
+<h2>Requirements</h2>
+<h3>Server</h3>
 <p>Running the server requires <a href="https://nodejs.org/en/">Node</a> and <a href="https://www.npmjs.com/">npm</a>.</p>
-<h3 id="client">Client</h3>
+<h3>Client</h3>
 <p>For browsers, we provide a bundle including the base client side library and its dependencies (<a href="https://www.npmjs.com/package/libsodium-wrappers">libsodium-wrappers</a> and socket.io). Extensions have to be imported separately.</p>
 <p>For node.js clients, npm install should install all the required dependencies.</p>
 <p>You can use browserify or similar tools to require JIFF via npm and bundle it with your browser-side JS.</p>
-<h2 id="installation">Installation</h2>
+<h2>Installation</h2>
 <p>Add JIFF as a dependency to your project:</p>
 <pre class="prettyprint source lang-shell"><code>npm install jiff-mpc
 </code></pre>
-<h3 id="node.js">Node.js</h3>
+<h3>Node.js</h3>
 <p>After installing JIFF via npm, you can require the server module in your server
 code using:</p>
 <pre class="prettyprint source lang-javascript"><code>const { JIFFServer } = require('jiff-mpc');
@@ -113,7 +113,7 @@ const jiffClient = new JIFFClient(&quot;&lt;server address>&quot;, &quot;&lt;com
 let shares = jiffClient.share(&lt;secret>);
 ...
 </code></pre>
-<h3 id="client---browser">Client - Browser</h3>
+<h3>Client - Browser</h3>
 <p>To use our bundle, include the provided pre-built JS file in a script tag. Make sure
 that you set up your web-server to serve this JS file.</p>
 <pre class="prettyprint source lang-html"><code>&lt;!-- exposes JIFFClient to the global scope -->
@@ -129,7 +129,7 @@ such as <a href="https://browserify.readthedocs.io/en/latest/readme/">browserify
 and then build your JS code into a bundle using browserify. You can then serve that bundle
 via your web server, and include it in your HTML using script tags.</p>
 <p>To see an example of this, look at this <a href="https://github.com/multiparty/jiff-standalone-example">JIFF standalone example repo</a>.</p>
-<h3 id="extensions">Extensions</h3>
+<h3>Extensions</h3>
 <p>If you want to support more complex data types, such as Fixedpoint numbers or infinite precision integers,
 you should apply the corresponding extension to your client and/or server JIFF instances.</p>
 <p>The extensions can be imported via npm, bundled into web clients via browserify, or included directly via
@@ -154,7 +154,7 @@ jiffClient.connect();
 &lt;script src=&quot;/bignumber.js/bignumber.min.js&quot;>&lt;/script>
 &lt;script src=&quot;/lib/ext/jiff-client-bignumber.js&quot;>&lt;/script>
 </code></pre>
-<h2 id="project-layout">Project Layout</h2>
+<h2>Project Layout</h2>
 <pre><code>├─ demos/               Example of common jiff use-cases and functionality
 ├─ docs/                JSDoc config and generated docs
 ├─ lib/                 Libraries for both client and server-side jiff instances
@@ -170,11 +170,11 @@ jiffClient.connect();
 │  └─ suite/            Base Jiff and extension tests (See test/suite/README.md)
 ├─ tutorial/            Contains interactive tutorial files that can be run locally to learn JIFF!
 </code></pre>
-<h2 id="running-tutorials">Running Tutorials</h2>
+<h2>Running Tutorials</h2>
 <p>Clone the github repo, and run <code>npm run tutorial</code> inside its root directory.</p>
 <p>On your terminal, you will see a list of &quot;Routes/Documents&quot;. Open either document in your browser to go through the tutorial.</p>
 <p>Each document is an independent tutorial. However, beginners are encouraged to view them in order.</p>
-<h2 id="running-demos-and-examples">Running Demos and Examples</h2>
+<h2>Running Demos and Examples</h2>
 <p>Run a sample server from one of the demos under <code>demos</code> in the following way:</p>
 <pre class="prettyprint source lang-shell"><code>node demos/&lt;demo-name>/server.js
 </code></pre>
@@ -184,12 +184,12 @@ You can then proceed with the protocol using the client interfaces.</p>
 <p>Note that you can run Node.js parties that can also participate in the protocol by executing (e.g., a separate terminal for each party):</p>
 <pre class="prettyprint source lang-shell"><code>node demos/&lt;demo-name>/party.js &lt;input-value>
 </code></pre>
-<h2 id="documentation">Documentation</h2>
+<h2>Documentation</h2>
 <p>The latest documentation can be viewed on the <a href="https://multiparty.org/jiff/">project page</a>. The documentation can be generated using <a href="http://usejsdoc.org/">JSDoc</a>; you will find these docs in <code>docs/jsdocs/</code>:</p>
 <pre class="prettyprint source lang-shell"><code>./node_modules/.bin/jsdoc -r -c docs/jsdoc.conf.json
 npm run-script gen-docs # shortcut
 </code></pre>
-<h3 id="where-to-look-in-the-docs">Where to Look in the Docs</h3>
+<h3>Where to Look in the Docs</h3>
 <p>The documentation for the client side library is separated into the distinct modules, namespaces, and classes:</p>
 <pre><code>├─ modules
 │  └─ jiff-client            Parent module: represents the exposed JIFFClient global variable
@@ -203,7 +203,7 @@ npm run-script gen-docs # shortcut
 │  ├─ bits                   Primitives for operating on bit-wise shared secrets (hybrid protocols)
 │  └─ hooks                  Available hooks that can be used by users to customize behavior
 </code></pre>
-<h2 id="running-tests">Running Tests</h2>
+<h2>Running Tests</h2>
 <p>All of the JIFF library test cases can be run in the following way:</p>
 <pre class="prettyprint source lang-shell"><code>npm test
 </code></pre>
@@ -213,16 +213,16 @@ npm run-script gen-docs # shortcut
 <p>The command assumes that the server is located at demos/<demo-name>/server.js and the test cases are located at demos/<demo-name>/test.js
 See demos/run-test.sh for instructions on running test cases located in different directories or with different names.</p>
 <p>See the <a href="tests/suite/README.md">testing suite framework documentation</a> for more details on running and creating tests for the JIFF library.</p>
-<h2 id="bundling">Bundling</h2>
+<h2>Bundling</h2>
 <p>If you made changes to the library and would like to bundle it again into a single browser-friendly file, you can run this command:</p>
 <pre class="prettyprint source lang-shell"><code>npm run-script build # will override dist/jiff-client.js
 </code></pre>
-<h2 id="development">Development</h2>
+<h2>Development</h2>
 <p>The JIFF libraries allow developers to customize or extend their functionality by introducing new <em>hooks</em>. Multiple hooks can be combined to form a library <em>extension</em>.</p>
-<h3 id="hooks">Hooks</h3>
+<h3>Hooks</h3>
 <p>The JIFF client and server libraries support hooks. Hooks can be provided in the options parameter during instantiation or afterwards. Hooks allow the introduction of custom functionality to be executed at critical times during the computation, or the introduction of different implementations of specified primitives and operations (e.g. using a different sharing scheme).</p>
 <p>The client-side <a href="hooks.html">hooks documentation</a> provides more details. If hooks are used to provide important reusable functionality, then it is recommended to bundle these hooks within a JIFF extension.</p>
-<h3 id="extensions-2">Extensions</h3>
+<h3>Extensions</h3>
 <p>JIFF supports implementing extensions on top of the base implementations that can provide additional extended functionality. Some extensions can be found under <code>lib/ext</code>. Two important modules are implemented and provided in this repository: bignumbers and fixed point arithmetic.</p>
 <p>See the <a href="extensions.html">extensions documentation</a> and the documentation inside <code>src/ext/jiff-client-bignumber.js</code> for instructions on how to create additional extensions.</p>
 <p>Both client and server libraries support extensions. Some extensions require customizing both the server and client libraries to behave properly (such as the bignumbers extension). Other extensions may require only server or client-side modifications (e.g., the fixed point arithmetic module is only client-side). A server that wants to participate in the computation would require only the client-side extension to use the additional functionality (unless, of course, that extension depends on additional server-side modifications as in bignumbers).</p>
@@ -234,10 +234,10 @@ See demos/run-test.sh for instructions on running test cases located in differen
 <p>Run the bignumber test suite in the following way:</p>
 <pre class="prettyprint source lang-shell"><code>npm run-script test-bignumber
 </code></pre>
-<h2 id="how-to-contribute">How to Contribute</h2>
+<h2>How to Contribute</h2>
 <p>Check out our contribution guidelines and resources @ <a href="CONTRIBUTING.html">contributing</a>.</p>
-<h1 id="for-cryptographers">For Cryptographers</h1>
-<h2 id="security-model-and-assumptions">Security Model and Assumptions</h2>
+<h1>For Cryptographers</h1>
+<h2>Security Model and Assumptions</h2>
 <p>JIFF is secure against semi-honest adversaries.</p>
 <p>JIFF's default preprocessing protocol for beaver triples generation is based on bgw. All protocols that depend on triplets/multiplication are
 secure with an honest majority in the preprocessing phase, and against a dishonest majority in the online stage. This is important, since the parties
@@ -247,7 +247,7 @@ corelated randomness and preprocessing material from the server. This yields an 
 against a dishonest majority of non-server parties, but insecure against coalitions of one or more party plus the server. Conretely, this
 reduces to more traditional models in certain cases. For example, if the computation is made out of two parties and a server, this becomes
 equivalent to 3-party computation with honest majority.</p>
-<h2 id="costs-of-operations%3A-%5Boutdated%5D">Costs of Operations: [OUTDATED]</h2>
+<h2>Costs of Operations: [OUTDATED]</h2>
 <p>Below is a table of the current costs of operations in the <em>base</em> JIFF without extensions:</p>
 <table>
 <thead>
@@ -385,7 +385,7 @@ equivalent to 3-party computation with honest majority.</p>
 <li>constant division has one open sequenced with 4 parallel constant inequality checks and two multiplications.</li>
 <li>Secret XORs and ORs are equivalent to a single multiplication, constant XORs and ORs are free.</li>
 </ol>
-<h2 id="information-and-collaborators">Information and Collaborators</h2>
+<h2>Information and Collaborators</h2>
 <p>More information about this project, including collaborators and publications, can be found at <a href="https://multiparty.org/">multiparty.org</a>.</p></article>
     </section>
 
@@ -401,7 +401,7 @@ equivalent to 3-party computation with honest majority.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Jan 09 2024 21:29:32 GMT-0500 (Eastern Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Jan 09 2024 21:38:44 GMT-0500 (Eastern Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

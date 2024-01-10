@@ -1,7 +1,5 @@
 {
-  "plugins": [
-    "plugins/markdown"
-  ],
+  "plugins": ["plugins/markdown"],
   "recurseDepth": 10,
   "source": {
     "includePattern": ".+\\.js(doc|x)?$",
@@ -16,10 +14,7 @@
   "sourceType": "module",
   "tags": {
     "allowUnknownTags": true,
-    "dictionaries": [
-      "jsdoc",
-      "closure"
-    ]
+    "dictionaries": ["jsdoc","closure"]
   },
   "templates": {
     "cleverLinks": false,
@@ -28,33 +23,29 @@
   },
   "opts": {
     "destination": "./docs/jsdoc/",
-    "template": "/home/august/Code/docdash"
-  },
-  "markdown": {
-    "hardwrap": false,
-    "idInHeadings": true
+    "template": "node_modules/docdash-with-dark-mode"
   },
   "docdash": {
     "collalpse": true,
     "search": true,
-    "menu": {
-      "Github Repo": {
-        "href": "https://github.com/multiparty/jiff",
-        "target": "_blank",
-        "class": "menu-item",
-        "id": "github_link"
+    "menu":{
+      "Github Repo":{
+        "href":"https://github.com/multiparty/jiff",
+        "target":"_blank",
+        "class":"menu-item",
+        "id":"github_link"
       },
-      "Tutorial": {
-        "href": "./intro.html",
-        "target": "_self",
-        "class": "menu-item",
-        "id": "github_link"
+      "Tutorial":{
+        "href":"./intro.html",
+        "target":"_self",
+        "class":"menu-item",
+        "id":"github_link"
       },
-      "Contributing to JIFF": {
-        "href": "./contributing.html",
-        "target": "_self",
-        "class": "menu-item",
-        "id": "github_link"
+      "Contributing to JIFF":{
+        "href":"./contributing.html",
+        "target":"_self",
+        "class":"menu-item",
+        "id":"github_link"
       }
     },
     "meta": {
