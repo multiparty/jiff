@@ -10,6 +10,7 @@
     
     
     <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/toggleTheme.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -17,6 +18,7 @@
     <link type="text/css" rel="stylesheet" href="styles/prettify.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
     <script src="scripts/nav.js" defer></script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -29,11 +31,25 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav >
+
+    <div class="theme-toggle-wrapper">
+        <span class="theme-icon">☀️</span>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle" onclick="toggleDarkMode()">
+            <span class="slider round"></span>
+        </label>
+        <span class="theme-icon">🌙</span>
+    </div>
+
     
     <input type="text" id="nav-search" placeholder="Search" />
     
+    
     <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/multiparty/jiff" target="_blank" class="menu-item" id="github_link" >Github Repo</a></h2><h2><a href="./intro.html" target="_self" class="menu-item" id="github_link" >Tutorial</a></h2><h2><a href="./contributing.html" target="_self" class="menu-item" id="github_link" >Contributing to JIFF</a></h2><h3>Classes</h3><ul><li><a href="GuardedSocket.html">GuardedSocket</a><ul class='methods'><li data-type='method'><a href="GuardedSocket.html#disconnect">disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#is_empty">is_empty</a></li><li data-type='method'><a href="GuardedSocket.html#resend_mailbox">resend_mailbox</a></li><li data-type='method'><a href="GuardedSocket.html#safe_disconnect">safe_disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#safe_emit">safe_emit</a></li></ul></li><li><a href="helpers.Deferred.html">Deferred</a><ul class='methods'><li data-type='method'><a href="helpers.Deferred.html#reject">reject</a></li><li data-type='method'><a href="helpers.Deferred.html#resolve">resolve</a></li></ul></li><li><a href="module-jiff-client-JIFFClient.html">JIFFClient</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient.html#add_to_barriers">add_to_barriers</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#apply_extension">apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#can_apply_extension">can_apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#connect">connect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#disconnect">disconnect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#emit">emit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#end_barrier">end_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#executePreprocessing">executePreprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#extension_applied">extension_applied</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#free">free</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#from_crypto_provider">from_crypto_provider</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id">gen_op_id</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2">gen_op_id2</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2_preprocessing">gen_op_id2_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id_preprocessing">gen_op_id_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#get_preprocessing">get_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_extension">has_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_preprocessing">has_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_open">internal_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_share">internal_share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isInitialized">isInitialized</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isReady">isReady</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#listen">listen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_array">open_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_ND_array">open_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessing">preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessingDaemon">preprocessingDaemon</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#remove_listener">remove_listener</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#reshare">reshare</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#seed_ids">seed_ids</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share">share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_2D_array">share_2D_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_array">share_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array">share_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_deferred">share_ND_array_deferred</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_static">share_ND_array_static</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#start_barrier">start_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#store_preprocessing">store_preprocessing</a></li></ul></li><li><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#add">add</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#bit_decomposition">bit_decomposition</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cadd">cadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdiv">cdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdivfac">cdivfac</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ceq">ceq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgt">cgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgteqn">cgteqn</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clt">clt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clteq">clteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cmult">cmult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cneq">cneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cor_bit">cor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cpow">cpow</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#csub">csub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cxor_bit">cxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#div">div</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#eq">eq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#error">error</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gt">gt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gteq">gteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#if_else">if_else</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#isConstant">isConstant</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#logLEAK">logLEAK</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt">lt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt_halfprime">lt_halfprime</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lteq">lteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#mult">mult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#neq">neq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#not">not</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#or_bit">or_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#promise_handler">promise_handler</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#refresh">refresh</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sadd">sadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sdiv">sdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#seq">seq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgt">sgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgteq">sgteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slt">slt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slteq">slteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smod">smod</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult">smult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult_bgw">smult_bgw</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sneq">sneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sor_bit">sor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ssub">ssub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sub">sub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sxor_bit">sxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#toString">toString</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#valueOf">valueOf</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#when_both_ready">when_both_ready</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#wThen">wThen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#xor_bit">xor_bit</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-jiff-client.html">jiff-client</a></li></ul><h3>Namespaces</h3><ul><li><a href="bits.html">bits</a><ul class='methods'><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.bit_composition">jiffClient.protocols.bits.bit_composition</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cadd">jiffClient.protocols.bits.cadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivl">jiffClient.protocols.bits.cdivl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivr">jiffClient.protocols.bits.cdivr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ceq">jiffClient.protocols.bits.ceq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgt">jiffClient.protocols.bits.cgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgteq">jiffClient.protocols.bits.cgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clt">jiffClient.protocols.bits.clt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clteq">jiffClient.protocols.bits.clteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cmult">jiffClient.protocols.bits.cmult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cneq">jiffClient.protocols.bits.cneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubl">jiffClient.protocols.bits.csubl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubr">jiffClient.protocols.bits.csubr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.open">jiffClient.protocols.bits.open</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.rejection_sampling">jiffClient.protocols.bits.rejection_sampling</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sadd">jiffClient.protocols.bits.sadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sdiv">jiffClient.protocols.bits.sdiv</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.seq">jiffClient.protocols.bits.seq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgt">jiffClient.protocols.bits.sgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgteq">jiffClient.protocols.bits.sgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.share">jiffClient.protocols.bits.share</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slt">jiffClient.protocols.bits.slt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slteq">jiffClient.protocols.bits.slteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.smult">jiffClient.protocols.bits.smult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sneq">jiffClient.protocols.bits.sneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ssub">jiffClient.protocols.bits.ssub</a></li></ul></li><li><a href="handlers.html">handlers</a><ul class='methods'><li data-type='method'><a href="handlers.html#.jiffClient.handlers.build_initialization_message">jiffClient.handlers.build_initialization_message</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.connected">jiffClient.handlers.connected</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.error">jiffClient.handlers.error</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.initialized">jiffClient.handlers.initialized</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_crypto_provider">jiffClient.handlers.receive_crypto_provider</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_custom">jiffClient.handlers.receive_custom</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_open">jiffClient.handlers.receive_open</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_share">jiffClient.handlers.receive_share</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.store_public_keys">jiffClient.handlers.store_public_keys</a></li></ul></li><li><a href="helpers.html">helpers</a><ul class='methods'><li data-type='method'><a href="helpers.html#.jiffClient.helpers.array_equals">jiffClient.helpers.array_equals</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bits_to_number">jiffClient.helpers.bits_to_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bLog">jiffClient.helpers.bLog</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.ceil">jiffClient.helpers.ceil</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.extended_gcd">jiffClient.helpers.extended_gcd</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.floor">jiffClient.helpers.floor</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.get_party_number">jiffClient.helpers.get_party_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.is_prime">jiffClient.helpers.is_prime</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.mod">jiffClient.helpers.mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.number_to_bits">jiffClient.helpers.number_to_bits</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.pow_mod">jiffClient.helpers.pow_mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.random">jiffClient.helpers.random</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.sort_ids">jiffClient.helpers.sort_ids</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.Zp_equals">jiffClient.helpers.Zp_equals</a></li></ul></li><li><a href="hooks.html">hooks</a><ul class='methods'><li data-type='method'><a href="hooks.html#.computeShares">computeShares</a></li><li data-type='method'><a href="hooks.html#.execute_array_hooks">execute_array_hooks</a></li></ul></li><li><a href="protocols.html">protocols</a><ul class='methods'><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_beaver_bgw">jiffClient.protocols.generate_beaver_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_and_quotient">jiffClient.protocols.generate_random_and_quotient</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_bgw">jiffClient.protocols.generate_random_bit_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_smult">jiffClient.protocols.generate_random_bit_smult</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bits">jiffClient.protocols.generate_random_bits</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_number">jiffClient.protocols.generate_random_number</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_zero">jiffClient.protocols.generate_zero</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.rejection_sampling">jiffClient.protocols.rejection_sampling</a></li></ul></li><li><a href="utils.html">utils</a><ul class='methods'><li data-type='method'><a href="utils.html#.jiffClient.utils.bit_combinator">jiffClient.utils.bit_combinator</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.many_secret_shares">jiffClient.utils.many_secret_shares</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.resolve_many_secrets">jiffClient.utils.resolve_many_secrets</a></li></ul></li></ul>
+    
+
 </nav>
+
 
 <div id="main">
     
@@ -52,7 +68,9 @@
         <h2>
             <span class="ancestors"><a href="module-jiff-client.html">jiff-client</a>~</span>
         
-        JIFFClient
+        
+            JIFFClient
+        
         </h2>
         
     
@@ -74,6 +92,10 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Creates a new jiff client instance.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -117,19 +139,13 @@
 
 
 
-<div class="description usertext">
-    <p>Creates a new jiff client instance.</p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>var JIFFClient = require('jiffClient'); // only for node.js
 &lt;script src="jiff-client.js">&lt;/script> // for the browser
@@ -139,7 +155,7 @@ var instance = new JIFFClient('http://localhost:8080', 'computation-1', {party_c
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -177,6 +193,7 @@ var instance = new JIFFClient('http://localhost:8080', 'computation-1', {party_c
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -212,6 +229,7 @@ var instance = new JIFFClient('http://localhost:8080', 'computation-1', {party_c
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -245,6 +263,7 @@ var instance = new JIFFClient('http://localhost:8080', 'computation-1', {party_c
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -348,13 +367,17 @@ all parameters are optional, However, private and public key must either be both
 
         
             
-<h4 class="name" id="__initialized"><span class="type-signature">(non-null) </span>__initialized<span class="type-signature"> :boolean</span></h4>
+<h4 class="name" id="__initialized"><span class="type-signature type-signature-non-null">(non-null) </span>__initialized<span class="type-signature"> :boolean</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Private. Do not use directly externally; use isInitialized() instead.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -411,11 +434,12 @@ all parameters are optional, However, private and public key must either be both
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">boolean</span>
+
 
 
         </li>
@@ -428,13 +452,17 @@ all parameters are optional, However, private and public key must either be both
 
         
             
-<h4 class="name" id="__ready"><span class="type-signature">(non-null) </span>__ready<span class="type-signature"> :boolean</span></h4>
+<h4 class="name" id="__ready"><span class="type-signature type-signature-non-null">(non-null) </span>__ready<span class="type-signature"> :boolean</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Private. Do not use directly externally; use isReady() instead.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -491,11 +519,12 @@ all parameters are optional, However, private and public key must either be both
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">boolean</span>
+
 
 
         </li>
@@ -508,18 +537,22 @@ all parameters are optional, However, private and public key must either be both
 
         
             
-<h4 class="name" id="barriers"><span class="type-signature">(non-null) </span>barriers<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="barriers"><span class="type-signature type-signature-non-null">(non-null) </span>barriers<span class="type-signature"> :object</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Stores all promises created within some barrier.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line258">line 258</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line260">line 260</a>
     </li></ul></dd>
     
 
@@ -564,11 +597,12 @@ all parameters are optional, However, private and public key must either be both
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">object</span>
+
 
 
         </li>
@@ -581,13 +615,17 @@ all parameters are optional, However, private and public key must either be both
 
         
             
-<h4 class="name" id="computation_id"><span class="type-signature">(non-null) </span>computation_id<span class="type-signature"> :string</span></h4>
+<h4 class="name" id="computation_id"><span class="type-signature type-signature-non-null">(non-null) </span>computation_id<span class="type-signature"> :string</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Stores the computation id.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -637,11 +675,12 @@ all parameters are optional, However, private and public key must either be both
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">string</span>
+
 
 
         </li>
@@ -654,18 +693,25 @@ all parameters are optional, However, private and public key must either be both
 
         
             
-<h4 class="name" id="counters"><span class="type-signature">(non-null) </span>counters<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="counters"><span class="type-signature type-signature-non-null">(non-null) </span>counters<span class="type-signature"> :object</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Store sharing and shares counter which keeps track of the count of
+sharing operations (share and open) and the total number of shares
+respectively (used to get a unique id for each share operation and
+share object).</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line393">line 393</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line395">line 395</a>
     </li></ul></dd>
     
 
@@ -713,11 +759,12 @@ share object).</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">object</span>
+
 
 
         </li>
@@ -730,18 +777,22 @@ share object).</p>
 
         
             
-<h4 class="name" id="crypto_provider"><span class="type-signature">(non-null) </span>crypto_provider<span class="type-signature"> :boolean</span></h4>
+<h4 class="name" id="crypto_provider"><span class="type-signature type-signature-non-null">(non-null) </span>crypto_provider<span class="type-signature"> :boolean</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Flags whether to use the server as a fallback for objects that were not pre-processed properly</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line228">line 228</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line230">line 230</a>
     </li></ul></dd>
     
 
@@ -786,11 +837,12 @@ share object).</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">boolean</span>
+
 
 
         </li>
@@ -803,18 +855,22 @@ share object).</p>
 
         
             
-<h4 class="name" id="currentPreprocessingTasks"><span class="type-signature">(non-null) </span>currentPreprocessingTasks<span class="type-signature"> :linkedlist</span></h4>
+<h4 class="name" id="currentPreprocessingTasks"><span class="type-signature type-signature-non-null">(non-null) </span>currentPreprocessingTasks<span class="type-signature"> :linkedlist</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Stores currently executing preprocessing tasks.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line360">line 360</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line362">line 362</a>
     </li></ul></dd>
     
 
@@ -859,11 +915,12 @@ share object).</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">linkedlist</span>
+
 
 
         </li>
@@ -876,18 +933,24 @@ share object).</p>
 
         
             
-<h4 class="name" id="custom_messages_mailbox"><span class="type-signature">(non-null) </span>custom_messages_mailbox<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="custom_messages_mailbox"><span class="type-signature type-signature-non-null">(non-null) </span>custom_messages_mailbox<span class="type-signature"> :object</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Stores custom messages that are received before their listeners are set. Messages are stored in order.
+{ 'tag' =&gt; [ { &quot;sender_id&quot;: &lt;sender_id&gt;, &quot;message&quot;: <message> }, ... ] }</p>
+<p>Once a listener has been set, the corresponding messages are sent to it in order.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line252">line 252</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line254">line 254</a>
     </li></ul></dd>
     
 
@@ -934,11 +997,12 @@ share object).</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">object</span>
+
 
 
         </li>
@@ -951,18 +1015,22 @@ share object).</p>
 
         
             
-<h4 class="name" id="default_preprocessing_protocols"><span class="type-signature">(non-null) </span>default_preprocessing_protocols<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="default_preprocessing_protocols"><span class="type-signature type-signature-non-null">(non-null) </span>default_preprocessing_protocols<span class="type-signature"> :object</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Store the default preprocessing protocols for each type of preprocessing value</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line354">line 354</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line356">line 356</a>
     </li></ul></dd>
     
 
@@ -1007,11 +1075,12 @@ share object).</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">object</span>
+
 
 
         </li>
@@ -1024,18 +1093,22 @@ share object).</p>
 
         
             
-<h4 class="name" id="deferreds"><span class="type-signature">(non-null) </span>deferreds<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="deferreds"><span class="type-signature type-signature-non-null">(non-null) </span>deferreds<span class="type-signature"> :object</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>A map from some message operation id to a deferred resolved when that message is received.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line384">line 384</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line386">line 386</a>
     </li></ul></dd>
     
 
@@ -1080,11 +1153,12 @@ share object).</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">object</span>
+
 
 
         </li>
@@ -1104,11 +1178,16 @@ share object).</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>An array containing the names (jiff-client-[name].js) of the extensions that are
+applied to this instance.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line286">line 286</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line288">line 288</a>
     </li></ul></dd>
     
 
@@ -1154,11 +1233,12 @@ applied to this instance.</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">Array.&lt;string></span>
+
 
 
         </li>
@@ -1171,18 +1251,22 @@ applied to this instance.</p>
 
         
             
-<h4 class="name" id="handlers"><span class="type-signature">(non-null) </span>handlers<span class="type-signature"> :<a href="handlers.html">handlers</a></span></h4>
+<h4 class="name" id="handlers"><span class="type-signature type-signature-non-null">(non-null) </span>handlers<span class="type-signature"> :<a href="handlers.html">handlers</a></span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Contains handlers for communication events</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line415">line 415</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line417">line 417</a>
     </li></ul></dd>
     
 
@@ -1227,11 +1311,12 @@ applied to this instance.</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type"><a href="handlers.html">handlers</a></span>
+
 
 
         </li>
@@ -1244,13 +1329,17 @@ applied to this instance.</p>
 
         
             
-<h4 class="name" id="helpers"><span class="type-signature">(non-null) </span>helpers<span class="type-signature"> :<a href="helpers.html">helpers</a></span></h4>
+<h4 class="name" id="helpers"><span class="type-signature type-signature-non-null">(non-null) </span>helpers<span class="type-signature"> :<a href="helpers.html">helpers</a></span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Helper functions [DO NOT MODIFY UNLESS YOU KNOW WHAT YOU ARE DOING].</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1300,11 +1389,12 @@ applied to this instance.</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type"><a href="helpers.html">helpers</a></span>
+
 
 
         </li>
@@ -1317,18 +1407,23 @@ applied to this instance.</p>
 
         
             
-<h4 class="name" id="hooks"><span class="type-signature">(non-null) </span>hooks<span class="type-signature"> :<a href="hooks.html">hooks</a></span></h4>
+<h4 class="name" id="hooks"><span class="type-signature type-signature-non-null">(non-null) </span>hooks<span class="type-signature"> :<a href="hooks.html">hooks</a></span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>The hooks for this instance.
+Checkout the <a href="hooks.html">hooks documentation</a></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line409">line 409</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line411">line 411</a>
     </li></ul></dd>
     
 
@@ -1374,11 +1469,12 @@ Checkout the <a href="hooks.html">hooks documentation</a></p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type"><a href="hooks.html">hooks</a></span>
+
 
 
         </li>
@@ -1391,13 +1487,17 @@ Checkout the <a href="hooks.html">hooks documentation</a></p>
 
         
             
-<h4 class="name" id="hostname"><span class="type-signature">(non-null) </span>hostname<span class="type-signature"> :string</span></h4>
+<h4 class="name" id="hostname"><span class="type-signature type-signature-non-null">(non-null) </span>hostname<span class="type-signature"> :string</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>The server hostname, ends with a slash, includes port and protocol (http/https).</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1447,11 +1547,12 @@ Checkout the <a href="hooks.html">hooks documentation</a></p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">string</span>
+
 
 
         </li>
@@ -1471,11 +1572,15 @@ Checkout the <a href="hooks.html">hooks documentation</a></p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>The id of this party.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line186">line 186</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line188">line 188</a>
     </li></ul></dd>
     
 
@@ -1520,11 +1625,12 @@ Checkout the <a href="hooks.html">hooks documentation</a></p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">number</span>
+
 
 
         </li>
@@ -1537,18 +1643,23 @@ Checkout the <a href="hooks.html">hooks documentation</a></p>
 
         
             
-<h4 class="name" id="initialization_counter"><span class="type-signature">(non-null) </span>initialization_counter<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="initialization_counter"><span class="type-signature type-signature-non-null">(non-null) </span>initialization_counter<span class="type-signature"> :number</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Counts how many times JIFF attempted to initialize with the server
+without success consecutively.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line272">line 272</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line274">line 274</a>
     </li></ul></dd>
     
 
@@ -1594,11 +1705,12 @@ without success consecutively.</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">number</span>
+
 
 
         </li>
@@ -1611,18 +1723,23 @@ without success consecutively.</p>
 
         
             
-<h4 class="name" id="keymap"><span class="type-signature">(non-null) </span>keymap<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="keymap"><span class="type-signature type-signature-non-null">(non-null) </span>keymap<span class="type-signature"> :object</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>A map from party id to public key. Where key is the party id (number), and
+value is the public key, which by default follows libsodium's specs (Uint8Array).</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line208">line 208</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line210">line 210</a>
     </li></ul></dd>
     
 
@@ -1675,11 +1792,12 @@ value is the public key, which by default follows libsodium's specs (Uint8Array)
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">object</span>
+
 
 
         </li>
@@ -1692,18 +1810,23 @@ value is the public key, which by default follows libsodium's specs (Uint8Array)
 
         
             
-<h4 class="name" id="listeners"><span class="type-signature">(non-null) </span>listeners<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="listeners"><span class="type-signature type-signature-non-null">(non-null) </span>listeners<span class="type-signature"> :object</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>A map from tags to listeners (functions that take a sender_id and a string message).</p>
+<p>Stores listeners that are attached to this JIFF instance, listeners listen to custom messages sent by other parties.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line243">line 243</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line245">line 245</a>
     </li></ul></dd>
     
 
@@ -1749,11 +1872,12 @@ value is the public key, which by default follows libsodium's specs (Uint8Array)
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">object</span>
+
 
 
         </li>
@@ -1766,18 +1890,22 @@ value is the public key, which by default follows libsodium's specs (Uint8Array)
 
         
             
-<h4 class="name" id="logs"><span class="type-signature">(non-null) </span>logs<span class="type-signature"> :Array</span></h4>
+<h4 class="name" id="logs"><span class="type-signature type-signature-non-null">(non-null) </span>logs<span class="type-signature"> :Array</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Used for logging/debugging</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line372">line 372</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line374">line 374</a>
     </li></ul></dd>
     
 
@@ -1822,11 +1950,12 @@ value is the public key, which by default follows libsodium's specs (Uint8Array)
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">Array</span>
+
 
 
         </li>
@@ -1846,11 +1975,16 @@ value is the public key, which by default follows libsodium's specs (Uint8Array)
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Stores messages that are received with a signature prior to acquiring the public keys of the sender.
+{ 'party_id': [ { 'label': 'share/open/custom', <other attributes of the message> } ] }</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line235">line 235</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line237">line 237</a>
     </li></ul></dd>
     
 
@@ -1896,11 +2030,12 @@ value is the public key, which by default follows libsodium's specs (Uint8Array)
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">object</span>
+
 
 
         </li>
@@ -1920,11 +2055,17 @@ value is the public key, which by default follows libsodium's specs (Uint8Array)
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>A prefix attached to all op_ids, can be changed using <a href="module-jiff-client-JIFFClient.html#seed_ids">seed_ids</a>
+to guarantee uniqueness of auto generate ids in a user-side callback
+or event handler.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line402">line 402</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line404">line 404</a>
     </li></ul></dd>
     
 
@@ -1978,11 +2119,12 @@ or event handler.</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">string</span>
+
 
 
         </li>
@@ -1995,18 +2137,22 @@ or event handler.</p>
 
         
             
-<h4 class="name" id="options"><span class="type-signature">(non-null) </span>options<span class="type-signature"> :Object</span></h4>
+<h4 class="name" id="options"><span class="type-signature type-signature-non-null">(non-null) </span>options<span class="type-signature"> :Object</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Shallow copy of the options passed to the constructor.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line166">line 166</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line167">line 167</a>
     </li></ul></dd>
     
 
@@ -2051,11 +2197,12 @@ or event handler.</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">Object</span>
+
 
 
         </li>
@@ -2075,11 +2222,15 @@ or event handler.</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Total party count in the computation, parties will take ids between 1 to party_count (inclusive).</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line192">line 192</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line194">line 194</a>
     </li></ul></dd>
     
 
@@ -2124,11 +2275,12 @@ or event handler.</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">number</span>
+
 
 
         </li>
@@ -2141,18 +2293,24 @@ or event handler.</p>
 
         
             
-<h4 class="name" id="preprocessing_function_map"><span class="type-signature">(non-null) </span>preprocessing_function_map<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="preprocessing_function_map"><span class="type-signature type-signature-non-null">(non-null) </span>preprocessing_function_map<span class="type-signature"> :object</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>maps all primitive operations to the other operations they are dependent on, until leaves are primitives for which preprocessing protocols are defined,
+this map is traversed during preprocessing to guide preprocessing of high level operations. Extensions should modify this map to reflect
+any required changes to preprocessing of modified primitives</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line348">line 348</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line350">line 350</a>
     </li></ul></dd>
     
 
@@ -2199,11 +2357,12 @@ any required changes to preprocessing of modified primitives</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">object</span>
+
 
 
         </li>
@@ -2216,18 +2375,22 @@ any required changes to preprocessing of modified primitives</p>
 
         
             
-<h4 class="name" id="preprocessing_table"><span class="type-signature">(non-null) </span>preprocessing_table<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="preprocessing_table"><span class="type-signature type-signature-non-null">(non-null) </span>preprocessing_table<span class="type-signature"> :object</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Stores pre-computed values (beaver triples, random bits, etc) used to aid/speed up the main processes.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line334">line 334</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line336">line 336</a>
     </li></ul></dd>
     
 
@@ -2272,11 +2435,12 @@ any required changes to preprocessing of modified primitives</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">object</span>
+
 
 
         </li>
@@ -2289,18 +2453,22 @@ any required changes to preprocessing of modified primitives</p>
 
         
             
-<h4 class="name" id="preprocessingBatchSize"><span class="type-signature">(non-null) </span>preprocessingBatchSize<span class="type-signature"> :Number</span></h4>
+<h4 class="name" id="preprocessingBatchSize"><span class="type-signature type-signature-non-null">(non-null) </span>preprocessingBatchSize<span class="type-signature"> :Number</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Sets batch size for base level preprocessing tasks</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line340">line 340</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line342">line 342</a>
     </li></ul></dd>
     
 
@@ -2345,11 +2513,12 @@ any required changes to preprocessing of modified primitives</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">Number</span>
+
 
 
         </li>
@@ -2362,18 +2531,22 @@ any required changes to preprocessing of modified primitives</p>
 
         
             
-<h4 class="name" id="preprocessingCallback"><span class="type-signature">(nullable) </span>preprocessingCallback<span class="type-signature"> :function</span></h4>
+<h4 class="name" id="preprocessingCallback"><span class="type-signature type-signature-nullable">(nullable) </span>preprocessingCallback<span class="type-signature"> :function</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Callback to execute when preprocessing is done!</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line366">line 366</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line368">line 368</a>
     </li></ul></dd>
     
 
@@ -2418,11 +2591,12 @@ any required changes to preprocessing of modified primitives</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">function</span>
+
 
 
         </li>
@@ -2435,18 +2609,23 @@ any required changes to preprocessing of modified primitives</p>
 
         
             
-<h4 class="name" id="protocols"><span class="type-signature">(non-null) </span>protocols<span class="type-signature"> :<a href="protocols.html">protocols</a></span></h4>
+<h4 class="name" id="protocols"><span class="type-signature type-signature-non-null">(non-null) </span>protocols<span class="type-signature"> :<a href="protocols.html">protocols</a></span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>A collection of useful protocols to be used during computation or preprocessing: extensions are encouraged to add useful
+common protocols here, under a sub namespace corresponding to the extension name.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line321">line 321</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line323">line 323</a>
     </li></ul></dd>
     
 
@@ -2492,11 +2671,12 @@ common protocols here, under a sub namespace corresponding to the extension name
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type"><a href="protocols.html">protocols</a></span>
+
 
 
         </li>
@@ -2509,18 +2689,22 @@ common protocols here, under a sub namespace corresponding to the extension name
 
         
             
-<h4 class="name" id="public_key"><span class="type-signature">(nullable) </span>public_key<span class="type-signature"> :Uint8Array</span></h4>
+<h4 class="name" id="public_key"><span class="type-signature type-signature-nullable">(nullable) </span>public_key<span class="type-signature"> :Uint8Array</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>The public key of this party, by default this follows libsodium's specs.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line222">line 222</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line224">line 224</a>
     </li></ul></dd>
     
 
@@ -2572,11 +2756,12 @@ common protocols here, under a sub namespace corresponding to the extension name
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">Uint8Array</span>
+
 
 
         </li>
@@ -2589,18 +2774,22 @@ common protocols here, under a sub namespace corresponding to the extension name
 
         
             
-<h4 class="name" id="secret_key"><span class="type-signature">(nullable) </span>secret_key<span class="type-signature"> :Uint8Array</span></h4>
+<h4 class="name" id="secret_key"><span class="type-signature type-signature-nullable">(nullable) </span>secret_key<span class="type-signature"> :Uint8Array</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>The secret key of this party, by default this follows libsodium's specs.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line215">line 215</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line217">line 217</a>
     </li></ul></dd>
     
 
@@ -2652,11 +2841,12 @@ common protocols here, under a sub namespace corresponding to the extension name
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">Uint8Array</span>
+
 
 
         </li>
@@ -2669,18 +2859,23 @@ common protocols here, under a sub namespace corresponding to the extension name
 
         
             
-<h4 class="name" id="share_helpers"><span class="type-signature">(non-null) </span>share_helpers<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="share_helpers"><span class="type-signature type-signature-non-null">(non-null) </span>share_helpers<span class="type-signature"> :object</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Internal helpers for operations inside/on a share. Modify existing helpers or add more in your extensions
+to avoid having to re-write and duplicate the code for primitives.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line293">line 293</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line295">line 295</a>
     </li></ul></dd>
     
 
@@ -2726,11 +2921,12 @@ to avoid having to re-write and duplicate the code for primitives.</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">object</span>
+
 
 
         </li>
@@ -2743,18 +2939,22 @@ to avoid having to re-write and duplicate the code for primitives.</p>
 
         
             
-<h4 class="name" id="shares"><span class="type-signature">(non-null) </span>shares<span class="type-signature"> :object</span></h4>
+<h4 class="name" id="shares"><span class="type-signature type-signature-non-null">(non-null) </span>shares<span class="type-signature"> :object</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>A map from open operation id to the corresponding shares received for that open operation</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line378">line 378</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line380">line 380</a>
     </li></ul></dd>
     
 
@@ -2799,85 +2999,13 @@ to avoid having to re-write and duplicate the code for primitives.</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">object</span>
 
 
-        </li>
-    </ul>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="socket"><span class="type-signature">(non-null) </span>socket<span class="type-signature"> :<a href="GuardedSocket.html">GuardedSocket</a></span></h4>
-
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line430">line 430</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>Socket wrapper between this instance and the server, based on sockets.io</p>
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><a href="GuardedSocket.html">GuardedSocket</a></span>
-
 
         </li>
     </ul>
@@ -2889,18 +3017,23 @@ to avoid having to re-write and duplicate the code for primitives.</p>
 
         
             
-<h4 class="name" id="sodium_"><span class="type-signature">(nullable) </span>sodium_<span class="type-signature"> :sodium</span></h4>
+<h4 class="name" id="sodium_"><span class="type-signature type-signature-nullable">(nullable) </span>sodium_<span class="type-signature"> :sodium</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>sodium wrappers either imported via require (if in nodejs) or from the bundle (in the browser).
+This will be false if options.sodium is false.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line200">line 200</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line202">line 202</a>
     </li></ul></dd>
     
 
@@ -2953,11 +3086,12 @@ This will be false if options.sodium is false.</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">sodium</span>
+
 
 
         </li>
@@ -2970,18 +3104,22 @@ This will be false if options.sodium is false.</p>
 
         
             
-<h4 class="name" id="utils"><span class="type-signature">(non-null) </span>utils<span class="type-signature"> :<a href="utils.html">utils</a></span></h4>
+<h4 class="name" id="utils"><span class="type-signature type-signature-non-null">(non-null) </span>utils<span class="type-signature"> :<a href="utils.html">utils</a></span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Utility functions</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line278">line 278</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line280">line 280</a>
     </li></ul></dd>
     
 
@@ -3026,11 +3164,12 @@ This will be false if options.sodium is false.</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type"><a href="utils.html">utils</a></span>
+
 
 
         </li>
@@ -3043,18 +3182,22 @@ This will be false if options.sodium is false.</p>
 
         
             
-<h4 class="name" id="wait_callbacks"><span class="type-signature">(non-null) </span>wait_callbacks<span class="type-signature"> :Array</span></h4>
+<h4 class="name" id="wait_callbacks"><span class="type-signature type-signature-non-null">(non-null) </span>wait_callbacks<span class="type-signature"> :Array</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Stores the parties and callbacks for every .wait_for() registered by the user.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line264">line 264</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line266">line 266</a>
     </li></ul></dd>
     
 
@@ -3099,11 +3242,12 @@ This will be false if options.sodium is false.</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">Array</span>
+
 
 
         </li>
@@ -3116,18 +3260,22 @@ This will be false if options.sodium is false.</p>
 
         
             
-<h4 class="name" id="Zp"><span class="type-signature">(non-null) </span>Zp<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="Zp"><span class="type-signature type-signature-non-null">(non-null) </span>Zp<span class="type-signature"> :number</span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>The default Zp for this instance.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line180">line 180</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line182">line 182</a>
     </li></ul></dd>
     
 
@@ -3172,11 +3320,12 @@ This will be false if options.sodium is false.</p>
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type">number</span>
+
 
 
         </li>
@@ -3206,6 +3355,10 @@ This will be false if options.sodium is false.</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Adds given promise to all active barriers.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -3249,9 +3402,6 @@ This will be false if options.sodium is false.</p>
 
 
 
-<div class="description usertext">
-    <p>Adds given promise to all active barriers.</p>
-</div>
 
 
 
@@ -3260,10 +3410,7 @@ This will be false if options.sodium is false.</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -3295,6 +3442,7 @@ This will be false if options.sodium is false.</p>
             
                 
 <span class="param-type">promise</span>
+
 
 
             
@@ -3342,6 +3490,12 @@ This will be false if options.sodium is false.</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Applies the given extension.
+If the extension is safe (as per can_apply_extension), it will be applied successfully.
+If the extension is not safe to be applied, an exception will be thrown with an appropriate error message.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -3392,11 +3546,6 @@ This will be false if options.sodium is false.</p>
 
 
 
-<div class="description usertext">
-    <p>Applies the given extension.
-If the extension is safe (as per can_apply_extension), it will be applied successfully.
-If the extension is not safe to be applied, an exception will be thrown with an appropriate error message.</p>
-</div>
 
 
 
@@ -3405,10 +3554,7 @@ If the extension is not safe to be applied, an exception will be thrown with an 
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -3446,6 +3592,7 @@ If the extension is not safe to be applied, an exception will be thrown with an 
 <span class="param-type">object</span>
 
 
+
             
             </td>
 
@@ -3479,6 +3626,7 @@ If the extension is not safe to be applied, an exception will be thrown with an 
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -3542,6 +3690,10 @@ If the extension is not safe to be applied, an exception will be thrown with an 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks if a given extension can be safely applied to the instance</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -3585,9 +3737,6 @@ If the extension is not safe to be applied, an exception will be thrown with an 
 
 
 
-<div class="description usertext">
-    <p>Checks if a given extension can be safely applied to the instance</p>
-</div>
 
 
 
@@ -3596,10 +3745,7 @@ If the extension is not safe to be applied, an exception will be thrown with an 
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -3633,6 +3779,7 @@ If the extension is not safe to be applied, an exception will be thrown with an 
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -3662,7 +3809,7 @@ If the extension is not safe to be applied, an exception will be thrown with an 
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -3678,6 +3825,7 @@ If the extension is not safe to be applied, an exception will be thrown with an 
     <dd>
         
 <span class="param-type">boolean</span>
+
 
 
     </dd>
@@ -3700,11 +3848,15 @@ If the extension is not safe to be applied, an exception will be thrown with an 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Connect to the server and starts listening.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line445">line 445</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line455">line 455</a>
     </li></ul></dd>
     
 
@@ -3740,12 +3892,6 @@ If the extension is not safe to be applied, an exception will be thrown with an 
 </dl>
 
 
-
-
-
-<div class="description usertext">
-    <p>Connect to the server and starts listening.</p>
-</div>
 
 
 
@@ -3787,6 +3933,11 @@ If the extension is not safe to be applied, an exception will be thrown with an 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Disconnects from the computation.
+Allows the client program to exit.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -3830,10 +3981,6 @@ If the extension is not safe to be applied, an exception will be thrown with an 
 
 
 
-<div class="description usertext">
-    <p>Disconnects from the computation.
-Allows the client program to exit.</p>
-</div>
 
 
 
@@ -3842,10 +3989,7 @@ Allows the client program to exit.</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -3881,6 +4025,7 @@ Allows the client program to exit.</p>
             
                 
 <span class="param-type">boolean</span>
+
 
 
             
@@ -3921,6 +4066,7 @@ outgoing pending messages were delivered).</p></td>
             
                 
 <span class="param-type">boolean</span>
+
 
 
             
@@ -3964,6 +4110,7 @@ if a the connection is for a fresh new computation.</p></td>
             
                 
 <span class="param-type">function</span>
+
 
 
             
@@ -4026,6 +4173,10 @@ parameter is ignored.</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Sends a custom message to a subset of parties</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -4069,9 +4220,6 @@ parameter is ignored.</p></td>
 
 
 
-<div class="description usertext">
-    <p>Sends a custom message to a subset of parties</p>
-</div>
 
 
 
@@ -4080,10 +4228,7 @@ parameter is ignored.</p></td>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -4121,6 +4266,7 @@ parameter is ignored.</p></td>
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -4154,6 +4300,7 @@ parameter is ignored.</p></td>
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -4195,6 +4342,7 @@ parameter is ignored.</p></td>
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -4228,6 +4376,7 @@ parameter is ignored.</p></td>
             
                 
 <span class="param-type">boolean</span>
+
 
 
             
@@ -4291,6 +4440,10 @@ parameter is ignored.</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Executes the callback only after all promises / secret shares in the barrier were resolved.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -4334,9 +4487,6 @@ parameter is ignored.</p></td>
 
 
 
-<div class="description usertext">
-    <p>Executes the callback only after all promises / secret shares in the barrier were resolved.</p>
-</div>
 
 
 
@@ -4345,10 +4495,7 @@ parameter is ignored.</p></td>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -4384,6 +4531,7 @@ parameter is ignored.</p></td>
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -4432,7 +4580,7 @@ by default, barrier_id will refer to the last barrier.</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -4448,6 +4596,7 @@ by default, barrier_id will refer to the last barrier.</p></td>
     <dd>
         
 <span class="param-type">promise</span>
+
 
 
     </dd>
@@ -4470,6 +4619,11 @@ by default, barrier_id will refer to the last barrier.</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Ask JIFF to start executing preprocessing for tasks previously added by <a href="module-jiff-client-JIFFClient.html#preprocessing">preprocessing</a>.</p>
+<p>Calls the provided callback when the preprocessing tasks are all done.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -4513,10 +4667,6 @@ by default, barrier_id will refer to the last barrier.</p></td>
 
 
 
-<div class="description usertext">
-    <p>Ask JIFF to start executing preprocessing for tasks previously added by <a href="module-jiff-client-JIFFClient.html#preprocessing">preprocessing</a>.</p>
-<p>Calls the provided callback when the preprocessing tasks are all done.</p>
-</div>
 
 
 
@@ -4525,10 +4675,7 @@ by default, barrier_id will refer to the last barrier.</p></td>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -4560,6 +4707,7 @@ by default, barrier_id will refer to the last barrier.</p></td>
             
                 
 <span class="param-type">function</span>
+
 
 
             
@@ -4608,6 +4756,10 @@ by default, barrier_id will refer to the last barrier.</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Called when an extension is applied successfully. Override to change behavior of your extension based on future extensions.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -4651,9 +4803,6 @@ by default, barrier_id will refer to the last barrier.</p></td>
 
 
 
-<div class="description usertext">
-    <p>Called when an extension is applied successfully. Override to change behavior of your extension based on future extensions.</p>
-</div>
 
 
 
@@ -4662,10 +4811,7 @@ by default, barrier_id will refer to the last barrier.</p></td>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -4703,6 +4849,7 @@ by default, barrier_id will refer to the last barrier.</p></td>
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -4736,6 +4883,7 @@ by default, barrier_id will refer to the last barrier.</p></td>
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -4799,6 +4947,12 @@ by default, barrier_id will refer to the last barrier.</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Emits event to free up all the resources allocated for this party on the server.
+It is best not to call this function directly, as it can break things if resources still need to be used.
+Instead, use jiff.disconnect(safe, free, callback) to free after safely disconnecting.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -4849,14 +5003,6 @@ by default, barrier_id will refer to the last barrier.</p></td>
 
 
 
-<div class="description usertext">
-    <p>Emits event to free up all the resources allocated for this party on the server.
-It is best not to call this function directly, as it can break things if resources still need to be used.
-Instead, use jiff.disconnect(safe, free, callback) to free after safely disconnecting.</p>
-</div>
-
-
-
 
 
 
@@ -4895,6 +5041,10 @@ Instead, use jiff.disconnect(safe, free, callback) to free after safely disconne
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Requests secret(s) from the server (crypto provider) of type matching the given label.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -4938,9 +5088,6 @@ Instead, use jiff.disconnect(safe, free, callback) to free after safely disconne
 
 
 
-<div class="description usertext">
-    <p>Requests secret(s) from the server (crypto provider) of type matching the given label.</p>
-</div>
 
 
 
@@ -4949,10 +5096,7 @@ Instead, use jiff.disconnect(safe, free, callback) to free after safely disconne
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -4990,6 +5134,7 @@ Instead, use jiff.disconnect(safe, free, callback) to free after safely disconne
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -5023,6 +5168,7 @@ Instead, use jiff.disconnect(safe, free, callback) to free after safely disconne
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -5064,6 +5210,7 @@ Instead, use jiff.disconnect(safe, free, callback) to free after safely disconne
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -5103,6 +5250,7 @@ Instead, use jiff.disconnect(safe, free, callback) to free after safely disconne
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -5140,6 +5288,7 @@ Instead, use jiff.disconnect(safe, free, callback) to free after safely disconne
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -5182,6 +5331,7 @@ parties execute all instructions in the same order.</p></td>
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -5230,7 +5380,7 @@ some of these parameters may be optional, while others may be required.</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -5247,6 +5397,7 @@ some of these parameters may be optional, while others may be required.</p></td>
     <dd>
         
 <span class="param-type">promise</span>
+
 
 
     </dd>
@@ -5269,6 +5420,12 @@ some of these parameters may be optional, while others may be required.</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Generate a unique operation id for a new operation object.
+The returned op_id will be unique with respect to other operations, and identifies the same
+operation across all parties, as long as all parties are executing instructions in the same order.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -5312,11 +5469,6 @@ some of these parameters may be optional, while others may be required.</p></td>
 
 
 
-<div class="description usertext">
-    <p>Generate a unique operation id for a new operation object.
-The returned op_id will be unique with respect to other operations, and identifies the same
-operation across all parties, as long as all parties are executing instructions in the same order.</p>
-</div>
 
 
 
@@ -5325,10 +5477,7 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -5362,6 +5511,7 @@ operation across all parties, as long as all parties are executing instructions 
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -5383,6 +5533,7 @@ operation across all parties, as long as all parties are executing instructions 
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -5414,7 +5565,7 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -5430,6 +5581,7 @@ operation across all parties, as long as all parties are executing instructions 
     <dd>
         
 <span class="param-type">string</span>
+
 
 
     </dd>
@@ -5452,6 +5604,13 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Generate a unique operation id for a new operation object given two distinct executing parties lists.
+For example, when sharing, this is given two potentially different lists of senders and receivers.
+The returned op_id will be unique with respect to other operations, and identifies the same
+operation across all parties, as long as all parties are executing instructions in the same order.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -5495,12 +5654,6 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 
-<div class="description usertext">
-    <p>Generate a unique operation id for a new operation object given two distinct executing parties lists.
-For example, when sharing, this is given two potentially different lists of senders and receivers.
-The returned op_id will be unique with respect to other operations, and identifies the same
-operation across all parties, as long as all parties are executing instructions in the same order.</p>
-</div>
 
 
 
@@ -5509,10 +5662,7 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -5546,6 +5696,7 @@ operation across all parties, as long as all parties are executing instructions 
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -5569,6 +5720,7 @@ operation across all parties, as long as all parties are executing instructions 
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -5590,6 +5742,7 @@ operation across all parties, as long as all parties are executing instructions 
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -5621,7 +5774,7 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -5637,6 +5790,7 @@ operation across all parties, as long as all parties are executing instructions 
     <dd>
         
 <span class="param-type">string</span>
+
 
 
     </dd>
@@ -5659,6 +5813,13 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Generate a unique operation id for a new operation object given two distinct executing parties lists (for preprocessing).
+For example, when sharing, this is given two potentially different lists of senders and receivers.
+The returned op_id will be unique with respect to other operations, and identifies the same
+operation across all parties, as long as all parties are executing instructions in the same order.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -5702,12 +5863,6 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 
-<div class="description usertext">
-    <p>Generate a unique operation id for a new operation object given two distinct executing parties lists (for preprocessing).
-For example, when sharing, this is given two potentially different lists of senders and receivers.
-The returned op_id will be unique with respect to other operations, and identifies the same
-operation across all parties, as long as all parties are executing instructions in the same order.</p>
-</div>
 
 
 
@@ -5716,10 +5871,7 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -5753,6 +5905,7 @@ operation across all parties, as long as all parties are executing instructions 
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -5776,6 +5929,7 @@ operation across all parties, as long as all parties are executing instructions 
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -5797,6 +5951,7 @@ operation across all parties, as long as all parties are executing instructions 
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -5828,7 +5983,7 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -5844,6 +5999,7 @@ operation across all parties, as long as all parties are executing instructions 
     <dd>
         
 <span class="param-type">string</span>
+
 
 
     </dd>
@@ -5866,6 +6022,12 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Generate a unique operation id for a new operation object (for preprocessing)
+The returned op_id will be unique with respect to other operations, and identifies the same
+operation across all parties, as long as all parties are executing instructions in the same order.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -5909,11 +6071,6 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 
-<div class="description usertext">
-    <p>Generate a unique operation id for a new operation object (for preprocessing)
-The returned op_id will be unique with respect to other operations, and identifies the same
-operation across all parties, as long as all parties are executing instructions in the same order.</p>
-</div>
 
 
 
@@ -5922,10 +6079,7 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -5959,6 +6113,7 @@ operation across all parties, as long as all parties are executing instructions 
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -5980,6 +6135,7 @@ operation across all parties, as long as all parties are executing instructions 
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -6011,7 +6167,7 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -6027,6 +6183,7 @@ operation across all parties, as long as all parties are executing instructions 
     <dd>
         
 <span class="param-type">string</span>
+
 
 
     </dd>
@@ -6049,6 +6206,11 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Get a preprocessed share/value by associated op_id. If value does not exist
+Fallback to some user specified way for creating it</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -6092,10 +6254,6 @@ operation across all parties, as long as all parties are executing instructions 
 
 
 
-<div class="description usertext">
-    <p>Get a preprocessed share/value by associated op_id. If value does not exist
-Fallback to some user specified way for creating it</p>
-</div>
 
 
 
@@ -6104,10 +6262,7 @@ Fallback to some user specified way for creating it</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -6141,6 +6296,7 @@ Fallback to some user specified way for creating it</p>
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -6170,7 +6326,7 @@ Fallback to some user specified way for creating it</p>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -6186,6 +6342,7 @@ Fallback to some user specified way for creating it</p>
     <dd>
         
 <span class="param-type">object</span>
+
 
 
     </dd>
@@ -6208,6 +6365,10 @@ Fallback to some user specified way for creating it</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks if the given extension is applied.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -6251,9 +6412,6 @@ Fallback to some user specified way for creating it</p>
 
 
 
-<div class="description usertext">
-    <p>Checks if the given extension is applied.</p>
-</div>
 
 
 
@@ -6262,10 +6420,7 @@ Fallback to some user specified way for creating it</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -6299,6 +6454,7 @@ Fallback to some user specified way for creating it</p>
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -6328,7 +6484,7 @@ Fallback to some user specified way for creating it</p>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -6344,6 +6500,7 @@ Fallback to some user specified way for creating it</p>
     <dd>
         
 <span class="param-type">boolean</span>
+
 
 
     </dd>
@@ -6366,6 +6523,10 @@ Fallback to some user specified way for creating it</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks if the given operation uses preprocessed values</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -6409,9 +6570,6 @@ Fallback to some user specified way for creating it</p>
 
 
 
-<div class="description usertext">
-    <p>Checks if the given operation uses preprocessed values</p>
-</div>
 
 
 
@@ -6420,10 +6578,7 @@ Fallback to some user specified way for creating it</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -6457,6 +6612,7 @@ Fallback to some user specified way for creating it</p>
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -6486,7 +6642,7 @@ Fallback to some user specified way for creating it</p>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -6502,6 +6658,7 @@ Fallback to some user specified way for creating it</p>
     <dd>
         
 <span class="param-type">boolean</span>
+
 
 
     </dd>
@@ -6524,6 +6681,10 @@ Fallback to some user specified way for creating it</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Same as open, but used by internal JIFF primitives/protocols, do not override this!</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -6574,12 +6735,6 @@ Fallback to some user specified way for creating it</p>
 
 
 
-<div class="description usertext">
-    <p>Same as open, but used by internal JIFF primitives/protocols, do not override this!</p>
-</div>
-
-
-
 
 
 
@@ -6618,6 +6773,10 @@ Fallback to some user specified way for creating it</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Same as share, but used by internal JIFF primitives/protocols, do not override this!</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -6668,12 +6827,6 @@ Fallback to some user specified way for creating it</p>
 
 
 
-<div class="description usertext">
-    <p>Same as share, but used by internal JIFF primitives/protocols, do not override this!</p>
-</div>
-
-
-
 
 
 
@@ -6712,6 +6865,12 @@ Fallback to some user specified way for creating it</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Returns whether this instance initialized successfully with the server.
+Note that this can be true even when isReady() returns false, in case where some other parties have not
+initialized yet!</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -6755,11 +6914,6 @@ Fallback to some user specified way for creating it</p>
 
 
 
-<div class="description usertext">
-    <p>Returns whether this instance initialized successfully with the server.
-Note that this can be true even when isReady() returns false, in case where some other parties have not
-initialized yet!</p>
-</div>
 
 
 
@@ -6782,10 +6936,7 @@ initialized yet!</p>
 
 
 
-
-
-
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 
@@ -6797,6 +6948,7 @@ initialized yet!</p>
     <dd>
         
 <span class="param-type">boolean</span>
+
 
 
     </dd>
@@ -6819,6 +6971,12 @@ initialized yet!</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Returns whether this instance is capable of starting the computation.
+In other words, the public keys for all parties and servers are known,
+and this party successfully initialized with the server.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -6862,11 +7020,6 @@ initialized yet!</p>
 
 
 
-<div class="description usertext">
-    <p>Returns whether this instance is capable of starting the computation.
-In other words, the public keys for all parties and servers are known,
-and this party successfully initialized with the server.</p>
-</div>
 
 
 
@@ -6889,10 +7042,7 @@ and this party successfully initialized with the server.</p>
 
 
 
-
-
-
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 
@@ -6904,6 +7054,7 @@ and this party successfully initialized with the server.</p>
     <dd>
         
 <span class="param-type">boolean</span>
+
 
 
     </dd>
@@ -6926,6 +7077,11 @@ and this party successfully initialized with the server.</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Registers the given function as a listener for messages with the given tag.
+Removes any previously set listener for this tag.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -6969,10 +7125,6 @@ and this party successfully initialized with the server.</p>
 
 
 
-<div class="description usertext">
-    <p>Registers the given function as a listener for messages with the given tag.
-Removes any previously set listener for this tag.</p>
-</div>
 
 
 
@@ -6981,10 +7133,7 @@ Removes any previously set listener for this tag.</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -7018,6 +7167,7 @@ Removes any previously set listener for this tag.</p>
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -7039,6 +7189,7 @@ Removes any previously set listener for this tag.</p>
             
                 
 <span class="param-type">function</span>
+
 
 
             
@@ -7086,6 +7237,10 @@ Removes any previously set listener for this tag.</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Open a secret share to reconstruct secret.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -7129,19 +7284,13 @@ Removes any previously set listener for this tag.</p>
 
 
 
-<div class="description usertext">
-    <p>Open a secret share to reconstruct secret.</p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>var shares = jiff_instance.share(input);
 //multiply the inputs of party 1 and 2 together
@@ -7152,7 +7301,7 @@ return jiff_instance.open(result);</code></pre>
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -7190,6 +7339,7 @@ return jiff_instance.open(result);</code></pre>
 <span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a></span>
 
 
+
             
             </td>
 
@@ -7223,6 +7373,7 @@ return jiff_instance.open(result);</code></pre>
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -7265,6 +7416,7 @@ return jiff_instance.open(result);</code></pre>
 |
 
 <span class="param-type">number</span>
+
 
 
             
@@ -7312,7 +7464,7 @@ return jiff_instance.open(result);</code></pre>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -7328,6 +7480,7 @@ return jiff_instance.open(result);</code></pre>
     <dd>
         
 <span class="param-type">promise</span>
+
 
 
     </dd>
@@ -7350,6 +7503,10 @@ return jiff_instance.open(result);</code></pre>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Opens an array of secret shares.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -7393,9 +7550,6 @@ return jiff_instance.open(result);</code></pre>
 
 
 
-<div class="description usertext">
-    <p>Opens an array of secret shares.</p>
-</div>
 
 
 
@@ -7404,10 +7558,7 @@ return jiff_instance.open(result);</code></pre>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -7445,6 +7596,7 @@ return jiff_instance.open(result);</code></pre>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -7478,6 +7630,7 @@ return jiff_instance.open(result);</code></pre>
             
                 
 <span class="param-type">Array.&lt;(number|string|Array)></span>
+
 
 
             
@@ -7529,6 +7682,7 @@ then shares[i] will be opened to all parties.</p></td>
 |
 
 <span class="param-type">object</span>
+
 
 
             
@@ -7587,7 +7741,7 @@ the execution of the opens (check implementation of slt for an example).</p></td
 
 
 
-<h5>Throws:</h5>
+<h5 class="h5-throws">Throws:</h5>
 
         
 
@@ -7601,7 +7755,7 @@ the execution of the opens (check implementation of slt for an example).</p></td
     
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -7624,6 +7778,7 @@ at [0].</p>
 <span class="param-type">promise</span>
 
 
+
     </dd>
 </dl>
 
@@ -7644,6 +7799,10 @@ at [0].</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Opens an n-dimensional array of secret shares.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -7687,9 +7846,6 @@ at [0].</p>
 
 
 
-<div class="description usertext">
-    <p>Opens an n-dimensional array of secret shares.</p>
-</div>
 
 
 
@@ -7698,10 +7854,7 @@ at [0].</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -7745,6 +7898,7 @@ at [0].</p>
 <span class="param-type">Array.&lt;Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>></span>
 
 
+
             
             </td>
 
@@ -7778,6 +7932,7 @@ at [0].</p>
             
                 
 <span class="param-type">Array.&lt;Array></span>
+
 
 
             
@@ -7825,6 +7980,7 @@ at [0].</p>
 <span class="param-type">object</span>
 
 
+
             
             </td>
 
@@ -7868,7 +8024,7 @@ at [0].</p>
 
 
 
-<h5>Throws:</h5>
+<h5 class="h5-throws">Throws:</h5>
 
         
 
@@ -7882,7 +8038,7 @@ at [0].</p>
     
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -7905,6 +8061,7 @@ at [0][0].</p>
 <span class="param-type">promise</span>
 
 
+
     </dd>
 </dl>
 
@@ -7925,6 +8082,12 @@ at [0][0].</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Generate values used for JIFF operations in advance of the computation.</p>
+<p>Calling this function does not begin preprocessing, it just creates a preprocessing task. After you created
+your desired tasks, you can ask JIFF to execute them via <a href="module-jiff-client-JIFFClient.html#executePreprocessing">executePreprocessing</a>.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -7975,11 +8138,6 @@ at [0][0].</p>
 
 
 
-<div class="description usertext">
-    <p>Generate values used for JIFF operations in advance of the computation.</p>
-<p>Calling this function does not begin preprocessing, it just creates a preprocessing task. After you created
-your desired tasks, you can ask JIFF to execute them via <a href="module-jiff-client-JIFFClient.html#executePreprocessing">executePreprocessing</a>.</p>
-</div>
 
 
 
@@ -7988,10 +8146,7 @@ your desired tasks, you can ask JIFF to execute them via <a href="module-jiff-cl
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -8029,6 +8184,7 @@ your desired tasks, you can ask JIFF to execute them via <a href="module-jiff-cl
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -8062,6 +8218,7 @@ your desired tasks, you can ask JIFF to execute them via <a href="module-jiff-cl
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -8101,6 +8258,7 @@ your desired tasks, you can ask JIFF to execute them via <a href="module-jiff-cl
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -8144,6 +8302,7 @@ missing mappings indicate that JIFF must use the default protocols</p></td>
 <span class="param-type">Number</span>
 
 
+
             
             </td>
 
@@ -8181,6 +8340,7 @@ missing mappings indicate that JIFF must use the default protocols</p></td>
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -8222,6 +8382,7 @@ missing mappings indicate that JIFF must use the default protocols</p></td>
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -8259,6 +8420,7 @@ missing mappings indicate that JIFF must use the default protocols</p></td>
             
                 
 <span class="param-type">Number</span>
+
 
 
             
@@ -8300,6 +8462,7 @@ missing mappings indicate that JIFF must use the default protocols</p></td>
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -8337,6 +8500,7 @@ missing mappings indicate that JIFF must use the default protocols</p></td>
             
                 
 <span class="param-type">Object</span>
+
 
 
             
@@ -8384,7 +8548,7 @@ missing mappings indicate that JIFF must use the default protocols</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -8400,6 +8564,7 @@ missing mappings indicate that JIFF must use the default protocols</p></td>
     <dd>
         
 <span class="param-type">promise</span>
+
 
 
     </dd>
@@ -8422,6 +8587,10 @@ missing mappings indicate that JIFF must use the default protocols</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Preprocessing Daemon that executes all currently scheduled preprocessing tasks (entries in jiffClient.currentPreprocessingTasks array) in order.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -8465,12 +8634,6 @@ missing mappings indicate that JIFF must use the default protocols</p></td>
 
 
 
-<div class="description usertext">
-    <p>Preprocessing Daemon that executes all currently scheduled preprocessing tasks (entries in jiffClient.currentPreprocessingTasks array) in order.</p>
-</div>
-
-
-
 
 
 
@@ -8509,6 +8672,11 @@ missing mappings indicate that JIFF must use the default protocols</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Receive shares from the specified parties and reconstruct their secret.
+Use this function in a party that will receive some answer/value but does not have a share of it.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -8552,10 +8720,6 @@ missing mappings indicate that JIFF must use the default protocols</p></td>
 
 
 
-<div class="description usertext">
-    <p>Receive shares from the specified parties and reconstruct their secret.
-Use this function in a party that will receive some answer/value but does not have a share of it.</p>
-</div>
 
 
 
@@ -8564,10 +8728,7 @@ Use this function in a party that will receive some answer/value but does not ha
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -8605,6 +8766,7 @@ Use this function in a party that will receive some answer/value but does not ha
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -8638,6 +8800,7 @@ Use this function in a party that will receive some answer/value but does not ha
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -8679,6 +8842,7 @@ Use this function in a party that will receive some answer/value but does not ha
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -8716,6 +8880,7 @@ Use this function in a party that will receive some answer/value but does not ha
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -8758,6 +8923,7 @@ Use this function in a party that will receive some answer/value but does not ha
 |
 
 <span class="param-type">number</span>
+
 
 
             
@@ -8805,7 +8971,7 @@ Use this function in a party that will receive some answer/value but does not ha
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -8821,6 +8987,7 @@ Use this function in a party that will receive some answer/value but does not ha
     <dd>
         
 <span class="param-type">promise</span>
+
 
 
     </dd>
@@ -8843,6 +9010,11 @@ Use this function in a party that will receive some answer/value but does not ha
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Receive arrays of shares from the specified parties and reconstruct their secrets.
+Use this function in a party that will receive some answer/value but does not have a share of it.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -8886,10 +9058,6 @@ Use this function in a party that will receive some answer/value but does not ha
 
 
 
-<div class="description usertext">
-    <p>Receive arrays of shares from the specified parties and reconstruct their secrets.
-Use this function in a party that will receive some answer/value but does not have a share of it.</p>
-</div>
 
 
 
@@ -8898,10 +9066,7 @@ Use this function in a party that will receive some answer/value but does not ha
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -8939,6 +9104,7 @@ Use this function in a party that will receive some answer/value but does not ha
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -8972,6 +9138,7 @@ Use this function in a party that will receive some answer/value but does not ha
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -9011,6 +9178,7 @@ Use this function in a party that will receive some answer/value but does not ha
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -9053,6 +9221,7 @@ Use this function in a party that will receive some answer/value but does not ha
 |
 
 <span class="param-type">number</span>
+
 
 
             
@@ -9100,7 +9269,7 @@ Use this function in a party that will receive some answer/value but does not ha
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -9116,6 +9285,7 @@ Use this function in a party that will receive some answer/value but does not ha
     <dd>
         
 <span class="param-type">promise</span>
+
 
 
     </dd>
@@ -9138,6 +9308,10 @@ Use this function in a party that will receive some answer/value but does not ha
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Removes the custom message listener attached to the given tag</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -9181,9 +9355,6 @@ Use this function in a party that will receive some answer/value but does not ha
 
 
 
-<div class="description usertext">
-    <p>Removes the custom message listener attached to the given tag</p>
-</div>
 
 
 
@@ -9192,10 +9363,7 @@ Use this function in a party that will receive some answer/value but does not ha
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -9227,6 +9395,7 @@ Use this function in a party that will receive some answer/value but does not ha
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -9274,6 +9443,11 @@ Use this function in a party that will receive some answer/value but does not ha
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>re-share an existing share (value) under a new threshold or to a new set of parties or both.
+Do not use this to refresh a share (use <a href="module-jiff-client-JIFFClient_SecretShare.html#refresh">refresh</a> instead)</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -9317,10 +9491,6 @@ Use this function in a party that will receive some answer/value but does not ha
 
 
 
-<div class="description usertext">
-    <p>re-share an existing share (value) under a new threshold or to a new set of parties or both.
-Do not use this to refresh a share (use <a href="module-jiff-client-JIFFClient_SecretShare.html#refresh">refresh</a> instead)</p>
-</div>
 
 
 
@@ -9329,10 +9499,7 @@ Do not use this to refresh a share (use <a href="module-jiff-client-JIFFClient_S
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -9368,6 +9535,7 @@ Do not use this to refresh a share (use <a href="module-jiff-client-JIFFClient_S
             
                 
 <span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a></span>
+
 
 
             
@@ -9409,6 +9577,7 @@ Do not use this to refresh a share (use <a href="module-jiff-client-JIFFClient_S
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -9446,6 +9615,7 @@ Do not use this to refresh a share (use <a href="module-jiff-client-JIFFClient_S
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -9487,6 +9657,7 @@ Do not use this to refresh a share (use <a href="module-jiff-client-JIFFClient_S
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -9526,6 +9697,7 @@ Do not use this to refresh a share (use <a href="module-jiff-client-JIFFClient_S
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -9563,6 +9735,7 @@ Do not use this to refresh a share (use <a href="module-jiff-client-JIFFClient_S
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -9614,7 +9787,7 @@ instructions in the same order</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -9630,6 +9803,7 @@ instructions in the same order</p></td>
     <dd>
         
 <span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a></span>
+
 
 
     </dd>
@@ -9652,6 +9826,16 @@ instructions in the same order</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Shorthand for generating unique operation ids.
+All primitives called after this seed will use their usual default ids prefixed by the seed.
+Helpful when we have nested callbacks/functions (e.g. share_arrays) that may be executed in arbitrary order,
+using this function as a the first call inside such callbacks with an appropriate deterministic unique base_op_id
+ensures that regardless of the order of execution, operations in the same callback are matched correctly across
+all parties.
+Check out demos/graph-pip/mpc.js for an example on using this.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -9695,15 +9879,6 @@ instructions in the same order</p></td>
 
 
 
-<div class="description usertext">
-    <p>Shorthand for generating unique operation ids.
-All primitives called after this seed will use their usual default ids prefixed by the seed.
-Helpful when we have nested callbacks/functions (e.g. share_arrays) that may be executed in arbitrary order,
-using this function as a the first call inside such callbacks with an appropriate deterministic unique base_op_id
-ensures that regardless of the order of execution, operations in the same callback are matched correctly across
-all parties.
-Check out demos/graph-pip/mpc.js for an example on using this.</p>
-</div>
 
 
 
@@ -9712,10 +9887,7 @@ Check out demos/graph-pip/mpc.js for an example on using this.</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -9750,6 +9922,7 @@ Check out demos/graph-pip/mpc.js for an example on using this.</p>
 |
 
 <span class="param-type">number</span>
+
 
 
             
@@ -9797,6 +9970,11 @@ Check out demos/graph-pip/mpc.js for an example on using this.</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Share a secret input</p>
+<p>Can be overriden by extensions to customize behavior</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -9840,20 +10018,13 @@ Check out demos/graph-pip/mpc.js for an example on using this.</p>
 
 
 
-<div class="description usertext">
-    <p>Share a secret input</p>
-<p>Can be overriden by extensions to customize behavior</p>
-</div>
 
 
 
 
 
 
-
-
-
-    <h5>Example</h5>
+    <h5 class="h5-examples">Example</h5>
     
     <pre class="prettyprint"><code>// share an input value with all parties, and receive all other parties' inputs
 var shares = jiffClient.share(input);
@@ -9865,7 +10036,7 @@ var p2_share = shares[2];</code></pre>
 
 
 
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -9903,6 +10074,7 @@ var p2_share = shares[2];</code></pre>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -9936,6 +10108,7 @@ var p2_share = shares[2];</code></pre>
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -9977,6 +10150,7 @@ var p2_share = shares[2];</code></pre>
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -10016,6 +10190,7 @@ var p2_share = shares[2];</code></pre>
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -10053,6 +10228,7 @@ var p2_share = shares[2];</code></pre>
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -10095,6 +10271,7 @@ var p2_share = shares[2];</code></pre>
 |
 
 <span class="param-type">number</span>
+
 
 
             
@@ -10147,7 +10324,7 @@ and receivers in the same order</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -10166,6 +10343,7 @@ deferred).</p>
     <dd>
         
 <span class="param-type">object</span>
+
 
 
     </dd>
@@ -10188,6 +10366,14 @@ deferred).</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Share an array of values. Each sender may have an array of different length. This is handled by the lengths parameter.
+This function will reveal the lengths of the shared array.</p>
+<p>If parties would like to keep the lengths of their arrays secret, they should agree on some &quot;max&quot; length apriori (either under MPC
+or as part of the logistics of the computation), all their arrays should be padded to that length by using appropriate default/identity
+values.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -10231,13 +10417,6 @@ deferred).</p>
 
 
 
-<div class="description usertext">
-    <p>Share an array of values. Each sender may have an array of different length. This is handled by the lengths parameter.
-This function will reveal the lengths of the shared array.</p>
-<p>If parties would like to keep the lengths of their arrays secret, they should agree on some &quot;max&quot; length apriori (either under MPC
-or as part of the logistics of the computation), all their arrays should be padded to that length by using appropriate default/identity
-values.</p>
-</div>
 
 
 
@@ -10246,10 +10425,7 @@ values.</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -10285,6 +10461,7 @@ values.</p>
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -10326,6 +10503,7 @@ values.</p>
 |
 
 <span class="param-type">object</span>
+
 
 
             
@@ -10373,6 +10551,7 @@ an object with the same format as 2. Must include every party.</p></td>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -10410,6 +10589,7 @@ an object with the same format as 2. Must include every party.</p></td>
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -10451,6 +10631,7 @@ an object with the same format as 2. Must include every party.</p></td>
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -10488,6 +10669,7 @@ an object with the same format as 2. Must include every party.</p></td>
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -10530,6 +10712,7 @@ an object with the same format as 2. Must include every party.</p></td>
 |
 
 <span class="param-type">number</span>
+
 
 
             
@@ -10583,7 +10766,7 @@ and receivers in the same order.</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -10602,6 +10785,7 @@ if the calling party is not a receiver, then null is returned.</p>
     <dd>
         
 <span class="param-type">promise</span>
+
 
 
     </dd>
@@ -10624,6 +10808,14 @@ if the calling party is not a receiver, then null is returned.</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Share an array of values. Each sender may have an array of different length. This is handled by the lengths parameter.
+This function will reveal the lengths of the shared array.</p>
+<p>If parties would like to keep the lengths of their arrays secret, they should agree on some public &quot;max&quot; length apriori (either under MPC
+or as part of the logistics of the computation), all their arrays should be padded to that length by using appropriate default/identity
+values</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -10667,13 +10859,6 @@ if the calling party is not a receiver, then null is returned.</p>
 
 
 
-<div class="description usertext">
-    <p>Share an array of values. Each sender may have an array of different length. This is handled by the lengths parameter.
-This function will reveal the lengths of the shared array.</p>
-<p>If parties would like to keep the lengths of their arrays secret, they should agree on some public &quot;max&quot; length apriori (either under MPC
-or as part of the logistics of the computation), all their arrays should be padded to that length by using appropriate default/identity
-values</p>
-</div>
 
 
 
@@ -10682,10 +10867,7 @@ values</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -10721,6 +10903,7 @@ values</p>
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -10764,6 +10947,7 @@ values</p>
 <span class="param-type">object</span>
 
 
+
             
             </td>
 
@@ -10802,6 +10986,7 @@ values</p>
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -10843,6 +11028,7 @@ values</p>
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -10882,6 +11068,7 @@ values</p>
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -10919,6 +11106,7 @@ values</p>
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -10961,6 +11149,7 @@ values</p>
 |
 
 <span class="param-type">number</span>
+
 
 
             
@@ -11014,7 +11203,7 @@ and receivers in the same order.</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -11033,6 +11222,7 @@ if the calling party is not a receiver, then null is returned.</p>
     <dd>
         
 <span class="param-type">promise</span>
+
 
 
     </dd>
@@ -11055,6 +11245,11 @@ if the calling party is not a receiver, then null is returned.</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Share an n-dimensional array of secrets
+The arrays can be of different lengths and dimensions.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -11098,10 +11293,6 @@ if the calling party is not a receiver, then null is returned.</p>
 
 
 
-<div class="description usertext">
-    <p>Share an n-dimensional array of secrets
-The arrays can be of different lengths and dimensions.</p>
-</div>
 
 
 
@@ -11124,10 +11315,7 @@ The arrays can be of different lengths and dimensions.</p>
 
 
 
-
-
-
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 
@@ -11142,6 +11330,7 @@ The arrays can be of different lengths and dimensions.</p>
 |
 
 <span class="param-type">promise</span>
+
 
 
     </dd>
@@ -11164,6 +11353,14 @@ The arrays can be of different lengths and dimensions.</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Helper function of share_ND_array
+This method gets called if share_ND_array does not have enough information
+to output an array of shares immediately.  Instead it
+returns a promise to an object holding the unknown-size
+arrays from each sender.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -11207,13 +11404,6 @@ The arrays can be of different lengths and dimensions.</p>
 
 
 
-<div class="description usertext">
-    <p>Helper function of share_ND_array
-This method gets called if share_ND_array does not have enough information
-to output an array of shares immediately.  Instead it
-returns a promise to an object holding the unknown-size
-arrays from each sender.</p>
-</div>
 
 
 
@@ -11236,10 +11426,7 @@ arrays from each sender.</p>
 
 
 
-
-
-
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 
@@ -11251,6 +11438,7 @@ arrays from each sender.</p>
     <dd>
         
 <span class="param-type">promise</span>
+
 
 
     </dd>
@@ -11273,6 +11461,15 @@ arrays from each sender.</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Helper function of share_ND_array
+This method gets called if share_ND_array when share_ND_array was given
+sufficients information (in the form of array skeletons) to
+infer the size and shape of each of the senders' arrays.
+This allows it to immediately return an object containing
+the secret-shared arrays from each sender.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -11316,14 +11513,6 @@ arrays from each sender.</p>
 
 
 
-<div class="description usertext">
-    <p>Helper function of share_ND_array
-This method gets called if share_ND_array when share_ND_array was given
-sufficients information (in the form of array skeletons) to
-infer the size and shape of each of the senders' arrays.
-This allows it to immediately return an object containing
-the secret-shared arrays from each sender.</p>
-</div>
 
 
 
@@ -11346,10 +11535,7 @@ the secret-shared arrays from each sender.</p>
 
 
 
-
-
-
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 
@@ -11361,6 +11547,7 @@ the secret-shared arrays from each sender.</p>
     <dd>
         
 <span class="param-type">object</span>
+
 
 
     </dd>
@@ -11383,6 +11570,12 @@ the secret-shared arrays from each sender.</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Starts a new barrier, all promises and secret shares created between this call and the corresponding start_barrier
+call will be part of this barrier. start_barrier may be called before previous barriers are resolved, in which
+case promises / secret shares created will be part of the new barrier as well as any previous barriers.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -11426,11 +11619,6 @@ the secret-shared arrays from each sender.</p>
 
 
 
-<div class="description usertext">
-    <p>Starts a new barrier, all promises and secret shares created between this call and the corresponding start_barrier
-call will be part of this barrier. start_barrier may be called before previous barriers are resolved, in which
-case promises / secret shares created will be part of the new barrier as well as any previous barriers.</p>
-</div>
 
 
 
@@ -11453,10 +11641,7 @@ case promises / secret shares created will be part of the new barrier as well as
 
 
 
-
-
-
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -11472,6 +11657,7 @@ case promises / secret shares created will be part of the new barrier as well as
     <dd>
         
 <span class="param-type">number</span>
+
 
 
     </dd>
@@ -11494,6 +11680,11 @@ case promises / secret shares created will be part of the new barrier as well as
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Store a pair of op_id and associated pre-processed value/share
+The value/share can be accessed later during the computation through jiffClient.get_preprocessing(op_id)</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -11537,10 +11728,6 @@ case promises / secret shares created will be part of the new barrier as well as
 
 
 
-<div class="description usertext">
-    <p>Store a pair of op_id and associated pre-processed value/share
-The value/share can be accessed later during the computation through jiffClient.get_preprocessing(op_id)</p>
-</div>
 
 
 
@@ -11549,10 +11736,7 @@ The value/share can be accessed later during the computation through jiffClient.
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -11586,6 +11770,7 @@ The value/share can be accessed later during the computation through jiffClient.
 <span class="param-type">string</span>
 
 
+
             
             </td>
 
@@ -11607,6 +11792,7 @@ The value/share can be accessed later during the computation through jiffClient.
             
                 
 <span class="param-type">SecretShare</span>
+
 
 
             
@@ -11661,7 +11847,7 @@ The value/share can be accessed later during the computation through jiffClient.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:19:37 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Jan 09 2024 21:29:32 GMT-0500 (Eastern Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
@@ -11672,5 +11858,7 @@ The value/share can be accessed later during the computation through jiffClient.
 
 
 
+
+<script>
 </body>
 </html>

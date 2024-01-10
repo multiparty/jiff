@@ -1,0 +1,1317 @@
+
+----./scripts/polyfill.js----
+//IE Fix, src: https://www.reddit.com/r/programminghorror/comments/6abmcr/nodelist_lacks_foreach_in_internet_explorer/
+if (typeof(NodeList.prototype.forEach)!==typeof(alert)){
+    NodeList.prototype.forEach=Array.prototype.forEach;
+}
+----./scripts/toggleTheme.js----
+
+----./scripts/commonNav.js----
+if (typeof fetch === 'function') {
+  const init = () => {
+    if (typeof scrollToNavItem !== 'function') return false
+    scrollToNavItem()
+    // hideAllButCurrent not always loaded
+    if (typeof hideAllButCurrent === 'function') hideAllButCurrent()
+    return true
+  }
+  fetch('./nav.inc.html')
+    .then(response => response.ok ? response.text() : `${response.url} => ${response.status} ${response.statusText}`)
+    .then(body => {
+      document.querySelector('nav').innerHTML += body
+      // nav.js should be quicker to load than nav.inc.html, a fallback just in case
+      return init()
+    })
+    .then(done => {
+      if (done) return
+      let i = 0
+      ;(function waitUntilNavJs () {
+        if (init()) return
+        if (i++ < 100) return setTimeout(waitUntilNavJs, 300)
+        console.error(Error('nav.js not loaded after 30s waiting for it'))
+      })()
+    })
+    .catch(error => console.error(error))
+} else {
+  console.error(Error('Browser too old to display commonNav (remove commonNav docdash option)'))
+}
+
+----./scripts/prettify/prettify.js----
+var q=null;window.PR_SHOULD_USE_CONTINUATION=!0;
+(function(){function L(a){function m(a){var f=a.charCodeAt(0);if(f!==92)return f;var b=a.charAt(1);return(f=r[b])?f:"0"<=b&&b<="7"?parseInt(a.substring(1),8):b==="u"||b==="x"?parseInt(a.substring(2),16):a.charCodeAt(1)}function e(a){if(a<32)return(a<16?"\\x0":"\\x")+a.toString(16);a=String.fromCharCode(a);if(a==="\\"||a==="-"||a==="["||a==="]")a="\\"+a;return a}function h(a){for(var f=a.substring(1,a.length-1).match(/\\u[\dA-Fa-f]{4}|\\x[\dA-Fa-f]{2}|\\[0-3][0-7]{0,2}|\\[0-7]{1,2}|\\[\S\s]|[^\\]/g),a=
+[],b=[],o=f[0]==="^",c=o?1:0,i=f.length;c<i;++c){var j=f[c];if(/\\[bdsw]/i.test(j))a.push(j);else{var j=m(j),d;c+2<i&&"-"===f[c+1]?(d=m(f[c+2]),c+=2):d=j;b.push([j,d]);d<65||j>122||(d<65||j>90||b.push([Math.max(65,j)|32,Math.min(d,90)|32]),d<97||j>122||b.push([Math.max(97,j)&-33,Math.min(d,122)&-33]))}}b.sort(function(a,f){return a[0]-f[0]||f[1]-a[1]});f=[];j=[NaN,NaN];for(c=0;c<b.length;++c)i=b[c],i[0]<=j[1]+1?j[1]=Math.max(j[1],i[1]):f.push(j=i);b=["["];o&&b.push("^");b.push.apply(b,a);for(c=0;c<
+f.length;++c)i=f[c],b.push(e(i[0])),i[1]>i[0]&&(i[1]+1>i[0]&&b.push("-"),b.push(e(i[1])));b.push("]");return b.join("")}function y(a){for(var f=a.source.match(/\[(?:[^\\\]]|\\[\S\s])*]|\\u[\dA-Fa-f]{4}|\\x[\dA-Fa-f]{2}|\\\d+|\\[^\dux]|\(\?[!:=]|[()^]|[^()[\\^]+/g),b=f.length,d=[],c=0,i=0;c<b;++c){var j=f[c];j==="("?++i:"\\"===j.charAt(0)&&(j=+j.substring(1))&&j<=i&&(d[j]=-1)}for(c=1;c<d.length;++c)-1===d[c]&&(d[c]=++t);for(i=c=0;c<b;++c)j=f[c],j==="("?(++i,d[i]===void 0&&(f[c]="(?:")):"\\"===j.charAt(0)&&
+(j=+j.substring(1))&&j<=i&&(f[c]="\\"+d[i]);for(i=c=0;c<b;++c)"^"===f[c]&&"^"!==f[c+1]&&(f[c]="");if(a.ignoreCase&&s)for(c=0;c<b;++c)j=f[c],a=j.charAt(0),j.length>=2&&a==="["?f[c]=h(j):a!=="\\"&&(f[c]=j.replace(/[A-Za-z]/g,function(a){a=a.charCodeAt(0);return"["+String.fromCharCode(a&-33,a|32)+"]"}));return f.join("")}for(var t=0,s=!1,l=!1,p=0,d=a.length;p<d;++p){var g=a[p];if(g.ignoreCase)l=!0;else if(/[a-z]/i.test(g.source.replace(/\\u[\da-f]{4}|\\x[\da-f]{2}|\\[^UXux]/gi,""))){s=!0;l=!1;break}}for(var r=
+{b:8,t:9,n:10,v:11,f:12,r:13},n=[],p=0,d=a.length;p<d;++p){g=a[p];if(g.global||g.multiline)throw Error(""+g);n.push("(?:"+y(g)+")")}return RegExp(n.join("|"),l?"gi":"g")}function M(a){function m(a){switch(a.nodeType){case 1:if(e.test(a.className))break;for(var g=a.firstChild;g;g=g.nextSibling)m(g);g=a.nodeName;if("BR"===g||"LI"===g)h[s]="\n",t[s<<1]=y++,t[s++<<1|1]=a;break;case 3:case 4:g=a.nodeValue,g.length&&(g=p?g.replace(/\r\n?/g,"\n"):g.replace(/[\t\n\r ]+/g," "),h[s]=g,t[s<<1]=y,y+=g.length,
+t[s++<<1|1]=a)}}var e=/(?:^|\s)nocode(?:\s|$)/,h=[],y=0,t=[],s=0,l;a.currentStyle?l=a.currentStyle.whiteSpace:window.getComputedStyle&&(l=document.defaultView.getComputedStyle(a,q).getPropertyValue("white-space"));var p=l&&"pre"===l.substring(0,3);m(a);return{a:h.join("").replace(/\n$/,""),c:t}}function B(a,m,e,h){m&&(a={a:m,d:a},e(a),h.push.apply(h,a.e))}function x(a,m){function e(a){for(var l=a.d,p=[l,"pln"],d=0,g=a.a.match(y)||[],r={},n=0,z=g.length;n<z;++n){var f=g[n],b=r[f],o=void 0,c;if(typeof b===
+"string")c=!1;else{var i=h[f.charAt(0)];if(i)o=f.match(i[1]),b=i[0];else{for(c=0;c<t;++c)if(i=m[c],o=f.match(i[1])){b=i[0];break}o||(b="pln")}if((c=b.length>=5&&"lang-"===b.substring(0,5))&&!(o&&typeof o[1]==="string"))c=!1,b="src";c||(r[f]=b)}i=d;d+=f.length;if(c){c=o[1];var j=f.indexOf(c),k=j+c.length;o[2]&&(k=f.length-o[2].length,j=k-c.length);b=b.substring(5);B(l+i,f.substring(0,j),e,p);B(l+i+j,c,C(b,c),p);B(l+i+k,f.substring(k),e,p)}else p.push(l+i,b)}a.e=p}var h={},y;(function(){for(var e=a.concat(m),
+l=[],p={},d=0,g=e.length;d<g;++d){var r=e[d],n=r[3];if(n)for(var k=n.length;--k>=0;)h[n.charAt(k)]=r;r=r[1];n=""+r;p.hasOwnProperty(n)||(l.push(r),p[n]=q)}l.push(/[\S\s]/);y=L(l)})();var t=m.length;return e}function u(a){var m=[],e=[];a.tripleQuotedStrings?m.push(["str",/^(?:'''(?:[^'\\]|\\[\S\s]|''?(?=[^']))*(?:'''|$)|"""(?:[^"\\]|\\[\S\s]|""?(?=[^"]))*(?:"""|$)|'(?:[^'\\]|\\[\S\s])*(?:'|$)|"(?:[^"\\]|\\[\S\s])*(?:"|$))/,q,"'\""]):a.multiLineStrings?m.push(["str",/^(?:'(?:[^'\\]|\\[\S\s])*(?:'|$)|"(?:[^"\\]|\\[\S\s])*(?:"|$)|`(?:[^\\`]|\\[\S\s])*(?:`|$))/,
+q,"'\"`"]):m.push(["str",/^(?:'(?:[^\n\r'\\]|\\.)*(?:'|$)|"(?:[^\n\r"\\]|\\.)*(?:"|$))/,q,"\"'"]);a.verbatimStrings&&e.push(["str",/^@"(?:[^"]|"")*(?:"|$)/,q]);var h=a.hashComments;h&&(a.cStyleComments?(h>1?m.push(["com",/^#(?:##(?:[^#]|#(?!##))*(?:###|$)|.*)/,q,"#"]):m.push(["com",/^#(?:(?:define|elif|else|endif|error|ifdef|include|ifndef|line|pragma|undef|warning)\b|[^\n\r]*)/,q,"#"]),e.push(["str",/^<(?:(?:(?:\.\.\/)*|\/?)(?:[\w-]+(?:\/[\w-]+)+)?[\w-]+\.h|[a-z]\w*)>/,q])):m.push(["com",/^#[^\n\r]*/,
+q,"#"]));a.cStyleComments&&(e.push(["com",/^\/\/[^\n\r]*/,q]),e.push(["com",/^\/\*[\S\s]*?(?:\*\/|$)/,q]));a.regexLiterals&&e.push(["lang-regex",/^(?:^^\.?|[!+-]|!=|!==|#|%|%=|&|&&|&&=|&=|\(|\*|\*=|\+=|,|-=|->|\/|\/=|:|::|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|[?@[^]|\^=|\^\^|\^\^=|{|\||\|=|\|\||\|\|=|~|break|case|continue|delete|do|else|finally|instanceof|return|throw|try|typeof)\s*(\/(?=[^*/])(?:[^/[\\]|\\[\S\s]|\[(?:[^\\\]]|\\[\S\s])*(?:]|$))+\/)/]);(h=a.types)&&e.push(["typ",h]);a=(""+a.keywords).replace(/^ | $/g,
+"");a.length&&e.push(["kwd",RegExp("^(?:"+a.replace(/[\s,]+/g,"|")+")\\b"),q]);m.push(["pln",/^\s+/,q," \r\n\t\xa0"]);e.push(["lit",/^@[$_a-z][\w$@]*/i,q],["typ",/^(?:[@_]?[A-Z]+[a-z][\w$@]*|\w+_t\b)/,q],["pln",/^[$_a-z][\w$@]*/i,q],["lit",/^(?:0x[\da-f]+|(?:\d(?:_\d+)*\d*(?:\.\d*)?|\.\d\+)(?:e[+-]?\d+)?)[a-z]*/i,q,"0123456789"],["pln",/^\\[\S\s]?/,q],["pun",/^.[^\s\w"-$'./@\\`]*/,q]);return x(m,e)}function D(a,m){function e(a){switch(a.nodeType){case 1:if(k.test(a.className))break;if("BR"===a.nodeName)h(a),
+a.parentNode&&a.parentNode.removeChild(a);else for(a=a.firstChild;a;a=a.nextSibling)e(a);break;case 3:case 4:if(p){var b=a.nodeValue,d=b.match(t);if(d){var c=b.substring(0,d.index);a.nodeValue=c;(b=b.substring(d.index+d[0].length))&&a.parentNode.insertBefore(s.createTextNode(b),a.nextSibling);h(a);c||a.parentNode.removeChild(a)}}}}function h(a){function b(a,d){var e=d?a.cloneNode(!1):a,f=a.parentNode;if(f){var f=b(f,1),g=a.nextSibling;f.appendChild(e);for(var h=g;h;h=g)g=h.nextSibling,f.appendChild(h)}return e}
+for(;!a.nextSibling;)if(a=a.parentNode,!a)return;for(var a=b(a.nextSibling,0),e;(e=a.parentNode)&&e.nodeType===1;)a=e;d.push(a)}var k=/(?:^|\s)nocode(?:\s|$)/,t=/\r\n?|\n/,s=a.ownerDocument,l;a.currentStyle?l=a.currentStyle.whiteSpace:window.getComputedStyle&&(l=s.defaultView.getComputedStyle(a,q).getPropertyValue("white-space"));var p=l&&"pre"===l.substring(0,3);for(l=s.createElement("LI");a.firstChild;)l.appendChild(a.firstChild);for(var d=[l],g=0;g<d.length;++g)e(d[g]);m===(m|0)&&d[0].setAttribute("value",
+m);var r=s.createElement("OL");r.className="linenums";for(var n=Math.max(0,m-1|0)||0,g=0,z=d.length;g<z;++g)l=d[g],l.className="L"+(g+n)%10,l.firstChild||l.appendChild(s.createTextNode("\xa0")),r.appendChild(l);a.appendChild(r)}function k(a,m){for(var e=m.length;--e>=0;){var h=m[e];A.hasOwnProperty(h)?window.console&&console.warn("cannot override language handler %s",h):A[h]=a}}function C(a,m){if(!a||!A.hasOwnProperty(a))a=/^\s*</.test(m)?"default-markup":"default-code";return A[a]}function E(a){var m=
+a.g;try{var e=M(a.h),h=e.a;a.a=h;a.c=e.c;a.d=0;C(m,h)(a);var k=/\bMSIE\b/.test(navigator.userAgent),m=/\n/g,t=a.a,s=t.length,e=0,l=a.c,p=l.length,h=0,d=a.e,g=d.length,a=0;d[g]=s;var r,n;for(n=r=0;n<g;)d[n]!==d[n+2]?(d[r++]=d[n++],d[r++]=d[n++]):n+=2;g=r;for(n=r=0;n<g;){for(var z=d[n],f=d[n+1],b=n+2;b+2<=g&&d[b+1]===f;)b+=2;d[r++]=z;d[r++]=f;n=b}for(d.length=r;h<p;){var o=l[h+2]||s,c=d[a+2]||s,b=Math.min(o,c),i=l[h+1],j;if(i.nodeType!==1&&(j=t.substring(e,b))){k&&(j=j.replace(m,"\r"));i.nodeValue=
+j;var u=i.ownerDocument,v=u.createElement("SPAN");v.className=d[a+1];var x=i.parentNode;x.replaceChild(v,i);v.appendChild(i);e<o&&(l[h+1]=i=u.createTextNode(t.substring(b,o)),x.insertBefore(i,v.nextSibling))}e=b;e>=o&&(h+=2);e>=c&&(a+=2)}}catch(w){"console"in window&&console.log(w&&w.stack?w.stack:w)}}var v=["break,continue,do,else,for,if,return,while"],w=[[v,"auto,case,char,const,default,double,enum,extern,float,goto,int,long,register,short,signed,sizeof,static,struct,switch,typedef,union,unsigned,void,volatile"],
+"catch,class,delete,false,import,new,operator,private,protected,public,this,throw,true,try,typeof"],F=[w,"alignof,align_union,asm,axiom,bool,concept,concept_map,const_cast,constexpr,decltype,dynamic_cast,explicit,export,friend,inline,late_check,mutable,namespace,nullptr,reinterpret_cast,static_assert,static_cast,template,typeid,typename,using,virtual,where"],G=[w,"abstract,boolean,byte,extends,final,finally,implements,import,instanceof,null,native,package,strictfp,super,synchronized,throws,transient"],
+H=[G,"as,base,by,checked,decimal,delegate,descending,dynamic,event,fixed,foreach,from,group,implicit,in,interface,internal,into,is,lock,object,out,override,orderby,params,partial,readonly,ref,sbyte,sealed,stackalloc,string,select,uint,ulong,unchecked,unsafe,ushort,var"],w=[w,"debugger,eval,export,function,get,null,set,undefined,var,with,Infinity,NaN"],I=[v,"and,as,assert,class,def,del,elif,except,exec,finally,from,global,import,in,is,lambda,nonlocal,not,or,pass,print,raise,try,with,yield,False,True,None"],
+J=[v,"alias,and,begin,case,class,def,defined,elsif,end,ensure,false,in,module,next,nil,not,or,redo,rescue,retry,self,super,then,true,undef,unless,until,when,yield,BEGIN,END"],v=[v,"case,done,elif,esac,eval,fi,function,in,local,set,then,until"],K=/^(DIR|FILE|vector|(de|priority_)?queue|list|stack|(const_)?iterator|(multi)?(set|map)|bitset|u?(int|float)\d*)/,N=/\S/,O=u({keywords:[F,H,w,"caller,delete,die,do,dump,elsif,eval,exit,foreach,for,goto,if,import,last,local,my,next,no,our,print,package,redo,require,sub,undef,unless,until,use,wantarray,while,BEGIN,END"+
+I,J,v],hashComments:!0,cStyleComments:!0,multiLineStrings:!0,regexLiterals:!0}),A={};k(O,["default-code"]);k(x([],[["pln",/^[^<?]+/],["dec",/^<!\w[^>]*(?:>|$)/],["com",/^<\!--[\S\s]*?(?:--\>|$)/],["lang-",/^<\?([\S\s]+?)(?:\?>|$)/],["lang-",/^<%([\S\s]+?)(?:%>|$)/],["pun",/^(?:<[%?]|[%?]>)/],["lang-",/^<xmp\b[^>]*>([\S\s]+?)<\/xmp\b[^>]*>/i],["lang-js",/^<script\b[^>]*>([\S\s]*?)(<\/script\b[^>]*>)/i],["lang-css",/^<style\b[^>]*>([\S\s]*?)(<\/style\b[^>]*>)/i],["lang-in.tag",/^(<\/?[a-z][^<>]*>)/i]]),
+["default-markup","htm","html","mxml","xhtml","xml","xsl"]);k(x([["pln",/^\s+/,q," \t\r\n"],["atv",/^(?:"[^"]*"?|'[^']*'?)/,q,"\"'"]],[["tag",/^^<\/?[a-z](?:[\w-.:]*\w)?|\/?>$/i],["atn",/^(?!style[\s=]|on)[a-z](?:[\w:-]*\w)?/i],["lang-uq.val",/^=\s*([^\s"'>]*(?:[^\s"'/>]|\/(?=\s)))/],["pun",/^[/<->]+/],["lang-js",/^on\w+\s*=\s*"([^"]+)"/i],["lang-js",/^on\w+\s*=\s*'([^']+)'/i],["lang-js",/^on\w+\s*=\s*([^\s"'>]+)/i],["lang-css",/^style\s*=\s*"([^"]+)"/i],["lang-css",/^style\s*=\s*'([^']+)'/i],["lang-css",
+/^style\s*=\s*([^\s"'>]+)/i]]),["in.tag"]);k(x([],[["atv",/^[\S\s]+/]]),["uq.val"]);k(u({keywords:F,hashComments:!0,cStyleComments:!0,types:K}),["c","cc","cpp","cxx","cyc","m"]);k(u({keywords:"null,true,false"}),["json"]);k(u({keywords:H,hashComments:!0,cStyleComments:!0,verbatimStrings:!0,types:K}),["cs"]);k(u({keywords:G,cStyleComments:!0}),["java"]);k(u({keywords:v,hashComments:!0,multiLineStrings:!0}),["bsh","csh","sh"]);k(u({keywords:I,hashComments:!0,multiLineStrings:!0,tripleQuotedStrings:!0}),
+["cv","py"]);k(u({keywords:"caller,delete,die,do,dump,elsif,eval,exit,foreach,for,goto,if,import,last,local,my,next,no,our,print,package,redo,require,sub,undef,unless,until,use,wantarray,while,BEGIN,END",hashComments:!0,multiLineStrings:!0,regexLiterals:!0}),["perl","pl","pm"]);k(u({keywords:J,hashComments:!0,multiLineStrings:!0,regexLiterals:!0}),["rb"]);k(u({keywords:w,cStyleComments:!0,regexLiterals:!0}),["js"]);k(u({keywords:"all,and,by,catch,class,else,extends,false,finally,for,if,in,is,isnt,loop,new,no,not,null,of,off,on,or,return,super,then,true,try,unless,until,when,while,yes",
+hashComments:3,cStyleComments:!0,multilineStrings:!0,tripleQuotedStrings:!0,regexLiterals:!0}),["coffee"]);k(x([],[["str",/^[\S\s]+/]]),["regex"]);window.prettyPrintOne=function(a,m,e){var h=document.createElement("PRE");h.innerHTML=a;e&&D(h,e);E({g:m,i:e,h:h});return h.innerHTML};window.prettyPrint=function(a){function m(){for(var e=window.PR_SHOULD_USE_CONTINUATION?l.now()+250:Infinity;p<h.length&&l.now()<e;p++){var n=h[p],k=n.className;if(k.indexOf("prettyprint")>=0){var k=k.match(g),f,b;if(b=
+!k){b=n;for(var o=void 0,c=b.firstChild;c;c=c.nextSibling)var i=c.nodeType,o=i===1?o?b:c:i===3?N.test(c.nodeValue)?b:o:o;b=(f=o===b?void 0:o)&&"CODE"===f.tagName}b&&(k=f.className.match(g));k&&(k=k[1]);b=!1;for(o=n.parentNode;o;o=o.parentNode)if((o.tagName==="pre"||o.tagName==="code"||o.tagName==="xmp")&&o.className&&o.className.indexOf("prettyprint")>=0){b=!0;break}b||((b=(b=n.className.match(/\blinenums\b(?::(\d+))?/))?b[1]&&b[1].length?+b[1]:!0:!1)&&D(n,b),d={g:k,h:n,i:b},E(d))}}p<h.length?setTimeout(m,
+250):a&&a()}for(var e=[document.getElementsByTagName("pre"),document.getElementsByTagName("code"),document.getElementsByTagName("xmp")],h=[],k=0;k<e.length;++k)for(var t=0,s=e[k].length;t<s;++t)h.push(e[k][t]);var e=q,l=Date;l.now||(l={now:function(){return+new Date}});var p=0,d,g=/\blang(?:uage)?-([\w.]+)(?!\S)/;m()};window.PR={createSimpleLexer:x,registerLangHandler:k,sourceDecorator:u,PR_ATTRIB_NAME:"atn",PR_ATTRIB_VALUE:"atv",PR_COMMENT:"com",PR_DECLARATION:"dec",PR_KEYWORD:"kwd",PR_LITERAL:"lit",
+PR_NOCODE:"nocode",PR_PLAIN:"pln",PR_PUNCTUATION:"pun",PR_SOURCE:"src",PR_STRING:"str",PR_TAG:"tag",PR_TYPE:"typ"}})();
+
+----./scripts/prettify/lang-css.js----
+PR.registerLangHandler(PR.createSimpleLexer([["pln",/^[\t\n\f\r ]+/,null," \t\r\n"]],[["str",/^"(?:[^\n\f\r"\\]|\\(?:\r\n?|\n|\f)|\\[\S\s])*"/,null],["str",/^'(?:[^\n\f\r'\\]|\\(?:\r\n?|\n|\f)|\\[\S\s])*'/,null],["lang-css-str",/^url\(([^"')]*)\)/i],["kwd",/^(?:url|rgb|!important|@import|@page|@media|@charset|inherit)(?=[^\w-]|$)/i,null],["lang-css-kw",/^(-?(?:[_a-z]|\\[\da-f]+ ?)(?:[\w-]|\\\\[\da-f]+ ?)*)\s*:/i],["com",/^\/\*[^*]*\*+(?:[^*/][^*]*\*+)*\//],["com",
+/^(?:<\!--|--\>)/],["lit",/^(?:\d+|\d*\.\d+)(?:%|[a-z]+)?/i],["lit",/^#[\da-f]{3,6}/i],["pln",/^-?(?:[_a-z]|\\[\da-f]+ ?)(?:[\w-]|\\\\[\da-f]+ ?)*/i],["pun",/^[^\s\w"']+/]]),["css"]);PR.registerLangHandler(PR.createSimpleLexer([],[["kwd",/^-?(?:[_a-z]|\\[\da-f]+ ?)(?:[\w-]|\\\\[\da-f]+ ?)*/i]]),["css-kw"]);PR.registerLangHandler(PR.createSimpleLexer([],[["str",/^[^"')]+/]]),["css-str"]);
+
+----./scripts/prettify/Apache-License-2.0.txt----
+
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+----./scripts/nav.js----
+function scrollToNavItem() {
+    var path = window.location.href.split('/').pop().replace(/\.html/, '');
+    document.querySelectorAll('nav a').forEach(function(link) {
+      var href = link.attributes.href.value.replace(/\.html/, '');
+      if (path === href) {
+        link.scrollIntoView({block: 'center'});
+        return;
+      }
+    })
+  }
+
+  scrollToNavItem();
+
+----./scripts/search.js----
+
+var searchAttr = 'data-search-mode';
+function contains(a,m){
+    return (a.textContent || a.innerText || "").toUpperCase().indexOf(m) !== -1;
+};
+
+//on search
+document.getElementById("nav-search").addEventListener("keyup", function(event) {
+    var search = this.value.toUpperCase();
+
+    if (!search) {
+        //no search, show all results
+        document.documentElement.removeAttribute(searchAttr);
+        
+        document.querySelectorAll("nav > ul > li:not(.level-hide)").forEach(function(elem) {
+            elem.style.display = "block";
+        });
+
+        if (typeof hideAllButCurrent === "function"){
+            //let's do what ever collapse wants to do
+            hideAllButCurrent();
+        } else {
+            //menu by default should be opened
+            document.querySelectorAll("nav > ul > li > ul li").forEach(function(elem) {
+                elem.style.display = "block";
+            });
+        }
+    } else {
+        //we are searching
+        document.documentElement.setAttribute(searchAttr, '');
+
+        //show all parents
+        document.querySelectorAll("nav > ul > li").forEach(function(elem) {
+            elem.style.display = "block";
+        });
+        document.querySelectorAll("nav > ul").forEach(function(elem) {
+            elem.style.display = "block";
+        });
+        //hide all results
+        document.querySelectorAll("nav > ul > li > ul li").forEach(function(elem) {
+            elem.style.display = "none";
+        });
+        //show results matching filter
+        document.querySelectorAll("nav > ul > li > ul a").forEach(function(elem) {
+            if (!contains(elem.parentNode, search)) {
+                return;
+            }
+            elem.parentNode.style.display = "block";
+        });
+        //hide parents without children
+        document.querySelectorAll("nav > ul > li").forEach(function(parent) {
+            var countSearchA = 0;
+            parent.querySelectorAll("a").forEach(function(elem) {
+                if (contains(elem, search)) {
+                    countSearchA++;
+                }
+            });
+            
+            var countUl = 0;
+            var countUlVisible = 0;
+            parent.querySelectorAll("ul").forEach(function(ulP) {
+                // count all elements that match the search
+                if (contains(ulP, search)) {
+                    countUl++;
+                }
+                
+                // count all visible elements
+                var children = ulP.children
+                for (i=0; i<children.length; i++) {
+                    var elem = children[i];
+                    if (elem.style.display != "none") {
+                        countUlVisible++;
+                    }
+                }
+            });
+          
+            if (countSearchA == 0 && countUl === 0){
+                //has no child at all and does not contain text
+                parent.style.display = "none";
+            } else if(countSearchA == 0 && countUlVisible == 0){
+                //has no visible child and does not contain text
+                parent.style.display = "none";
+            }
+        });
+        document.querySelectorAll("nav > ul.collapse_top").forEach(function(parent) {
+            var countVisible = 0;
+            parent.querySelectorAll("li").forEach(function(elem) {
+                if (elem.style.display !== "none") {
+                    countVisible++;
+                }
+            });
+          
+            if (countVisible == 0) {
+                //has no child at all and does not contain text
+                parent.style.display = "none";
+            }
+        });
+    }
+});
+----./scripts/linenumber.js----
+/*global document */
+(function() {
+    var source = document.getElementsByClassName('prettyprint source linenums');
+    var i = 0;
+    var lineNumber = 0;
+    var lineId;
+    var lines;
+    var totalLines;
+    var anchorHash;
+
+    if (source && source[0]) {
+        anchorHash = document.location.hash.substring(1);
+        lines = source[0].getElementsByTagName('li');
+        totalLines = lines.length;
+
+        for (; i < totalLines; i++) {
+            lineNumber++;
+            lineId = 'line' + lineNumber;
+            lines[i].id = lineId;
+            if (lineId === anchorHash) {
+                lines[i].className += ' selected';
+            }
+        }
+    }
+})();
+
+----./scripts/collapse.js----
+function hideAllButCurrent(){
+    //by default all submenut items are hidden
+    //but we need to rehide them for search
+    document.querySelectorAll("nav > ul").forEach(function(parent) {
+        if (parent.className.indexOf("collapse_top") !== -1) {
+            parent.style.display = "none";
+        }
+    });
+    document.querySelectorAll("nav > ul > li > ul li").forEach(function(parent) {
+        parent.style.display = "none";
+    });
+    document.querySelectorAll("nav > h3").forEach(function(section) {
+        if (section.className.indexOf("collapsed_header") !== -1) {
+            section.addEventListener("click", function(){
+                if (section.nextSibling.style.display === "none") {
+                    section.nextSibling.style.display = "block";
+                } else {
+                    section.nextSibling.style.display = "none";
+                }
+            });
+        }
+    });
+    
+    //only current page (if it exists) should be opened
+    var file = window.location.pathname.split("/").pop().replace(/\.html/, '');
+    document.querySelectorAll("nav > ul > li > a").forEach(function(parent) {
+        var href = parent.attributes.href.value.replace(/\.html/, '');
+        if (file === href) {
+            if (parent.parentNode.parentNode.className.indexOf("collapse_top") !== -1) {
+                parent.parentNode.parentNode.style.display = "block";
+            }
+            parent.parentNode.querySelectorAll("ul li").forEach(function(elem) {
+                elem.style.display = "block";
+            });
+        }
+    });
+}
+
+hideAllButCurrent();
+----./styles/prettify.css----
+.pln {
+  color: #ddd;
+}
+
+/* string content */
+.str {
+  color: #61ce3c;
+}
+
+/* a keyword */
+.kwd {
+  color: #fbde2d;
+}
+
+/* a comment */
+.com {
+  color: #aeaeae;
+}
+
+/* a type name */
+.typ {
+  color: #8da6ce;
+}
+
+/* a literal value */
+.lit {
+  color: #fbde2d;
+}
+
+/* punctuation */
+.pun {
+  color: #ddd;
+}
+
+/* lisp open bracket */
+.opn {
+  color: #000000;
+}
+
+/* lisp close bracket */
+.clo {
+  color: #000000;
+}
+
+/* a markup tag name */
+.tag {
+  color: #8da6ce;
+}
+
+/* a markup attribute name */
+.atn {
+  color: #fbde2d;
+}
+
+/* a markup attribute value */
+.atv {
+  color: #ddd;
+}
+
+/* a declaration */
+.dec {
+  color: #EF5050;
+}
+
+/* a variable name */
+.var {
+  color: #c82829;
+}
+
+/* a function name */
+.fun {
+  color: #4271ae;
+}
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-bottom: 2px;
+}
+
+----./styles/jsdoc.css----
+* {
+  box-sizing: border-box
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  color: #4d4e53;
+  background-color: white;
+  margin: 0 auto;
+  padding: 0 20px;
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  font-size: 16px;
+}
+
+img {
+  max-width: 100%;
+}
+
+a,
+a:active {
+  color: #606;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+article a {
+  border-bottom: 1px solid #ddd;
+}
+
+article a:hover, article a:active {
+  border-bottom-color: #222;
+}
+
+article .description a {
+    word-break: break-word;
+}
+
+p, ul, ol, blockquote {
+  margin-bottom: 1em;
+  line-height: 160%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #000;
+  font-weight: 400;
+  margin: 0;
+}
+
+h1 {
+  font-weight: 300;
+  font-size: 48px;
+  margin: 1em 0 .5em;
+}
+
+h1.page-title {
+  font-size: 48px;
+  margin: 1em 30px;
+  line-height: 100%;
+  word-wrap: break-word;
+}
+
+h2 {
+  font-size: 24px;
+  margin: 1.5em 0 .3em;
+}
+
+h3 {
+  font-size: 24px;
+  margin: 1.2em 0 .3em;
+}
+
+h4 {
+  font-size: 18px;
+  margin: 1em 0 .2em;
+  color: #4d4e53;
+}
+
+h4.name {
+  color: #fff;
+  background: #6d426d;
+  box-shadow: 0 .25em .5em #d3d3d3;
+  border-top: 1px solid #d3d3d3;
+  border-bottom: 1px solid #d3d3d3;
+  margin: 1.5em 0 0.5em;
+  padding: .75em 0 .75em 10px;
+}
+
+h4.name a {
+  color: #fc83ff;
+}
+
+h4.name a:hover {
+  border-bottom-color: #fc83ff;
+}
+
+h5, .container-overview .subsection-title {
+  font-size: 120%;
+  letter-spacing: -0.01em;
+  margin: 8px 0 3px 0;
+}
+
+h6 {
+  font-size: 100%;
+  letter-spacing: -0.01em;
+  margin: 6px 0 3px 0;
+  font-style: italic;
+}
+
+.usertext h1 {
+  font-family: "Source Sans Pro";
+  font-size: 24px;
+  margin: 2.5em 0 1em;
+  font-weight: 400;
+}
+
+.usertext h2 {
+  font-family: "Source Sans Pro";
+  font-size: 18px;
+  margin: 2em 0 0.5em;
+  font-weight: 400;
+
+}
+
+.usertext h3 {
+  font-family: "Source Sans Pro";
+  font-size: 15px;
+  margin: 1.5em 0 0;
+  font-weight: 400;
+}
+
+.usertext h4 {
+  font-family: "Source Sans Pro";
+  font-size: 14px;
+  margin: 0 0 0;
+  font-weight: 400;
+}
+
+.usertext h5 {
+  font-size: 12px;
+  margin: 1em 0 0;
+  font-weight: normal;
+  color: #666;
+}
+
+.usertext h6 {
+  font-size: 11px;
+  margin: 1em 0 0;
+  font-weight: normal;
+  font-style: normal;
+  color: #666;
+}
+
+
+tt, code, kbd, samp, pre {
+  font-family: Consolas, Monaco, 'Andale Mono', monospace;
+  background: #f4f4f4;
+}
+
+tt, code, kbd, samp{
+  padding: 1px 5px;
+}
+
+pre {
+  padding-bottom: 1em;
+}  
+
+.class-description {
+  font-size: 130%;
+  line-height: 140%;
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+
+.class-description:empty {
+  margin: 0
+}
+
+#main {
+  float: right;
+  width: calc(100% - 240px);
+}
+
+header {
+  display: block
+}
+
+section {
+  display: block;
+  background-color: #fff;
+  padding: 0 0 0 30px;
+}
+
+.variation {
+  display: none
+}
+
+.signature-attributes {
+  font-size: 60%;
+  color: #eee;
+  font-style: italic;
+  font-weight: lighter;
+}
+
+nav {
+  float: left;
+  display: block;
+  width: 250px;
+  background: #fff;
+  overflow: auto;
+  position: fixed;
+  height: 100%;
+}
+
+nav #nav-search{
+    width: 210px;
+    height: 30px;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+    margin-right: 20px;
+    margin-top: 20px;
+}
+
+nav.wrap a{
+    word-wrap: break-word;
+}
+
+nav h3 {
+  margin-top: 12px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  line-height: 24px;
+  margin: 15px 0 10px;
+  padding: 0;
+  color: #000;
+}
+
+nav h3.collapsed_header {
+  cursor: pointer;
+}
+
+nav ul {
+  font-family: 'Lucida Grande', 'Lucida Sans Unicode', arial, sans-serif;
+  font-size: 100%;
+  line-height: 17px;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+nav ul a,
+nav ul a:active {
+  font-family: 'Montserrat', sans-serif;
+  line-height: 18px;
+  padding: 0;
+  display: block;
+  font-size: 12px;
+}
+
+nav a:hover,
+nav a:active {
+  color: #606;
+}
+
+nav > ul {
+  padding: 0 10px;
+}
+
+nav > ul > li > a {
+  color: #606;
+  margin-top: 10px;
+}
+
+nav ul ul a {
+  color: hsl(207, 1%, 60%);
+  border-left: 1px solid hsl(207, 10%, 86%);
+}
+
+nav ul ul a,
+nav ul ul a:active {
+  padding-left: 20px
+}
+
+nav h2 {
+   font-size: 13px;
+   margin: 10px 0 0 0;
+   padding: 0;
+}
+
+nav > h2 > a {
+   margin: 10px 0 -10px;
+   color: #606 !important;
+}
+
+footer {
+  color: hsl(0, 0%, 28%);
+  margin-left: 250px;
+  display: block;
+  padding: 15px;
+  font-style: italic;
+  font-size: 90%;
+}
+
+.ancestors {
+  color: #999
+}
+
+.ancestors a {
+   color: #999 !important;
+}
+
+.clear {
+  clear: both
+}
+
+.important {
+  font-weight: bold;
+  color: #950B02;
+}
+
+.yes-def {
+  text-indent: -1000px
+}
+
+.type-signature {
+  color: #CA79CA
+}
+
+.type-signature:last-child {
+  color: #eee;
+}
+
+.name, .signature {
+  font-family: Consolas, Monaco, 'Andale Mono', monospace
+}
+
+.signature {
+    color: #fc83ff;
+}
+
+.details {
+  margin-top: 6px;
+  border-left: 2px solid #DDD;
+  line-height: 20px;
+  font-size: 14px;
+}
+
+.details dt {
+   width: auto;
+   float: left;
+   padding-left: 10px;
+}
+
+.details dd {
+   margin-left: 70px;
+   margin-top: 6px;
+   margin-bottom: 6px;
+}
+
+.details ul {
+   margin: 0
+}
+
+.details ul {
+   list-style-type: none
+}
+
+.details pre.prettyprint {
+   margin: 0
+}
+
+.details .object-value {
+   padding-top: 0
+}
+
+.description {
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+
+.code-caption {
+  font-style: italic;
+  font-size: 107%;
+  margin: 0;
+}
+
+.prettyprint {
+  font-size: 14px;
+  overflow: auto;
+}
+
+.prettyprint.source {
+  width: inherit;
+  line-height: 18px;
+  display: block;
+  background-color: #0d152a;
+  color: #aeaeae;
+}
+
+.prettyprint code {
+  line-height: 18px;
+  display: block;
+  background-color: #0d152a;
+  color: #4D4E53;
+}
+
+.prettyprint > code {
+  padding: 15px;
+}
+
+.prettyprint .linenums code {
+  padding: 0 15px
+}
+
+.prettyprint .linenums li:first-of-type code {
+  padding-top: 15px
+}
+
+.prettyprint code span.line {
+  display: inline-block
+}
+
+.prettyprint.linenums {
+  padding-left: 70px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.prettyprint.linenums ol {
+   padding-left: 0
+}
+
+.prettyprint.linenums li {
+   border-left: 3px #34446B solid;
+}
+
+.prettyprint.linenums li.selected, .prettyprint.linenums li.selected * {
+   background-color: #34446B;
+}
+
+.prettyprint.linenums li * {
+   -webkit-user-select: text;
+   -moz-user-select: text;
+   -ms-user-select: text;
+   user-select: text;
+}
+
+.prettyprint.linenums li code:empty:after {
+  content:"";
+  display:inline-block;
+  width:0px;
+}
+
+table {
+  border-spacing: 0;
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  width: 100%;
+  font-size: 14px;
+  margin: 1em 0;
+}
+
+td, th {
+   margin: 0px;
+   text-align: left;
+   vertical-align: top;
+   padding: 10px;
+   display: table-cell;
+}
+
+thead tr, thead tr {
+   background-color: #fff;
+   font-weight: bold;
+   border-bottom: 1px solid #ddd;
+}
+
+.params .type {
+  white-space: nowrap;
+}
+
+.params code {
+  white-space: pre;
+}
+
+.params td, .params .name, .props .name, .name code {
+   color: #4D4E53;
+   font-family: Consolas, Monaco, 'Andale Mono', monospace;
+   font-size: 100%;
+}
+
+.params td {
+   border-top: 1px solid #eee
+}
+
+.params td.description > p:first-child, .props td.description > p:first-child {
+   margin-top: 0;
+   padding-top: 0;
+}
+
+.params td.description > p:last-child, .props td.description > p:last-child {
+   margin-bottom: 0;
+   padding-bottom: 0;
+}
+
+span.param-type, .params td .param-type, .param-type dd {
+   color: #606;
+  font-family: Consolas, Monaco, 'Andale Mono', monospace
+}
+
+.param-type dt, .param-type dd {
+  display: inline-block
+}
+
+.param-type {
+  margin: 14px 0;
+}
+
+.disabled {
+  color: #454545
+}
+
+/* navicon button */
+.navicon-button {
+  display: none;
+  position: relative;
+  padding: 2.0625rem 1.5rem;
+  transition: 0.25s;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  opacity: .8;
+}
+.navicon-button .navicon:before, .navicon-button .navicon:after {
+  transition: 0.25s;
+}
+.navicon-button:hover {
+  transition: 0.5s;
+  opacity: 1;
+}
+.navicon-button:hover .navicon:before, .navicon-button:hover .navicon:after {
+  transition: 0.25s;
+}
+.navicon-button:hover .navicon:before {
+  top: .825rem;
+}
+.navicon-button:hover .navicon:after {
+  top: -.825rem;
+}
+
+/* navicon */
+.navicon {
+  position: relative;
+  width: 2.5em;
+  height: .3125rem;
+  background: #000;
+  transition: 0.3s;
+  border-radius: 2.5rem;
+}
+.navicon:before, .navicon:after {
+  display: block;
+  content: "";
+  height: .3125rem;
+  width: 2.5rem;
+  background: #000;
+  position: absolute;
+  z-index: -1;
+  transition: 0.3s 0.25s;
+  border-radius: 1rem;
+}
+.navicon:before {
+  top: .625rem;
+}
+.navicon:after {
+  top: -.625rem;
+}
+
+/* open */
+.nav-trigger:checked + label:not(.steps) .navicon:before,
+.nav-trigger:checked + label:not(.steps) .navicon:after {
+  top: 0 !important;
+}
+
+.nav-trigger:checked + label .navicon:before,
+.nav-trigger:checked + label .navicon:after {
+  transition: 0.5s;
+}
+
+/* Minus */
+.nav-trigger:checked + label {
+  -webkit-transform: scale(0.75);
+          transform: scale(0.75);
+}
+
+/* × and + */
+.nav-trigger:checked + label.plus .navicon,
+.nav-trigger:checked + label.x .navicon {
+  background: transparent;
+}
+
+.nav-trigger:checked + label.plus .navicon:before,
+.nav-trigger:checked + label.x .navicon:before {
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+  background: #FFF;
+}
+
+.nav-trigger:checked + label.plus .navicon:after,
+.nav-trigger:checked + label.x .navicon:after {
+  -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
+  background: #FFF;
+}
+
+.nav-trigger:checked + label.plus {
+  -webkit-transform: scale(0.75) rotate(45deg);
+          transform: scale(0.75) rotate(45deg);
+}
+
+.nav-trigger:checked ~ nav {
+  left: 0 !important;
+}
+
+.nav-trigger:checked ~ .overlay {
+  display: block;
+}
+
+.nav-trigger {
+  position: fixed;
+  top: 0;
+  clip: rect(0, 0, 0, 0);
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: hsla(0, 0%, 0%, 0.5);
+  z-index: 1;
+}
+
+/* nav level */
+.level-hide {
+    display: none;
+}
+html[data-search-mode] .level-hide {
+    display: block;
+}
+
+
+@media only screen and (max-width: 680px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  nav {
+    background: #FFF;
+    width: 250px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: -250px;
+    z-index: 3;
+    padding: 0 10px;
+    transition: left 0.2s;
+  }
+
+  .navicon-button {
+    display: inline-block;
+    position: fixed;
+    top: 1.5em;
+    right: 0;
+    z-index: 2;
+  }
+
+  #main {
+    width: 100%;
+  }
+
+  #main h1.page-title {
+    margin: 1em 0;
+  }
+
+  #main section {
+    padding: 0;
+  }
+
+  footer {
+    margin-left: 0;
+  }
+}
+
+/** Add a '#' to static members */
+[data-type="member"] a::before {
+  content: '#';
+  display: inline-block;
+  margin-left: -14px;
+  margin-right: 5px;
+}
+
+#disqus_thread{
+    margin-left: 30px;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/Montserrat/Montserrat-Regular.eot'); /* IE9 Compat Modes */
+  src: url('../fonts/Montserrat/Montserrat-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../fonts/Montserrat/Montserrat-Regular.woff2') format('woff2'), /* Super Modern Browsers */
+       url('../fonts/Montserrat/Montserrat-Regular.woff') format('woff'), /* Pretty Modern Browsers */
+       url('../fonts/Montserrat/Montserrat-Regular.ttf')  format('truetype'); /* Safari, Android, iOS */
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/Montserrat/Montserrat-Bold.eot'); /* IE9 Compat Modes */
+  src: url('../fonts/Montserrat/Montserrat-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('../fonts/Montserrat/Montserrat-Bold.woff2') format('woff2'), /* Super Modern Browsers */
+       url('../fonts/Montserrat/Montserrat-Bold.woff') format('woff'), /* Pretty Modern Browsers */
+       url('../fonts/Montserrat/Montserrat-Bold.ttf')  format('truetype'); /* Safari, Android, iOS */
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: url('../fonts/Source-Sans-Pro/sourcesanspro-regular-webfont.eot');
+    src: url('../fonts/Source-Sans-Pro/sourcesanspro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Source-Sans-Pro/sourcesanspro-regular-webfont.woff2') format('woff2'),
+         url('../fonts/Source-Sans-Pro/sourcesanspro-regular-webfont.woff') format('woff'),
+         url('../fonts/Source-Sans-Pro/sourcesanspro-regular-webfont.ttf') format('truetype'),
+         url('../fonts/Source-Sans-Pro/sourcesanspro-regular-webfont.svg#source_sans_proregular') format('svg');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Source Sans Pro';
+    src: url('../fonts/Source-Sans-Pro/sourcesanspro-light-webfont.eot');
+    src: url('../fonts/Source-Sans-Pro/sourcesanspro-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/Source-Sans-Pro/sourcesanspro-light-webfont.woff2') format('woff2'),
+         url('../fonts/Source-Sans-Pro/sourcesanspro-light-webfont.woff') format('woff'),
+         url('../fonts/Source-Sans-Pro/sourcesanspro-light-webfont.ttf') format('truetype'),
+         url('../fonts/Source-Sans-Pro/sourcesanspro-light-webfont.svg#source_sans_prolight') format('svg');
+    font-weight: 300;
+    font-style: normal;
+
+}
+

@@ -10,6 +10,7 @@
     
     
     <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/toggleTheme.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -17,6 +18,7 @@
     <link type="text/css" rel="stylesheet" href="styles/prettify.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
     <script src="scripts/nav.js" defer></script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -29,11 +31,25 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav >
+
+    <div class="theme-toggle-wrapper">
+        <span class="theme-icon">☀️</span>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle" onclick="toggleDarkMode()">
+            <span class="slider round"></span>
+        </label>
+        <span class="theme-icon">🌙</span>
+    </div>
+
     
     <input type="text" id="nav-search" placeholder="Search" />
     
+    
     <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/multiparty/jiff" target="_blank" class="menu-item" id="github_link" >Github Repo</a></h2><h2><a href="./intro.html" target="_self" class="menu-item" id="github_link" >Tutorial</a></h2><h2><a href="./contributing.html" target="_self" class="menu-item" id="github_link" >Contributing to JIFF</a></h2><h3>Classes</h3><ul><li><a href="GuardedSocket.html">GuardedSocket</a><ul class='methods'><li data-type='method'><a href="GuardedSocket.html#disconnect">disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#is_empty">is_empty</a></li><li data-type='method'><a href="GuardedSocket.html#resend_mailbox">resend_mailbox</a></li><li data-type='method'><a href="GuardedSocket.html#safe_disconnect">safe_disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#safe_emit">safe_emit</a></li></ul></li><li><a href="helpers.Deferred.html">Deferred</a><ul class='methods'><li data-type='method'><a href="helpers.Deferred.html#reject">reject</a></li><li data-type='method'><a href="helpers.Deferred.html#resolve">resolve</a></li></ul></li><li><a href="module-jiff-client-JIFFClient.html">JIFFClient</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient.html#add_to_barriers">add_to_barriers</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#apply_extension">apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#can_apply_extension">can_apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#connect">connect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#disconnect">disconnect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#emit">emit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#end_barrier">end_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#executePreprocessing">executePreprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#extension_applied">extension_applied</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#free">free</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#from_crypto_provider">from_crypto_provider</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id">gen_op_id</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2">gen_op_id2</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2_preprocessing">gen_op_id2_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id_preprocessing">gen_op_id_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#get_preprocessing">get_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_extension">has_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_preprocessing">has_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_open">internal_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_share">internal_share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isInitialized">isInitialized</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isReady">isReady</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#listen">listen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_array">open_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_ND_array">open_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessing">preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessingDaemon">preprocessingDaemon</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#remove_listener">remove_listener</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#reshare">reshare</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#seed_ids">seed_ids</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share">share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_2D_array">share_2D_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_array">share_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array">share_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_deferred">share_ND_array_deferred</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_static">share_ND_array_static</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#start_barrier">start_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#store_preprocessing">store_preprocessing</a></li></ul></li><li><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#add">add</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#bit_decomposition">bit_decomposition</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cadd">cadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdiv">cdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdivfac">cdivfac</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ceq">ceq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgt">cgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgteqn">cgteqn</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clt">clt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clteq">clteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cmult">cmult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cneq">cneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cor_bit">cor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cpow">cpow</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#csub">csub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cxor_bit">cxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#div">div</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#eq">eq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#error">error</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gt">gt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gteq">gteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#if_else">if_else</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#isConstant">isConstant</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#logLEAK">logLEAK</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt">lt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt_halfprime">lt_halfprime</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lteq">lteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#mult">mult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#neq">neq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#not">not</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#or_bit">or_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#promise_handler">promise_handler</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#refresh">refresh</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sadd">sadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sdiv">sdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#seq">seq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgt">sgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgteq">sgteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slt">slt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slteq">slteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smod">smod</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult">smult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult_bgw">smult_bgw</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sneq">sneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sor_bit">sor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ssub">ssub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sub">sub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sxor_bit">sxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#toString">toString</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#valueOf">valueOf</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#when_both_ready">when_both_ready</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#wThen">wThen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#xor_bit">xor_bit</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-jiff-client.html">jiff-client</a></li></ul><h3>Namespaces</h3><ul><li><a href="bits.html">bits</a><ul class='methods'><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.bit_composition">jiffClient.protocols.bits.bit_composition</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cadd">jiffClient.protocols.bits.cadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivl">jiffClient.protocols.bits.cdivl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivr">jiffClient.protocols.bits.cdivr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ceq">jiffClient.protocols.bits.ceq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgt">jiffClient.protocols.bits.cgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgteq">jiffClient.protocols.bits.cgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clt">jiffClient.protocols.bits.clt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clteq">jiffClient.protocols.bits.clteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cmult">jiffClient.protocols.bits.cmult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cneq">jiffClient.protocols.bits.cneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubl">jiffClient.protocols.bits.csubl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubr">jiffClient.protocols.bits.csubr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.open">jiffClient.protocols.bits.open</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.rejection_sampling">jiffClient.protocols.bits.rejection_sampling</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sadd">jiffClient.protocols.bits.sadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sdiv">jiffClient.protocols.bits.sdiv</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.seq">jiffClient.protocols.bits.seq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgt">jiffClient.protocols.bits.sgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgteq">jiffClient.protocols.bits.sgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.share">jiffClient.protocols.bits.share</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slt">jiffClient.protocols.bits.slt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slteq">jiffClient.protocols.bits.slteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.smult">jiffClient.protocols.bits.smult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sneq">jiffClient.protocols.bits.sneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ssub">jiffClient.protocols.bits.ssub</a></li></ul></li><li><a href="handlers.html">handlers</a><ul class='methods'><li data-type='method'><a href="handlers.html#.jiffClient.handlers.build_initialization_message">jiffClient.handlers.build_initialization_message</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.connected">jiffClient.handlers.connected</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.error">jiffClient.handlers.error</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.initialized">jiffClient.handlers.initialized</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_crypto_provider">jiffClient.handlers.receive_crypto_provider</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_custom">jiffClient.handlers.receive_custom</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_open">jiffClient.handlers.receive_open</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_share">jiffClient.handlers.receive_share</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.store_public_keys">jiffClient.handlers.store_public_keys</a></li></ul></li><li><a href="helpers.html">helpers</a><ul class='methods'><li data-type='method'><a href="helpers.html#.jiffClient.helpers.array_equals">jiffClient.helpers.array_equals</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bits_to_number">jiffClient.helpers.bits_to_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bLog">jiffClient.helpers.bLog</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.ceil">jiffClient.helpers.ceil</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.extended_gcd">jiffClient.helpers.extended_gcd</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.floor">jiffClient.helpers.floor</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.get_party_number">jiffClient.helpers.get_party_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.is_prime">jiffClient.helpers.is_prime</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.mod">jiffClient.helpers.mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.number_to_bits">jiffClient.helpers.number_to_bits</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.pow_mod">jiffClient.helpers.pow_mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.random">jiffClient.helpers.random</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.sort_ids">jiffClient.helpers.sort_ids</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.Zp_equals">jiffClient.helpers.Zp_equals</a></li></ul></li><li><a href="hooks.html">hooks</a><ul class='methods'><li data-type='method'><a href="hooks.html#.computeShares">computeShares</a></li><li data-type='method'><a href="hooks.html#.execute_array_hooks">execute_array_hooks</a></li></ul></li><li><a href="protocols.html">protocols</a><ul class='methods'><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_beaver_bgw">jiffClient.protocols.generate_beaver_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_and_quotient">jiffClient.protocols.generate_random_and_quotient</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_bgw">jiffClient.protocols.generate_random_bit_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_smult">jiffClient.protocols.generate_random_bit_smult</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bits">jiffClient.protocols.generate_random_bits</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_number">jiffClient.protocols.generate_random_number</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_zero">jiffClient.protocols.generate_zero</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.rejection_sampling">jiffClient.protocols.rejection_sampling</a></li></ul></li><li><a href="utils.html">utils</a><ul class='methods'><li data-type='method'><a href="utils.html#.jiffClient.utils.bit_combinator">jiffClient.utils.bit_combinator</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.many_secret_shares">jiffClient.utils.many_secret_shares</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.resolve_many_secrets">jiffClient.utils.resolve_many_secrets</a></li></ul></li></ul>
+    
+
 </nav>
+
 
 <div id="main">
     
@@ -50,7 +66,9 @@
 <header>
     
         <h2>
-        protocols
+        
+            Namespace
+        
         </h2>
         
     
@@ -62,7 +80,21 @@
         
             
 
+
+    
+
+    <h4 class="name" id="protocols">protocols</h4>
+
+    
+
+
+
+
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Contains miscellaneous protocols (mostly used in preprocessing)</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -105,11 +137,32 @@
 
 
 
-            
-                <div class="description usertext"><p>Contains miscellaneous protocols (mostly used in preprocessing)</p></div>
-            
 
-            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
         </div>
     
@@ -131,18 +184,22 @@
 
         
             
-<h4 class="name" id=".bits"><span class="type-signature">(static, non-null) </span>bits<span class="type-signature"> :<a href="bits.html">bits</a></span></h4>
+<h4 class="name" id=".bits"><span class="type-signature type-signature-static, non-null">(static, non-null) </span>bits<span class="type-signature"> :<a href="bits.html">bits</a></span></h4>
 
 
 
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>A collection of useful protocols for manipulating bitwise shared numbers, and transforming them from and to regular numeric shares.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line323">line 323</a>
+        <a href="jiff-client.js.html">jiff-client.js</a>, <a href="jiff-client.js.html#line325">line 325</a>
     </li></ul></dd>
     
 
@@ -187,11 +244,12 @@
 
 
 
-    <h5>Type:</h5>
+    <h5 class="h5-types">Type:</h5>
     <ul>
         <li>
             
 <span class="param-type"><a href="bits.html">bits</a></span>
+
 
 
         </li>
@@ -213,7 +271,7 @@
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.generate_beaver_bgw"><span class="type-signature">(static) </span>jiffClient.protocols.generate_beaver_bgw<span class="signature">(threshold, receivers_list, compute_list, Zp, params, protocols)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.generate_beaver_bgw"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.generate_beaver_bgw<span class="signature">(threshold, receivers_list, compute_list, Zp, params, protocols)</span><span class="type-signature"> &rarr; {object}</span></h4>
 
     
 
@@ -221,6 +279,10 @@
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Generation of beaver triplet via MPC, uses the server for communication channels, but not for generation</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -264,9 +326,6 @@
 
 
 
-<div class="description usertext">
-    <p>Generation of beaver triplet via MPC, uses the server for communication channels, but not for generation</p>
-</div>
 
 
 
@@ -275,10 +334,7 @@
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -312,6 +368,7 @@
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -333,6 +390,7 @@
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -358,6 +416,7 @@
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -381,6 +440,7 @@
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -402,6 +462,7 @@
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -429,6 +490,7 @@ during the protocol execution. By default, this is the length of the (compute_li
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -460,7 +522,7 @@ during the protocol execution. By default, this is the length of the (compute_li
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -483,6 +545,7 @@ In this case, 'share' is an array of this party's shares of the resulting triple
 <span class="param-type">object</span>
 
 
+
     </dd>
 </dl>
 
@@ -495,7 +558,7 @@ In this case, 'share' is an array of this party's shares of the resulting triple
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.generate_random_and_quotient"><span class="type-signature">(static) </span>jiffClient.protocols.generate_random_and_quotient<span class="signature">(threshold, receivers_list, compute_list, Zp, params)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.generate_random_and_quotient"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.generate_random_and_quotient<span class="signature">(threshold, receivers_list, compute_list, Zp, params)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -503,6 +566,11 @@ In this case, 'share' is an array of this party's shares of the resulting triple
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Creates shares of r and x, such that r is a uniform random number between 0 and Zp, and x is floor(r/constant)
+where constant is provided by the extra params</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -546,10 +614,6 @@ In this case, 'share' is an array of this party's shares of the resulting triple
 
 
 
-<div class="description usertext">
-    <p>Creates shares of r and x, such that r is a uniform random number between 0 and Zp, and x is floor(r/constant)
-where constant is provided by the extra params</p>
-</div>
 
 
 
@@ -558,10 +622,7 @@ where constant is provided by the extra params</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -595,6 +656,7 @@ where constant is provided by the extra params</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -616,6 +678,7 @@ where constant is provided by the extra params</p>
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -641,6 +704,7 @@ where constant is provided by the extra params</p>
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -664,6 +728,7 @@ where constant is provided by the extra params</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -685,6 +750,7 @@ where constant is provided by the extra params</p>
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -721,7 +787,7 @@ Expects:
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -739,6 +805,7 @@ Expects:
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -751,7 +818,7 @@ Expects:
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.generate_random_bit_bgw"><span class="type-signature">(static) </span>jiffClient.protocols.generate_random_bit_bgw<span class="signature">(threshold, receivers_list, compute_list, Zp, params)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.generate_random_bit_bgw"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.generate_random_bit_bgw<span class="signature">(threshold, receivers_list, compute_list, Zp, params)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -759,6 +826,10 @@ Expects:
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Generates a random bit under MPC by xoring all bits sent by participating parties using smult_bgw</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -802,9 +873,6 @@ Expects:
 
 
 
-<div class="description usertext">
-    <p>Generates a random bit under MPC by xoring all bits sent by participating parties using smult_bgw</p>
-</div>
 
 
 
@@ -813,10 +881,7 @@ Expects:
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -850,6 +915,7 @@ Expects:
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -871,6 +937,7 @@ Expects:
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -896,6 +963,7 @@ Expects:
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -919,6 +987,7 @@ Expects:
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -940,6 +1009,7 @@ Expects:
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -974,7 +1044,7 @@ Expects:
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -992,6 +1062,7 @@ Expects:
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -1004,7 +1075,7 @@ Expects:
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.generate_random_bit_smult"><span class="type-signature">(static) </span>jiffClient.protocols.generate_random_bit_smult<span class="signature">(threshold, receivers_list, compute_list, Zp, params)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.generate_random_bit_smult"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.generate_random_bit_smult<span class="signature">(threshold, receivers_list, compute_list, Zp, params)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -1012,6 +1083,10 @@ Expects:
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Generates a random bit under MPC by xoring all bits sent by participating parties using smult / beaver triples</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1055,9 +1130,6 @@ Expects:
 
 
 
-<div class="description usertext">
-    <p>Generates a random bit under MPC by xoring all bits sent by participating parties using smult / beaver triples</p>
-</div>
 
 
 
@@ -1066,10 +1138,7 @@ Expects:
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -1103,6 +1172,7 @@ Expects:
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -1124,6 +1194,7 @@ Expects:
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -1149,6 +1220,7 @@ Expects:
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -1172,6 +1244,7 @@ Expects:
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -1193,6 +1266,7 @@ Expects:
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -1227,7 +1301,7 @@ Expects:
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -1245,6 +1319,7 @@ Expects:
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -1257,7 +1332,7 @@ Expects:
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.generate_random_bits"><span class="type-signature">(static) </span>jiffClient.protocols.generate_random_bits<span class="signature">(threshold<span class="signature-attributes">opt</span>, receivers_list, compute_list, Zp, params, protocols)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.generate_random_bits"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.generate_random_bits<span class="signature">(threshold<span class="signature-attributes">opt</span>, receivers_list, compute_list, Zp, params, protocols)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -1265,6 +1340,10 @@ Expects:
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Generates a sequence of random bits under MPC.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1308,9 +1387,6 @@ Expects:
 
 
 
-<div class="description usertext">
-    <p>Generates a sequence of random bits under MPC.</p>
-</div>
 
 
 
@@ -1319,10 +1395,7 @@ Expects:
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -1358,6 +1431,7 @@ Expects:
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -1399,6 +1473,7 @@ Expects:
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -1432,6 +1507,7 @@ Expects:
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -1469,6 +1545,7 @@ Expects:
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -1502,6 +1579,7 @@ Expects:
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -1541,6 +1619,7 @@ Expects:
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -1584,7 +1663,7 @@ Expects:
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -1602,6 +1681,7 @@ Expects:
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -1614,7 +1694,7 @@ Expects:
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.generate_random_number"><span class="type-signature">(static) </span>jiffClient.protocols.generate_random_number<span class="signature">(threshold, receivers_list, compute_list, Zp, params)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.generate_random_number"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.generate_random_number<span class="signature">(threshold, receivers_list, compute_list, Zp, params)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -1622,6 +1702,11 @@ Expects:
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Creates shares of an unknown random number. Every party comes up with its own random number and shares it.
+Then every party combines all the received shares to construct one share of the random unknown number.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1665,10 +1750,6 @@ Expects:
 
 
 
-<div class="description usertext">
-    <p>Creates shares of an unknown random number. Every party comes up with its own random number and shares it.
-Then every party combines all the received shares to construct one share of the random unknown number.</p>
-</div>
 
 
 
@@ -1677,10 +1758,7 @@ Then every party combines all the received shares to construct one share of the 
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -1714,6 +1792,7 @@ Then every party combines all the received shares to construct one share of the 
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -1735,6 +1814,7 @@ Then every party combines all the received shares to construct one share of the 
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -1760,6 +1840,7 @@ Then every party combines all the received shares to construct one share of the 
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -1783,6 +1864,7 @@ Then every party combines all the received shares to construct one share of the 
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -1804,6 +1886,7 @@ Then every party combines all the received shares to construct one share of the 
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -1838,7 +1921,7 @@ Expects:
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -1856,6 +1939,7 @@ Expects:
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -1868,7 +1952,7 @@ Expects:
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.generate_zero"><span class="type-signature">(static) </span>jiffClient.protocols.generate_zero<span class="signature">(threshold, receivers_list, compute_list, Zp, params)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.generate_zero"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.generate_zero<span class="signature">(threshold, receivers_list, compute_list, Zp, params)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -1876,6 +1960,12 @@ Expects:
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Creates shares of 0, such that no party knows the other parties' shares.
+Every party secret shares 0, then every party sums all the shares they received, resulting
+in a new share of 0 for every party.</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1919,11 +2009,6 @@ Expects:
 
 
 
-<div class="description usertext">
-    <p>Creates shares of 0, such that no party knows the other parties' shares.
-Every party secret shares 0, then every party sums all the shares they received, resulting
-in a new share of 0 for every party.</p>
-</div>
 
 
 
@@ -1932,10 +2017,7 @@ in a new share of 0 for every party.</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -1969,6 +2051,7 @@ in a new share of 0 for every party.</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -1990,6 +2073,7 @@ in a new share of 0 for every party.</p>
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -2015,6 +2099,7 @@ in a new share of 0 for every party.</p>
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -2038,6 +2123,7 @@ in a new share of 0 for every party.</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -2059,6 +2145,7 @@ in a new share of 0 for every party.</p>
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -2093,7 +2180,7 @@ Expects:
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -2111,6 +2198,7 @@ Expects:
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -2123,7 +2211,7 @@ Expects:
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.rejection_sampling"><span class="type-signature">(static) </span>jiffClient.protocols.rejection_sampling<span class="signature">(threshold<span class="signature-attributes">opt</span>, receivers_list<span class="signature-attributes">opt</span>, compute_list<span class="signature-attributes">opt</span>, Zp<span class="signature-attributes">opt</span>, op_id<span class="signature-attributes">opt</span>, params<span class="signature-attributes">opt</span>, protocols<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.rejection_sampling"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.rejection_sampling<span class="signature">(threshold<span class="signature-attributes">opt</span>, receivers_list<span class="signature-attributes">opt</span>, compute_list<span class="signature-attributes">opt</span>, Zp<span class="signature-attributes">opt</span>, op_id<span class="signature-attributes">opt</span>, params<span class="signature-attributes">opt</span>, protocols<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -2131,6 +2219,11 @@ Expects:
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Wrapper for when doing rejection sampling during pre processing</p>
+<p>Do not use this function directly, especially during online computation time, use jiffClient.protocols.bits.rejection_sampling instead</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -2174,10 +2267,6 @@ Expects:
 
 
 
-<div class="description usertext">
-    <p>Wrapper for when doing rejection sampling during pre processing</p>
-<p>Do not use this function directly, especially during online computation time, use jiffClient.protocols.bits.rejection_sampling instead</p>
-</div>
 
 
 
@@ -2186,10 +2275,7 @@ Expects:
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -2225,6 +2311,7 @@ Expects:
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -2266,6 +2353,7 @@ Expects:
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -2303,6 +2391,7 @@ Expects:
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -2344,6 +2433,7 @@ Expects:
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -2381,6 +2471,7 @@ Expects:
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -2422,6 +2513,7 @@ ensure that corresponding instructions across different parties are matched corr
             
                 
 <span class="param-type">object</span>
+
 
 
             
@@ -2470,6 +2562,7 @@ during the protocol execution. By default, this is (|compute_list|+1)/2
 <span class="param-type">object</span>
 
 
+
             
             </td>
 
@@ -2515,7 +2608,7 @@ during the protocol execution. By default, this is (|compute_list|+1)/2
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -2534,6 +2627,7 @@ The object is consumed by &lt;jiff_instance&gt;.preprocessing:
     <dd>
         
 <span class="param-type">Object</span>
+
 
 
     </dd>
@@ -2563,7 +2657,7 @@ The object is consumed by &lt;jiff_instance&gt;.preprocessing:
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:19:37 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Jan 09 2024 21:29:32 GMT-0500 (Eastern Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
@@ -2574,5 +2668,7 @@ The object is consumed by &lt;jiff_instance&gt;.preprocessing:
 
 
 
+
+<script>
 </body>
 </html>
