@@ -16,6 +16,57 @@ body {
   font-size: 16px;
 }
 
+.dark-mode {
+  background-color: #141414;
+  color: white;
+}
+
+.dark-mode nav,
+.dark-mode article,
+.dark-mode table,
+.dark-mode body {
+  background-color: #141414;
+  color: white;
+}
+
+/* Additional styles to handle elements within nav, article, table */
+.dark-mode nav a,
+.dark-mode article a,
+.dark-mode table a {
+  color: white;  /* Adjust link colors as needed */
+}
+
+/* Handle other specific elements as needed */
+.dark-mode a, .dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4, .dark-mode h5, .dark-mode h6 {
+  color: white;
+}
+
+/* If links need different color, adjust separately */
+.dark-mode a {
+  color: #f7b7ff; /* Example link color */
+}
+
+.dark-mode a[href] {
+  color: #f7b7ff; /* Example link color */
+}
+/* Additional specific styles can be added as needed */
+
+.dark-mode span.param-type, .dark-mode .params td .param-type, .dark-mode .param-type dd {
+   color: #fc83ff;
+}
+
+.dark-mode p {
+  color: #c2c2c2;
+}
+
+.dark-mode code {
+  background-color: #cecece;
+}
+
+.dark-mode section {
+  background-color: #141414;
+}
+
 img {
   max-width: 100%;
 }
@@ -96,6 +147,24 @@ h4.name {
   padding: .75em 0 .75em 10px;
 }
 
+.dark-mode h4.name {
+  box-shadow:0 0 0 #000000;
+}
+
+.dark-mode th {
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.dark-mode thead tr {
+  background-color: #6d426d;
+}
+
+h4.name a {
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px dotted #fff;
+}
+
 h4.name a {
   color: #fc83ff;
 }
@@ -162,11 +231,18 @@ h6 {
 }
 
 
-tt, code, kbd, samp {
+tt, code, kbd, samp, pre {
   font-family: Consolas, Monaco, 'Andale Mono', monospace;
   background: #f4f4f4;
+}
+
+tt, code, kbd, samp{
   padding: 1px 5px;
 }
+
+pre {
+  padding-bottom: 1em;
+}  
 
 .class-description {
   font-size: 130%;
@@ -240,6 +316,10 @@ nav h3 {
   margin: 15px 0 10px;
   padding: 0;
   color: #000;
+}
+
+nav h3.collapsed_header {
+  cursor: pointer;
 }
 
 nav ul {
@@ -716,6 +796,78 @@ html[data-search-mode] .level-hide {
 #disqus_thread{
     margin-left: 30px;
 }
+
+/* Default light mode styles */
+/* ... Your existing CSS for light mode ... */
+
+.theme-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  margin: 0 10px;
+}
+
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+
 
 @font-face {
   font-family: 'Montserrat';

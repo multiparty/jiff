@@ -10,6 +10,7 @@
     
     
     <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/toggleTheme.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -17,6 +18,7 @@
     <link type="text/css" rel="stylesheet" href="styles/prettify.css">
     <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
     <script src="scripts/nav.js" defer></script>
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -29,11 +31,25 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav >
+
+    <div class="theme-toggle-wrapper">
+        <span class="theme-icon">☀️</span>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle" onclick="toggleDarkMode()">
+            <span class="slider round"></span>
+        </label>
+        <span class="theme-icon">🌙</span>
+    </div>
+
     
     <input type="text" id="nav-search" placeholder="Search" />
     
+    
     <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/multiparty/jiff" target="_blank" class="menu-item" id="github_link" >Github Repo</a></h2><h2><a href="./intro.html" target="_self" class="menu-item" id="github_link" >Tutorial</a></h2><h2><a href="./contributing.html" target="_self" class="menu-item" id="github_link" >Contributing to JIFF</a></h2><h3>Classes</h3><ul><li><a href="GuardedSocket.html">GuardedSocket</a><ul class='methods'><li data-type='method'><a href="GuardedSocket.html#disconnect">disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#is_empty">is_empty</a></li><li data-type='method'><a href="GuardedSocket.html#resend_mailbox">resend_mailbox</a></li><li data-type='method'><a href="GuardedSocket.html#safe_disconnect">safe_disconnect</a></li><li data-type='method'><a href="GuardedSocket.html#safe_emit">safe_emit</a></li></ul></li><li><a href="helpers.Deferred.html">Deferred</a><ul class='methods'><li data-type='method'><a href="helpers.Deferred.html#reject">reject</a></li><li data-type='method'><a href="helpers.Deferred.html#resolve">resolve</a></li></ul></li><li><a href="module-jiff-client-JIFFClient.html">JIFFClient</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient.html#add_to_barriers">add_to_barriers</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#apply_extension">apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#can_apply_extension">can_apply_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#connect">connect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#disconnect">disconnect</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#emit">emit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#end_barrier">end_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#executePreprocessing">executePreprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#extension_applied">extension_applied</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#free">free</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#from_crypto_provider">from_crypto_provider</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id">gen_op_id</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2">gen_op_id2</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id2_preprocessing">gen_op_id2_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#gen_op_id_preprocessing">gen_op_id_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#get_preprocessing">get_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_extension">has_extension</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#has_preprocessing">has_preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_open">internal_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#internal_share">internal_share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isInitialized">isInitialized</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#isReady">isReady</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#listen">listen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_array">open_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#open_ND_array">open_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessing">preprocessing</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#preprocessingDaemon">preprocessingDaemon</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#receive_open">receive_open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#remove_listener">remove_listener</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#reshare">reshare</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#seed_ids">seed_ids</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share">share</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_2D_array">share_2D_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_array">share_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array">share_ND_array</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_deferred">share_ND_array_deferred</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#share_ND_array_static">share_ND_array_static</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#start_barrier">start_barrier</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient.html#store_preprocessing">store_preprocessing</a></li></ul></li><li><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a><ul class='methods'><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#add">add</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#bit_decomposition">bit_decomposition</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cadd">cadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdiv">cdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cdivfac">cdivfac</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ceq">ceq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgt">cgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cgteqn">cgteqn</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clt">clt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#clteq">clteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cmult">cmult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cneq">cneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cor_bit">cor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cpow">cpow</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#csub">csub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#cxor_bit">cxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#div">div</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#eq">eq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#error">error</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gt">gt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#gteq">gteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#if_else">if_else</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#isConstant">isConstant</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#logLEAK">logLEAK</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt">lt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lt_halfprime">lt_halfprime</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#lteq">lteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#mult">mult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#neq">neq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#not">not</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#open">open</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#or_bit">or_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#promise_handler">promise_handler</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#refresh">refresh</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sadd">sadd</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sdiv">sdiv</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#seq">seq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgt">sgt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sgteq">sgteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slt">slt</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#slteq">slteq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smod">smod</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult">smult</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#smult_bgw">smult_bgw</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sneq">sneq</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sor_bit">sor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#ssub">ssub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sub">sub</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#sxor_bit">sxor_bit</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#toString">toString</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#valueOf">valueOf</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#when_both_ready">when_both_ready</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#wThen">wThen</a></li><li data-type='method'><a href="module-jiff-client-JIFFClient_SecretShare.html#xor_bit">xor_bit</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-jiff-client.html">jiff-client</a></li></ul><h3>Namespaces</h3><ul><li><a href="bits.html">bits</a><ul class='methods'><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.bit_composition">jiffClient.protocols.bits.bit_composition</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cadd">jiffClient.protocols.bits.cadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivl">jiffClient.protocols.bits.cdivl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cdivr">jiffClient.protocols.bits.cdivr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ceq">jiffClient.protocols.bits.ceq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgt">jiffClient.protocols.bits.cgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cgteq">jiffClient.protocols.bits.cgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clt">jiffClient.protocols.bits.clt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.clteq">jiffClient.protocols.bits.clteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cmult">jiffClient.protocols.bits.cmult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.cneq">jiffClient.protocols.bits.cneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubl">jiffClient.protocols.bits.csubl</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.csubr">jiffClient.protocols.bits.csubr</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.open">jiffClient.protocols.bits.open</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.rejection_sampling">jiffClient.protocols.bits.rejection_sampling</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sadd">jiffClient.protocols.bits.sadd</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sdiv">jiffClient.protocols.bits.sdiv</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.seq">jiffClient.protocols.bits.seq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgt">jiffClient.protocols.bits.sgt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sgteq">jiffClient.protocols.bits.sgteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.share">jiffClient.protocols.bits.share</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slt">jiffClient.protocols.bits.slt</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.slteq">jiffClient.protocols.bits.slteq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.smult">jiffClient.protocols.bits.smult</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.sneq">jiffClient.protocols.bits.sneq</a></li><li data-type='method'><a href="bits.html#.jiffClient.protocols.bits.ssub">jiffClient.protocols.bits.ssub</a></li></ul></li><li><a href="handlers.html">handlers</a><ul class='methods'><li data-type='method'><a href="handlers.html#.jiffClient.handlers.build_initialization_message">jiffClient.handlers.build_initialization_message</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.connected">jiffClient.handlers.connected</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.error">jiffClient.handlers.error</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.initialized">jiffClient.handlers.initialized</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_crypto_provider">jiffClient.handlers.receive_crypto_provider</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_custom">jiffClient.handlers.receive_custom</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_open">jiffClient.handlers.receive_open</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.receive_share">jiffClient.handlers.receive_share</a></li><li data-type='method'><a href="handlers.html#.jiffClient.handlers.store_public_keys">jiffClient.handlers.store_public_keys</a></li></ul></li><li><a href="helpers.html">helpers</a><ul class='methods'><li data-type='method'><a href="helpers.html#.jiffClient.helpers.array_equals">jiffClient.helpers.array_equals</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bits_to_number">jiffClient.helpers.bits_to_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.bLog">jiffClient.helpers.bLog</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.ceil">jiffClient.helpers.ceil</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.extended_gcd">jiffClient.helpers.extended_gcd</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.floor">jiffClient.helpers.floor</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.get_party_number">jiffClient.helpers.get_party_number</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.is_prime">jiffClient.helpers.is_prime</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.mod">jiffClient.helpers.mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.number_to_bits">jiffClient.helpers.number_to_bits</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.pow_mod">jiffClient.helpers.pow_mod</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.random">jiffClient.helpers.random</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.sort_ids">jiffClient.helpers.sort_ids</a></li><li data-type='method'><a href="helpers.html#.jiffClient.helpers.Zp_equals">jiffClient.helpers.Zp_equals</a></li></ul></li><li><a href="hooks.html">hooks</a><ul class='methods'><li data-type='method'><a href="hooks.html#.computeShares">computeShares</a></li><li data-type='method'><a href="hooks.html#.execute_array_hooks">execute_array_hooks</a></li></ul></li><li><a href="protocols.html">protocols</a><ul class='methods'><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_beaver_bgw">jiffClient.protocols.generate_beaver_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_and_quotient">jiffClient.protocols.generate_random_and_quotient</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_bgw">jiffClient.protocols.generate_random_bit_bgw</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bit_smult">jiffClient.protocols.generate_random_bit_smult</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_bits">jiffClient.protocols.generate_random_bits</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_random_number">jiffClient.protocols.generate_random_number</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.generate_zero">jiffClient.protocols.generate_zero</a></li><li data-type='method'><a href="protocols.html#.jiffClient.protocols.rejection_sampling">jiffClient.protocols.rejection_sampling</a></li></ul></li><li><a href="utils.html">utils</a><ul class='methods'><li data-type='method'><a href="utils.html#.jiffClient.utils.bit_combinator">jiffClient.utils.bit_combinator</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.many_secret_shares">jiffClient.utils.many_secret_shares</a></li><li data-type='method'><a href="utils.html#.jiffClient.utils.resolve_many_secrets">jiffClient.utils.resolve_many_secrets</a></li></ul></li></ul>
+    
+
 </nav>
+
 
 <div id="main">
     
@@ -50,7 +66,9 @@
 <header>
     
         <h2>
-        bits
+        
+            Namespace
+        
         </h2>
         
     
@@ -62,7 +80,24 @@
         
             
 
+
+    
+
+    <h4 class="name" id="bits"><span class="type-signature"></span>bits<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Contains bits protocols (including rejection sampling and bits operations)</p>
+<p><b>Important: bit protocols (including bit_decomposition) are unaware of any extension specific customizations, and will operate as
+on the given shares as if they are natural numbers in Zp. Make sure to take into consideration any magnification/shift transformations
+needed to translate correctly between plain representations and extension representations of bits! </b></p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -105,14 +140,32 @@
 
 
 
-            
-                <div class="description usertext"><p>Contains bits protocols (including rejection sampling and bits operations)</p>
-<p><b>Important: bit protocols (including bit_decomposition) are unaware of any extension specific customizations, and will operate as
-on the given shares as if they are natural numbers in Zp. Make sure to take into consideration any magnification/shift transformations
-needed to translate correctly between plain representations and extension representations of bits! </b></p></div>
-            
 
-            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
         </div>
     
@@ -139,7 +192,7 @@ needed to translate correctly between plain representations and extension repres
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.bit_composition"><span class="type-signature">(static) </span>jiffClient.protocols.bits.bit_composition<span class="signature">(bits)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.bit_composition"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.bit_composition<span class="signature">(bits)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
 
     
 
@@ -147,6 +200,11 @@ needed to translate correctly between plain representations and extension repres
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Creates a secret share of the number represented by the given array of secret shared bits.
+Requires no communication, only local operations</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -190,10 +248,6 @@ needed to translate correctly between plain representations and extension repres
 
 
 
-<div class="description usertext">
-    <p>Creates a secret share of the number represented by the given array of secret shared bits.
-Requires no communication, only local operations</p>
-</div>
 
 
 
@@ -202,10 +256,7 @@ Requires no communication, only local operations</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -239,6 +290,7 @@ Requires no communication, only local operations</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -268,7 +320,7 @@ Requires no communication, only local operations</p>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -286,6 +338,7 @@ Requires no communication, only local operations</p>
 <span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a></span>
 
 
+
     </dd>
 </dl>
 
@@ -298,7 +351,7 @@ Requires no communication, only local operations</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.cadd"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cadd<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.cadd"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.cadd<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
 
     
 
@@ -306,6 +359,10 @@ Requires no communication, only local operations</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Compute sum of bitwise secret shared number and a constant</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -349,9 +406,6 @@ Requires no communication, only local operations</p>
 
 
 
-<div class="description usertext">
-    <p>Compute sum of bitwise secret shared number and a constant</p>
-</div>
 
 
 
@@ -360,10 +414,7 @@ Requires no communication, only local operations</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -401,6 +452,7 @@ Requires no communication, only local operations</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -436,6 +488,7 @@ Requires no communication, only local operations</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -469,6 +522,7 @@ Requires no communication, only local operations</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -518,7 +572,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -537,6 +591,7 @@ in case of potential overflow / carry</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
     </dd>
 </dl>
 
@@ -549,7 +604,7 @@ in case of potential overflow / carry</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.cdivl"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cdivl<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.cdivl"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.cdivl<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -557,6 +612,10 @@ in case of potential overflow / carry</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Computes integer division of [secret bits] / constant</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -600,9 +659,6 @@ in case of potential overflow / carry</p>
 
 
 
-<div class="description usertext">
-    <p>Computes integer division of [secret bits] / constant</p>
-</div>
 
 
 
@@ -611,10 +667,7 @@ in case of potential overflow / carry</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -652,6 +705,7 @@ in case of potential overflow / carry</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -687,6 +741,7 @@ in case of potential overflow / carry</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -720,6 +775,7 @@ in case of potential overflow / carry</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -767,7 +823,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Throws:</h5>
+<h5 class="h5-throws">Throws:</h5>
 
         
 
@@ -781,7 +837,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
     
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -802,6 +858,7 @@ constant or bits, whichever is smaller</p>
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -814,7 +871,7 @@ constant or bits, whichever is smaller</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.cdivr"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cdivr<span class="signature">(constant, bits, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.cdivr"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.cdivr<span class="signature">(constant, bits, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -822,6 +879,10 @@ constant or bits, whichever is smaller</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Computes integer division of constant / [secret bits]</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -865,9 +926,6 @@ constant or bits, whichever is smaller</p>
 
 
 
-<div class="description usertext">
-    <p>Computes integer division of constant / [secret bits]</p>
-</div>
 
 
 
@@ -876,10 +934,7 @@ constant or bits, whichever is smaller</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -917,6 +972,7 @@ constant or bits, whichever is smaller</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -952,6 +1008,7 @@ constant or bits, whichever is smaller</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -985,6 +1042,7 @@ constant or bits, whichever is smaller</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -1034,7 +1092,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -1057,6 +1115,7 @@ is equal to constant</p>
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -1069,7 +1128,7 @@ is equal to constant</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.ceq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.ceq<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.ceq"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.ceq<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
 
     
 
@@ -1077,6 +1136,10 @@ is equal to constant</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks whether the given bitwise secret shared number and numeric constant are equal</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1120,9 +1183,6 @@ is equal to constant</p>
 
 
 
-<div class="description usertext">
-    <p>Checks whether the given bitwise secret shared number and numeric constant are equal</p>
-</div>
 
 
 
@@ -1131,10 +1191,7 @@ is equal to constant</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -1172,6 +1229,7 @@ is equal to constant</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -1207,6 +1265,7 @@ is equal to constant</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -1240,6 +1299,7 @@ is equal to constant</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -1289,7 +1349,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -1312,6 +1372,7 @@ returned immediately as a boolean</p>
 <span class="param-type">boolean</span>
 
 
+
     </dd>
 </dl>
 
@@ -1324,7 +1385,7 @@ returned immediately as a boolean</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.cgt"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cgt<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.cgt"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.cgt<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
 
     
 
@@ -1332,6 +1393,10 @@ returned immediately as a boolean</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks whether given secret shared bits are greater than the given constant</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1375,9 +1440,6 @@ returned immediately as a boolean</p>
 
 
 
-<div class="description usertext">
-    <p>Checks whether given secret shared bits are greater than the given constant</p>
-</div>
 
 
 
@@ -1386,10 +1448,7 @@ returned immediately as a boolean</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -1427,6 +1486,7 @@ returned immediately as a boolean</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -1462,6 +1522,7 @@ returned immediately as a boolean</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -1495,6 +1556,7 @@ returned immediately as a boolean</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -1544,7 +1606,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -1567,6 +1629,7 @@ returned immediately as a boolean</p>
 <span class="param-type">boolean</span>
 
 
+
     </dd>
 </dl>
 
@@ -1579,7 +1642,7 @@ returned immediately as a boolean</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.cgteq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cgteq<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.cgteq"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.cgteq<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
 
     
 
@@ -1587,6 +1650,10 @@ returned immediately as a boolean</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks whether given secret shared bits are greater or equal to the given constant</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1630,9 +1697,6 @@ returned immediately as a boolean</p>
 
 
 
-<div class="description usertext">
-    <p>Checks whether given secret shared bits are greater or equal to the given constant</p>
-</div>
 
 
 
@@ -1641,10 +1705,7 @@ returned immediately as a boolean</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -1682,6 +1743,7 @@ returned immediately as a boolean</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -1717,6 +1779,7 @@ returned immediately as a boolean</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -1750,6 +1813,7 @@ returned immediately as a boolean</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -1799,7 +1863,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -1822,6 +1886,7 @@ returned immediately as a boolean</p>
 <span class="param-type">boolean</span>
 
 
+
     </dd>
 </dl>
 
@@ -1834,7 +1899,7 @@ returned immediately as a boolean</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.clt"><span class="type-signature">(static) </span>jiffClient.protocols.bits.clt<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.clt"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.clt<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
 
     
 
@@ -1842,6 +1907,10 @@ returned immediately as a boolean</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks whether given secret shared bits are less than the given constant</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -1885,9 +1954,6 @@ returned immediately as a boolean</p>
 
 
 
-<div class="description usertext">
-    <p>Checks whether given secret shared bits are less than the given constant</p>
-</div>
 
 
 
@@ -1896,10 +1962,7 @@ returned immediately as a boolean</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -1937,6 +2000,7 @@ returned immediately as a boolean</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -1972,6 +2036,7 @@ returned immediately as a boolean</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -2005,6 +2070,7 @@ returned immediately as a boolean</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -2054,7 +2120,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -2077,6 +2143,7 @@ returned immediately as a boolean</p>
 <span class="param-type">boolean</span>
 
 
+
     </dd>
 </dl>
 
@@ -2089,7 +2156,7 @@ returned immediately as a boolean</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.clteq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.clteq<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.clteq"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.clteq<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
 
     
 
@@ -2097,6 +2164,10 @@ returned immediately as a boolean</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks whether given secret shared bits are less or equal to the given constant</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -2140,9 +2211,6 @@ returned immediately as a boolean</p>
 
 
 
-<div class="description usertext">
-    <p>Checks whether given secret shared bits are less or equal to the given constant</p>
-</div>
 
 
 
@@ -2151,10 +2219,7 @@ returned immediately as a boolean</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -2192,6 +2257,7 @@ returned immediately as a boolean</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -2227,6 +2293,7 @@ returned immediately as a boolean</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -2260,6 +2327,7 @@ returned immediately as a boolean</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -2309,7 +2377,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -2332,6 +2400,7 @@ returned immediately as a boolean</p>
 <span class="param-type">boolean</span>
 
 
+
     </dd>
 </dl>
 
@@ -2344,7 +2413,7 @@ returned immediately as a boolean</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.cmult"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cmult<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.cmult"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.cmult<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
 
     
 
@@ -2352,6 +2421,10 @@ returned immediately as a boolean</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Compute [secret bits] * constant</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -2395,9 +2468,6 @@ returned immediately as a boolean</p>
 
 
 
-<div class="description usertext">
-    <p>Compute [secret bits] * constant</p>
-</div>
 
 
 
@@ -2406,10 +2476,7 @@ returned immediately as a boolean</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -2447,6 +2514,7 @@ returned immediately as a boolean</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -2482,6 +2550,7 @@ returned immediately as a boolean</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -2515,6 +2584,7 @@ returned immediately as a boolean</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -2564,7 +2634,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -2583,6 +2653,7 @@ if constant is zero, the result will then be [ zero share ]</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
     </dd>
 </dl>
 
@@ -2595,7 +2666,7 @@ if constant is zero, the result will then be [ zero share ]</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.cneq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.cneq<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.cneq"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.cneq<span class="signature">(bits, constant, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {SecretShare|boolean}</span></h4>
 
     
 
@@ -2603,6 +2674,10 @@ if constant is zero, the result will then be [ zero share ]</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks whether the given bitwise secret shared number and numeric constant are not equal</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -2646,9 +2721,6 @@ if constant is zero, the result will then be [ zero share ]</p>
 
 
 
-<div class="description usertext">
-    <p>Checks whether the given bitwise secret shared number and numeric constant are not equal</p>
-</div>
 
 
 
@@ -2657,10 +2729,7 @@ if constant is zero, the result will then be [ zero share ]</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -2698,6 +2767,7 @@ if constant is zero, the result will then be [ zero share ]</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -2733,6 +2803,7 @@ if constant is zero, the result will then be [ zero share ]</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -2766,6 +2837,7 @@ if constant is zero, the result will then be [ zero share ]</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -2815,7 +2887,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -2838,6 +2910,7 @@ returned immediately as a boolean</p>
 <span class="param-type">boolean</span>
 
 
+
     </dd>
 </dl>
 
@@ -2850,7 +2923,7 @@ returned immediately as a boolean</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.csubl"><span class="type-signature">(static) </span>jiffClient.protocols.bits.csubl<span class="signature">(constant, bits, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.csubl"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.csubl<span class="signature">(constant, bits, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
 
     
 
@@ -2858,6 +2931,10 @@ returned immediately as a boolean</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Compute [secret bits] - [constant bits]</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -2901,9 +2978,6 @@ returned immediately as a boolean</p>
 
 
 
-<div class="description usertext">
-    <p>Compute [secret bits] - [constant bits]</p>
-</div>
 
 
 
@@ -2912,10 +2986,7 @@ returned immediately as a boolean</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -2953,6 +3024,7 @@ returned immediately as a boolean</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -2988,6 +3060,7 @@ returned immediately as a boolean</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -3021,6 +3094,7 @@ returned immediately as a boolean</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -3070,7 +3144,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -3090,6 +3164,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
     </dd>
 </dl>
 
@@ -3102,7 +3177,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.csubr"><span class="type-signature">(static) </span>jiffClient.protocols.bits.csubr<span class="signature">(constant, bits, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.csubr"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.csubr<span class="signature">(constant, bits, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
 
     
 
@@ -3110,6 +3185,10 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Compute [constant bits] - [secret bits]</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -3153,9 +3232,6 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 
 
 
-<div class="description usertext">
-    <p>Compute [constant bits] - [secret bits]</p>
-</div>
 
 
 
@@ -3164,10 +3240,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -3205,6 +3278,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -3240,6 +3314,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -3273,6 +3348,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -3322,7 +3398,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -3342,6 +3418,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
     </dd>
 </dl>
 
@@ -3354,7 +3431,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.open"><span class="type-signature">(static) </span>jiffClient.protocols.bits.open<span class="signature">(bits, parties, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {promise}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.open"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.open<span class="signature">(bits, parties, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {promise}</span></h4>
 
     
 
@@ -3362,6 +3439,11 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Opens the given array of secret shared bits.
+This works regardless of whether the represented value fit inside the corresponding field or not</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -3405,10 +3487,6 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 
 
 
-<div class="description usertext">
-    <p>Opens the given array of secret shared bits.
-This works regardless of whether the represented value fit inside the corresponding field or not</p>
-</div>
 
 
 
@@ -3417,10 +3495,7 @@ This works regardless of whether the represented value fit inside the correspond
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -3458,6 +3533,7 @@ This works regardless of whether the represented value fit inside the correspond
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -3491,6 +3567,7 @@ This works regardless of whether the represented value fit inside the correspond
             
                 
 <span class="param-type">Array.&lt;number></span>
+
 
 
             
@@ -3529,6 +3606,7 @@ This works regardless of whether the represented value fit inside the correspond
 |
 
 <span class="param-type">number</span>
+
 
 
             
@@ -3576,7 +3654,7 @@ This works regardless of whether the represented value fit inside the correspond
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -3594,6 +3672,7 @@ This works regardless of whether the represented value fit inside the correspond
 <span class="param-type">promise</span>
 
 
+
     </dd>
 </dl>
 
@@ -3606,7 +3685,7 @@ This works regardless of whether the represented value fit inside the correspond
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.rejection_sampling"><span class="type-signature">(static) </span>jiffClient.protocols.bits.rejection_sampling<span class="signature">(lower_bound, upper_bound, threshold<span class="signature-attributes">opt</span>, parties<span class="signature-attributes">opt</span>, Zp<span class="signature-attributes">opt</span>, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;SecretShare>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.rejection_sampling"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.rejection_sampling<span class="signature">(lower_bound, upper_bound, threshold<span class="signature-attributes">opt</span>, parties<span class="signature-attributes">opt</span>, Zp<span class="signature-attributes">opt</span>, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;SecretShare>}</span></h4>
 
     
 
@@ -3614,6 +3693,10 @@ This works regardless of whether the represented value fit inside the correspond
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Retrieves preprocessed rejection_sampling bits or performs the rejection sampling on the fly if crypto_provider is enabled</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -3657,9 +3740,6 @@ This works regardless of whether the represented value fit inside the correspond
 
 
 
-<div class="description usertext">
-    <p>Retrieves preprocessed rejection_sampling bits or performs the rejection sampling on the fly if crypto_provider is enabled</p>
-</div>
 
 
 
@@ -3668,10 +3748,7 @@ This works regardless of whether the represented value fit inside the correspond
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -3709,6 +3786,7 @@ This works regardless of whether the represented value fit inside the correspond
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -3744,6 +3822,7 @@ This works regardless of whether the represented value fit inside the correspond
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -3777,6 +3856,7 @@ This works regardless of whether the represented value fit inside the correspond
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -3818,6 +3898,7 @@ This works regardless of whether the represented value fit inside the correspond
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -3857,6 +3938,7 @@ This works regardless of whether the represented value fit inside the correspond
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -3894,6 +3976,7 @@ This works regardless of whether the represented value fit inside the correspond
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -3943,7 +4026,7 @@ ensure that corresponding instructions across different parties are matched corr
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -3961,6 +4044,7 @@ ensure that corresponding instructions across different parties are matched corr
 <span class="param-type">Array.&lt;SecretShare></span>
 
 
+
     </dd>
 </dl>
 
@@ -3973,7 +4057,7 @@ ensure that corresponding instructions across different parties are matched corr
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.sadd"><span class="type-signature">(static) </span>jiffClient.protocols.bits.sadd<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.sadd"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.sadd<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
 
     
 
@@ -3981,6 +4065,10 @@ ensure that corresponding instructions across different parties are matched corr
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Compute [secret bits1] + [secret bits2]</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -4024,9 +4112,6 @@ ensure that corresponding instructions across different parties are matched corr
 
 
 
-<div class="description usertext">
-    <p>Compute [secret bits1] + [secret bits2]</p>
-</div>
 
 
 
@@ -4035,10 +4120,7 @@ ensure that corresponding instructions across different parties are matched corr
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -4076,6 +4158,7 @@ ensure that corresponding instructions across different parties are matched corr
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -4111,6 +4194,7 @@ ensure that corresponding instructions across different parties are matched corr
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -4144,6 +4228,7 @@ ensure that corresponding instructions across different parties are matched corr
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -4193,7 +4278,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -4212,6 +4297,7 @@ the bit at index 0 is the least significant bit</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
     </dd>
 </dl>
 
@@ -4224,7 +4310,7 @@ the bit at index 0 is the least significant bit</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.sdiv"><span class="type-signature">(static) </span>jiffClient.protocols.bits.sdiv<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.sdiv"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.sdiv<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
@@ -4232,6 +4318,10 @@ the bit at index 0 is the least significant bit</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Computes integer division of [secret bits 1] / [secret bits 2]</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -4275,9 +4365,6 @@ the bit at index 0 is the least significant bit</p>
 
 
 
-<div class="description usertext">
-    <p>Computes integer division of [secret bits 1] / [secret bits 2]</p>
-</div>
 
 
 
@@ -4286,10 +4373,7 @@ the bit at index 0 is the least significant bit</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -4327,6 +4411,7 @@ the bit at index 0 is the least significant bit</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -4362,6 +4447,7 @@ the bit at index 0 is the least significant bit</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -4395,6 +4481,7 @@ the bit at index 0 is the least significant bit</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -4444,7 +4531,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -4467,6 +4554,7 @@ is equal to bits1</p>
 <span class="param-type">Object</span>
 
 
+
     </dd>
 </dl>
 
@@ -4479,7 +4567,7 @@ is equal to bits1</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.seq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.seq<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.seq"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.seq<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
 
     
 
@@ -4487,6 +4575,10 @@ is equal to bits1</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks whether the two given bitwise secret shared numbers are equal</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -4530,9 +4622,6 @@ is equal to bits1</p>
 
 
 
-<div class="description usertext">
-    <p>Checks whether the two given bitwise secret shared numbers are equal</p>
-</div>
 
 
 
@@ -4541,10 +4630,7 @@ is equal to bits1</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -4582,6 +4668,7 @@ is equal to bits1</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -4617,6 +4704,7 @@ is equal to bits1</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -4650,6 +4738,7 @@ is equal to bits1</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -4699,7 +4788,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -4717,6 +4806,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a></span>
 
 
+
     </dd>
 </dl>
 
@@ -4729,7 +4819,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.sgt"><span class="type-signature">(static) </span>jiffClient.protocols.bits.sgt<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.sgt"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.sgt<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
 
     
 
@@ -4737,6 +4827,10 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks whether the first given bitwise secret shared number is greater than the second bitwise secret shared number</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -4780,9 +4874,6 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<div class="description usertext">
-    <p>Checks whether the first given bitwise secret shared number is greater than the second bitwise secret shared number</p>
-</div>
 
 
 
@@ -4791,10 +4882,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -4832,6 +4920,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -4867,6 +4956,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -4900,6 +4990,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -4949,7 +5040,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -4967,6 +5058,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a></span>
 
 
+
     </dd>
 </dl>
 
@@ -4979,7 +5071,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.sgteq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.sgteq<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.sgteq"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.sgteq<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
 
     
 
@@ -4987,6 +5079,10 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks whether the first given bitwise secret shared number is greater than or equal to the second bitwise secret shared number</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -5030,9 +5126,6 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<div class="description usertext">
-    <p>Checks whether the first given bitwise secret shared number is greater than or equal to the second bitwise secret shared number</p>
-</div>
 
 
 
@@ -5041,10 +5134,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -5082,6 +5172,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -5117,6 +5208,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -5150,6 +5242,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -5199,7 +5292,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -5217,6 +5310,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a></span>
 
 
+
     </dd>
 </dl>
 
@@ -5229,7 +5323,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.share"><span class="type-signature">(static) </span>jiffClient.protocols.bits.share<span class="signature">(secret, bit_length<span class="signature-attributes">opt</span>, threshold<span class="signature-attributes">opt</span>, receivers_list<span class="signature-attributes">opt</span>, senders_list<span class="signature-attributes">opt</span>, Zp<span class="signature-attributes">opt</span>, share_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.share"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.share<span class="signature">(secret, bit_length<span class="signature-attributes">opt</span>, threshold<span class="signature-attributes">opt</span>, receivers_list<span class="signature-attributes">opt</span>, senders_list<span class="signature-attributes">opt</span>, Zp<span class="signature-attributes">opt</span>, share_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
 
     
 
@@ -5237,6 +5331,12 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Share a number as an array of secret bits
+This takes the same parameters as jiff-instance.share, but returns an array of secret bit shares per sending party.
+Each bit array starts with the least significant bit at index 0, and most significant bit at index length-1</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -5280,11 +5380,6 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<div class="description usertext">
-    <p>Share a number as an array of secret bits
-This takes the same parameters as jiff-instance.share, but returns an array of secret bit shares per sending party.
-Each bit array starts with the least significant bit at index 0, and most significant bit at index length-1</p>
-</div>
 
 
 
@@ -5293,10 +5388,7 @@ Each bit array starts with the least significant bit at index 0, and most signif
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -5334,6 +5426,7 @@ Each bit array starts with the least significant bit at index 0, and most signif
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -5367,6 +5460,7 @@ Each bit array starts with the least significant bit at index 0, and most signif
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -5409,6 +5503,7 @@ padded with zeros</p></td>
 <span class="param-type">number</span>
 
 
+
             
             </td>
 
@@ -5446,6 +5541,7 @@ padded with zeros</p></td>
             
                 
 <span class="param-type">Array</span>
+
 
 
             
@@ -5487,6 +5583,7 @@ padded with zeros</p></td>
 <span class="param-type">Array</span>
 
 
+
             
             </td>
 
@@ -5524,6 +5621,7 @@ padded with zeros</p></td>
             
                 
 <span class="param-type">number</span>
+
 
 
             
@@ -5566,6 +5664,7 @@ padded with zeros</p></td>
 |
 
 <span class="param-type">number</span>
+
 
 
             
@@ -5613,7 +5712,7 @@ padded with zeros</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -5633,6 +5732,7 @@ and the value is an array of secret shared bits</p>
 <span class="param-type">object</span>
 
 
+
     </dd>
 </dl>
 
@@ -5645,7 +5745,7 @@ and the value is an array of secret shared bits</p>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.slt"><span class="type-signature">(static) </span>jiffClient.protocols.bits.slt<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.slt"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.slt<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
 
     
 
@@ -5653,6 +5753,10 @@ and the value is an array of secret shared bits</p>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks whether the first given bitwise secret shared number is less than the second bitwise secret shared number</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -5696,9 +5800,6 @@ and the value is an array of secret shared bits</p>
 
 
 
-<div class="description usertext">
-    <p>Checks whether the first given bitwise secret shared number is less than the second bitwise secret shared number</p>
-</div>
 
 
 
@@ -5707,10 +5808,7 @@ and the value is an array of secret shared bits</p>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -5748,6 +5846,7 @@ and the value is an array of secret shared bits</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -5783,6 +5882,7 @@ and the value is an array of secret shared bits</p>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -5816,6 +5916,7 @@ and the value is an array of secret shared bits</p>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -5865,7 +5966,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -5883,6 +5984,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a></span>
 
 
+
     </dd>
 </dl>
 
@@ -5895,7 +5997,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.slteq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.slteq<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.slteq"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.slteq<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
 
     
 
@@ -5903,6 +6005,10 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks whether the first given bitwise secret shared number is less or equal to the second bitwise secret shared number</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -5946,9 +6052,6 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<div class="description usertext">
-    <p>Checks whether the first given bitwise secret shared number is less or equal to the second bitwise secret shared number</p>
-</div>
 
 
 
@@ -5957,10 +6060,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -5998,6 +6098,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -6033,6 +6134,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -6066,6 +6168,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -6115,7 +6218,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -6133,6 +6236,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a></span>
 
 
+
     </dd>
 </dl>
 
@@ -6145,7 +6249,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.smult"><span class="type-signature">(static) </span>jiffClient.protocols.bits.smult<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.smult"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.smult<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
 
     
 
@@ -6153,6 +6257,10 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Compute [secret bits1] * [secret bits2]</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -6196,9 +6304,6 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<div class="description usertext">
-    <p>Compute [secret bits1] * [secret bits2]</p>
-</div>
 
 
 
@@ -6207,10 +6312,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -6248,6 +6350,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -6283,6 +6386,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -6316,6 +6420,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -6365,7 +6470,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -6383,6 +6488,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
     </dd>
 </dl>
 
@@ -6395,7 +6501,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.sneq"><span class="type-signature">(static) </span>jiffClient.protocols.bits.sneq<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.sneq"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.sneq<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>}</span></h4>
 
     
 
@@ -6403,6 +6509,10 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Checks whether the two given bitwise secret shared numbers are not equal</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -6446,9 +6556,6 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<div class="description usertext">
-    <p>Checks whether the two given bitwise secret shared numbers are not equal</p>
-</div>
 
 
 
@@ -6457,10 +6564,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -6498,6 +6602,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -6533,6 +6638,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -6566,6 +6672,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -6615,7 +6722,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -6633,6 +6740,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type"><a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a></span>
 
 
+
     </dd>
 </dl>
 
@@ -6645,7 +6753,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
     
 
-    <h4 class="name" id=".jiffClient.protocols.bits.ssub"><span class="type-signature">(static) </span>jiffClient.protocols.bits.ssub<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
+    <h4 class="name" id=".jiffClient.protocols.bits.ssub"><span class="type-signature type-signature-static">(static) </span>jiffClient.protocols.bits.ssub<span class="signature">(bits1, bits2, op_id<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>>}</span></h4>
 
     
 
@@ -6653,6 +6761,10 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 <dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Compute [secret bits1] - [secret bits2]</p></li></ul></dd>
+    
 
     
     <dt class="tag-source">Source:</dt>
@@ -6696,9 +6808,6 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<div class="description usertext">
-    <p>Compute [secret bits1] - [secret bits2]</p>
-</div>
 
 
 
@@ -6707,10 +6816,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-
-
-
-    <h5>Parameters:</h5>
+    <h5 class="h5-parameters">Parameters:</h5>
     
 
 <table class="params">
@@ -6748,6 +6854,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -6783,6 +6890,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
 
 
+
             
             </td>
 
@@ -6816,6 +6924,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
             
                 
 <span class="param-type">string</span>
+
 
 
             
@@ -6865,7 +6974,7 @@ in the same exact order, otherwise, a unique base name is needed here</p></td>
 
 
 
-<h5>Returns:</h5>
+<h5 class="h5-returns">Returns:</h5>
 
         
 <div class="param-desc">
@@ -6883,6 +6992,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
     <dd>
         
 <span class="param-type">Array.&lt;<a href="module-jiff-client-JIFFClient_SecretShare.html">SecretShare</a>></span>
+
 
 
     </dd>
@@ -6912,7 +7022,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Jul 06 2020 14:19:37 GMT-0400 (Eastern Daylight Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Jan 09 2024 21:38:44 GMT-0500 (Eastern Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
@@ -6923,5 +7033,7 @@ and the bit at index |bits| is 1 if the result overflows, or 0 otherwise</p>
 
 
 
+
+<script>
 </body>
 </html>

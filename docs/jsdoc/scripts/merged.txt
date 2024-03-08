@@ -1,0 +1,219 @@
+
+----collapse.js----
+function hideAllButCurrent(){
+    //by default all submenut items are hidden
+    //but we need to rehide them for search
+    document.querySelectorAll("nav > ul").forEach(function(parent) {
+        if (parent.className.indexOf("collapse_top") !== -1) {
+            parent.style.display = "none";
+        }
+    });
+    document.querySelectorAll("nav > ul > li > ul li").forEach(function(parent) {
+        parent.style.display = "none";
+    });
+    document.querySelectorAll("nav > h3").forEach(function(section) {
+        if (section.className.indexOf("collapsed_header") !== -1) {
+            section.addEventListener("click", function(){
+                if (section.nextSibling.style.display === "none") {
+                    section.nextSibling.style.display = "block";
+                } else {
+                    section.nextSibling.style.display = "none";
+                }
+            });
+        }
+    });
+    
+    //only current page (if it exists) should be opened
+    var file = window.location.pathname.split("/").pop().replace(/\.html/, '');
+    document.querySelectorAll("nav > ul > li > a").forEach(function(parent) {
+        var href = parent.attributes.href.value.replace(/\.html/, '');
+        if (file === href) {
+            if (parent.parentNode.parentNode.className.indexOf("collapse_top") !== -1) {
+                parent.parentNode.parentNode.style.display = "block";
+            }
+            parent.parentNode.querySelectorAll("ul li").forEach(function(elem) {
+                elem.style.display = "block";
+            });
+        }
+    });
+}
+
+hideAllButCurrent();
+----commonNav.js----
+if (typeof fetch === 'function') {
+  const init = () => {
+    if (typeof scrollToNavItem !== 'function') return false
+    scrollToNavItem()
+    // hideAllButCurrent not always loaded
+    if (typeof hideAllButCurrent === 'function') hideAllButCurrent()
+    return true
+  }
+  fetch('./nav.inc.html')
+    .then(response => response.ok ? response.text() : `${response.url} => ${response.status} ${response.statusText}`)
+    .then(body => {
+      document.querySelector('nav').innerHTML += body
+      // nav.js should be quicker to load than nav.inc.html, a fallback just in case
+      return init()
+    })
+    .then(done => {
+      if (done) return
+      let i = 0
+      ;(function waitUntilNavJs () {
+        if (init()) return
+        if (i++ < 100) return setTimeout(waitUntilNavJs, 300)
+        console.error(Error('nav.js not loaded after 30s waiting for it'))
+      })()
+    })
+    .catch(error => console.error(error))
+} else {
+  console.error(Error('Browser too old to display commonNav (remove commonNav docdash option)'))
+}
+
+----linenumber.js----
+/*global document */
+(function() {
+    var source = document.getElementsByClassName('prettyprint source linenums');
+    var i = 0;
+    var lineNumber = 0;
+    var lineId;
+    var lines;
+    var totalLines;
+    var anchorHash;
+
+    if (source && source[0]) {
+        anchorHash = document.location.hash.substring(1);
+        lines = source[0].getElementsByTagName('li');
+        totalLines = lines.length;
+
+        for (; i < totalLines; i++) {
+            lineNumber++;
+            lineId = 'line' + lineNumber;
+            lines[i].id = lineId;
+            if (lineId === anchorHash) {
+                lines[i].className += ' selected';
+            }
+        }
+    }
+})();
+
+----nav.js----
+function scrollToNavItem() {
+    var path = window.location.href.split('/').pop().replace(/\.html/, '');
+    document.querySelectorAll('nav a').forEach(function(link) {
+      var href = link.attributes.href.value.replace(/\.html/, '');
+      if (path === href) {
+        link.scrollIntoView({block: 'center'});
+        return;
+      }
+    })
+  }
+
+  scrollToNavItem();
+
+----polyfill.js----
+//IE Fix, src: https://www.reddit.com/r/programminghorror/comments/6abmcr/nodelist_lacks_foreach_in_internet_explorer/
+if (typeof(NodeList.prototype.forEach)!==typeof(alert)){
+    NodeList.prototype.forEach=Array.prototype.forEach;
+}
+----search.js----
+
+var searchAttr = 'data-search-mode';
+function contains(a,m){
+    return (a.textContent || a.innerText || "").toUpperCase().indexOf(m) !== -1;
+};
+
+//on search
+document.getElementById("nav-search").addEventListener("keyup", function(event) {
+    var search = this.value.toUpperCase();
+
+    if (!search) {
+        //no search, show all results
+        document.documentElement.removeAttribute(searchAttr);
+        
+        document.querySelectorAll("nav > ul > li:not(.level-hide)").forEach(function(elem) {
+            elem.style.display = "block";
+        });
+
+        if (typeof hideAllButCurrent === "function"){
+            //let's do what ever collapse wants to do
+            hideAllButCurrent();
+        } else {
+            //menu by default should be opened
+            document.querySelectorAll("nav > ul > li > ul li").forEach(function(elem) {
+                elem.style.display = "block";
+            });
+        }
+    } else {
+        //we are searching
+        document.documentElement.setAttribute(searchAttr, '');
+
+        //show all parents
+        document.querySelectorAll("nav > ul > li").forEach(function(elem) {
+            elem.style.display = "block";
+        });
+        document.querySelectorAll("nav > ul").forEach(function(elem) {
+            elem.style.display = "block";
+        });
+        //hide all results
+        document.querySelectorAll("nav > ul > li > ul li").forEach(function(elem) {
+            elem.style.display = "none";
+        });
+        //show results matching filter
+        document.querySelectorAll("nav > ul > li > ul a").forEach(function(elem) {
+            if (!contains(elem.parentNode, search)) {
+                return;
+            }
+            elem.parentNode.style.display = "block";
+        });
+        //hide parents without children
+        document.querySelectorAll("nav > ul > li").forEach(function(parent) {
+            var countSearchA = 0;
+            parent.querySelectorAll("a").forEach(function(elem) {
+                if (contains(elem, search)) {
+                    countSearchA++;
+                }
+            });
+            
+            var countUl = 0;
+            var countUlVisible = 0;
+            parent.querySelectorAll("ul").forEach(function(ulP) {
+                // count all elements that match the search
+                if (contains(ulP, search)) {
+                    countUl++;
+                }
+                
+                // count all visible elements
+                var children = ulP.children
+                for (i=0; i<children.length; i++) {
+                    var elem = children[i];
+                    if (elem.style.display != "none") {
+                        countUlVisible++;
+                    }
+                }
+            });
+          
+            if (countSearchA == 0 && countUl === 0){
+                //has no child at all and does not contain text
+                parent.style.display = "none";
+            } else if(countSearchA == 0 && countUlVisible == 0){
+                //has no visible child and does not contain text
+                parent.style.display = "none";
+            }
+        });
+        document.querySelectorAll("nav > ul.collapse_top").forEach(function(parent) {
+            var countVisible = 0;
+            parent.querySelectorAll("li").forEach(function(elem) {
+                if (elem.style.display !== "none") {
+                    countVisible++;
+                }
+            });
+          
+            if (countVisible == 0) {
+                //has no child at all and does not contain text
+                parent.style.display = "none";
+            }
+        });
+    }
+});
+----toggleTheme.js----
+
