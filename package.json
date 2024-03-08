@@ -44,6 +44,7 @@
     "test-demo": "./demos/run-test.sh",
     "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "tutorial": "npm install && cd tutorials && node index.js",
     "build": "browserify lib/jiff-client.js --debug -s JIFFClient -o dist/jiff-client.js && browserify lib/ext/jiff-client-websockets.js --debug -s jiff_websockets -o dist/jiff-client-websockets.js"
   },

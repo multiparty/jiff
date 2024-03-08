@@ -86,7 +86,7 @@ function computeResults(inputs) {
     results.push(truncate(diff.sqrt()));
   }
 
-  assert.deepEqual(results[0].toString(10), "0");
+  assert.deepEqual(results[0].toString(10), '0');
   return results;
 }
 
