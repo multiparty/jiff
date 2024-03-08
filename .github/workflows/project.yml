@@ -16,7 +16,7 @@ jobs:
     name: Add issue to Backlog
     runs-on: ubuntu-latest
     steps:
-      uses: actions/add-to-project@v0
-      with:
-        project-url: https://github.com/orgs/multiparty/projects/2
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/add-to-project@v0
+        with:
+          project-url: https://github.com/orgs/multiparty/projects/2
+          github-token: ${{ secrets.GITHUB_TOKEN }}
