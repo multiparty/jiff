@@ -245,7 +245,7 @@ equivalent to 3-party computation with honest majority.
 Below is a table of the current costs of operations in the *base* JIFF without extensions:
 
 
-| Operation         | Rounds            | Total Messages                    | Preprocessing Rounds | Preprocessing Total Messages                 | Dependenices |
+| Operation         | Rounds            | Total Messages                    | Preprocessing Rounds | Preprocessing Total Messages                 | Dependencies |
 |-------------------|-------------------|-----------------------------------|----------------------|----------------------------------------------|--------------|
 | Share             | 1                 | senders \* receivers              | 0                    | 0                                            | N/A          |
 | Open              | 2                 | sender + sender \* receivers      | 1                    | senders \* senders                           | N/A          |
@@ -268,7 +268,7 @@ Some exact costs not shown in the table:
 4. Exact total number of messages for division is: bits \* ( 5\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1))) + 2\*parties + parties\*(parties-1) + 2\*parties + parties\*(parties-1) )
 5. Exact total number of messages for constant division is: 1 + 7\*parties + 4\*parties^2 + 8\*(parties + parties^2 + (bits+1) \* (2\*parties + parties\*(parties-1)))
 
-Dependenices:
+Dependencies:
 1. Multiplication has one message to synchronize beaver triplets and one open in sequence.
 2. inequality tests has 3 less than half primes in parallel, each has an open and as many multiplication in sequence as bits.
 3. constant inequality test has 2 less than half primes in parallel.
