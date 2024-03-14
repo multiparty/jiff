@@ -237,7 +237,7 @@ performing the preprocessing may be different than the ones carrying out the onl
 
 If preprocessing is not used, and `crypto_provider` option is set to true during instance creation, JIFF will acquire all required
 corelated randomness and preprocessing material from the server. This yields an asymetric trust model, where the computation is secure
-against a dishonest majority of non-server parties, but insecure against coalitions of one or more party plus the server. Conretely, this
+against a dishonest majority of non-server parties, but insecure against coalitions of one or more party plus the server. Concretely, this
 reduces to more traditional models in certain cases. For example, if the computation is made out of two parties and a server, this becomes
 equivalent to 3-party computation with honest majority.
 
