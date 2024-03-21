@@ -2,6 +2,7 @@
 describe('JIFF Operations', () => {
     
   beforeAll(async () => {
+    
     // Setup JIFF Client
     const options = {
       party_count: 2,
