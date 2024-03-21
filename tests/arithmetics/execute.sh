@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-target='arithmetics.test.js'
+target='arithmetics.test.ts'
 
-node ./tests/arithmetics/server.js &
+node ./tests/arithmetics/server.ts &
 npx jest ./tests/arithmetics/$target&
 wait
