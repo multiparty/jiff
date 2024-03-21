@@ -1,8 +1,6 @@
 
 describe('JIFF Operations', () => {
-  
-  let jiffClient;
-  
+    
   beforeAll(async () => {
     // Setup JIFF Client
     const options = {
@@ -29,9 +27,9 @@ describe('JIFF Operations', () => {
 
   it('should correctly add numbers 60 + 60 = 120', async () => {
     await jiffClient.wait_for([1, 2], async () => {
-      const party_id = parseInt(process.argv[2]);
-      const input = await jiffClient.share(entries[party_id]);
-      const sec_ttl = await input[1].sadd(input[2]);
+      const input1 = await jiffClient.share(entries[1]);
+      const input2 = await jiffClient.share(entries[2]);
+      const sec_ttl = await input1.sadd(input2);
       const pub_ttl = await sec_ttl.open();
 
       // Check that pub_ttl.toString(10) equals '120'
@@ -42,10 +40,9 @@ describe('JIFF Operations', () => {
   it('should correctly subtract numbers 60 - 60 = 0', async () => {
     jiffClient.wait_for([1, 2], async () => {
 
-      const party_id = process.argv[2];
-      const input = await jiffClient.share(entries[party_id]);
-    
-      const sec_ttl = await input[1].ssub(input[2]);
+      const input1 = await jiffClient.share(entries[1]);
+      const input2 = await jiffClient.share(entries[2]);
+      const sec_ttl = await input1.ssub(input2);
       const pub_ttl = await sec_ttl.open();
           
       // Check that pub_ttl.toString(10) equals '0'
@@ -56,10 +53,9 @@ describe('JIFF Operations', () => {
   it('should correctly multiply numbers 60 x 60 =3600', async () => {
     jiffClient.wait_for([1, 2], async () => {
 
-      const party_id = process.argv[2];
-      const input = await jiffClient.share(entries[party_id]);
-    
-      const sec_ttl = await input[1].smult(input[2]);
+      const input1 = await jiffClient.share(entries[1]);
+      const input2 = await jiffClient.share(entries[2]);
+      const sec_ttl = await input1.smult(input2);
       const pub_ttl = await sec_ttl.open();
     
       // Check that pub_ttl.toString(10) equals '3600'
@@ -70,10 +66,9 @@ describe('JIFF Operations', () => {
   it('should correctly divide numbers 60 / 60', async () => {
     jiffClient.wait_for([1, 2], async () => {
 
-      const party_id = process.argv[2];
-      const input = await jiffClient.share(entries[party_id]);
-    
-      const sec_ttl = await input[1].div(input[2]);
+      const input1 = await jiffClient.share(entries[1]);
+      const input2 = await jiffClient.share(entries[2]);
+      const sec_ttl = await input1.sdiv(input2);
       const pub_ttl = await sec_ttl.open();
     
       // Check that pub_ttl.toString(10) equals '1'
