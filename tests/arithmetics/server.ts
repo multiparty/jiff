@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const server = require("http").Server(app);
 
-var jiff_bignumber = require("../../lib/ext/jiff-server-bignumber.js");
+const jiff_bignumber = require("../../lib/ext/jiff-server-bignumber.js");
 
 app.use("../../dist", express.static("../../dist"));
 app.use("../../lib/ext", express.static("../../lib/ext"));

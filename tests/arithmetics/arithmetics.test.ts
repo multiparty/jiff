@@ -1,8 +1,3 @@
-interface Entries {
-  [key:number]:number
-}
-
-
 describe('JIFF Operations', () => {
   
   // Setup JIFF Client
@@ -20,17 +15,13 @@ describe('JIFF Operations', () => {
     options,
   );
 
-  var entries: Entries;
+  var entries: {[key:number]:number};
     
   beforeAll(async () => {
     
     // Add JIFF Extensions
     const jiff_bignumber = require("../../lib/ext/jiff-client-bignumber.js");
-    const jiff_fixedpoint = require("../../lib/ext/jiff-client-fixedpoint.js");
-    const jiff_negativenumber = require("../../lib/ext/jiff-client-negativenumber.js");
     await jiffClient.apply_extension(jiff_bignumber, options);
-    await jiffClient.apply_extension(jiff_fixedpoint, options);
-    await jiffClient.apply_extension(jiff_negativenumber, options);
 
     entries = { 1: 60, 2: 60 };
   });
@@ -42,7 +33,7 @@ describe('JIFF Operations', () => {
       const pub_ttl = await sec_ttl.open();
 
       // Check that pub_ttl.toString(10) equals '120'
-      expect(pub_ttl.toString(10)).toEqual('20');
+      expect(pub_ttl.toString(10)).toEqual('12');
     });
   });
 
@@ -54,31 +45,31 @@ describe('JIFF Operations', () => {
       const pub_ttl = await sec_ttl.open();
           
       // Check that pub_ttl.toString(10) equals '0'
-      expect(pub_ttl.toString(10)).toEqual('1');
+      expect(pub_ttl.toString(10)).toEqual('0');
     })
   });
 
-  // it('should correctly multiply numbers 60 x 60 =3600', async () => {
-  //   jiffClient.wait_for([1, 2], async () => {
+  it('should correctly multiply numbers 60 x 60 =3600', async () => {
+    jiffClient.wait_for([1, 2], async () => {
 
-  //     const input = await jiffClient.share(entries[1]);
-  //     const sec_ttl = await input[1].smult(input[2]);
-  //     const pub_ttl = await sec_ttl.open();
+      const input = await jiffClient.share(entries[1]);
+      const sec_ttl = await input[1].smult(input[2]);
+      const pub_ttl = await sec_ttl.open();
     
-  //     // Check that pub_ttl.toString(10) equals '3600'
-  //     expect(pub_ttl.toString(10)).toEqual('3600');
-  //   })    
-  // });
+      // Check that pub_ttl.toString(10) equals '3600'
+      expect(pub_ttl.toString(10)).toEqual('3600');
+    })    
+  });
 
-  // it('should correctly divide numbers 60 / 60', async () => {
-  //   jiffClient.wait_for([1, 2], async () => {
+  it('should correctly divide numbers 60 / 60', async () => {
+    jiffClient.wait_for([1, 2], async () => {
 
-  //     const input = await jiffClient.share(entries[1]);
-  //     const sec_ttl = await input[1].sdiv(input[2]);
-  //     const pub_ttl = await sec_ttl.open();
+      const input = await jiffClient.share(entries[1]);
+      const sec_ttl = await input[1].sdiv(input[2]);
+      const pub_ttl = await sec_ttl.open();
     
-  //     // Check that pub_ttl.toString(10) equals '1'
-  //     expect(pub_ttl.toString(10)).toEqual('1');
-  //   })
-  // });
+      // Check that pub_ttl.toString(10) equals '1'
+      expect(pub_ttl.toString(10)).toEqual('1');
+    })
+  });
 });

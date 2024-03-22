@@ -13,17 +13,14 @@ var jiffClient = new JIFFClient(
     options,
 );
 
-var entries;
-    
 // Add JIFF Extensions
-const jiff_bignumber = require("../../lib/ext/jiff-client-bignumber.js");
-const jiff_fixedpoint = require("../../lib/ext/jiff-client-fixedpoint.js");
-const jiff_negativenumber = require("../../lib/ext/jiff-client-negativenumber.js");
-jiffClient.apply_extension(jiff_bignumber, options);
-jiffClient.apply_extension(jiff_fixedpoint, options);
-jiffClient.apply_extension(jiff_negativenumber, options);
+const jiff_bignum = require("../../lib/ext/jiff-client-bignumber.js");
+jiffClient.apply_extension(jiff_bignum, options);
 
+var entries:{ [key: number]: number };
 entries = { 1: 60, 2: 60 };
+
+// Addition 60 + 60 = 120
 jiffClient.wait_for([1, 2], async () => {
     const input = await jiffClient.share(entries[2]);
     const sec_ttl = await input[1].sadd(input[2]);
@@ -31,9 +28,30 @@ jiffClient.wait_for([1, 2], async () => {
 });
 
 
+// Subtraction 60 - 60 = 0
 jiffClient.wait_for([1, 2], async () => {
 
     const input = await jiffClient.share(entries[2]);
     const sec_ttl = await input[1].ssub(input[2]);
     const pub_ttl = await sec_ttl.open();
+})
+
+
+// Multiplication 60 x 60 = 3600
+jiffClient.wait_for([1, 2], async () => {
+
+    const input = await jiffClient.share(entries[1]);
+    const sec_ttl = await input[1].smult(input[2]);
+    const pub_ttl = await sec_ttl.open();
+  
+})    
+
+
+// Division 60 / 60 = 0
+jiffClient.wait_for([1, 2], async () => {
+
+    const input = await jiffClient.share(entries[1]);
+    const sec_ttl = await input[1].sdiv(input[2]);
+    const pub_ttl = await sec_ttl.open();
+
 })
