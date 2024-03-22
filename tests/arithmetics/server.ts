@@ -2,8 +2,6 @@ const express = require("express");
 const app = express();
 const server = require("http").Server(app);
 
-const jiff_bignumber = require("../../lib/ext/jiff-server-bignumber.js");
-
 app.use("../../dist", express.static("../../dist"));
 app.use("../../lib/ext", express.static("../../lib/ext"));
 app.use("/", express.static("/client"));
@@ -16,5 +14,5 @@ server.listen(port, function () {
 
 const JIFFServer = require("../../lib/jiff-server.js");
 const jiffServer = new JIFFServer(server, { logs: true });
-jiffServer.apply_extension(jiff_bignumber);
+
 console.log("server is running on port", port);

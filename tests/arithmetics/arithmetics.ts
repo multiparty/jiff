@@ -4,7 +4,6 @@ const JIFFClient = require("../../lib/jiff-client.js");
 const options = {
     party_count: 2,
     crypto_provider: true,
-    Zp: 562949948117,
 };
 
 var jiffClient = new JIFFClient(
@@ -12,10 +11,6 @@ var jiffClient = new JIFFClient(
     "our-setup-application",
     options,
 );
-
-// Add JIFF Extensions
-const jiff_bignum = require("../../lib/ext/jiff-client-bignumber.js");
-jiffClient.apply_extension(jiff_bignum, options);
 
 var entries:{ [key: number]: number };
 entries = { 1: 60, 2: 60 };

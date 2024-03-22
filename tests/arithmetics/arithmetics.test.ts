@@ -6,7 +6,6 @@ describe('JIFF Operations', () => {
   const options = {
     party_count: 2,
     crypto_provider: true,
-    Zp: 562949948117,
   };
   
   var jiffClient = new JIFFClient(
@@ -19,10 +18,6 @@ describe('JIFF Operations', () => {
     
   beforeAll(async () => {
     
-    // Add JIFF Extensions
-    const jiff_bignumber = require("../../lib/ext/jiff-client-bignumber.js");
-    await jiffClient.apply_extension(jiff_bignumber, options);
-
     entries = { 1: 60, 2: 60 };
   });
 
