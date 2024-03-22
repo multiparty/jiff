@@ -33,7 +33,7 @@ describe('JIFF Operations', () => {
       const pub_ttl = await sec_ttl.open();
 
       // Check that pub_ttl.toString(10) equals '120'
-      expect(pub_ttl.toString(10)).toEqual('12');
+      expect(pub_ttl.toString(10)).toEqual('120');
     });
   });
 
