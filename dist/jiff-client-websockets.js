@@ -151,7 +151,7 @@ module.exports = function (jiffClient) {
    * @memberof handlers
    */
   jiffClient.handlers.connected = function () {
-    // console.log('Connected!', jiffClient.id); // TODO: remove debugging
+
     jiffClient.initialization_counter++;
 
     if (jiffClient.secret_key == null && jiffClient.public_key == null) {
