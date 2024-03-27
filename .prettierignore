@@ -1,0 +1,7 @@
+tutorials
+docs
+coverage
+demos
+.circleci
+.github
+.travis.yml
