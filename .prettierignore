@@ -5,4 +5,6 @@ demos
 .circleci
 .github
 .travis.yml
+*.html
+*.md
 /dist
