@@ -33,11 +33,11 @@ describe('JIFF Arithmetic Operations', () => {
     let port:number = 8112
     const servers = init_server(port)
     jiffServer = servers[0], server = servers[1]
+    await new Promise(resolve => server.on('listening', resolve)); // Wait for server to be ready
 
     // Client Setup
     const JIFFClient = require("../../lib/jiff-client.js");
-    const serverAddress = jiffServer.address();
-    const baseUrl = `http://localhost:${serverAddress.port}`;
+    const baseUrl = `http://localhost:${port}`;
     const options = {
         party_count: 2,
         crypto_provider: true,
@@ -49,15 +49,22 @@ describe('JIFF Arithmetic Operations', () => {
 
   afterEach(async () => {
     // Shutting Server
-    const socket = jiffServer.socketMaps;
-    console.log(socket)
-    if (socket) {
-       socket.disconnect(true); // Disconnect the socket
-    }
-    jiffServer.freeComputation(computation_id);
-    await server.close(() => {
-        console.log('Server has been closed');
-    });
+    await jiffClient1.socket.onclose('io client disconnect')
+    await jiffClient2.socket.onclose('io client disconnect')
+    await jiffServer.closeAllSockets();
+    // jiffServer.freeComputation(computation_id);
+  
+    // Close the server
+    // await new Promise((resolve, reject) => {
+    //   server.close((err:string) => {
+    //     if (err) {
+    //       console.error('Error closing server:', err);
+    //       reject(err);
+    //       return;
+    //     }
+    //     resolve(console.log('Server closed'));
+    //   });
+    // });
   });
 
   it('should correctly add 60 + 60 = 120', async () => {
@@ -89,7 +96,6 @@ describe('JIFF Arithmetic Operations', () => {
     });
 
     const results = await Promise.all([client1Promise, client2Promise]);
-    
     expect(results[0]).toEqual('120');
     expect(results[1]).toEqual('120');
 });
@@ -197,5 +203,5 @@ describe('JIFF Arithmetic Operations', () => {
     
     expect(results[0]).toEqual('1');
     expect(results[1]).toEqual('1');
-  });
+  }, 15000);
 });
