@@ -48,23 +48,12 @@ describe('JIFF Arithmetic Operations', () => {
   });
 
   afterEach(async () => {
-    // Shutting Server
-    await jiffClient1.socket.onclose('io client disconnect')
-    await jiffClient2.socket.onclose('io client disconnect')
+    // Shutting down client
+    await jiffClient1.socket.disconnect()
+    await jiffClient2.socket.disconnect()
+    
+    // Shutting down Server
     await jiffServer.closeAllSockets();
-    // jiffServer.freeComputation(computation_id);
-  
-    // Close the server
-    // await new Promise((resolve, reject) => {
-    //   server.close((err:string) => {
-    //     if (err) {
-    //       console.error('Error closing server:', err);
-    //       reject(err);
-    //       return;
-    //     }
-    //     resolve(console.log('Server closed'));
-    //   });
-    // });
   });
 
   it('should correctly add 60 + 60 = 120', async () => {
