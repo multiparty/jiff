@@ -1,5 +1,5 @@
 {
-  "tests": [ "sif_else", "s1if_else", "s2if_else", "cif_else" ],
+  "tests": ["sif_else", "s1if_else", "s2if_else", "cif_else"],
   "suiteConf": {
     "port": 3001,
     "generation": {

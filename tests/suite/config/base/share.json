@@ -1,8 +1,8 @@
 {
-  "tests": [ "share2", "share3", "share4", "share5", "share10", "reshare-threshold4", "reshare-threshold5", "reshare-parties4", "reshare-parties5", "reshare-parties7" ],
+  "tests": ["share2", "share3", "share4", "share5", "share10", "reshare-threshold4", "reshare-threshold5", "reshare-parties4", "reshare-parties5", "reshare-parties7"],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ ],
+    "extensions": [],
     "generation": {
       "file": "config/base/generation.js",
       "function": "generateShareInputs"

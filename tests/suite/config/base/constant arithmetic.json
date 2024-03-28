@@ -1,5 +1,5 @@
 {
-  "tests": [ "+", "-", "*", "|", "^", "cdivfac", "/Zp127", "/Zp2039", "cpow-acc", "cpow-inacc" ],
+  "tests": ["+", "-", "*", "|", "^", "cdivfac", "/Zp127", "/Zp2039", "cpow-acc", "cpow-inacc"],
   "suiteConf": {
     "port": 3001,
     "generation": {
@@ -50,10 +50,10 @@
         "party_count": 3
       },
       "inputs": [
-        {"1": 1031, "constant":  0},
-        {"1": 31, "constant":  1},
-        {"1": 8, "constant":  2},
-        {"1": 123, "constant":  3}
+        { "1": 1031, "constant": 0 },
+        { "1": 31, "constant": 1 },
+        { "1": 8, "constant": 2 },
+        { "1": 123, "constant": 3 }
       ]
     },
     "cpow-inacc": {
@@ -66,12 +66,12 @@
         "party_count": 3
       },
       "inputs": [
-        {"1": 1031, "constant":  0},
-        {"1": 31, "constant":  1},
-        {"1": 8, "constant":  2},
-        {"1": 123, "constant":  3},
-        {"1": 401, "constant":  1023},
-        {"1": 91, "constant":  2039}
+        { "1": 1031, "constant": 0 },
+        { "1": 31, "constant": 1 },
+        { "1": 8, "constant": 2 },
+        { "1": 123, "constant": 3 },
+        { "1": 401, "constant": 1023 },
+        { "1": 91, "constant": 2039 }
       ]
     }
   }

@@ -47,7 +47,7 @@
     var shares = jiff_instance.share(input);
     var i = 0;
     (function next() {
-      console.log(i+1);
+      console.log(i + 1);
       jiff_instance.start_barrier();
 
       for (var j = 0; j < 5; j++) {
@@ -63,10 +63,10 @@
           var promise = jiff_instance.open(shares[1]);
           promise.then(console.log).then(jiff_instance.disconnect);
           promise.then(final_deferred.resolve);
-        })
+        });
       }
-    }());
+    })();
 
     return final_promise;
   };
-}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
+})(typeof exports === 'undefined' ? (this.mpc = {}) : exports, typeof exports !== 'undefined');

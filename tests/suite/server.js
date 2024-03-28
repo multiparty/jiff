@@ -5,7 +5,7 @@ var app = express();
 var http = require('http').Server(app);
 
 var jiffServer = require('../../lib/jiff-server');
-var jiffRestAPIServer =  require('../../lib/ext/jiff-server-restful');
+var jiffRestAPIServer = require('../../lib/ext/jiff-server-restful');
 var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
 var jiffWebSocketServer = require('../../lib/ext/jiff-server-websockets');
 
@@ -19,7 +19,7 @@ if (extensions != null && (extensions.indexOf('bigNumber') > -1 || extensions.in
   jiff_instance.apply_extension(jiffBigNumberServer, options);
 }
 if (extensions != null && extensions.indexOf('restAPI') > -1) {
-  var bodyParser  = require('body-parser');
+  var bodyParser = require('body-parser');
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   jiff_instance.apply_extension(jiffRestAPIServer, options);
@@ -35,4 +35,3 @@ app.use('/lib/ext', express.static('lib/ext'));
 http.listen(3001, function () {
   console.log('listening on *:3001');
 });
-

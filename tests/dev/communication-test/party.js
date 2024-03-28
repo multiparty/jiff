@@ -29,7 +29,7 @@ if (party_id != null) {
 }
 
 // JIFF options
-var options = {party_count: party_count, party_id: party_id};
+var options = { party_count: party_count, party_id: party_id };
 options.onConnect = function () {
   mpc.compute(input);
 };

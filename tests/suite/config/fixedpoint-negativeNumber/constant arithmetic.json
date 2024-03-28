@@ -1,8 +1,8 @@
 {
-  "tests": [ "+", "-", "*", "|", "^", "cdivfac", "/" ],
+  "tests": ["+", "-", "*", "|", "^", "cdivfac", "/"],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ "bigNumber", "fixedpoint", "negativeNumber" ],
+    "extensions": ["bigNumber", "fixedpoint", "negativeNumber"],
     "generation": {
       "file": "config/fixedpoint-negativeNumber/generation.js",
       "function": "generateConstantArithmeticInputs"
@@ -37,10 +37,10 @@
         "warn": false
       },
       "inputs": [
-        {"1": 1.6, "constant": 0.8},
-        {"1": -8, "constant": 2},
-        {"1": 6.6, "constant": -2.2},
-        {"1": -6.4, "constant": -3.2}
+        { "1": 1.6, "constant": 0.8 },
+        { "1": -8, "constant": 2 },
+        { "1": 6.6, "constant": -2.2 },
+        { "1": -6.4, "constant": -3.2 }
       ]
     },
     "*": {
@@ -53,9 +53,9 @@
         "integer_digits": 3
       },
       "inputs": [
-        {"1": 311.2, "constant": 2},
-        {"1": 81.9, "constant": -12},
-        {"1": -63.5, "constant": -10}
+        { "1": 311.2, "constant": 2 },
+        { "1": 81.9, "constant": -12 },
+        { "1": -63.5, "constant": -10 }
       ]
     },
     "/": {
@@ -68,9 +68,7 @@
         "decimal_digits": 2,
         "crypto_provider": true
       },
-      "inputs": [
-        {"1": 81.89 ,"constant": -11}
-      ]
+      "inputs": [{ "1": 81.89, "constant": -11 }]
     }
   }
 }

@@ -4,7 +4,7 @@ var baseGeneration = require('../base/generation.js');
 // functions specific to negativeNumber
 var isConstant;
 function determineMax(test, party_count, Zp, max) {
-  max = Math.min(Math.floor(Zp/2), max);
+  max = Math.min(Math.floor(Zp / 2), max);
   // +: max + max ... + max = party_count * max <= 10^(digits)
   if (test === '+' || test === '-') {
     max = Math.floor(max / party_count);
@@ -40,7 +40,6 @@ baseGeneration.generateMultiple = function (test, options, max, factor) {
 baseGeneration.generateUniformNatural = function (test, options, max) {
   return Math.floor(Math.random() * max);
 };
-
 
 // Override entry points
 var oldArithmetic = baseGeneration.generateArithmeticInputs;

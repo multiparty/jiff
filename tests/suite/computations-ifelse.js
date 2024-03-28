@@ -23,7 +23,7 @@ baseComputations.shareParameters = function (jiff_instance, test, testInputs) {
   var input = testInputs[jiff_instance.id];
 
   // Figure out who is sharing
-  var senders = [ 1 ];
+  var senders = [1];
   if (test === 'sif_else' || test === 's1if_else') {
     senders.push(2);
   }
@@ -58,7 +58,7 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
     operation: 'if_else',
     op_count: inputs.length,
     open_count: inputs.length
-  }
+  };
 };
 
 module.exports = baseComputations;

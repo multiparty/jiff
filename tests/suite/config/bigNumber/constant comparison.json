@@ -1,8 +1,8 @@
 {
-  "tests": [ "<", "<=", ">", ">=", "==", "!=" ],
+  "tests": ["<", "<=", ">", ">=", "==", "!="],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ "bigNumber" ],
+    "extensions": ["bigNumber"],
     "generation": {
       "file": "config/bigNumber/generation.js",
       "function": "generateConstantComparisonInputs"

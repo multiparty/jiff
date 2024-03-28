@@ -1,8 +1,8 @@
 {
-  "tests": [ "<", "<=", ">", ">=", "==", "!=" ],
+  "tests": ["<", "<=", ">", ">=", "==", "!="],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ "negativeNumber" ],
+    "extensions": ["negativeNumber"],
     "generation": {
       "file": "config/negativeNumber/generation.js",
       "function": "generateConstantComparisonInputs"
