@@ -6,7 +6,7 @@ function init_server(port:number){
 
   app.use("../../dist", express.static("../../dist"));
   app.use("../../lib/ext", express.static("../../lib/ext"));
-  app.use("/", express.static("/client"));
+  app.use("/", express.static("../../lib/client"));
 
   server.listen(port, function () {
     console.log("Listening on ", port);
@@ -16,45 +16,47 @@ function init_server(port:number){
   const jiffServer = new JIFFServer(server, { logs: true });
 
   console.log("server is running on port", port);
-  return server
+  return [jiffServer, server]
 }
 
 
 describe('JIFF Arithmetic Operations', () => {
   let jiffClient1:any;
   let jiffClient2:any;
+  let jiffServer:any;
   let server:any;
   var entries: {[key:number]:number} = { 1: 60, 2: 60 };
-  let port:number = 8112
-
-  const options = {
-    party_count: 2,
-    crypto_provider: true,
-  };
+  let computation_id="our-setup-application";
 
   beforeEach(async () => {
-    server = init_server(port)
-    await new Promise(resolve => server.on('listening', resolve)); // Wait for server to be ready
+    // Server Setup
+    let port:number = 8112
+    const servers = init_server(port)
+    jiffServer = servers[0], server = servers[1]
 
+    // Client Setup
     const JIFFClient = require("../../lib/jiff-client.js");
-    const serverAddress = server.address();
+    const serverAddress = jiffServer.address();
     const baseUrl = `http://localhost:${serverAddress.port}`;
+    const options = {
+        party_count: 2,
+        crypto_provider: true,
+      };
 
-    jiffClient1 = new JIFFClient(baseUrl, "our-setup-application", options);
-    jiffClient2 = new JIFFClient(baseUrl, "our-setup-application", options);
-    port += 1
+    jiffClient1 = new JIFFClient(baseUrl, computation_id, options);
+    jiffClient2 = new JIFFClient(baseUrl, computation_id, options);
   });
 
   afterEach(async () => {
-    await new Promise((resolve, reject) => {
-      server.close((err:any) => {
-          if (err) {
-              console.error('Error closing server:', err);
-              reject(err);
-              return;
-          }
-          resolve(console.log('Server closed'));
-      });
+    // Shutting Server
+    const socket = jiffServer.socketMaps;
+    console.log(socket)
+    if (socket) {
+       socket.disconnect(true); // Disconnect the socket
+    }
+    jiffServer.freeComputation(computation_id);
+    await server.close(() => {
+        console.log('Server has been closed');
     });
   });
 
