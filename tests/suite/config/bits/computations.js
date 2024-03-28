@@ -4,7 +4,7 @@ var baseComputations = require('../../computations.js');
 var testConfig;
 
 baseComputations.preprocessing_function_map = {
-  'decomposition': 'bit_decomposition',
+  decomposition: 'bit_decomposition',
   // constant comparison
   'c<': 'bits.clt',
   'c<=': 'bits.clteq',
@@ -38,7 +38,7 @@ baseComputations.preprocessing_function_map = {
 
 // How to interpret non-MPC operations
 baseComputations.openInterpreter = {
-  'decomposition': function (operand1) {
+  decomposition: function (operand1) {
     return operand1; // decomposition -> is a no-op
   },
   '+': function (operand1, operand2) {
@@ -123,21 +123,21 @@ var curryCombinator = function (opName, attr, flipOperands) {
     if (flipOperands !== true) {
       return function (operand1, operand2) {
         return operand1[0].jiff.protocols.bits[opName](operand1, operand2);
-      }
+      };
     } else {
       return function (operand1, operand2) {
         return operand1[0].jiff.protocols.bits[opName](operand2, operand1);
-      }
+      };
     }
   } else {
     if (flipOperands !== true) {
       return function (operand1, operand2) {
         return operand1[0].jiff.protocols.bits[opName](operand1, operand2)[attr];
-      }
+      };
     } else {
       return function (operand1, operand2) {
         return operand1[0].jiff.protocols.bits[opName](operand2, operand1)[attr];
-      }
+      };
     }
   }
 };
@@ -169,7 +169,7 @@ baseComputations.mpcInterpreter = {
   '%c': curryCombinator('cdivl', 'remainder'),
   'c/': curryCombinator('cdivr', 'quotient', true),
   'c%': curryCombinator('cdivr', 'remainder', true),
-  'decomposition': function (operand1) {
+  decomposition: function (operand1) {
     return operand1;
   }
 };
@@ -198,7 +198,7 @@ baseComputations.shareHook = function (jiff_instance, test, testInputs, input, t
     for (i = 0; i < senders.length; i++) {
       var sender = senders[i];
       input = testInputs[sender];
-      bitLength = testInputs['_length'+sender];
+      bitLength = testInputs['_length' + sender];
       if (bitLength == null) {
         bitLength = input.toString(2).length;
       }
@@ -230,14 +230,18 @@ baseComputations.openHook = function (jiff_instance, test, share) {
 baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
   if (test === '-' || test === 'c-' || test === '-c') {
     if (mpcResult.toString(2).charAt(0) === '1' && expectedResult < 0) {
-      var twosComplement = mpcResult.toString(2).split('').map(function (bit) {
-        return bit === '1' ? '0' : '1';
-      }).join('');
+      var twosComplement = mpcResult
+        .toString(2)
+        .split('')
+        .map(function (bit) {
+          return bit === '1' ? '0' : '1';
+        })
+        .join('');
       mpcResult = -1 * (parseInt(twosComplement, 2) + 1);
     }
   }
 
-  return (mpcResult.toString() === expectedResult.toString());
+  return mpcResult.toString() === expectedResult.toString();
 };
 
 // Pre-processing
@@ -266,14 +270,14 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
       if (bitLengthRight == null) {
         bitLengthRight = inputs[t][2].toString(2).length;
       }
-      paramsList.push({bitLengthLeft: bitLengthLeft, bitLengthRight: bitLengthRight});
+      paramsList.push({ bitLengthLeft: bitLengthLeft, bitLengthRight: bitLengthRight });
     }
 
     return { operation: operation, op_count: 1, Zp: jiff_instance.Zp, paramsList: paramsList, open_count: open_count };
   }
 
   var singleTestCount = Object.keys(inputs[0]).length;
-  singleTestCount = singleTestCount > 1 ? (singleTestCount - 1) : singleTestCount;
+  singleTestCount = singleTestCount > 1 ? singleTestCount - 1 : singleTestCount;
   var count = inputs.length * singleTestCount;
   var params = {};
   var decomposition_count = null;
@@ -293,7 +297,8 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
   if (testConfig['share'] === 'bits.share') {
     var max = testConfig['options']['max'] || jiff_instance.Zp;
     params['bitLength'] = max.toString(2).length;
-    if (max.toString(2).lastIndexOf(1) === 0) { // power of 2
+    if (max.toString(2).lastIndexOf(1) === 0) {
+      // power of 2
       params['bitLength']--;
     }
   }
@@ -311,7 +316,7 @@ baseComputations.preProcessingParams = function (jiff_instance, test, inputs, te
   return {
     operation: operation,
     op_count: count,
-    paramsList: [ params ],
+    paramsList: [params],
     Zp: jiff_instance.Zp,
     decomposition_count: decomposition_count,
     open_count: open_count
@@ -324,19 +329,33 @@ baseComputations.preprocess = function (jiff_instance, test, inputs, testConfig,
   // Preprocessing for main operations
   if (preprocessingParams['operation'] != null) {
     for (var i = 0; i < preprocessingParams['paramsList'].length; i++) {
-      jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['op_count'],
-        preprocessingParams['protocols'], preprocessingParams['threshold'],
-        preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-        preprocessingParams['id_list'], preprocessingParams['paramsList'][i]);
+      jiff_instance.preprocessing(
+        preprocessingParams['operation'],
+        preprocessingParams['op_count'],
+        preprocessingParams['protocols'],
+        preprocessingParams['threshold'],
+        preprocessingParams['receivers_list'],
+        preprocessingParams['compute_list'],
+        preprocessingParams['Zp'],
+        preprocessingParams['id_list'],
+        preprocessingParams['paramsList'][i]
+      );
     }
   }
 
   // Perform any necessary preprocessing for decomposition
   if (preprocessingParams['decomposition_count'] != null) {
-    jiff_instance.preprocessing('bit_decomposition', preprocessingParams['decomposition_count'],
-      preprocessingParams['protocols'], preprocessingParams['threshold'],
-      preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-      preprocessingParams['id_list'], preprocessingParams['params']);
+    jiff_instance.preprocessing(
+      'bit_decomposition',
+      preprocessingParams['decomposition_count'],
+      preprocessingParams['protocols'],
+      preprocessingParams['threshold'],
+      preprocessingParams['receivers_list'],
+      preprocessingParams['compute_list'],
+      preprocessingParams['Zp'],
+      preprocessingParams['id_list'],
+      preprocessingParams['params']
+    );
   }
 
   // Perform any needed preprocessing for open
@@ -347,10 +366,17 @@ baseComputations.preprocess = function (jiff_instance, test, inputs, testConfig,
       copy['bitLength'] = testConfig['output_length'];
     }
 
-    jiff_instance.preprocessing(open_type, preprocessingParams['open_count'],
-      preprocessingParams['protocols'], preprocessingParams['threshold'],
-      preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-      preprocessingParams['id_list'], copy);
+    jiff_instance.preprocessing(
+      open_type,
+      preprocessingParams['open_count'],
+      preprocessingParams['protocols'],
+      preprocessingParams['threshold'],
+      preprocessingParams['receivers_list'],
+      preprocessingParams['compute_list'],
+      preprocessingParams['Zp'],
+      preprocessingParams['id_list'],
+      copy
+    );
   }
 
   // finish preprocessing

@@ -56,7 +56,11 @@ baseGeneration.generateMultiple = function (test, options, max, factor) {
 };
 baseGeneration.generateDividend = function (test, options, max, divisor) {
   var max1 = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits, max);
-  var max2 = new BigNumber(10).pow(options.integer_digits + options.decimal_digits).times(divisor).abs().floor();
+  var max2 = new BigNumber(10)
+    .pow(options.integer_digits + options.decimal_digits)
+    .times(divisor)
+    .abs()
+    .floor();
   max = max1.lt(max2) ? max1 : max2;
   var wholeNum = BigNumber.random().times(max).floor();
   var deciNum = wholeNum.div(new BigNumber(10).pow(options.decimal_digits));

@@ -1,8 +1,8 @@
 {
-  "tests": [ "+", "-", "*", "|", "^", "cdivfac", "/" ],
+  "tests": ["+", "-", "*", "|", "^", "cdivfac", "/"],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ "bigNumber", "fixedpoint" ],
+    "extensions": ["bigNumber", "fixedpoint"],
     "generation": {
       "file": "config/fixedpoint/generation.js",
       "function": "generateConstantArithmeticInputs"
@@ -37,9 +37,7 @@
         "warn": false,
         "safemod": false
       },
-      "inputs": [
-        {"1": 320, "constant": 32}
-      ]
+      "inputs": [{ "1": 320, "constant": 32 }]
     },
     "*": {
       "count": 5,
@@ -50,9 +48,7 @@
         "decimal_digits": 1,
         "integer_digits": 3
       },
-      "inputs": [
-        {"1": 311.2, "constant": 8}
-      ]
+      "inputs": [{ "1": 311.2, "constant": 8 }]
     },
     "/": {
       "count": 4,
@@ -64,9 +60,7 @@
         "decimal_digits": 2,
         "crypto_provider": true
       },
-      "inputs": [
-        {"1": 81.89 ,"constant": 11}
-      ]
+      "inputs": [{ "1": 81.89, "constant": 11 }]
     }
   }
 }

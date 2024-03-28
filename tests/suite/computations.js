@@ -14,9 +14,9 @@ exports.preprocessing_function_map = {
     '==': 'ceq',
     '!=': 'cneq',
     '/': 'cdiv',
-    'cdivfac': 'cdivfac',
+    cdivfac: 'cdivfac',
     '*': 'cmult',
-    'cpow': 'cpow'
+    cpow: 'cpow'
   },
   secret: {
     '*': 'smult',
@@ -31,8 +31,8 @@ exports.preprocessing_function_map = {
     '!=': 'sneq',
     '/': 'sdiv',
     '%': 'smod',
-    'abs': 'abs',
-    'floor': 'floor'
+    abs: 'abs',
+    floor: 'floor'
   }
 };
 
@@ -95,10 +95,10 @@ exports.mpcInterpreter = {
   '/': function (operand1, operand2) {
     return operand1.div(operand2);
   },
-  'cdivfac': function (operand1, operand2) {
+  cdivfac: function (operand1, operand2) {
     return operand1.cdivfac(operand2);
   },
-  '%' : function (operand1, operand2) {
+  '%': function (operand1, operand2) {
     return operand1.smod(operand2);
   },
   '<': function (operand1, operand2) {
@@ -122,7 +122,7 @@ exports.mpcInterpreter = {
   '!': function (operand1) {
     return operand1.not();
   },
-  'cpow': function (operand1, operand2) {
+  cpow: function (operand1, operand2) {
     return operand1.cpow(operand2);
   }
 };
@@ -150,10 +150,10 @@ exports.openInterpreter = {
   '/': function (operand1, operand2) {
     return Math.floor(operand1 / operand2);
   },
-  'cdivfac': function (operand1, operand2) {
+  cdivfac: function (operand1, operand2) {
     return exports.openInterpreter['/'](operand1, operand2);
   },
-  '%' : function (operand1, operand2) {
+  '%': function (operand1, operand2) {
     return exports.mod(operand1, operand2);
   },
   '<': function (operand1, operand2) {
@@ -174,10 +174,10 @@ exports.openInterpreter = {
   '!=': function (operand1, operand2) {
     return Number(operand1 !== operand2);
   },
-  '!' : function (operand1) {
+  '!': function (operand1) {
     return (operand1 + 1) % 2;
   },
-  'cpow': function (operand1, operand2) {
+  cpow: function (operand1, operand2) {
     var result = 1;
     for (var i = 0; i < operand2; i++) {
       result = exports.mod(result * operand1, Zp);
@@ -187,7 +187,7 @@ exports.openInterpreter = {
 };
 
 exports.verifyResultHook = function (test, mpcResult, expectedResult) {
-  return (mpcResult.toString() === expectedResult.toString());
+  return mpcResult.toString() === expectedResult.toString();
 };
 
 exports.shareHook = function (jiff_instance, test, testInputs, input, threshold, receivers, senders) {
@@ -249,7 +249,8 @@ exports.singleTest = async function (jiff_instance, test, testInputs) {
     // Share for MPC
     var shareParameters = exports.shareParameters(jiff_instance, test, testInputs);
     var shares = exports.shareHook(jiff_instance, test, testInputs, shareParameters.input, shareParameters.threshold, shareParameters.receivers, shareParameters.senders, shareParameters);
-    if (shares == null) { // this party should not do anything
+    if (shares == null) {
+      // this party should not do anything
       return null;
     }
     shares['constant'] = shareParameters.constant;
@@ -306,7 +307,8 @@ exports.batch = async function (jiff_instance, test, testParallel, inputs, done,
     var exception;
     if (errors.length > 0) {
       exception = Error('Failed Test: ' + test + '\n\t' + errors.join('\n\t'));
-    } if (testConfig['debug'] === true) {
+    }
+    if (testConfig['debug'] === true) {
       console.log('Succeeded: ' + test + '\n\t' + successes.join('\n\t'));
     }
     done(exception);
@@ -350,7 +352,7 @@ exports.preProcessingParams = function (jiff_instance, test, inputs, testConfig)
     threshold: threshold,
     open_count: open_count,
     params: params
-  }
+  };
 };
 
 exports.started = 0;
@@ -365,17 +367,31 @@ exports.preprocess = function (jiff_instance, test, inputs, testConfig, preproce
   // Perform preprocessing
   if (preprocessingParams['operation'] != null) {
     for (var i = 0; i < preprocessingParams['params'].length; i++) {
-      jiff_instance.preprocessing(preprocessingParams['operation'], preprocessingParams['op_count'],
-        preprocessingParams['protocols'], preprocessingParams['threshold'],
-        preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-        preprocessingParams['id_list'], preprocessingParams['params'][i]);
+      jiff_instance.preprocessing(
+        preprocessingParams['operation'],
+        preprocessingParams['op_count'],
+        preprocessingParams['protocols'],
+        preprocessingParams['threshold'],
+        preprocessingParams['receivers_list'],
+        preprocessingParams['compute_list'],
+        preprocessingParams['Zp'],
+        preprocessingParams['id_list'],
+        preprocessingParams['params'][i]
+      );
     }
   }
 
-  jiff_instance.preprocessing('open', preprocessingParams['open_count'],
-    preprocessingParams['protocols'], preprocessingParams['threshold'],
-    preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-    preprocessingParams['id_list'], preprocessingParams['open_params']);
+  jiff_instance.preprocessing(
+    'open',
+    preprocessingParams['open_count'],
+    preprocessingParams['protocols'],
+    preprocessingParams['threshold'],
+    preprocessingParams['receivers_list'],
+    preprocessingParams['compute_list'],
+    preprocessingParams['Zp'],
+    preprocessingParams['id_list'],
+    preprocessingParams['open_params']
+  );
 
   return new Promise(function (resolve) {
     jiff_instance.executePreprocessing(function () {

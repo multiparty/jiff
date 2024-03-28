@@ -16,7 +16,7 @@ baseComputations.shareParameters = function (jiff_instance, test, testInputs) {
     threshold: threshold,
     receivers: receivers,
     senders: senders
-  }
+  };
 };
 
 baseComputations.shareHook = function (jiff_instance, test, testInputs, input, threshold, receivers, senders, shareParameters) {
@@ -30,7 +30,7 @@ baseComputations.shareHook = function (jiff_instance, test, testInputs, input, t
     // re-share all shares according to new holders and threshold
     for (var si = 0; si < senders.length; si++) {
       var sender = senders[si];
-      shares[sender] = jiff_instance.reshare(shares[sender], shareParameters.threshold, shareParameters.receivers, receivers)
+      shares[sender] = jiff_instance.reshare(shares[sender], shareParameters.threshold, shareParameters.receivers, receivers);
     }
   }
 
@@ -74,7 +74,7 @@ baseComputations.openHook = function (jiff_instance, test, promise) {
 };
 
 baseComputations.errorMessage = function (jiff_instance, test, testInputs, shareParameters, mpcResult, expectedResult) {
-  var msg = 'party id '+ jiff_instance.id +': ';
+  var msg = 'party id ' + jiff_instance.id + ': ';
   msg += 'senders: [ ' + shareParameters.senders.join(', ') + ' ]. ';
   msg += 'receivers: [ ' + shareParameters.receivers.join(', ') + ' ]. ';
   msg += '!= ' + mpcResult.toString() + ' ----- Expected ' + expectedResult.toString() + '. ';
@@ -83,7 +83,7 @@ baseComputations.errorMessage = function (jiff_instance, test, testInputs, share
 };
 
 baseComputations.successMessage = function (jiff_instance, test, testInputs, shareParameters, mpcResult, expectedResult) {
-  var msg = 'party id '+ jiff_instance.id +': ';
+  var msg = 'party id ' + jiff_instance.id + ': ';
   msg += 'senders: [ ' + shareParameters.senders.join(', ') + ' ]. ';
   msg += 'receivers: [ ' + shareParameters.receivers.join(', ') + ' ]. ';
   msg += '= ' + mpcResult.toString() + ' = ' + expectedResult.toString() + '. ';
@@ -109,7 +109,7 @@ baseComputations.preprocess = function (jiff_instance, test, inputs) {
     }
 
     // every receiver performs an open to all sender for all shares it received with the given threshold!
-    jiff_instance.preprocessing('open', senders.length, null, threshold, receivers, senders, null, null, {open_parties: senders});
+    jiff_instance.preprocessing('open', senders.length, null, threshold, receivers, senders, null, null, { open_parties: senders });
   }
 
   return new Promise(function (resolve) {

@@ -25,7 +25,7 @@ exports.createInstances = function (party_count, port, computation_id, options, 
     if (ext == null) {
       ext = [];
     }
-    for (var e = 0 ; e < ext.length; e++) {
+    for (var e = 0; e < ext.length; e++) {
       if (ext[e] == null) {
         console.log('could not find extension ' + e);
         continue;

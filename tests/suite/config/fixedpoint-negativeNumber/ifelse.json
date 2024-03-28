@@ -1,8 +1,8 @@
 {
-  "tests": [ "sif_else", "s1if_else", "s2if_else", "cif_else" ],
+  "tests": ["sif_else", "s1if_else", "s2if_else", "cif_else"],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ "bigNumber", "fixedpoint", "negativeNumber" ],
+    "extensions": ["bigNumber", "fixedpoint", "negativeNumber"],
     "generation": {
       "file": "config/fixedpoint-negativeNumber/generation.js",
       "function": "generateIfElseInputs"

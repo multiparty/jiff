@@ -18,9 +18,10 @@ var oldConstantArithmeticInputs = baseGeneration.generateConstantArithmeticInput
 baseGeneration.generateArithmeticInputs = function (test, count, options) {
   if (test !== '-') {
     var result = oldArithmeticInputs(test, count, options);
-    if (test === '*') { // only a single multiplication
+    if (test === '*') {
+      // only a single multiplication
       for (var r = 0; r < result.length; r++) {
-        result[r] = {1: result[r][1], 2: result[r][2]};
+        result[r] = { 1: result[r][1], 2: result[r][2] };
       }
     }
     return result;
@@ -32,7 +33,7 @@ baseGeneration.generateArithmeticInputs = function (test, count, options) {
   for (var t = 0; t < count; t++) {
     // First input is free
     var aggregate = baseGeneration.generateUniform(test, options, max);
-    var oneInput = {1: aggregate};
+    var oneInput = { 1: aggregate };
 
     // Other inputs must never cause negative numbers
     for (var p = 2; p < party_count; p++) {
@@ -71,7 +72,7 @@ baseGeneration.generateConstantArithmeticInputs = function (test, count, options
 baseGeneration.generateLengthsArithmeticInputs = function (test, count, options) {
   var result = baseGeneration.generateArithmeticInputs(test, count, options);
   for (var r = 0; r < result.length; r++) {
-    result[r] = {1: result[r][1], 2: result[r][2]};
+    result[r] = { 1: result[r][1], 2: result[r][2] };
   }
   return result;
 };
