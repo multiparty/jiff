@@ -1,7 +1,24 @@
 {
-  "tests": [ "rejection(3)-127", "rejection(3)-128", "rejection(3)-128-ondemand", "rejection(3)-129", "rejection(3)-161-provider", "rejection(3)-161-ondemand",
-             "rejection(3)-100-200", "rejection(2)-2048", "rejection(2)-1-2049", "rejection(2)-1-2049-ondemand", "rejection(2)-5-1000000", "rejection(2)-16777729",
-             "rejection(2)-16777729-provider", "rejection(2)-1", "rejection(2)-1-provider", "rejection(5)-1", "rejection(5)-1-provider", "rejection(5)-1-ondemand" ],
+  "tests": [
+    "rejection(3)-127",
+    "rejection(3)-128",
+    "rejection(3)-128-ondemand",
+    "rejection(3)-129",
+    "rejection(3)-161-provider",
+    "rejection(3)-161-ondemand",
+    "rejection(3)-100-200",
+    "rejection(2)-2048",
+    "rejection(2)-1-2049",
+    "rejection(2)-1-2049-ondemand",
+    "rejection(2)-5-1000000",
+    "rejection(2)-16777729",
+    "rejection(2)-16777729-provider",
+    "rejection(2)-1",
+    "rejection(2)-1-provider",
+    "rejection(5)-1",
+    "rejection(5)-1-provider",
+    "rejection(5)-1-ondemand"
+  ],
   "suiteConf": {
     "port": 3001,
     "computation": {
@@ -18,18 +35,7 @@
         "Zp": 11,
         "party_count": 3
       },
-      "inputs": [
-        {"upper": 127},
-        {"upper": 127},
-        {"upper": 127},
-        {"upper": 127},
-        {"upper": 127},
-        {"upper": 127},
-        {"upper": 127},
-        {"upper": 127},
-        {"upper": 127},
-        {"upper": 127}
-      ]
+      "inputs": [{ "upper": 127 }, { "upper": 127 }, { "upper": 127 }, { "upper": 127 }, { "upper": 127 }, { "upper": 127 }, { "upper": 127 }, { "upper": 127 }, { "upper": 127 }, { "upper": 127 }]
     },
     "rejection(3)-128": {
       "alias": "rejection",
@@ -38,18 +44,7 @@
         "Zp": 11,
         "party_count": 3
       },
-      "inputs": [
-        {"upper": 128},
-        {"upper": 128},
-        {"upper": 128},
-        {"upper": 128},
-        {"upper": 128},
-        {"upper": 128},
-        {"upper": 128},
-        {"upper": 128},
-        {"upper": 128},
-        {"upper": 128}
-      ]
+      "inputs": [{ "upper": 128 }, { "upper": 128 }, { "upper": 128 }, { "upper": 128 }, { "upper": 128 }, { "upper": 128 }, { "upper": 128 }, { "upper": 128 }, { "upper": 128 }, { "upper": 128 }]
     },
     "rejection(3)-128-ondemand": {
       "alias": "rejection",
@@ -60,9 +55,9 @@
         "ondemand": true
       },
       "inputs": [
-        {"lower": 0, "upper": 128},
-        {"lower": 0, "upper": 128},
-        {"lower": 0, "upper": 128}
+        { "lower": 0, "upper": 128 },
+        { "lower": 0, "upper": 128 },
+        { "lower": 0, "upper": 128 }
       ]
     },
     "rejection(3)-129": {
@@ -72,18 +67,7 @@
         "Zp": 11,
         "party_count": 3
       },
-      "inputs": [
-        {"upper": 129},
-        {"upper": 129},
-        {"upper": 129},
-        {"upper": 129},
-        {"upper": 129},
-        {"upper": 129},
-        {"upper": 129},
-        {"upper": 129},
-        {"upper": 129},
-        {"upper": 129}
-      ]
+      "inputs": [{ "upper": 129 }, { "upper": 129 }, { "upper": 129 }, { "upper": 129 }, { "upper": 129 }, { "upper": 129 }, { "upper": 129 }, { "upper": 129 }, { "upper": 129 }, { "upper": 129 }]
     },
     "rejection(3)-161-provider": {
       "alias": "rejection",
@@ -93,11 +77,7 @@
         "party_count": 3,
         "crypto_provider": true
       },
-      "inputs": [
-        {"upper": 161},
-        {"upper": 161},
-        {"upper": 161}
-      ]
+      "inputs": [{ "upper": 161 }, { "upper": 161 }, { "upper": 161 }]
     },
     "rejection(3)-161-ondemand": {
       "alias": "rejection",
@@ -108,9 +88,9 @@
         "ondemand": true
       },
       "inputs": [
-        {"lower": 0, "upper": 161},
-        {"lower": 0, "upper": 161},
-        {"lower": 0, "upper": 161}
+        { "lower": 0, "upper": 161 },
+        { "lower": 0, "upper": 161 },
+        { "lower": 0, "upper": 161 }
       ]
     },
     "rejection(3)-100-200": {
@@ -121,16 +101,16 @@
         "party_count": 3
       },
       "inputs": [
-        {"upper": 200, "lower": 100},
-        {"upper": 200, "lower": 100},
-        {"upper": 200, "lower": 100},
-        {"upper": 200, "lower": 100},
-        {"upper": 200, "lower": 100},
-        {"upper": 200, "lower": 100},
-        {"upper": 200, "lower": 100},
-        {"upper": 200, "lower": 100},
-        {"upper": 200, "lower": 100},
-        {"upper": 200, "lower": 100}
+        { "upper": 200, "lower": 100 },
+        { "upper": 200, "lower": 100 },
+        { "upper": 200, "lower": 100 },
+        { "upper": 200, "lower": 100 },
+        { "upper": 200, "lower": 100 },
+        { "upper": 200, "lower": 100 },
+        { "upper": 200, "lower": 100 },
+        { "upper": 200, "lower": 100 },
+        { "upper": 200, "lower": 100 },
+        { "upper": 200, "lower": 100 }
       ]
     },
     "rejection(2)-2048": {
@@ -141,16 +121,16 @@
         "party_count": 2
       },
       "inputs": [
-        {"upper": 2048},
-        {"upper": 2048},
-        {"upper": 2048},
-        {"upper": 2048},
-        {"upper": 2048},
-        {"upper": 2048},
-        {"upper": 2048},
-        {"upper": 2048},
-        {"upper": 2048},
-        {"upper": 2048}
+        { "upper": 2048 },
+        { "upper": 2048 },
+        { "upper": 2048 },
+        { "upper": 2048 },
+        { "upper": 2048 },
+        { "upper": 2048 },
+        { "upper": 2048 },
+        { "upper": 2048 },
+        { "upper": 2048 },
+        { "upper": 2048 }
       ]
     },
     "rejection(2)-1-2049": {
@@ -161,13 +141,13 @@
         "party_count": 2
       },
       "inputs": [
-        {"upper": 2049, "lower": 1},
-        {"upper": 2049, "lower": 1},
-        {"upper": 2049, "lower": 1},
-        {"upper": 2049, "lower": 1},
-        {"upper": 2049, "lower": 1},
-        {"upper": 2049, "lower": 1},
-        {"upper": 2049, "lower": 1}
+        { "upper": 2049, "lower": 1 },
+        { "upper": 2049, "lower": 1 },
+        { "upper": 2049, "lower": 1 },
+        { "upper": 2049, "lower": 1 },
+        { "upper": 2049, "lower": 1 },
+        { "upper": 2049, "lower": 1 },
+        { "upper": 2049, "lower": 1 }
       ]
     },
     "rejection(2)-1-2049-ondemand": {
@@ -179,9 +159,9 @@
         "ondemand": true
       },
       "inputs": [
-        {"upper": 2049, "lower": 1},
-        {"upper": 2049, "lower": 1},
-        {"upper": 2049, "lower": 1}
+        { "upper": 2049, "lower": 1 },
+        { "upper": 2049, "lower": 1 },
+        { "upper": 2049, "lower": 1 }
       ]
     },
     "rejection(2)-5-1000000": {
@@ -192,16 +172,16 @@
         "party_count": 2
       },
       "inputs": [
-        {"upper": 1000000, "lower": 5},
-        {"upper": 1000000, "lower": 5},
-        {"upper": 1000000, "lower": 5},
-        {"upper": 1000000, "lower": 5},
-        {"upper": 1000000, "lower": 5},
-        {"upper": 1000000, "lower": 5},
-        {"upper": 1000000, "lower": 5},
-        {"upper": 1000000, "lower": 5},
-        {"upper": 1000000, "lower": 5},
-        {"upper": 1000000, "lower": 5}
+        { "upper": 1000000, "lower": 5 },
+        { "upper": 1000000, "lower": 5 },
+        { "upper": 1000000, "lower": 5 },
+        { "upper": 1000000, "lower": 5 },
+        { "upper": 1000000, "lower": 5 },
+        { "upper": 1000000, "lower": 5 },
+        { "upper": 1000000, "lower": 5 },
+        { "upper": 1000000, "lower": 5 },
+        { "upper": 1000000, "lower": 5 },
+        { "upper": 1000000, "lower": 5 }
       ]
     },
     "rejection(2)-16777729": {
@@ -211,12 +191,7 @@
         "Zp": 16777729,
         "party_count": 2
       },
-      "inputs": [
-        {},
-        {},
-        {},
-        {}
-      ]
+      "inputs": [{}, {}, {}, {}]
     },
     "rejection(2)-16777729-provider": {
       "alias": "rejection",
@@ -227,9 +202,9 @@
         "crypto_provider": true
       },
       "inputs": [
-        {"lower": 0, "upper": 16777729},
-        {"lower": 0, "upper": 16777729},
-        {"lower": 0, "upper": 16777729}
+        { "lower": 0, "upper": 16777729 },
+        { "lower": 0, "upper": 16777729 },
+        { "lower": 0, "upper": 16777729 }
       ]
     },
     "rejection(2)-1": {
@@ -240,9 +215,9 @@
         "party_count": 2
       },
       "inputs": [
-        {"upper": 500, "lower": 499},
-        {"upper": 2, "lower": 1},
-        {"upper": 1, "lower": 0}
+        { "upper": 500, "lower": 499 },
+        { "upper": 2, "lower": 1 },
+        { "upper": 1, "lower": 0 }
       ]
     },
     "rejection(2)-1-provider": {
@@ -254,9 +229,9 @@
         "crypto_provider": true
       },
       "inputs": [
-        {"upper": 500, "lower": 499},
-        {"upper": 2, "lower": 1},
-        {"upper": 1, "lower": 0}
+        { "upper": 500, "lower": 499 },
+        { "upper": 2, "lower": 1 },
+        { "upper": 1, "lower": 0 }
       ]
     },
     "rejection(5)-1": {
@@ -267,9 +242,9 @@
         "party_count": 5
       },
       "inputs": [
-        {"upper": 500, "lower": 499},
-        {"upper": 2, "lower": 1},
-        {"upper": 1, "lower": 0}
+        { "upper": 500, "lower": 499 },
+        { "upper": 2, "lower": 1 },
+        { "upper": 1, "lower": 0 }
       ]
     },
     "rejection(5)-1-provider": {
@@ -281,9 +256,9 @@
         "crypto_provider": true
       },
       "inputs": [
-        {"upper": 500, "lower": 499},
-        {"upper": 2, "lower": 1},
-        {"upper": 1, "lower": 0}
+        { "upper": 500, "lower": 499 },
+        { "upper": 2, "lower": 1 },
+        { "upper": 1, "lower": 0 }
       ]
     },
     "rejection(5)-1-ondemand": {
@@ -295,9 +270,9 @@
         "ondemand": true
       },
       "inputs": [
-        {"upper": 500, "lower": 499},
-        {"upper": 2, "lower": 1},
-        {"upper": 1, "lower": 0}
+        { "upper": 500, "lower": 499 },
+        { "upper": 2, "lower": 1 },
+        { "upper": 1, "lower": 0 }
       ]
     }
   }

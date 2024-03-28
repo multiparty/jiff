@@ -1,8 +1,8 @@
 {
-  "tests": [ "<", "<=", ">", ">=", "==", "!=" ],
+  "tests": ["<", "<=", ">", ">=", "==", "!="],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ "restAPI" ],
+    "extensions": ["restAPI"],
     "generation": {
       "file": "config/base/generation.js",
       "function": "generateConstantComparisonInputs"

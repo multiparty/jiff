@@ -1,5 +1,5 @@
 {
-  "tests": [ "+c", "-c", "c-", "*c", "/c", "%c", "c/", "c%" ],
+  "tests": ["+c", "-c", "c-", "*c", "/c", "%c", "c/", "c%"],
   "suiteConf": {
     "port": 3001,
     "generation": {
@@ -50,8 +50,8 @@
         "party_count": 3
       },
       "inputs": [
-        {"1": 100, "constant": 1},
-        {"1": 20, "constant": 254}
+        { "1": 100, "constant": 1 },
+        { "1": 20, "constant": 254 }
       ]
     },
     "c/": {
@@ -66,9 +66,9 @@
         "party_count": 3
       },
       "inputs": [
-        {"1": 60, "constant": 0},
-        {"1": 52, "constant": 1},
-        {"1": 33, "constant": 2}
+        { "1": 60, "constant": 0 },
+        { "1": 52, "constant": 1 },
+        { "1": 33, "constant": 2 }
       ]
     },
     "%c": {
@@ -82,8 +82,8 @@
         "party_count": 3
       },
       "inputs": [
-        {"1": 100, "constant": 1},
-        {"1": 20, "constant": 254}
+        { "1": 100, "constant": 1 },
+        { "1": 20, "constant": 254 }
       ]
     },
     "c%": {
@@ -92,14 +92,14 @@
       "count": 5,
       "parallel": 2,
       "options": {
-        "Zp":61,
+        "Zp": 61,
         "cmax": 127,
         "party_count": 3
       },
       "inputs": [
-        {"1": 60, "constant": 0},
-        {"1": 52, "constant": 1},
-        {"1": 33, "constant": 2}
+        { "1": 60, "constant": 0 },
+        { "1": 52, "constant": 1 },
+        { "1": 33, "constant": 2 }
       ]
     }
   }

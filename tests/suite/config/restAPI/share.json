@@ -1,8 +1,8 @@
 {
-  "tests": [ "share2", "share3", "share4", "share5", "share10" ],
+  "tests": ["share2", "share3", "share4", "share5", "share10"],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ "restAPI" ],
+    "extensions": ["restAPI"],
     "generation": {
       "file": "config/base/generation.js",
       "function": "generateShareInputs"

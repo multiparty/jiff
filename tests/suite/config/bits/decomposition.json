@@ -1,6 +1,15 @@
 {
-  "tests": [ "decomposition2-127", "decomposition2-16777729", "decomposition3-127", "decomposition3-16777729", "decomposition5-127", "decomposition5-2039",
-             "decomposition-open-2-16777729", "decomposition-open-3-16777729", "decomposition-open-5-2039" ],
+  "tests": [
+    "decomposition2-127",
+    "decomposition2-16777729",
+    "decomposition3-127",
+    "decomposition3-16777729",
+    "decomposition5-127",
+    "decomposition5-2039",
+    "decomposition-open-2-16777729",
+    "decomposition-open-3-16777729",
+    "decomposition-open-5-2039"
+  ],
   "suiteConf": {
     "port": 3001,
     "generation": {

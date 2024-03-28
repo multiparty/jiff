@@ -14,7 +14,7 @@ baseComputations.shareParameters = function (jiff_instance, test, testInputs) {
   if (testInputs['lower'] != null) {
     keys.push('lower');
   }
-  return { input: testInputs, senders: keys};
+  return { input: testInputs, senders: keys };
 };
 baseComputations.shareHook = function (jiff_instance, test, testInputs, input, threshold, receivers, senders) {
   return testInputs;
@@ -38,7 +38,7 @@ baseComputations.openHook = function (jiff_instance, test, share) {
 baseComputations.verifyResultHook = function (test, mpcResult, expectedResult) {
   var lower = expectedResult['lower'] || 0;
   var upper = expectedResult['upper'] || Zp;
-  return (mpcResult >= lower) && (mpcResult < upper) && !Number.isNaN(mpcResult) && typeof(mpcResult) === 'number' && mpcResult !== Infinity;
+  return mpcResult >= lower && mpcResult < upper && !Number.isNaN(mpcResult) && typeof mpcResult === 'number' && mpcResult !== Infinity;
 };
 
 // Pre-processing
@@ -78,16 +78,30 @@ baseComputations.preprocess = function (jiff_instance, test, inputs, testConfig,
   baseComputations.preprocess_start(test);
 
   for (var i = 0; i < preprocessingParams['params'].length; i++) {
-    jiff_instance.preprocessing('rejection_sampling', 1,
-      preprocessingParams['protocols'], preprocessingParams['threshold'],
-      preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-      preprocessingParams['id_list'], preprocessingParams['params'][i]);
+    jiff_instance.preprocessing(
+      'rejection_sampling',
+      1,
+      preprocessingParams['protocols'],
+      preprocessingParams['threshold'],
+      preprocessingParams['receivers_list'],
+      preprocessingParams['compute_list'],
+      preprocessingParams['Zp'],
+      preprocessingParams['id_list'],
+      preprocessingParams['params'][i]
+    );
   }
 
-  jiff_instance.preprocessing('bits.open', preprocessingParams['open_count'],
-    preprocessingParams['protocols'], preprocessingParams['threshold'],
-    preprocessingParams['receivers_list'], preprocessingParams['compute_list'], preprocessingParams['Zp'],
-    preprocessingParams['id_list'], preprocessingParams['open_params']);
+  jiff_instance.preprocessing(
+    'bits.open',
+    preprocessingParams['open_count'],
+    preprocessingParams['protocols'],
+    preprocessingParams['threshold'],
+    preprocessingParams['receivers_list'],
+    preprocessingParams['compute_list'],
+    preprocessingParams['Zp'],
+    preprocessingParams['id_list'],
+    preprocessingParams['open_params']
+  );
 
   return new Promise(function (resolve) {
     jiff_instance.executePreprocessing(function () {

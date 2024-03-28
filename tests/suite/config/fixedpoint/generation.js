@@ -76,7 +76,10 @@ baseGeneration.generateMultiple = function (test, options, max, factor) {
 };
 baseGeneration.generateDividend = function (test, options, max, divisor) {
   var max1 = determineMax(test, options.party_count, options.integer_digits, options.decimal_digits, max);
-  var max2 = new BigNumber(10).pow(options.integer_digits + options.decimal_digits).times(divisor).floor();
+  var max2 = new BigNumber(10)
+    .pow(options.integer_digits + options.decimal_digits)
+    .times(divisor)
+    .floor();
   max = max1.lt(max2) ? max1 : max2;
   var wholeNum = BigNumber.random().times(max).floor();
   return wholeNum.div(new BigNumber(10).pow(options.decimal_digits));
@@ -85,7 +88,6 @@ baseGeneration.generateUniformNatural = function (test, options, max) {
   max = new BigNumber(max);
   return BigNumber.random().times(max).floor();
 };
-
 
 // Override entry points
 var oldArithmetic = baseGeneration.generateArithmeticInputs;

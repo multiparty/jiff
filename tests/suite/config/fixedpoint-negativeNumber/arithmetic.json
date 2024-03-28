@@ -1,8 +1,8 @@
 {
-  "tests": [ "+", "-", "*", "*bgw", "|", "^", "!", "abs", "floor", "/", "%" ],
+  "tests": ["+", "-", "*", "*bgw", "|", "^", "!", "abs", "floor", "/", "%"],
   "suiteConf": {
     "port": 3001,
-    "extensions": [ "bigNumber", "fixedpoint", "negativeNumber" ],
+    "extensions": ["bigNumber", "fixedpoint", "negativeNumber"],
     "generation": {
       "file": "config/fixedpoint-negativeNumber/generation.js",
       "function": "generateArithmeticInputs"
