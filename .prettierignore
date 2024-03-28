@@ -5,3 +5,4 @@ demos
 .circleci
 .github
 .travis.yml
+/dist
