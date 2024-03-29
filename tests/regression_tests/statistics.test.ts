@@ -1,23 +1,3 @@
-function init_server(port: number) {
-  const express = require('express');
-  const app = express();
-  const server = require('http').Server(app);
-
-  app.use('../../dist', express.static('../../dist'));
-  app.use('../../lib/ext', express.static('../../lib/ext'));
-  app.use('/', express.static('../../lib/client'));
-
-  server.listen(port, function () {
-    console.log('Listening on ', port);
-  });
-
-  const JIFFServer = require('../../lib/jiff-server.js');
-  const jiffServer = new JIFFServer(server, { logs: true });
-
-  console.log('server is running on port', port);
-  return [jiffServer, server];
-}
-
 describe('JIFF Statistics Operations', () => {
   var jiffClients: any[] = [];
   var jiffServer: any;
@@ -29,6 +9,7 @@ describe('JIFF Statistics Operations', () => {
   beforeEach(async () => {
     // Server Setup
     let port: number = 8112;
+    const init_server = require('./server');
     const servers = init_server(port);
     (jiffServer = servers[0]), (server = servers[1]);
     await new Promise((resolve) => server.on('listening', resolve)); // Wait for server to be ready
