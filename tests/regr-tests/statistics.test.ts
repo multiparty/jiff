@@ -3,7 +3,7 @@ describe('JIFF Statistics Operations', () => {
   var jiffServer: any;
   var server: any;
   var entries: { [key: number]: number } = { 1: 60, 2: 60, 3: 60, 4: 60 };
-  var computation_id = 'our-setup-application';
+  var computation_id = 'test-stats';
   const party_count = 4;
 
   beforeEach(async () => {

@@ -3,7 +3,7 @@ describe('JIFF Arithmetic Operations', () => {
   var jiffServer: any;
   var server: any;
   var entries: { [key: number]: number } = { 1: 60, 2: 60 };
-  var computation_id = 'our-setup-application';
+  var computation_id = 'test-arithmetics';
   const party_count = 2;
 
   beforeEach(async () => {
@@ -38,9 +38,9 @@ describe('JIFF Arithmetic Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            const input1 = await jiffClient.share(entries[id]);
-            const sec_ttl1 = await input1[1].sadd(input1[2]);
-            const result = await sec_ttl1.open();
+            const input = await jiffClient.share(entries[id]);
+            const sec_ttl = await input[1].sadd(input[2]);
+            const result = await sec_ttl.open();
             resolve(result.toString(10));
           } catch (error) {
             reject(error);
@@ -58,9 +58,9 @@ describe('JIFF Arithmetic Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            const input1 = await jiffClient.share(entries[id]);
-            const sec_ttl1 = await input1[1].ssub(input1[2]);
-            const result = await sec_ttl1.open();
+            const input = await jiffClient.share(entries[id]);
+            const sec_ttl = await input[1].ssub(input[2]);
+            const result = await sec_ttl.open();
             resolve(result.toString(10));
           } catch (error) {
             reject(error);
@@ -78,9 +78,9 @@ describe('JIFF Arithmetic Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            const input1 = await jiffClient.share(entries[id]);
-            const sec_ttl1 = await input1[1].smult(input1[2]);
-            const result = await sec_ttl1.open();
+            const input = await jiffClient.share(entries[id]);
+            const sec_ttl = await input[1].smult(input[2]);
+            const result = await sec_ttl.open();
             resolve(result.toString(10));
           } catch (error) {
             reject(error);
@@ -98,9 +98,9 @@ describe('JIFF Arithmetic Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            const input1 = await jiffClient.share(entries[id]);
-            const sec_ttl1 = await input1[1].sdiv(input1[2]);
-            const result = await sec_ttl1.open();
+            const input = await jiffClient.share(entries[id]);
+            const sec_ttl = await input[1].sdiv(input[2]);
+            const result = await sec_ttl.open();
             resolve(result.toString(10));
           } catch (error) {
             reject(error);
