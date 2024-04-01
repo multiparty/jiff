@@ -60,7 +60,7 @@ describe('JIFF Voting Operations', () => {
       return sanity_flag;
     }
 
-    async function find_most_popular(jiffClient: any, id: number) {
+    async function find_majority_vote(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2, 3], async () => {
           try {
@@ -98,7 +98,7 @@ describe('JIFF Voting Operations', () => {
       });
     }
 
-    const results = await Promise.all(jiffClients.map((client, idx) => find_most_popular(client, idx + 1)));
+    const results = await Promise.all(jiffClients.map((client, idx) => find_majority_vote(client, idx + 1)));
     results.map((res) => expect(res).toEqual('3'));
   }, 15000);
 });
