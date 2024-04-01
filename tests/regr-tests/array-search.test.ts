@@ -10,7 +10,7 @@ describe('JIFF Arithmetic Operations', () => {
 
   beforeEach(async () => {
     // Server Setup
-    let port: number = 8112;
+    var port: number = 8113;
     const init_server = require('./server');
     const servers = init_server(port);
     (jiffServer = servers[0]), (server = servers[1]);
@@ -78,7 +78,7 @@ describe('JIFF Arithmetic Operations', () => {
               const mid = Math.floor(array.length / 2);
               const cmp = await element.slt(array[mid]);
               var nArray = [];
-              for (let i = 0; i < mid; i++) {
+              for (var i = 0; i < mid; i++) {
                 var c1 = array[i];
                 var c2 = array[mid + i];
                 nArray[i] = await cmp.if_else(c1, c2);

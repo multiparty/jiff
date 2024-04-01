@@ -74,8 +74,8 @@ describe('JIFF Voting Operations', () => {
 
             // Aggregating all votes into the array named 'vote'
             var vote = input[1];
-            for (let party = 2; party <= jiffClient.party_count; party++) {
-              for (let idx = 0; idx < vote.lenth; idx++) {
+            for (var party = 2; party <= jiffClient.party_count; party++) {
+              for (var idx = 0; idx < vote.length; idx++) {
                 vote[idx] = await vote[idx].sadd(input[party][idx]);
               }
             }
@@ -83,7 +83,7 @@ describe('JIFF Voting Operations', () => {
             // Check who's got the majority vote
             var majo_idx = 0;
             var curr_max = vote[0];
-            for (let i = 1; i < vote.length; i++) {
+            for (var i = 1; i < vote.length; i++) {
               var iIsMax = await vote[i].sgt(curr_max);
               majo_idx = await iIsMax.if_else(i, majo_idx);
             }
@@ -100,5 +100,5 @@ describe('JIFF Voting Operations', () => {
 
     const results = await Promise.all(jiffClients.map((client, idx) => find_majority_vote(client, idx + 1)));
     results.map((res) => expect(res).toEqual('3'));
-  }, 15000);
+  }, 25000);
 });

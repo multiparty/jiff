@@ -8,7 +8,7 @@ describe('JIFF Arithmetic Operations', () => {
 
   beforeEach(async () => {
     // Server Setup
-    let port: number = 8112;
+    var port: number = 8111;
     const init_server = require('./server');
     const servers = init_server(port);
     (jiffServer = servers[0]), (server = servers[1]);
