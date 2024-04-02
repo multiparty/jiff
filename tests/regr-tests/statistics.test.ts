@@ -10,7 +10,9 @@ describe('JIFF Statistics Operations', () => {
     // Server Setup
     var port: number = 8114;
     const init_server = require('./server');
-    const servers = init_server(port);
+    const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
+    const extensions = [jiff_s_bignumber];
+    const servers = init_server(port, extensions);
     (jiffServer = servers[0]), (server = servers[1]);
     await new Promise((resolve) => server.on('listening', resolve)); // Wait for server to be ready
 

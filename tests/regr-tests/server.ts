@@ -1,4 +1,4 @@
-function init_server(port: number) {
+function init_server(port: number, extensions: any[] = []) {
   const express = require('express');
   const app = express();
   const server = require('http').Server(app);
@@ -13,6 +13,9 @@ function init_server(port: number) {
 
   const JIFFServer = require('../../lib/jiff-server.js');
   const jiffServer = new JIFFServer(server, { logs: true });
+  for (var ext of extensions) {
+    jiffServer.apply_extension(ext);
+  }
 
   console.log('server is running on port', port);
   return [jiffServer, server];
