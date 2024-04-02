@@ -21,7 +21,7 @@ describe('JIFF bitwise Arithmetic Operations', () => {
     const baseUrl = `http://localhost:${port}`;
     const options = {
       party_count: party_count,
-      crypto_provider: true,
+      crypto_provider: true
     };
 
     jiffClients = Array.from({ length: party_count }, () => new JIFFClient(baseUrl, computation_id, options));
@@ -43,7 +43,7 @@ describe('JIFF bitwise Arithmetic Operations', () => {
 
     // Shutting down Server
     await jiffServer.closeAllSockets();
-    await jiffServer.freeComputation(computation_id)
+    await jiffServer.freeComputation(computation_id);
   });
 
   it('should correctly add 120 + 60 + 10(integer) = 190', async () => {
@@ -51,10 +51,10 @@ describe('JIFF bitwise Arithmetic Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            const jiff_bits = await jiffClient.protocols.bits
+            const jiff_bits = await jiffClient.protocols.bits;
             const input = await jiff_bits.share(entries[id]);
-            var sec_ttl = await jiff_bits.sadd(input[1], input[2])
-            sec_ttl = await jiff_bits.cadd(sec_ttl, 10)
+            var sec_ttl = await jiff_bits.sadd(input[1], input[2]);
+            sec_ttl = await jiff_bits.cadd(sec_ttl, 10);
             const result = await jiff_bits.open(sec_ttl);
             resolve(result.toString(10));
           } catch (error) {
@@ -73,11 +73,11 @@ describe('JIFF bitwise Arithmetic Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            const jiff_bits = await jiffClient.protocols.bits
+            const jiff_bits = await jiffClient.protocols.bits;
             const input = await jiff_bits.share(entries[id]);
-            var sec_ttl = await jiff_bits.ssub(input[1], input[2])
-            sec_ttl = await jiff_bits.csubl(sec_ttl, 10)
-            sec_ttl = await jiff_bits.csubr(100, sec_ttl)
+            var sec_ttl = await jiff_bits.ssub(input[1], input[2]);
+            sec_ttl = await jiff_bits.csubl(sec_ttl, 10);
+            sec_ttl = await jiff_bits.csubr(100, sec_ttl);
             const result = await jiff_bits.open(sec_ttl);
             resolve(result.toString(10));
           } catch (error) {

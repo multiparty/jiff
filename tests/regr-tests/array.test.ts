@@ -35,7 +35,10 @@ describe('JIFF Array Operations', () => {
   });
 
   it('should check that 2D Array works with simple arithmetics', async () => {
-    const arrays: number[][] = [[1, 2, 3, 4], [4, 3, 2, 1]]
+    const arrays: number[][] = [
+      [1, 2, 3, 4],
+      [4, 3, 2, 1]
+    ];
     async function array_arithmetics(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
@@ -57,7 +60,7 @@ describe('JIFF Array Operations', () => {
     }
 
     const results = await Promise.all(jiffClients.map((client, idx) => array_arithmetics(client, idx)));
-    results.map((res) => expect(res).toEqual([5,5,5,5]));
+    results.map((res) => expect(res).toEqual([5, 5, 5, 5]));
   });
 
   it('should check that 4 exists in the input array, using linear search', async () => {

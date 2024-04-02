@@ -45,7 +45,7 @@ describe('JIFF Arithmetic Operations', () => {
 
     // Shutting down Server
     await jiffServer.closeAllSockets();
-    await jiffServer.freeComputation(computation_id)
+    await jiffServer.freeComputation(computation_id);
   });
 
   it('should correctly add 60.05 + 60.05 = 121', async () => {
