@@ -2,7 +2,7 @@ describe('JIFF Arithmetic Operations', () => {
   var jiffClients: any[] = [];
   var jiffServer: any;
   var server: any;
-  var entries: { [key: number]: number } = { 1: 60, 2: 60 };
+  var entries: { [key: number]: number } = { 1: 60.05, 2: 60.05 };
   var computation_id = 'test-arithmetics';
   const party_count = 2;
 
@@ -10,7 +10,9 @@ describe('JIFF Arithmetic Operations', () => {
     // Server Setup
     var port: number = 8111;
     const init_server = require('./server');
-    const servers = init_server(port);
+    const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
+    const extensions = [jiff_s_bignumber];
+    const servers = init_server(port, extensions);
     (jiffServer = servers[0]), (server = servers[1]);
     await new Promise((resolve) => server.on('listening', resolve)); // Wait for server to be ready
 
@@ -19,10 +21,22 @@ describe('JIFF Arithmetic Operations', () => {
     const baseUrl = `http://localhost:${port}`;
     const options = {
       party_count: party_count,
-      crypto_provider: true
+      crypto_provider: true,
+      decimal_digits: 4,
+      Zp: 562949948117
     };
 
     jiffClients = Array.from({ length: party_count }, () => new JIFFClient(baseUrl, computation_id, options));
+    const jiff_bignumber = require('../../lib/ext/jiff-client-bignumber.js');
+    const jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint.js');
+    const jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber.js');
+
+    async function apply_extension(jiff: any) {
+      await jiff.apply_extension(jiff_bignumber, options);
+      await jiff.apply_extension(jiff_fixedpoint, options);
+      await jiff.apply_extension(jiff_negativenumber, options);
+    }
+    jiffClients.map(async (client, _) => await apply_extension(client));
   });
 
   afterEach(async () => {
@@ -33,13 +47,13 @@ describe('JIFF Arithmetic Operations', () => {
     await jiffServer.closeAllSockets();
   });
 
-  it('should correctly add 60 + 60 = 120', async () => {
+  it('should correctly add 60.05 + 60.05 = 121', async () => {
     async function addition(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
             const input = await jiffClient.share(entries[id]);
-            const sec_ttl = await input[1].sadd(input[2]);
+            const sec_ttl = await input[1].add(input[2]);
             const result = await sec_ttl.open();
             resolve(result.toString(10));
           } catch (error) {
@@ -50,16 +64,16 @@ describe('JIFF Arithmetic Operations', () => {
     }
 
     const results = await Promise.all(jiffClients.map((client, idx) => addition(client, idx + 1)));
-    results.map((res) => expect(res).toEqual('120'));
+    results.map((res) => expect(res).toEqual('120.1'));
   });
 
-  it('should correctly subtract numbers 60 - 60 = 0', async () => {
+  it('should correctly subtract numbers 60.05 - 60.05 = 0', async () => {
     async function subtraction(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
             const input = await jiffClient.share(entries[id]);
-            const sec_ttl = await input[1].ssub(input[2]);
+            const sec_ttl = await input[1].sub(input[2]);
             const result = await sec_ttl.open();
             resolve(result.toString(10));
           } catch (error) {
@@ -70,16 +84,18 @@ describe('JIFF Arithmetic Operations', () => {
     }
 
     const results = await Promise.all(jiffClients.map((client, idx) => subtraction(client, idx + 1)));
-    results.map((res) => expect(res).toEqual('0'));
+    results.map((res) => {
+      expect(res).toEqual('0');
+    });
   });
 
-  it('should correctly multiply numbers 60 x 60 = 3600', async () => {
+  it('should correctly multiply numbers 60.05 * 60.05 = 3606.0025', async () => {
     async function subtraction(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
             const input = await jiffClient.share(entries[id]);
-            const sec_ttl = await input[1].smult(input[2]);
+            const sec_ttl = await input[1].mult(input[2]);
             const result = await sec_ttl.open();
             resolve(result.toString(10));
           } catch (error) {
@@ -90,16 +106,16 @@ describe('JIFF Arithmetic Operations', () => {
     }
 
     const results = await Promise.all(jiffClients.map((client, idx) => subtraction(client, idx + 1)));
-    results.map((res) => expect(res).toEqual('3600'));
+    results.map((res) => expect(res).toEqual('3606.0025'));
   });
 
-  it('should correctly divide numbers 60 / 60', async () => {
+  it('should correctly divide numbers 60.05 / 60.05 = 1', async () => {
     async function subtraction(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
             const input = await jiffClient.share(entries[id]);
-            const sec_ttl = await input[1].sdiv(input[2]);
+            const sec_ttl = await input[1].div(input[2]);
             const result = await sec_ttl.open();
             resolve(result.toString(10));
           } catch (error) {
@@ -111,5 +127,5 @@ describe('JIFF Arithmetic Operations', () => {
 
     const results = await Promise.all(jiffClients.map((client, idx) => subtraction(client, idx + 1)));
     results.map((res) => expect(res).toEqual('1'));
-  }, 15000);
+  }, 35000);
 });

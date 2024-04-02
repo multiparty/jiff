@@ -1,11 +1,11 @@
 //Inner Product?
-describe('JIFF Arithmetic Operations', () => {
+describe('JIFF Array Search Operations', () => {
   var jiffClients: any[] = [];
   var jiffServer: any;
   var server: any;
   const entries: number[] = [1, 4, 8, 10, 12, 16, 17, 23, 29];
   const input: number = 4;
-  const computation_id = 'test-2D-array';
+  const computation_id = 'test-array-search';
   const party_count = 2;
 
   beforeEach(async () => {
@@ -44,11 +44,11 @@ describe('JIFF Arithmetic Operations', () => {
             const array = inputs[1];
             const element = inputs[2];
 
-            var occurrences = array[0].seq(element); // check equality for the first element
+            var occurrences = await array[0].eq(element); // check equality for the first element
             for (var i = 1; i < array.length; i++) {
-              occurrences = await occurrences.sadd(array[i].seq(element));
+              occurrences = await occurrences.add(array[i].eq(element));
             }
-            const result = await jiffClient.open(occurrences.cgteq(1)); // check number of occurrences >= 1
+            const result = await jiffClient.open(occurrences.gteq(1)); // check number of occurrences >= 1
             resolve(result.toString(10));
           } catch (error) {
             reject(error);
@@ -72,11 +72,11 @@ describe('JIFF Arithmetic Operations', () => {
 
             async function _bin_search(array: any[], element: any) {
               if (array.length == 1) {
-                return await array[0].seq(element);
+                return await array[0].eq(element);
               }
 
               const mid = Math.floor(array.length / 2);
-              const cmp = await element.slt(array[mid]);
+              const cmp = await element.lt(array[mid]);
               var nArray = [];
               for (var i = 0; i < mid; i++) {
                 var c1 = array[i];
@@ -90,7 +90,7 @@ describe('JIFF Arithmetic Operations', () => {
             }
 
             const occurrences = await _bin_search(array, element);
-            const result = await jiffClient.open(occurrences.cgteq(1)); // check number of occurrences >= 1
+            const result = await jiffClient.open(occurrences.gteq(1)); // check number of occurrences >= 1
             resolve(result.toString(10));
           } catch (error) {
             reject(error);

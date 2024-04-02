@@ -43,7 +43,7 @@ describe('JIFF Preprocessing Operations', () => {
     await jiffServer.closeAllSockets();
   });
 
-  it('should correctly preprocess inner product of the input array and return 329', async () => {
+  it('should correctly preprocess inner product of the input array and return 329.59', async () => {
     async function innerprod(jiffClient: any, id: number) {
       await jiffClient.preprocessing('smult', entries[id].length, null, null, null, null, null, null, { div: false });
       await jiffClient.preprocessing('open', 1);
@@ -55,9 +55,9 @@ describe('JIFF Preprocessing Operations', () => {
               const input = await jiffClient.share_array(entries[id], null, 3, [1, 2, 3], [1, 2]);
               var array1 = input[1];
               var array2 = input[2];
-              sec_ttl = await array1[0].smult(array2[0], null, false);
+              sec_ttl = await array1[0].mult(array2[0], null, false);
               for (var i = 1; i < array1.length; i++) {
-                sec_ttl = await sec_ttl.sadd(await array1[i].smult(array2[i], null, false));
+                sec_ttl = await sec_ttl.add(await array1[i].mult(array2[i], null, false));
               }
               const result = await sec_ttl.open();
               resolve(result.toString(10));
@@ -70,6 +70,6 @@ describe('JIFF Preprocessing Operations', () => {
     }
 
     const results = await Promise.all(jiffClients.map((client, idx) => innerprod(client, idx + 1)));
-    results.map((res) => expect(res).toEqual('32959.19')); // requires division by 100 to return accurate innerprod
+    results.map((res) => expect(res).toEqual('329.59'));
   });
 });

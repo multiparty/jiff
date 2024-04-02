@@ -1,4 +1,4 @@
-describe('JIFF Voting Operations', () => {
+describe('JIFF Voting', () => {
   var jiffClients: any[] = [];
   var jiffServer: any;
   var server: any;
@@ -45,18 +45,18 @@ describe('JIFF Voting Operations', () => {
       // first check: if sum of values in an array/share = 1
       var sum = shares[0];
       for (var i = 1; i < shares.length; i++) {
-        sum = await sum.sadd(shares[i]);
+        sum = await sum.add(shares[i]);
       }
-      var check1 = await sum.ceq(1);
+      var check1 = await sum.eq(1);
 
       // second check: if all elements are <= 1
-      var check2 = await shares[0].clteq(1);
+      var check2 = await shares[0].lteq(1);
       for (var j = 1; j < shares.length; j++) {
-        check2 = await check2.smult(shares[j].clteq(1));
+        check2 = await check2.smult(shares[j].lteq(1));
       }
 
       // 1(=true) only if both first & second checks pass
-      const sanity_flag = await check1.smult(check2);
+      const sanity_flag = await check1.mult(check2);
       return sanity_flag;
     }
 
@@ -68,15 +68,15 @@ describe('JIFF Voting Operations', () => {
             const checker1 = await sanityCheck(input[1]);
             const checker2 = await sanityCheck(input[2]);
             const checker3 = await sanityCheck(input[3]);
-            var sanity_flag = await checker1.sadd(checker2);
-            sanity_flag = await sanity_flag.sadd(checker3);
-            sanity_flag = await sanity_flag.ceq(3);
+            var sanity_flag = await checker1.add(checker2);
+            sanity_flag = await sanity_flag.add(checker3);
+            sanity_flag = await sanity_flag.eq(3);
 
             // Aggregating all votes into the array named 'vote'
             var vote = input[1];
             for (var party = 2; party <= jiffClient.party_count; party++) {
               for (var idx = 0; idx < vote.length; idx++) {
-                vote[idx] = await vote[idx].sadd(input[party][idx]);
+                vote[idx] = await vote[idx].add(input[party][idx]);
               }
             }
 
@@ -84,7 +84,7 @@ describe('JIFF Voting Operations', () => {
             var majo_idx = 0;
             var curr_max = vote[0];
             for (var i = 1; i < vote.length; i++) {
-              var iIsMax = await vote[i].sgt(curr_max);
+              var iIsMax = await vote[i].gt(curr_max);
               majo_idx = await iIsMax.if_else(i, majo_idx);
             }
             majo_idx = await sanity_flag.if_else(majo_idx, -1);

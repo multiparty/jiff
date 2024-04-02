@@ -35,7 +35,7 @@ describe('JIFF Statistics Operations', () => {
       jiff.apply_extension(jiff_fixedpoint, options);
       jiff.apply_extension(jiff_negativenumber, options);
     }
-    jiffClients.map((client, _) => apply_extension(client));
+    jiffClients.map(async (client, _) => apply_extension(client));
   });
 
   afterEach(async () => {
@@ -50,7 +50,9 @@ describe('JIFF Statistics Operations', () => {
     var sshare = await jiffclient.share(input);
     var sec_sum = sshare[1];
     for (var i = 2; i <= jiffclient.party_count; i++) {
-      sec_sum = await sec_sum.sadd(sshare[i]);
+      jiffclient.start_barrier();
+      sec_sum = await sec_sum.add(sshare[i]);
+      jiffclient.end_barrier();
     }
     var result = await sec_sum.open();
     return result.toString(10) / jiffclient.party_count;
@@ -60,7 +62,7 @@ describe('JIFF Statistics Operations', () => {
     const avg = await average(jiffclient, input);
     const avgOfSquares = await average(jiffclient, input * input);
 
-    const squaredAvg = (await avg) * avg;
+    const squaredAvg = avg * avg;
     return Math.sqrt(avgOfSquares - squaredAvg);
   }
 
