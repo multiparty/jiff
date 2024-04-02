@@ -28,11 +28,11 @@ describe('JIFF Preprocessing Operations', () => {
     const jiff_bignumber = require('../../lib/ext/jiff-client-bignumber.js');
     const jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint.js');
 
-    function apply_extension(jiff: any) {
-      jiff.apply_extension(jiff_bignumber, options);
-      jiff.apply_extension(jiff_fixedpoint, options);
+    async function apply_extension(jiff: any) {
+      await jiff.apply_extension(jiff_bignumber, options);
+      await jiff.apply_extension(jiff_fixedpoint, options);
     }
-    jiffClients.map((client, _) => apply_extension(client));
+    jiffClients.map(async (client, _) => await apply_extension(client));
   });
 
   afterEach(async () => {
