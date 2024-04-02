@@ -2,7 +2,7 @@ describe('JIFF Preprocessing Operations', () => {
   var jiffClients: any[] = [];
   var jiffServer: any;
   var server: any;
-  var entries: { [key: number]: number[] | null[] } = { 1: [1.32, 10.22, 5.67], 2: [5.91, 3.73, 50.03], 3: [null, null, null] };
+  const entries: { [key: number]: number[] | null[] } = { 1: [1.32, 10.22, 5.67], 2: [5.91, 3.73, 50.03], 3: [null, null, null] };
   var computation_id = 'test-preprocessing';
   const party_count = 3;
 

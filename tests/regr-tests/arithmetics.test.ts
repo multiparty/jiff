@@ -2,7 +2,7 @@ describe('JIFF Arithmetic Operations', () => {
   var jiffClients: any[] = [];
   var jiffServer: any;
   var server: any;
-  var entries: { [key: number]: number } = { 1: 60.05, 2: 60.05 };
+  const entries: { [key: number]: number } = { 1: 60.05, 2: 60.05 };
   var computation_id = 'test-arithmetics';
   const party_count = 2;
 
@@ -45,6 +45,7 @@ describe('JIFF Arithmetic Operations', () => {
 
     // Shutting down Server
     await jiffServer.closeAllSockets();
+    await jiffServer.freeComputation(computation_id)
   });
 
   it('should correctly add 60.05 + 60.05 = 121', async () => {

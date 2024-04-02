@@ -2,7 +2,7 @@ describe('JIFF Voting', () => {
   var jiffClients: any[] = [];
   var jiffServer: any;
   var server: any;
-  var entries: { [key: number]: number[] } = { 1: [1, 0, 0, 0], 2: [0, 0, 0, 1], 3: [0, 0, 0, 1] };
+  const entries: { [key: number]: number[] } = { 1: [1, 0, 0, 0], 2: [0, 0, 0, 1], 3: [0, 0, 0, 1] };
   var computation_id = 'test-voting';
   const party_count = 3;
 
