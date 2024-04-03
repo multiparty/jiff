@@ -41,6 +41,11 @@ describe('JIFF Preprocessing Operations', () => {
 
     // Shutting down Server
     await jiffServer.closeAllSockets();
+    await jiffServer.freeComputation(computation_id);
+  });
+
+  afterAll(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
   });
 
   it('should correctly preprocess inner product of the input array and return 329.59', async () => {

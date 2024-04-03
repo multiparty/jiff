@@ -44,6 +44,11 @@ describe('JIFF Statistics Operations', () => {
 
     // Shutting down Server
     await jiffServer.closeAllSockets();
+    await jiffServer.freeComputation(computation_id);
+  });
+
+  afterAll(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
   });
 
   async function average(jiffclient: any, input: number) {

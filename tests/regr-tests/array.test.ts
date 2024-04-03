@@ -32,6 +32,11 @@ describe('JIFF Array Operations', () => {
 
     // Shutting down Server
     await jiffServer.closeAllSockets();
+    await jiffServer.freeComputation(computation_id);
+  });
+
+  afterAll(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
   });
 
   it('should check that 2D Array works with simple arithmetics', async () => {
@@ -95,8 +100,8 @@ describe('JIFF Array Operations', () => {
         jiffClient.wait_for([1, 2], async () => {
           try {
             const inputs = id == 1 ? await jiffClient.share_array(entries) : await jiffClient.share_array(input);
-            const array = inputs[1];
-            const element = inputs[2];
+            const array = await inputs[1];
+            const element = await inputs[2];
 
             async function _bin_search(array: any[], element: any) {
               if (array.length == 1) {

@@ -38,6 +38,11 @@ describe('JIFF Voting', () => {
 
     // Shutting down Server
     await jiffServer.closeAllSockets();
+    await jiffServer.freeComputation(computation_id);
+  });
+
+  afterAll(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
   });
 
   it('should correctly find the majority vote', async () => {
