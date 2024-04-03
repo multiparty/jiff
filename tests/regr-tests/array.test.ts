@@ -28,7 +28,7 @@ describe('JIFF Array Operations', () => {
 
   afterEach(async () => {
     // Shutting down client
-    Promise.all(jiffClients.map(client => client.socket.disconnect()));
+    await Promise.all(jiffClients.map(client => client.socket.disconnect()));
 
     // Shutting down Server
     await jiffServer.closeAllSockets();
@@ -49,10 +49,10 @@ describe('JIFF Array Operations', () => {
         jiffClient.wait_for([1, 2], async () => {
           try {
             var array = await jiffClient.share_array(arrays[id]);
-            var result = array[1];
+            var result = await array[1];
             for (var party = 2; party <= jiffClient.party_count; party++) {
               for (var idx = 0; idx < result.length; idx++) {
-                result[idx] = await result[idx].add(array[party][idx]);
+                result[idx] = await result[idx].add(await array[party][idx]);
               }
             }
             result = await jiffClient.open_array(result);
@@ -73,7 +73,8 @@ describe('JIFF Array Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            const inputs = id == 1 ? await jiffClient.share_array(entries) : await jiffClient.share_array(input);
+            let arrayToShare = id == 1 ? entries : input;
+            const inputs = await jiffClient.share_array(arrayToShare);
             const array = await inputs[1];
             const element = await inputs[2];
 
@@ -99,7 +100,8 @@ describe('JIFF Array Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            const inputs = id == 1 ? await jiffClient.share_array(entries) : await jiffClient.share_array(input);
+            let arrayToShare = id == 1 ? entries : input;
+            const inputs = await jiffClient.share_array(arrayToShare);
             const array = await inputs[1];
             const element = await inputs[2];
 

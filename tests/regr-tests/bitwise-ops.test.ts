@@ -34,12 +34,12 @@ describe('JIFF bitwise Arithmetic Operations', () => {
       await jiff.apply_extension(jiff_fixedpoint, options);
       await jiff.apply_extension(jiff_negativenumber, options);
     }
-    Promise.all(jiffClients.map(apply_extension))
+    await Promise.all(jiffClients.map(apply_extension))
   });
 
   afterEach(async () => {
     // Shutting down client
-    Promise.all(jiffClients.map(client => client.socket.disconnect()));
+    await Promise.all(jiffClients.map(client => client.socket.disconnect()));
 
     // Shutting down Server
     await jiffServer.closeAllSockets();
