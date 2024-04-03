@@ -34,12 +34,12 @@ describe('JIFF bitshare Comparison', () => {
       await jiff.apply_extension(jiff_fixedpoint, options);
       await jiff.apply_extension(jiff_negativenumber, options);
     }
-    await Promise.all(jiffClients.map(apply_extension))
+    await Promise.all(jiffClients.map(apply_extension));
   });
 
   afterEach(async () => {
     // Shutting down client
-    await Promise.all(jiffClients.map(client => client.socket.disconnect()));
+    await Promise.all(jiffClients.map((client) => client.socket.disconnect()));
 
     // Shutting down Server
     await jiffServer.closeAllSockets();
@@ -53,7 +53,7 @@ describe('JIFF bitshare Comparison', () => {
           try {
             const jiff_bits = await jiffClient.protocols.bits;
             const input = await jiff_bits.share(entries[id]);
-            const comp1 = await jiff_bits.sneq(input[1], input[2])
+            const comp1 = await jiff_bits.sneq(input[1], input[2]);
             // const sec_ttl = await jiff_bits.sadd(await input[1], await input[2]);
             // const comp2 = await jiff_bits.cneq(sec_ttl, 120)
             // var result = await jiff_bits.smult(comp1, comp2)
@@ -69,5 +69,4 @@ describe('JIFF bitshare Comparison', () => {
     const results = await Promise.all(jiffClients.map((client, idx) => addition(client, idx + 1)));
     results.map((res) => expect(res).toEqual('1'));
   });
-
 });

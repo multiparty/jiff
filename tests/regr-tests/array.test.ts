@@ -28,7 +28,7 @@ describe('JIFF Array Operations', () => {
 
   afterEach(async () => {
     // Shutting down client
-    await Promise.all(jiffClients.map(client => client.socket.disconnect()));
+    await Promise.all(jiffClients.map((client) => client.socket.disconnect()));
 
     // Shutting down Server
     await jiffServer.closeAllSockets();

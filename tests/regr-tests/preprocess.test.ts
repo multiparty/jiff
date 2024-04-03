@@ -32,12 +32,12 @@ describe('JIFF Preprocessing Operations', () => {
       await jiff.apply_extension(jiff_bignumber, options);
       await jiff.apply_extension(jiff_fixedpoint, options);
     }
-    await Promise.all(jiffClients.map(apply_extension))
+    await Promise.all(jiffClients.map(apply_extension));
   });
 
   afterEach(async () => {
     // Shutting down client
-    await Promise.all(jiffClients.map(client => client.socket.disconnect()));
+    await Promise.all(jiffClients.map((client) => client.socket.disconnect()));
 
     // Shutting down Server
     await jiffServer.closeAllSockets();

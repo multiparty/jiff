@@ -34,12 +34,12 @@ describe('JIFF bitwise Arithmetic Operations', () => {
       await jiff.apply_extension(jiff_fixedpoint, options);
       await jiff.apply_extension(jiff_negativenumber, options);
     }
-    await Promise.all(jiffClients.map(apply_extension))
+    await Promise.all(jiffClients.map(apply_extension));
   });
 
   afterEach(async () => {
     // Shutting down client
-    await Promise.all(jiffClients.map(client => client.socket.disconnect()));
+    await Promise.all(jiffClients.map((client) => client.socket.disconnect()));
 
     // Shutting down Server
     await jiffServer.closeAllSockets();
@@ -96,9 +96,9 @@ describe('JIFF bitwise Arithmetic Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            const jiff_bits = await jiffClient.protocols.bits
+            const jiff_bits = await jiffClient.protocols.bits;
             const input = await jiff_bits.share(entries[id]);
-            var sec_ttl = await jiff_bits.smult(input[1], input[2])
+            var sec_ttl = await jiff_bits.smult(input[1], input[2]);
             const result = await jiff_bits.open(sec_ttl);
             resolve(result.toString(10));
           } catch (error) {
@@ -117,18 +117,18 @@ describe('JIFF bitwise Arithmetic Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            const jiff_bits = await jiffClient.protocols.bits
+            const jiff_bits = await jiffClient.protocols.bits;
             const input = await jiff_bits.share(entries[id]);
-            var sec_ttl = await jiff_bits.sdiv(await input[1], await input[2])
-            const bit_quotient = await sec_ttl['quotient']
-            const bit_remainder = await sec_ttl['remainder']
+            var sec_ttl = await jiff_bits.sdiv(await input[1], await input[2]);
+            const bit_quotient = await sec_ttl['quotient'];
+            const bit_remainder = await sec_ttl['remainder'];
 
             const int_quotient = await jiff_bits.open(bit_quotient);
             var int_remainder = await jiff_bits.open(bit_remainder);
-            int_remainder = await int_remainder.toString(10)
-            const frac_remainder = parseInt(int_remainder)/entries[2]
-            const result = parseInt(await int_quotient.toString(10), 10) + frac_remainder
-        
+            int_remainder = await int_remainder.toString(10);
+            const frac_remainder = parseInt(int_remainder) / entries[2];
+            const result = parseInt(await int_quotient.toString(10), 10) + frac_remainder;
+
             resolve(result);
           } catch (error) {
             reject(error);
