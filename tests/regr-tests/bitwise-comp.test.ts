@@ -34,12 +34,12 @@ describe('JIFF bitshare Comparison', () => {
       await jiff.apply_extension(jiff_fixedpoint, options);
       await jiff.apply_extension(jiff_negativenumber, options);
     }
-    jiffClients.map(async (client, _) => await apply_extension(client));
+    Promise.all(jiffClients.map(apply_extension))
   });
 
   afterEach(async () => {
     // Shutting down client
-    jiffClients.map(async (client, _) => await client.socket.disconnect());
+    Promise.all(jiffClients.map(client => client.socket.disconnect()));
 
     // Shutting down Server
     await jiffServer.closeAllSockets();

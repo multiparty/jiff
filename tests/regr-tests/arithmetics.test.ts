@@ -41,7 +41,7 @@ describe('JIFF Arithmetic Operations', () => {
 
   afterEach(async () => {
     // Shutting down client
-    jiffClients.map(async (client, _) => await client.socket.disconnect());
+    Promise.all(jiffClients.map(client => client.socket.disconnect()));
 
     // Shutting down Server
     await jiffServer.closeAllSockets();
