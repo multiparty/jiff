@@ -74,14 +74,14 @@ describe('JIFF Array Operations', () => {
         jiffClient.wait_for([1, 2], async () => {
           try {
             const inputs = id == 1 ? await jiffClient.share_array(entries) : await jiffClient.share_array(input);
-            const array = inputs[1];
-            const element = inputs[2];
+            const array = await inputs[1];
+            const element = await inputs[2];
 
             var occurrences = await array[0].eq(element); // check equality for the first element
             for (var i = 1; i < array.length; i++) {
-              occurrences = await occurrences.add(array[i].eq(element));
+              occurrences = await occurrences.add(await array[i].eq(element));
             }
-            const result = await jiffClient.open(occurrences.gteq(1)); // check number of occurrences >= 1
+            const result = await jiffClient.open(await occurrences.gteq(1)); // check number of occurrences >= 1
             resolve(result.toString(10));
           } catch (error) {
             reject(error);
@@ -123,7 +123,7 @@ describe('JIFF Array Operations', () => {
             }
 
             const occurrences = await _bin_search(array, element);
-            const result = await jiffClient.open(occurrences.gteq(1)); // check number of occurrences >= 1
+            const result = await jiffClient.open(await occurrences.gteq(1)); // check number of occurrences >= 1
             resolve(result.toString(10));
           } catch (error) {
             reject(error);

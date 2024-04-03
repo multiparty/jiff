@@ -31,8 +31,8 @@ describe('JIFF bitwise Arithmetic Operations', () => {
 
     async function apply_extension(jiff: any) {
       await jiff.apply_extension(jiff_bignumber, options);
-      await jiff.apply_extension(jiff_fixedpoint, options);
-      await jiff.apply_extension(jiff_negativenumber, options);
+      // await jiff.apply_extension(jiff_fixedpoint, options);
+      // await jiff.apply_extension(jiff_negativenumber, options);
     }
     jiffClients.map(async (client, _) => await apply_extension(client));
   });

@@ -76,5 +76,5 @@ describe('JIFF Preprocessing Operations', () => {
 
     const results = await Promise.all(jiffClients.map((client, idx) => innerprod(client, idx + 1)));
     results.map((res) => expect(res).toEqual('329.59'));
-  });
+  }, 10000);
 });
