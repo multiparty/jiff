@@ -35,10 +35,6 @@ describe('JIFF Array Operations', () => {
     await jiffServer.freeComputation(computation_id);
   });
 
-  afterAll(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-  });
-
   it('should check that 2D Array works with simple arithmetics', async () => {
     const arrays: number[][] = [
       [1, 2, 3, 4],
@@ -49,7 +45,7 @@ describe('JIFF Array Operations', () => {
         jiffClient.wait_for([1, 2], async () => {
           try {
             var array = await jiffClient.share_array(arrays[id]);
-            var result = await array[1];
+            var result = array[1];
             for (var party = 2; party <= jiffClient.party_count; party++) {
               for (var idx = 0; idx < result.length; idx++) {
                 result[idx] = await result[idx].add(await array[party][idx]);
@@ -75,8 +71,8 @@ describe('JIFF Array Operations', () => {
           try {
             let arrayToShare = id == 1 ? entries : input;
             const inputs = await jiffClient.share_array(arrayToShare);
-            const array = await inputs[1];
-            const element = await inputs[2];
+            const array = inputs[1];
+            const element = inputs[2];
 
             var occurrences = await array[0].eq(element); // check equality for the first element
             for (var i = 1; i < array.length; i++) {
@@ -102,8 +98,8 @@ describe('JIFF Array Operations', () => {
           try {
             let arrayToShare = id == 1 ? entries : input;
             const inputs = await jiffClient.share_array(arrayToShare);
-            const array = await inputs[1];
-            const element = await inputs[2];
+            const array = inputs[1];
+            const element = inputs[2];
 
             async function _bin_search(array: any[], element: any) {
               if (array.length == 1) {

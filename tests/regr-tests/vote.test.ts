@@ -41,10 +41,6 @@ describe('JIFF Voting', () => {
     await jiffServer.freeComputation(computation_id);
   });
 
-  afterAll(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-  });
-
   it('should correctly find the majority vote', async () => {
     async function sanityCheck(shares: any) {
       // first check: if sum of values in an array/share = 1

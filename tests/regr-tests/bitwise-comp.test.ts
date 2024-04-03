@@ -46,10 +46,6 @@ describe('JIFF bitshare Comparison', () => {
     await jiffServer.freeComputation(computation_id);
   });
 
-  afterAll(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-  });
-
   it('should correctly compare with constants 60 != 50', async () => {
     async function addition(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {

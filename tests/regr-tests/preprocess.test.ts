@@ -44,10 +44,6 @@ describe('JIFF Preprocessing Operations', () => {
     await jiffServer.freeComputation(computation_id);
   });
 
-  afterAll(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-  });
-
   it('should correctly preprocess inner product of the input array and return 329.59', async () => {
     async function innerprod(jiffClient: any, id: number) {
       await jiffClient.preprocessing('smult', entries[id].length, null, null, null, null, null, null, { div: false });

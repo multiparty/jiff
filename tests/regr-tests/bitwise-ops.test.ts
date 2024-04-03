@@ -46,10 +46,6 @@ describe('JIFF bitwise Arithmetic Operations', () => {
     await jiffServer.freeComputation(computation_id);
   });
 
-  afterAll(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-  });
-
   it('should correctly add 60 + 50 + 10(integer) = 120', async () => {
     async function addition(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {
