@@ -36,7 +36,7 @@ describe('JIFF Arithmetic Operations', () => {
       await jiff.apply_extension(jiff_fixedpoint, options);
       await jiff.apply_extension(jiff_negativenumber, options);
     }
-    jiffClients.map(async (client, _) => await apply_extension(client));
+    Promise.all(jiffClients.map(apply_extension))
   });
 
   afterEach(async () => {
@@ -46,6 +46,10 @@ describe('JIFF Arithmetic Operations', () => {
     // Shutting down Server
     await jiffServer.closeAllSockets();
     await jiffServer.freeComputation(computation_id);
+  });
+
+  afterAll(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
   });
 
   it('should correctly add 60.05 + 60.05 = 121', async () => {

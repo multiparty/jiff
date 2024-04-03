@@ -35,7 +35,7 @@ describe('JIFF Statistics Operations', () => {
       await jiff.apply_extension(jiff_fixedpoint, options);
       await jiff.apply_extension(jiff_negativenumber, options);
     }
-    jiffClients.map(async (client, _) => await apply_extension(client));
+    Promise.all(jiffClients.map(apply_extension))
   });
 
   afterEach(async () => {

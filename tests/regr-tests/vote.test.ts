@@ -29,7 +29,7 @@ describe('JIFF Voting', () => {
     async function apply_extension(jiff: any) {
       await jiff.apply_extension(jiff_negativenumber, options);
     }
-    jiffClients.map(async (client, _) => await apply_extension(client));
+    Promise.all(jiffClients.map(apply_extension))
   });
 
   afterEach(async () => {

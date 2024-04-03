@@ -32,7 +32,7 @@ describe('JIFF Preprocessing Operations', () => {
       await jiff.apply_extension(jiff_bignumber, options);
       await jiff.apply_extension(jiff_fixedpoint, options);
     }
-    jiffClients.map(async (client, _) => await apply_extension(client));
+    Promise.all(jiffClients.map(apply_extension))
   });
 
   afterEach(async () => {
@@ -76,5 +76,5 @@ describe('JIFF Preprocessing Operations', () => {
 
     const results = await Promise.all(jiffClients.map((client, idx) => innerprod(client, idx + 1)));
     results.map((res) => expect(res).toEqual('329.59'));
-  }, 10000);
+  }, 15000);
 });

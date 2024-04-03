@@ -34,7 +34,7 @@ describe('JIFF bitwise Arithmetic Operations', () => {
       await jiff.apply_extension(jiff_fixedpoint, options);
       await jiff.apply_extension(jiff_negativenumber, options);
     }
-    jiffClients.map(async (client, _) => await apply_extension(client));
+    Promise.all(jiffClients.map(apply_extension))
   });
 
   afterEach(async () => {
@@ -116,26 +116,32 @@ describe('JIFF bitwise Arithmetic Operations', () => {
     results.map((res) => expect(res).toEqual('3000'));
   }, 20000);
 
-  // it('should correctly divide (60 / 50) = 1.2', async () => {
-  //   async function division(jiffClient: any, id: number) {
-  //     return new Promise((resolve, reject) => {
-  //       jiffClient.wait_for([1, 2], async () => {
-  //         try {
-  //           const jiff_bits = await jiffClient.protocols.bits
-  //           const input = await jiff_bits.share(entries[id]);
-  //           var sec_ttl = await jiff_bits.sdiv(await input[1], await input[2])
-  //           // sec_ttl = await jiff_bits.cdivl(sec_ttl, 1)
-  //           // sec_ttl = await jiff_bits.cdivr(100, sec_ttl)
-  //           const result = await jiff_bits.open(sec_ttl);
-  //           resolve(result.toString(10));
-  //         } catch (error) {
-  //           reject(error);
-  //         }
-  //       });
-  //     });
-  //   }
+  it('should correctly divide (60 / 50) = 1.2', async () => {
+    async function division(jiffClient: any, id: number) {
+      return new Promise((resolve, reject) => {
+        jiffClient.wait_for([1, 2], async () => {
+          try {
+            const jiff_bits = await jiffClient.protocols.bits
+            const input = await jiff_bits.share(entries[id]);
+            var sec_ttl = await jiff_bits.sdiv(await input[1], await input[2])
+            const bit_quotient = await sec_ttl['quotient']
+            const bit_remainder = await sec_ttl['remainder']
 
-  //   const results = await Promise.all(jiffClients.map((client, idx) => division(client, idx + 1)));
-  //   results.map((res) => expect(res).toEqual('1'));
-  // }, 20000);
+            const int_quotient = await jiff_bits.open(bit_quotient);
+            var int_remainder = await jiff_bits.open(bit_remainder);
+            int_remainder = await int_remainder.toString(10)
+            const frac_remainder = parseInt(int_remainder)/entries[2]
+            const result = parseInt(await int_quotient.toString(10), 10) + frac_remainder
+        
+            resolve(result);
+          } catch (error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    const results = await Promise.all(jiffClients.map((client, idx) => division(client, idx + 1)));
+    results.map((res) => expect(res).toEqual(1.2));
+  }, 20000);
 });
