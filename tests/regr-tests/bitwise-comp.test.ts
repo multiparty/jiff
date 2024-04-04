@@ -43,7 +43,7 @@ describe('JIFF bitshare Comparison', () => {
   });
 
   it('equality check should correctly function with 60 - 10 == 50 and 60 + 50 == 110(constant)', async () => {
-    async function addition(jiffClient: any, id: number) {
+    async function equal(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
@@ -63,12 +63,12 @@ describe('JIFF bitshare Comparison', () => {
       });
     }
 
-    const results = await Promise.all(jiffClients.map((client, idx) => addition(client, idx + 1)));
+    const results = await Promise.all(jiffClients.map((client, idx) => equal(client, idx + 1)));
     results.map((res) => expect(res).toEqual('1'));
   });
 
   it('not equal should correctly function with 60 != 50 and 60 + 50 != 120(constant)', async () => {
-    async function addition(jiffClient: any, id: number) {
+    async function unequal(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
@@ -87,7 +87,7 @@ describe('JIFF bitshare Comparison', () => {
       });
     }
 
-    const results = await Promise.all(jiffClients.map((client, idx) => addition(client, idx + 1)));
+    const results = await Promise.all(jiffClients.map((client, idx) => unequal(client, idx + 1)));
     results.map((res) => expect(res).toEqual('1'));
   });
 });
