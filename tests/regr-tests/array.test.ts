@@ -1,4 +1,7 @@
 describe('JIFF Array Operations', () => {
+  const init_server = require('./server');
+  const JIFFClient = require('../../lib/jiff-client.js');
+  
   let jiffClients: any[] = [];
   let jiffServer: any;
   let server: any;
@@ -10,13 +13,11 @@ describe('JIFF Array Operations', () => {
   beforeEach(async () => {
     // Server Setup
     let port: number = 8113;
-    const init_server = require('./server');
     const servers = init_server(port);
     (jiffServer = servers[0]), (server = servers[1]);
     await new Promise((resolve) => server.on('listening', resolve)); // Wait for server to be ready
 
     // Client Setup
-    const JIFFClient = require('../../lib/jiff-client.js');
     const baseUrl = `http://localhost:${port}`;
     const options = {
       party_count: party_count,

@@ -1,4 +1,9 @@
 describe('JIFF bitshare Comparison', () => {
+  const init_server = require('./server');
+  const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
+  const JIFFClient = require('../../lib/jiff-client.js');
+  const jiff_bignumber = require('../../lib/ext/jiff-client-bignumber.js');
+
   let jiffClients: any[] = [];
   let jiffServer: any;
   let server: any;
@@ -9,15 +14,13 @@ describe('JIFF bitshare Comparison', () => {
   beforeEach(async () => {
     // Server Setup
     let port: number = 8117;
-    const init_server = require('./server');
-    const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
     const extensions = [jiff_s_bignumber];
     const servers = await init_server(port, extensions);
     (jiffServer = servers[0]), (server = servers[1]);
     new Promise((resolve) => server.on('listening', resolve)); // Wait for server to be ready
 
     // Client Setup
-    const JIFFClient = require('../../lib/jiff-client.js');
+
     const baseUrl = `http://localhost:${port}`;
     const options = {
       party_count: party_count,
@@ -25,7 +28,6 @@ describe('JIFF bitshare Comparison', () => {
     };
 
     jiffClients = Array.from({ length: party_count }, () => new JIFFClient(baseUrl, computation_id, options));
-    const jiff_bignumber = require('../../lib/ext/jiff-client-bignumber.js');
 
     async function apply_extension(jiff: any) {
       await jiff.apply_extension(jiff_bignumber, options);
