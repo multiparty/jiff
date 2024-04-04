@@ -2,7 +2,7 @@ describe('JIFF Voting', () => {
   const init_server = require('./server');
   const JIFFClient = require('../../lib/jiff-client.js');
   const jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber.js');
-  
+
   let jiffClients: any[] = [];
   let jiffServer: any;
   let server: any;

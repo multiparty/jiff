@@ -46,26 +46,25 @@ describe('JIFF Preprocessing Operations', () => {
   });
 
   it('should correctly preprocess bitwise operation and return 3000', async () => {
-      async function bit_smult(jiffClient: any, id: number) {
-        await jiffClient.preprocessing('smult', 2, 'bits', null, null, null, null, null, { div: false });
-        await jiffClient.preprocessing('open', 1);
-        return new Promise((resolve, reject) => {
-          jiffClient.wait_for([1, 2], async () => {
-            try {
-              const jiff_bits = jiffClient.protocols.bits;
-              const input = await jiff_bits.share(entries[id]);
-              let sec_ttl = await jiff_bits.smult(input[1], input[2]);
-              const result = await jiff_bits.open(sec_ttl);
-              resolve(result.toString(10));
-            } catch (error) {
-              reject(error);
-            }
-          });
+    async function bit_smult(jiffClient: any, id: number) {
+      await jiffClient.preprocessing('smult', 2, 'bits', null, null, null, null, null, { div: false });
+      await jiffClient.preprocessing('open', 1);
+      return new Promise((resolve, reject) => {
+        jiffClient.wait_for([1, 2], async () => {
+          try {
+            const jiff_bits = jiffClient.protocols.bits;
+            const input = await jiff_bits.share(entries[id]);
+            let sec_ttl = await jiff_bits.smult(input[1], input[2]);
+            const result = await jiff_bits.open(sec_ttl);
+            resolve(result.toString(10));
+          } catch (error) {
+            reject(error);
+          }
         });
-      }
-  
-      const results = await Promise.all(jiffClients.map((client, idx) => bit_smult(client, idx + 1)));
-      results.map((res) => expect(res).toEqual('3000'));
-  }, 25000);
+      });
+    }
 
+    const results = await Promise.all(jiffClients.map((client, idx) => bit_smult(client, idx + 1)));
+    results.map((res) => expect(res).toEqual('3000'));
+  }, 25000);
 });

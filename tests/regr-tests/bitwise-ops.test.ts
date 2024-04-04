@@ -29,7 +29,7 @@ describe('JIFF bitwise Arithmetic Operations', () => {
     };
 
     jiffClients = Array.from({ length: party_count }, () => new JIFFClient(baseUrl, computation_id, options));
-    
+
     async function apply_extension(jiff: any) {
       await jiff.apply_extension(jiff_bignumber, options);
       await jiff.apply_extension(jiff_fixedpoint, options);

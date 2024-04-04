@@ -5,7 +5,7 @@ describe('JIFF Arithmetic Operations', () => {
   const jiff_bignumber = require('../../lib/ext/jiff-client-bignumber.js');
   const jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint.js');
   const jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber.js');
-  
+
   let jiffClients: any[] = [];
   let jiffServer: any;
   let server: any;
