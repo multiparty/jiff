@@ -24,4 +24,7 @@ jobs:
         run: npm ci
 
       - name: Run Jest Tests
-        run: npx jest --coverage --runInBand tests/regr-tests
+        run: |
+         for file in tests/regr-tests/*.test.ts; do
+            npx jest --coverage --runInBand "$file"
+         done
