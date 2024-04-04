@@ -1,7 +1,7 @@
 describe('JIFF Array Operations', () => {
   const init_server = require('./server');
   const JIFFClient = require('../../lib/jiff-client.js');
-  
+
   let jiffClients: any[] = [];
   let jiffServer: any;
   let server: any;
@@ -46,10 +46,10 @@ describe('JIFF Array Operations', () => {
         jiffClient.wait_for([1, 2], async () => {
           try {
             let array = await jiffClient.share_array(arrays[id]);
-            let result = await array[1];
+            let result = array[1];
             for (let party = 2; party <= jiffClient.party_count; party++) {
               for (let idx = 0; idx < result.length; idx++) {
-                result[idx] = await result[idx].add(await array[party][idx]);
+                result[idx] = await result[idx].add(array[party][idx]);
               }
             }
             result = await jiffClient.open_array(result);
@@ -77,8 +77,8 @@ describe('JIFF Array Operations', () => {
               arrayToShare = input;
             }
             const inputs = await jiffClient.share_array(arrayToShare);
-            const array = await inputs[1];
-            const element = await inputs[2];
+            const array = inputs[1];
+            const element = inputs[2];
 
             let occurrences = await array[0].eq(element);
             for (let i = 1; i < array.length; i++) {
@@ -111,8 +111,8 @@ describe('JIFF Array Operations', () => {
               whichArray = input;
             }
             const inputs = await jiffClient.share_array(whichArray);
-            const array = await inputs[1];
-            const elem = await inputs[2];
+            const array = inputs[1];
+            const elem = inputs[2];
 
             async function _bin_search(array: any[], element: any) {
               if (array.length == 1) {
@@ -120,7 +120,7 @@ describe('JIFF Array Operations', () => {
               }
 
               const mid = Math.floor(array.length / 2);
-              const cmp = await element.lt(await array[mid]);
+              const cmp = await element.lt(array[mid]);
               let nArray = [];
               for (let i = 0; i < mid; i++) {
                 const c1 = array[i];

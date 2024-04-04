@@ -52,9 +52,9 @@ describe('JIFF Preprocessing Operations', () => {
         return new Promise((resolve, reject) => {
           jiffClient.wait_for([1, 2], async () => {
             try {
-              const jiff_bits = await jiffClient.protocols.bits;
+              const jiff_bits = jiffClient.protocols.bits;
               const input = await jiff_bits.share(entries[id]);
-              let sec_ttl = await jiff_bits.smult(await input[1], await input[2]);
+              let sec_ttl = await jiff_bits.smult(input[1], input[2]);
               const result = await jiff_bits.open(sec_ttl);
               resolve(result.toString(10));
             } catch (error) {

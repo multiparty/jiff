@@ -49,11 +49,11 @@ describe('JIFF bitshare Comparison', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            const jiff_bits = await jiffClient.protocols.bits;
+            const jiff_bits = jiffClient.protocols.bits;
             const input = await jiff_bits.share(entries[id]);
             const input1 = jiff_bits.csubl(input[1], 10);
             const comp1 = await jiff_bits.seq(input1, input[2]);
-            const sec_ttl = await jiff_bits.sadd(await input[1], await input[2]);
+            const sec_ttl = await jiff_bits.sadd(input[1], await input[2]);
             const comp2 = await jiff_bits.ceq(sec_ttl, 110);
             let result = await comp1.smult(comp2);
             result = await result.open();
@@ -74,7 +74,7 @@ describe('JIFF bitshare Comparison', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            const jiff_bits = await jiffClient.protocols.bits;
+            const jiff_bits = jiffClient.protocols.bits;
             const input = await jiff_bits.share(entries[id]);
             const comp1 = await jiff_bits.sneq(input[1], input[2]);
             const sec_ttl = await jiff_bits.sadd(input[1], input[2]);
