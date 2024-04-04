@@ -1,14 +1,14 @@
 describe('JIFF bitshare Comparison', () => {
-  var jiffClients: any[] = [];
-  var jiffServer: any;
-  var server: any;
+  let jiffClients: any[] = [];
+  let jiffServer: any;
+  let server: any;
   const entries: { [key: number]: number } = { 1: 60, 2: 50 };
-  var computation_id = 'test-bitshare-comparison';
+  let computation_id = 'test-bitshare-comparison';
   const party_count = 2;
 
   beforeEach(async () => {
     // Server Setup
-    var port: number = 8117;
+    let port: number = 8117;
     const init_server = require('./server');
     const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
     const extensions = [jiff_s_bignumber];
@@ -53,7 +53,7 @@ describe('JIFF bitshare Comparison', () => {
             const comp1 = await jiff_bits.seq(input1, input[2]);
             const sec_ttl = await jiff_bits.sadd(await input[1], await input[2]);
             const comp2 = await jiff_bits.ceq(sec_ttl, 110);
-            var result = await comp1.smult(comp2);
+            let result = await comp1.smult(comp2);
             result = await result.open();
             resolve(result.toString(10));
           } catch (error) {
@@ -77,7 +77,7 @@ describe('JIFF bitshare Comparison', () => {
             const comp1 = await jiff_bits.sneq(input[1], input[2]);
             const sec_ttl = await jiff_bits.sadd(input[1], input[2]);
             const comp2 = await jiff_bits.cneq(sec_ttl, 120);
-            var result = await comp1.smult(comp2);
+            let result = await comp1.smult(comp2);
             result = await result.open();
             resolve(result.toString(10));
           } catch (error) {

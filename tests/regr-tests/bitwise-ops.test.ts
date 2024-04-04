@@ -1,14 +1,14 @@
 describe('JIFF bitwise Arithmetic Operations', () => {
-  var jiffClients: any[] = [];
-  var jiffServer: any;
-  var server: any;
+  let jiffClients: any[] = [];
+  let jiffServer: any;
+  let server: any;
   const entries: { [key: number]: number } = { 1: 60, 2: 50 };
-  var computation_id = 'test-bitwisse-ops';
+  let computation_id = 'test-bitwisse-ops';
   const party_count = 2;
 
   beforeEach(async () => {
     // Server Setup
-    var port: number = 8116;
+    let port: number = 8116;
     const init_server = require('./server');
     const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
     const extensions = [jiff_s_bignumber];
@@ -53,7 +53,7 @@ describe('JIFF bitwise Arithmetic Operations', () => {
           try {
             const jiff_bits = await jiffClient.protocols.bits;
             const input = await jiff_bits.share(entries[id]);
-            var sec_ttl = await jiff_bits.sadd(await input[1], await input[2]);
+            let sec_ttl = await jiff_bits.sadd(await input[1], await input[2]);
             sec_ttl = await jiff_bits.cadd(sec_ttl, 10);
             const result = await jiff_bits.open(sec_ttl);
             resolve(result.toString(10));
@@ -75,7 +75,7 @@ describe('JIFF bitwise Arithmetic Operations', () => {
           try {
             const jiff_bits = await jiffClient.protocols.bits;
             const input = await jiff_bits.share(entries[id]);
-            var sec_ttl = await jiff_bits.ssub(await input[1], await input[2]);
+            let sec_ttl = await jiff_bits.ssub(await input[1], await input[2]);
             sec_ttl = await jiff_bits.csubl(sec_ttl, 10);
             sec_ttl = await jiff_bits.csubr(100, sec_ttl);
             const result = await jiff_bits.open(sec_ttl);
@@ -98,7 +98,7 @@ describe('JIFF bitwise Arithmetic Operations', () => {
           try {
             const jiff_bits = await jiffClient.protocols.bits;
             const input = await jiff_bits.share(entries[id]);
-            var sec_ttl = await jiff_bits.smult(input[1], input[2]);
+            let sec_ttl = await jiff_bits.smult(input[1], input[2]);
             const result = await jiff_bits.open(sec_ttl);
             resolve(result.toString(10));
           } catch (error) {
@@ -119,12 +119,12 @@ describe('JIFF bitwise Arithmetic Operations', () => {
           try {
             const jiff_bits = await jiffClient.protocols.bits;
             const input = await jiff_bits.share(entries[id]);
-            var sec_ttl = await jiff_bits.sdiv(await input[1], await input[2]);
+            let sec_ttl = await jiff_bits.sdiv(await input[1], await input[2]);
             const bit_quotient = await sec_ttl['quotient'];
             const bit_remainder = await sec_ttl['remainder'];
 
             const int_quotient = await jiff_bits.open(bit_quotient);
-            var int_remainder = await jiff_bits.open(bit_remainder);
+            let int_remainder = await jiff_bits.open(bit_remainder);
             int_remainder = await int_remainder.toString(10);
             const frac_remainder = parseInt(int_remainder) / entries[2];
             const result = parseInt(await int_quotient.toString(10), 10) + frac_remainder;

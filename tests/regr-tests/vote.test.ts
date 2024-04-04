@@ -1,9 +1,9 @@
 describe('JIFF Voting', () => {
-  var jiffClients: any[] = [];
-  var jiffServer: any;
-  var server: any;
+  let jiffClients: any[] = [];
+  let jiffServer: any;
+  let server: any;
   const entries: { [key: number]: number[] } = { 1: [1, 0, 0, 0], 2: [0, 0, 0, 1], 3: [0, 0, 0, 1] };
-  var computation_id = 'test-voting';
+  let computation_id = 'test-voting';
   const party_count = 3;
 
   beforeEach(async () => {
@@ -44,15 +44,15 @@ describe('JIFF Voting', () => {
   it('should correctly find the majority vote', async () => {
     async function sanityCheck(shares: any) {
       // first check: if sum of values in an array/share = 1
-      var sum = shares[0];
-      for (var i = 1; i < shares.length; i++) {
+      let sum = shares[0];
+      for (let i = 1; i < shares.length; i++) {
         sum = await sum.add(shares[i]);
       }
-      var check1 = await sum.eq(1);
+      let check1 = await sum.eq(1);
 
       // second check: if all elements are <= 1
-      var check2 = await shares[0].lteq(1);
-      for (var j = 1; j < shares.length; j++) {
+      let check2 = await shares[0].lteq(1);
+      for (let j = 1; j < shares.length; j++) {
         check2 = await check2.smult(shares[j].lteq(1));
       }
 
@@ -69,23 +69,23 @@ describe('JIFF Voting', () => {
             const checker1 = await sanityCheck(input[1]);
             const checker2 = await sanityCheck(input[2]);
             const checker3 = await sanityCheck(input[3]);
-            var sanity_flag = await checker1.add(checker2);
+            let sanity_flag = await checker1.add(checker2);
             sanity_flag = await sanity_flag.add(checker3);
             sanity_flag = await sanity_flag.eq(3);
 
             // Aggregating all votes into the array named 'vote'
-            var vote = input[1];
-            for (var party = 2; party <= jiffClient.party_count; party++) {
-              for (var idx = 0; idx < vote.length; idx++) {
+            let vote = input[1];
+            for (let party = 2; party <= jiffClient.party_count; party++) {
+              for (let idx = 0; idx < vote.length; idx++) {
                 vote[idx] = await vote[idx].add(input[party][idx]);
               }
             }
 
             // Check who's got the majority vote
-            var majo_idx = 0;
-            var curr_max = vote[0];
-            for (var i = 1; i < vote.length; i++) {
-              var iIsMax = await vote[i].gt(curr_max);
+            let majo_idx = 0;
+            let curr_max = vote[0];
+            for (let i = 1; i < vote.length; i++) {
+              let iIsMax = await vote[i].gt(curr_max);
               majo_idx = await iIsMax.if_else(i, majo_idx);
             }
             majo_idx = await sanity_flag.if_else(majo_idx, -1);

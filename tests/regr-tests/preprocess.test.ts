@@ -1,14 +1,14 @@
 describe('JIFF Preprocessing Operations', () => {
-  var jiffClients: any[] = [];
-  var jiffServer: any;
-  var server: any;
+  let jiffClients: any[] = [];
+  let jiffServer: any;
+  let server: any;
   const entries: { [key: number]: number[] | null[] } = { 1: [1.32, 10.22, 5.67], 2: [5.91, 3.73, 50.03], 3: [null, null, null] };
-  var computation_id = 'test-preprocessing';
+  let computation_id = 'test-preprocessing';
   const party_count = 3;
 
   beforeEach(async () => {
     // Server Setup
-    var port: number = 8115;
+    let port: number = 8115;
     const init_server = require('./server');
     const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
     const extensions = [jiff_s_bignumber];
@@ -51,13 +51,13 @@ describe('JIFF Preprocessing Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2, 3], async () => {
           try {
-            var sec_ttl: any = 0;
+            let sec_ttl: any = 0;
             await jiffClient.executePreprocessing(async function () {
               const input = await jiffClient.share_array(entries[id], null, 3, [1, 2, 3], [1, 2]);
-              var array1 = input[1];
-              var array2 = input[2];
+              let array1 = input[1];
+              let array2 = input[2];
               sec_ttl = await array1[0].mult(array2[0], null, false);
-              for (var i = 1; i < array1.length; i++) {
+              for (let i = 1; i < array1.length; i++) {
                 sec_ttl = await sec_ttl.add(await array1[i].mult(array2[i], null, false));
               }
               const result = await sec_ttl.open();

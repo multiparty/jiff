@@ -1,14 +1,14 @@
 describe('JIFF Arithmetic Operations', () => {
-  var jiffClients: any[] = [];
-  var jiffServer: any;
-  var server: any;
+  let jiffClients: any[] = [];
+  let jiffServer: any;
+  let server: any;
   const entries: { [key: number]: number } = { 1: 60.05, 2: 60.05 };
-  var computation_id = 'test-arithmetics';
+  let computation_id = 'test-arithmetics';
   const party_count = 2;
 
   beforeEach(async () => {
     // Server Setup
-    var port: number = 8111;
+    let port: number = 8111;
     const init_server = require('./server');
     const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
     const extensions = [jiff_s_bignumber];

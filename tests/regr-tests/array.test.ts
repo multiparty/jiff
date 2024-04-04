@@ -1,7 +1,7 @@
 describe('JIFF Array Operations', () => {
-  var jiffClients: any[] = [];
-  var jiffServer: any;
-  var server: any;
+  let jiffClients: any[] = [];
+  let jiffServer: any;
+  let server: any;
   const entries: number[] = [1, 4, 8, 10, 12, 16, 17, 23, 29];
   const input: number = 4;
   const computation_id = 'test-array';
@@ -9,7 +9,7 @@ describe('JIFF Array Operations', () => {
 
   beforeEach(async () => {
     // Server Setup
-    var port: number = 8113;
+    let port: number = 8113;
     const init_server = require('./server');
     const servers = init_server(port);
     (jiffServer = servers[0]), (server = servers[1]);
@@ -44,10 +44,10 @@ describe('JIFF Array Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            var array = await jiffClient.share_array(arrays[id]);
-            var result = await array[1];
-            for (var party = 2; party <= jiffClient.party_count; party++) {
-              for (var idx = 0; idx < result.length; idx++) {
+            let array = await jiffClient.share_array(arrays[id]);
+            let result = await array[1];
+            for (let party = 2; party <= jiffClient.party_count; party++) {
+              for (let idx = 0; idx < result.length; idx++) {
                 result[idx] = await result[idx].add(await array[party][idx]);
               }
             }
@@ -69,7 +69,7 @@ describe('JIFF Array Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            var arrayToShare = null;
+            let arrayToShare = null;
             if (id == 1) {
               arrayToShare = entries;
             } else {
@@ -79,12 +79,12 @@ describe('JIFF Array Operations', () => {
             const array = await inputs[1];
             const element = await inputs[2];
 
-            var occurrences = await array[0].eq(element);
-            for (var i = 1; i < array.length; i++) {
+            let occurrences = await array[0].eq(element);
+            for (let i = 1; i < array.length; i++) {
               const check = await array[i].eq(element);
               occurrences = await occurrences.add(check);
             }
-            var result = await occurrences.gteq(1);
+            let result = await occurrences.gteq(1);
             result = await jiffClient.open(result);
             resolve(result.toString(10));
           } catch (error) {
@@ -103,7 +103,7 @@ describe('JIFF Array Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            var whichArray = null;
+            let whichArray = null;
             if (id == 1) {
               whichArray = entries;
             } else {
@@ -120,8 +120,8 @@ describe('JIFF Array Operations', () => {
 
               const mid = Math.floor(array.length / 2);
               const cmp = await element.lt(await array[mid]);
-              var nArray = [];
-              for (var i = 0; i < mid; i++) {
+              let nArray = [];
+              for (let i = 0; i < mid; i++) {
                 const c1 = array[i];
                 const c2 = array[mid + i];
                 nArray[i] = await cmp.if_else(c1, c2);
@@ -133,7 +133,7 @@ describe('JIFF Array Operations', () => {
             }
 
             const occurrences = await _bin_search(array, elem);
-            var result = await occurrences.gteq(1);
+            let result = await occurrences.gteq(1);
             result = await jiffClient.open(result);
             resolve(result.toString(10));
           } catch (error) {
