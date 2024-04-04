@@ -22,3 +22,6 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm ci
+
+      - name: Run Jest Tests
+        run: npx jest --coverage --runInBand tests/regr-tests
