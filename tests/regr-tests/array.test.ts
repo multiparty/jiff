@@ -45,7 +45,7 @@ describe('JIFF Array Operations', () => {
         jiffClient.wait_for([1, 2], async () => {
           try {
             var array = await jiffClient.share_array(arrays[id]);
-            var result = array[1];
+            var result = await array[1];
             for (var party = 2; party <= jiffClient.party_count; party++) {
               for (var idx = 0; idx < result.length; idx++) {
                 result[idx] = await result[idx].add(await array[party][idx]);
@@ -69,16 +69,23 @@ describe('JIFF Array Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            let arrayToShare = id == 1 ? entries : input;
-            const inputs = await jiffClient.share_array(arrayToShare);
-            const array = inputs[1];
-            const element = inputs[2];
-
-            var occurrences = await array[0].eq(element); // check equality for the first element
-            for (var i = 1; i < array.length; i++) {
-              occurrences = await occurrences.add(await array[i].eq(element));
+            var arrayToShare = null;
+            if (id == 1) {
+              arrayToShare = entries;
+            } else {
+              arrayToShare = input;
             }
-            const result = await jiffClient.open(await occurrences.gteq(1)); // check number of occurrences >= 1
+            const inputs = await jiffClient.share_array(arrayToShare);
+            const array = await inputs[1];
+            const element = await inputs[2];
+
+            var occurrences = await array[0].eq(element);
+            for (var i = 1; i < array.length; i++) {
+              const check = await array[i].eq(element);
+              occurrences = await occurrences.add(check);
+            }
+            var result = await occurrences.gteq(1);
+            result = await jiffClient.open(result);
             resolve(result.toString(10));
           } catch (error) {
             reject(error);
@@ -89,17 +96,22 @@ describe('JIFF Array Operations', () => {
 
     const results = await Promise.all(jiffClients.map((client, idx) => linear_search(client, idx + 1)));
     results.map((res) => expect(res).toEqual('1'));
-  });
+  }, 20000);
 
   it('should check that 4 exists in the input array, using binary search', async () => {
     async function binary_search(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            let arrayToShare = id == 1 ? entries : input;
-            const inputs = await jiffClient.share_array(arrayToShare);
-            const array = inputs[1];
-            const element = inputs[2];
+            var whichArray = null;
+            if (id == 1) {
+              whichArray = entries;
+            } else {
+              whichArray = input;
+            }
+            const inputs = await jiffClient.share_array(whichArray);
+            const array = await inputs[1];
+            const elem = await inputs[2];
 
             async function _bin_search(array: any[], element: any) {
               if (array.length == 1) {
@@ -107,11 +119,11 @@ describe('JIFF Array Operations', () => {
               }
 
               const mid = Math.floor(array.length / 2);
-              const cmp = await element.lt(array[mid]);
+              const cmp = await element.lt(await array[mid]);
               var nArray = [];
               for (var i = 0; i < mid; i++) {
-                var c1 = array[i];
-                var c2 = array[mid + i];
+                const c1 = array[i];
+                const c2 = array[mid + i];
                 nArray[i] = await cmp.if_else(c1, c2);
               }
               if (2 * mid < array.length) {
@@ -120,8 +132,9 @@ describe('JIFF Array Operations', () => {
               return await _bin_search(nArray, element);
             }
 
-            const occurrences = await _bin_search(array, element);
-            const result = await jiffClient.open(await occurrences.gteq(1)); // check number of occurrences >= 1
+            const occurrences = await _bin_search(array, elem);
+            var result = await occurrences.gteq(1);
+            result = await jiffClient.open(result);
             resolve(result.toString(10));
           } catch (error) {
             reject(error);

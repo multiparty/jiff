@@ -8,7 +8,7 @@ describe('JIFF bitshare Comparison', () => {
 
   beforeEach(async () => {
     // Server Setup
-    var port: number = 8116;
+    var port: number = 8117;
     const init_server = require('./server');
     const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
     const extensions = [jiff_s_bignumber];
@@ -26,13 +26,9 @@ describe('JIFF bitshare Comparison', () => {
 
     jiffClients = Array.from({ length: party_count }, () => new JIFFClient(baseUrl, computation_id, options));
     const jiff_bignumber = require('../../lib/ext/jiff-client-bignumber.js');
-    const jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint.js');
-    const jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber.js');
 
     async function apply_extension(jiff: any) {
       await jiff.apply_extension(jiff_bignumber, options);
-      await jiff.apply_extension(jiff_fixedpoint, options);
-      await jiff.apply_extension(jiff_negativenumber, options);
     }
     await Promise.all(jiffClients.map(apply_extension));
   });
@@ -46,7 +42,32 @@ describe('JIFF bitshare Comparison', () => {
     await jiffServer.freeComputation(computation_id);
   });
 
-  it('should correctly compare with constants 60 != 50', async () => {
+  it('equality check should correctly function with 60 - 10 == 50 and 60 + 50 == 110(constant)', async () => {
+    async function addition(jiffClient: any, id: number) {
+      return new Promise((resolve, reject) => {
+        jiffClient.wait_for([1, 2], async () => {
+          try {
+            const jiff_bits = await jiffClient.protocols.bits;
+            const input = await jiff_bits.share(entries[id]);
+            const input1 = jiff_bits.csubl(input[1], 10);
+            const comp1 = await jiff_bits.seq(input1, input[2]);
+            const sec_ttl = await jiff_bits.sadd(await input[1], await input[2]);
+            const comp2 = await jiff_bits.ceq(sec_ttl, 110);
+            var result = await comp1.smult(comp2);
+            result = await result.open();
+            resolve(result.toString(10));
+          } catch (error) {
+            reject(error);
+          }
+        });
+      });
+    }
+
+    const results = await Promise.all(jiffClients.map((client, idx) => addition(client, idx + 1)));
+    results.map((res) => expect(res).toEqual('1'));
+  });
+
+  it('not equal should correctly function with 60 != 50 and 60 + 50 != 120(constant)', async () => {
     async function addition(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
@@ -54,10 +75,10 @@ describe('JIFF bitshare Comparison', () => {
             const jiff_bits = await jiffClient.protocols.bits;
             const input = await jiff_bits.share(entries[id]);
             const comp1 = await jiff_bits.sneq(input[1], input[2]);
-            // const sec_ttl = await jiff_bits.sadd(await input[1], await input[2]);
-            // const comp2 = await jiff_bits.cneq(sec_ttl, 120)
-            // var result = await jiff_bits.smult(comp1, comp2)
-            var result = await jiff_bits.open(comp1);
+            const sec_ttl = await jiff_bits.sadd(input[1], input[2]);
+            const comp2 = await jiff_bits.cneq(sec_ttl, 120);
+            var result = await comp1.smult(comp2);
+            result = await result.open();
             resolve(result.toString(10));
           } catch (error) {
             reject(error);
