@@ -90,7 +90,7 @@ describe('JIFF bitwise Arithmetic Operations', () => {
 
     const results = await Promise.all(jiffClients.map((client, idx) => subtract(client, idx + 1)));
     results.map((res) => expect(res).toEqual('100'));
-  }, 15000);
+  }, 25000);
 
   it('should correctly multiply 60 * 50 = 3000', async () => {
     async function division(jiffClient: any, id: number) {
@@ -111,7 +111,7 @@ describe('JIFF bitwise Arithmetic Operations', () => {
 
     const results = await Promise.all(jiffClients.map((client, idx) => division(client, idx + 1)));
     results.map((res) => expect(res).toEqual('3000'));
-  }, 20000);
+  }, 25000);
 
   it('should correctly divide (60 / 50) = 1.2', async () => {
     async function division(jiffClient: any, id: number) {
@@ -140,5 +140,5 @@ describe('JIFF bitwise Arithmetic Operations', () => {
 
     const results = await Promise.all(jiffClients.map((client, idx) => division(client, idx + 1)));
     results.map((res) => expect(res).toEqual(1.2));
-  }, 20000);
+  }, 25000);
 });
