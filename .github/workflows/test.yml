@@ -24,4 +24,4 @@ jobs:
         run: npm ci
 
       - name: Run Jest Tests
-        run: npx jest --coverage --runInBand tests/regr-tests
+        run: npx jest --coverage --runInBand tests/regr-tests --silent
