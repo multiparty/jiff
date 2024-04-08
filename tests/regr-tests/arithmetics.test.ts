@@ -92,7 +92,7 @@ describe('JIFF Arithmetic Operations', () => {
   });
 
   it('should correctly multiply numbers 60.05 * 60.05 = 3606.0025', async () => {
-    async function subtraction(jiffClient: any, id: number) {
+    async function multiplication(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
@@ -107,12 +107,12 @@ describe('JIFF Arithmetic Operations', () => {
       });
     }
 
-    const results = await Promise.all(jiffClients.map((client, idx) => subtraction(client, idx + 1)));
+    const results = await Promise.all(jiffClients.map((client, idx) => multiplication(client, idx + 1)));
     results.map((res) => expect(res).toEqual('3606.0025'));
   });
 
   it('should correctly divide numbers 60.05 / 60.05 = 1', async () => {
-    async function subtraction(jiffClient: any, id: number) {
+    async function division(jiffClient: any, id: number) {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
@@ -127,7 +127,7 @@ describe('JIFF Arithmetic Operations', () => {
       });
     }
 
-    const results = await Promise.all(jiffClients.map((client, idx) => subtraction(client, idx + 1)));
+    const results = await Promise.all(jiffClients.map((client, idx) => division(client, idx + 1)));
     results.map((res) => expect(res).toEqual('1'));
   }, 35000);
 });
