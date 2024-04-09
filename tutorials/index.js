@@ -3,7 +3,7 @@ const Neptune = require('neptune-notebook');
 
 const jsDependencies = [
   __dirname + '/../dist/jiff-client.js',
-  __dirname + '/../node_modules/bignumber.js/bignumber.min.js',
+  __dirname + '/../node_modules/bignumber.js/bignumber.js',
   __dirname + '/../lib/ext/jiff-client-bignumber.js',
   __dirname + '/../lib/ext/jiff-client-fixedpoint.js',
   __dirname + '/../lib/ext/jiff-client-negativenumber.js'
