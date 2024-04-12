@@ -6,7 +6,7 @@ class MPC {
 
     // eslint-disable-next-line no-undef
     let JIFFClient = require('../../lib/jiff-client');
-    
+
     // eslint-disable-next-line no-undef
     let jiff_websockets = require('../../lib/ext/jiff-client-websockets.js');
 
