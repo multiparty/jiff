@@ -16,20 +16,19 @@ describe('Array Binary Search', () => {
       // Ensure the correct role is selected and the inputs are visible
       cy.get('#role').select('Provide Array');
       cy.get('#connectButton').click();
-      cy.get('#input1').should('be.visible');
-
-      // Input the array
-      cy.get('#inputArray').clear().type(JSON.stringify(arrayInput));
-      cy.get('#submit1').click();
-      cy.wait(500);
 
       // The second submitter provides an element to search
       cy.visit('./cypress/e2e/array-binary-search/client.html');
       cy.get('#role').select('Provide element to search');
       cy.get('#connectButton').click();
-      cy.get('#input2').should('be.visible');
 
-      // Input the element to be searched
+      // Input the array by contributor 1
+      cy.get('#input1').should('be.visible');
+      cy.get('#inputArray').clear().type(JSON.stringify(arrayInput));
+      cy.get('#submit1').click();
+
+      // Input the element to be searched by contributor 2
+      cy.get('#input2').should('be.visible');
       cy.get('#inputElement').clear().type(`${elementInput}`);
       cy.get('#submit2').click();
 

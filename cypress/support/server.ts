@@ -6,7 +6,7 @@ let JIFFServer = require('../../lib/jiff-server');
 let jiff_instance = new JIFFServer(http, { logs: true });
 
 // Serve static files.
-app.use('/demos', express.static(path.join(__dirname, '..', '..', 'demos')));
+app.use('/cypress', express.static(path.join(__dirname, '..', '..', 'cypress')));
 app.use('/dist', express.static(path.join(__dirname, '..', '..', 'dist')));
 app.use('/lib/ext', express.static(path.join(__dirname, '..', '..', 'lib', 'ext')));
 
