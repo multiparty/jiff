@@ -1,5 +1,4 @@
 (function (exports, node) {
-
   /**
    * Connect to the server and initialize the jiff instance
    */
@@ -35,7 +34,7 @@
     return new Promise((resolve, reject) => {
       jiff_instance.wait_for([1, 2], async () => {
         try {
-          const inputs = await jiff_instance.share_array(input)
+          const inputs = await jiff_instance.share_array(input);
 
           const array = inputs[1];
           const elem = inputs[2];

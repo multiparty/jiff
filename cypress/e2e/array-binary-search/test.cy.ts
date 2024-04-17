@@ -6,7 +6,7 @@ describe('Array Binary Search', () => {
 
   it('Search Output', () => {
     // Visit the HTML page
-    cy.visit('http://localhost:8080/cypress/e2e/array-binary-search/client.html');
+    cy.visit('array-binary-search/client.html');
 
     // Load the input data and interact with the UI
     cy.get('@inputData').then((inputData) => {
