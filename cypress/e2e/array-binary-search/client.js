@@ -42,14 +42,7 @@ function connect(party_id) {
 }
 
 worker.onmessage = function (e) {
-  if (e.data.type === 'array') {
-    const msg = e.data.result === 1 ? 'Element Found' : 'Element Does Not Exist';
-    document.querySelector('#output').innerHTML += `<p>${msg}</p>`;
-  }
-};
-
-worker.onmessage = function (e) {
-  if (e.data.type === 'element') {
+  if (e.data.type === 'array' || e.data.type === 'element') {
     const msg = e.data.result === 1 ? 'Element Found' : 'Element Does Not Exist';
     document.querySelector('#output').innerHTML += `<p>${msg}</p>`;
   }
