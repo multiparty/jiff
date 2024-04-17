@@ -24,21 +24,14 @@ function connect(party_id) {
   hostname = hostname + ':' + port;
 
   // eslint-disable-next-line no-undef
-  if (party_id === 1) {
-    worker.postMessage({
-      type: 'init_array',
-      hostname: hostname,
-      computation_id: computation_id,
-      options: options
-    });
-  } else if (party_id === 2) {
-    worker.postMessage({
-      type: 'init_elem',
-      hostname: hostname,
-      computation_id: computation_id,
-      options: options
-    });
-  }
+  const type = party_id == 1 ? 'init_array' : 'init_elem';
+
+  worker.postMessage({
+    type: type,
+    hostname: hostname,
+    computation_id: computation_id,
+    options: options
+  });
 }
 
 worker.onmessage = function (e) {
