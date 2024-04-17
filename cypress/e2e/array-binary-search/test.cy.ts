@@ -6,7 +6,7 @@ describe('Array Binary Search', () => {
 
   it('Search Output', () => {
     // Visit the HTML page
-    cy.visit('./cypress/e2e/array-binary-search/client.html');
+    cy.visit('http://localhost:8080/cypress/e2e/array-binary-search/client.html');
 
     // Load the input data and interact with the UI
     cy.get('@inputData').then((inputData) => {
@@ -14,12 +14,6 @@ describe('Array Binary Search', () => {
       const elementInput = (inputData as any)['array-binary-search']['2'] as number;
 
       // Ensure the correct role is selected and the inputs are visible
-      cy.get('#role').select('Provide Array');
-      cy.get('#connectButton').click();
-
-      // The second submitter provides an element to search
-      cy.visit('./cypress/e2e/array-binary-search/client.html');
-      cy.get('#role').select('Provide element to search');
       cy.get('#connectButton').click();
 
       // Input the array by contributor 1

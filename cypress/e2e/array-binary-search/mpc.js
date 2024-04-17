@@ -1,6 +1,4 @@
 (function (exports, node) {
-  var saved_instance;
-  var seeds = {};
 
   /**
    * Connect to the server and initialize the jiff instance
@@ -28,45 +26,28 @@
     return saved_instance;
   };
 
-  exports.compute = function (input, jiff_instance) {
-    if (jiff_instance == null) {
-      jiff_instance = saved_instance;
-    }
-
-    // Unique prefix seed for op_ids
-    if (seeds[jiff_instance.id] == null) {
-      seeds[jiff_instance.id] = 0;
-    }
-    var seed = seeds[jiff_instance.id]++;
-
-    var element = null;
-    var array = null;
+  exports.compute = async function (input, jiff_instance) {
     if (jiff_instance.id === 1) {
-      array = input;
-      array.sort(function (a, b) {
-        // sorts array: note that the sort function without comparison function inside it will interpret numbers as strings
-        // (e.g. 100 smaller than 25)
+      input.sort(function (a, b) {
         return a - b;
       });
-    } else {
-      element = input;
     }
+    return new Promise((resolve, reject) => {
+      jiff_instance.wait_for([1, 2], async () => {
+        try {
+          const inputs = await jiff_instance.share_array(input)
 
-    var deferred = $.Deferred();
-    var promise = deferred.promise();
+          const array = inputs[1];
+          const elem = inputs[2];
 
-    element = jiff_instance.share(element, 2, [1, 2], [2])[2];
-    jiff_instance.share_array(array, null, 2, [1, 2], [1]).then(function (array) {
-      jiff_instance.seed_ids(seed);
-
-      array = array[1];
-      var result = binary_search(array, element);
-      result.open().then(function (result) {
-        deferred.resolve(result);
+          const occurrences = await binary_search(array, elem);
+          result = await jiff_instance.open(occurrences);
+          resolve(result);
+        } catch (error) {
+          reject(error);
+        }
       });
     });
-
-    return promise;
   };
 
   function binary_search(array, element) {

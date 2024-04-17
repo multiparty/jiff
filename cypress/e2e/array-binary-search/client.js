@@ -1,26 +1,10 @@
-/*
- * Do not modify this file unless you have too
- * This file has UI handlers.
- */
-// eslint-disable-next-line no-unused-vars
-function connect() {
+let worker = new Worker('./web-worker.js');
+
+function connect(party_id) {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
-  var party_id = parseInt($('#role').val());
 
   var options = { party_id: party_id, party_count: 2, Zp: 13 };
-  options.onError = function (_, error) {
-    $('#output').append('<p class="error">' + error + '</p>');
-    $('#connectButton').prop('disabled', false);
-  };
-  options.onConnect = function () {
-    if (party_id === 1) {
-      $('#input1').show();
-    } else {
-      $('#input2').show();
-    }
-    $('#result').append('All parties Connected!<br/>');
-  };
 
   var hostname = window.location.hostname.trim();
   var port = window.location.port;
@@ -40,8 +24,36 @@ function connect() {
   hostname = hostname + ':' + port;
 
   // eslint-disable-next-line no-undef
-  mpc.connect(hostname, computation_id, options);
+  if (party_id === 1) {
+    worker.postMessage({
+      type: 'init_array',
+      hostname: hostname,
+      computation_id: computation_id,
+      options: options
+    });
+  } else if (party_id === 2) {
+    worker.postMessage({
+      type: 'init_elem',
+      hostname: hostname,
+      computation_id: computation_id,
+      options: options
+    });
+  }
 }
+
+worker.onmessage = function (e) {
+  if (e.data.type === 'array') {
+    const msg = e.data.result === 1 ? 'Element Found' : 'Element Does Not Exist';
+    document.querySelector('#output').innerHTML += `<p>${msg}</p>`;
+  }
+};
+
+worker.onmessage = function (e) {
+  if (e.data.type === 'element') {
+    const msg = e.data.result === 1 ? 'Element Found' : 'Element Does Not Exist';
+    document.querySelector('#output').innerHTML += `<p>${msg}</p>`;
+  }
+};
 
 // eslint-disable-next-line no-unused-vars
 function submitArray() {
@@ -53,12 +65,9 @@ function submitArray() {
     }
   }
 
-  // eslint-disable-next-line no-undef
-  var promise = mpc.compute(arr);
-
-  promise.then(function (result) {
-    var msg = result === 1 ? 'Element Found' : 'Element Does Not Exist';
-    $('#output').append('<p>' + msg + '</p>');
+  worker.postMessage({
+    type: 'computeArray',
+    input: arr
   });
 }
 
@@ -75,11 +84,8 @@ function submitElement() {
     return;
   }
 
-  // eslint-disable-next-line no-undef
-  var promise = mpc.compute(element);
-
-  promise.then(function (result) {
-    var msg = result === 1 ? 'Element Found' : 'Element Does Not Exist';
-    $('#output').append('<p>' + msg + '</p>');
+  worker.postMessage({
+    type: 'computeElement',
+    input: element
   });
 }
