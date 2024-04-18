@@ -13,7 +13,7 @@ describe('Array Concat and Shuffle', () => {
       const arrayInput1 = (inputData as any)['array-shuffle']['1'] as number[];
       const arrayInput2 = (inputData as any)['array-shuffle']['2'] as number[];
 
-      // Ensure the correct role is selected and the inputs are visible
+      // Start JIFF Clients
       cy.get('#connectButton').click();
 
       // Input the array1

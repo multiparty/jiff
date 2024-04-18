@@ -13,7 +13,7 @@ describe('Array substring search', () => {
       const stringInput1 = (inputData as any)['array-substring']['1'] as string;
       const stringInput2 = (inputData as any)['array-substring']['2'] as string;
 
-      // Ensure the correct role is selected and the inputs are visible
+      // Start JIFF Clients
       cy.get('#connectButton').click();
 
       // Input the array1

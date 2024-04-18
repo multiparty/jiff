@@ -13,7 +13,7 @@ describe('Array Binary Search', () => {
       const arrayInput = (inputData as any)['array-binary-search']['1'] as number[];
       const elementInput = (inputData as any)['array-binary-search']['2'] as number;
 
-      // Ensure the correct role is selected and the inputs are visible
+      // Start JIFF Clients
       cy.get('#connectButton').click();
 
       // Input the array by contributor 1

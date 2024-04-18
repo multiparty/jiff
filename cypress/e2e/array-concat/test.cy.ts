@@ -13,7 +13,7 @@ describe('Concat two Strings through Secret Array Operation', () => {
       const arrayInput1 = (inputData as any)['array-concat']['1'] as String;
       const arrayInput2 = (inputData as any)['array-concat']['2'] as String;
 
-      // Ensure the correct role is selected and the inputs are visible
+      // Start JIFF Clients
       cy.get('#connectButton').click();
 
       // Input the array1
