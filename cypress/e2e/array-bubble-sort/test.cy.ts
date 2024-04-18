@@ -4,7 +4,7 @@ describe('Array Bubble Sort Sum of two arrays', () => {
     cy.fixture('mpc_input.json').as('inputData');
   });
 
-  it('Search Output', () => {
+  it('Add two arrays and sort', () => {
     // Visit the HTML page
     cy.visit('array-bubble-sort/client.html');
 

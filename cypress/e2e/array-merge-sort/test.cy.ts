@@ -4,7 +4,7 @@ describe('Array Merge Sort Sum of two arrays', () => {
     cy.fixture('mpc_input.json').as('inputData');
   });
 
-  it('Search Output', () => {
+  it('Add and Merge Arrays', () => {
     // Visit the HTML page
     cy.visit('array-merge-sort/client.html');
 

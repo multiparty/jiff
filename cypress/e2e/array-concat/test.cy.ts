@@ -4,7 +4,7 @@ describe('Concat two Strings through Secret Array Operation', () => {
     cy.fixture('mpc_input.json').as('inputData');
   });
 
-  it('Search Output', () => {
+  it('Concatenate two arrays', () => {
     // Visit the HTML page
     cy.visit('array-concat/client.html');
 

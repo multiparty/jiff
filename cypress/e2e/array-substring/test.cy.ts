@@ -4,7 +4,7 @@ describe('Array substring search', () => {
     cy.fixture('mpc_input.json').as('inputData');
   });
 
-  it('Search Output', () => {
+  it('Substring Search', () => {
     // Visit the HTML page
     cy.visit('array-substring/client.html');
 

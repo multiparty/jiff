@@ -4,7 +4,7 @@ describe('Array Concat and Shuffle', () => {
     cy.fixture('mpc_input.json').as('inputData');
   });
 
-  it('Search Output', () => {
+  it('Shuffle Array', () => {
     // Visit the HTML page
     cy.visit('array-shuffle/client.html');
 
