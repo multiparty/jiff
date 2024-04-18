@@ -18,12 +18,12 @@ describe('Array Binary Search', () => {
 
       // Input the array by contributor 1
       cy.get('#input1').should('be.visible');
-      cy.get('#inputArray').clear().type(JSON.stringify(arrayInput));
+      cy.get('#inputText1').clear().type(JSON.stringify(arrayInput));
       cy.get('#submit1').click();
 
       // Input the element to be searched by contributor 2
       cy.get('#input2').should('be.visible');
-      cy.get('#inputElement').clear().type(`${elementInput}`);
+      cy.get('#inputText2').clear().type(`${elementInput}`);
       cy.get('#submit2').click();
 
       // Check the output

@@ -26,11 +26,10 @@ function connect(party_id) {
     }
 
     hostname = hostname + ':' + port;
-    // eslint-disable-next-line no-undef
-    const type = party_id == 1 ? 'init_1' : 'init_2';
 
+    // eslint-disable-next-line no-undef
     worker.postMessage({
-      type: type,
+      type: 'init_' + String(party_id),
       hostname: hostname,
       computation_id: computation_id,
       options: options
@@ -57,12 +56,10 @@ function submit(party_id) {
   }
 
   $('#processButton').attr('disabled', true);
-  $('#output').append('<p>Starting...</p>');
 
   // eslint-disable-next-line no-undef
-  const type = party_id == 1 ? 'compute1' : 'compute2';
   worker.postMessage({
-    type: type,
+    type: 'compute' + String(party_id),
     input: arr
   });
 }

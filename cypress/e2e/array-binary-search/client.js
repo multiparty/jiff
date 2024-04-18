@@ -40,36 +40,32 @@ worker.onmessage = function (e) {
 };
 
 // eslint-disable-next-line no-unused-vars
-function submitArray() {
-  let arr = JSON.parse($('#inputArray').val());
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] >= 13) {
-      alert('All numbers must be less than 13');
+function submit(party_id) {
+  let arr;
+  if (party_id == 1) {
+    arr = JSON.parse(document.getElementById('inputText' + String(party_id)).value);
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] >= 13) {
+        alert('All numbers must be less than 13');
+        return;
+      }
+    }
+  } else {
+    console.log(party_id);
+    arr = parseInt($('#inputText' + String(party_id)).val());
+    console.log(arr);
+    if (arr == null || isNaN(arr)) {
+      alert('Element must be a whole number');
+      return;
+    }
+    if (arr < 0 || arr >= 13) {
+      alert('Element must be between 0 and 13 exclusive');
       return;
     }
   }
 
   worker.postMessage({
-    type: 'compute1',
+    type: 'compute' + String(party_id),
     input: arr
-  });
-}
-
-// eslint-disable-next-line no-unused-vars
-function submitElement() {
-  let element = $('#inputElement').val();
-  element = parseInt(element);
-  if (element == null || isNaN(element)) {
-    alert('Element must be a whole number');
-    return;
-  }
-  if (element < 0 || element >= 13) {
-    alert('Element must be between 0 and 13 exclusive');
-    return;
-  }
-
-  worker.postMessage({
-    type: 'compute2',
-    input: element
   });
 }
