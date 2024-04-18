@@ -46,6 +46,7 @@ worker.onmessage = function (e) {
 
 // eslint-disable-next-line no-unused-vars
 function submit(party_id) {
+  $('#submit' + String(party_id)).attr('disabled', true);
   let arr = JSON.parse(document.getElementById('inputText' + String(party_id)).value);
 
   for (let i = 0; i < arr.length; i++) {
@@ -54,8 +55,6 @@ function submit(party_id) {
       return;
     }
   }
-
-  $('#processButton').attr('disabled', true);
 
   // eslint-disable-next-line no-undef
   worker.postMessage({

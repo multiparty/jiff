@@ -5,7 +5,7 @@ function connect(party_id) {
   var party_count = parseInt($('#count').val());
 
   if (isNaN(party_count)) {
-    $('#output').append("<p class='error'>Party count must be a valid number!</p>");
+    $('#output').append('<p class="error">Party count must be a valid number!</p>');
     $('#connectButton').prop('disabled', false);
   } else {
     var options = { party_count: party_count };
@@ -48,11 +48,33 @@ worker.onmessage = function (e) {
 function submit(party_id) {
   $('#submit' + String(party_id)).attr('disabled', true);
 
-  var _string = document.getElementById('inputText' + String(party_id)).value;
+  let arr = JSON.parse(document.getElementById('inputText' + String(party_id)).value);
+
+  // Ensure array has only numbers
+  for (let i = 0; i < arr.length; i++) {
+    if (isNaN(arr[i])) {
+      $('#output').append('<p class="error">Please input an array of valid numbers!</p>');
+      return;
+    } else if (100 < arr[i] || arr[i] < 0 || arr[i] !== Math.floor(arr[i])) {
+      $('#output').append('<p class="error">Please input an array of whole numbers between 0 and 100!</p>');
+      return;
+    }
+  }
+
+  // Ensure array length is a power of 2
+  var lg = arr.length;
+  while (lg > 1) {
+    if (lg % 2 !== 0) {
+      $('#output').append('<p class="error">Input array length must be a power of 2!</p>');
+      return;
+    }
+
+    lg = lg / 2;
+  }
 
   // eslint-disable-next-line no-undef
   worker.postMessage({
     type: 'compute' + String(party_id),
-    input: _string
+    input: arr
   });
 }
