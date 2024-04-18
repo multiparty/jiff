@@ -24,52 +24,26 @@
     return jiff_instance;
   };
 
+  /**
+   * The MPC computation
+   */
   exports.compute = async function (input, jiff_instance) {
-    if (jiff_instance.id === 1) {
-      input.sort(function (a, b) {
-        return a - b;
-      });
-    }
+    const char_arr = Array.from(input, (char) => char.charCodeAt(0));
+    console.log(jiff_instance);
+
     return new Promise((resolve, reject) => {
       jiff_instance.wait_for([1, 2], async () => {
-        try {
-          const inputs = await jiff_instance.share_array(input);
+        const shares = await jiff_instance.share_array(char_arr);
+        const allShares = Object.values(shares).flat();
+        const openPromises = allShares.map((share) => jiff_instance.open(share));
 
-          const array = inputs[1];
-          const elem = inputs[2];
-
-          const occurrences = await binary_search(array, elem);
-          result = await jiff_instance.open(occurrences);
-          resolve(result);
-        } catch (error) {
-          reject(error);
-        }
+        Promise.all(openPromises)
+          .then((results) => {
+            const res_string = results.map((charCode) => String.fromCharCode(charCode)).join('');
+            resolve(res_string);
+          })
+          .catch(reject);
       });
     });
   };
-
-  function binary_search(array, element) {
-    if (array.length === 1) {
-      return array[0].seq(element);
-    }
-
-    // comparison
-    let mid = Math.floor(array.length / 2);
-    let cmp = element.slt(array[mid]);
-
-    // Slice array in half, choose slice depending on cmp
-    let nArray = [];
-    for (let i = 0; i < mid; i++) {
-      let c1 = array[i];
-      let c2 = array[mid + i];
-      nArray[i] = cmp.if_else(c1, c2);
-    }
-
-    // watch out for off by 1 errors if length is odd.
-    if (2 * mid < array.length) {
-      nArray[mid] = array[2 * mid];
-    }
-
-    return binary_search(nArray, element);
-  }
 })(typeof exports === 'undefined' ? (this.mpc = {}) : exports, typeof exports !== 'undefined');

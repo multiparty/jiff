@@ -1,4 +1,5 @@
 {
     "array-binary-search": {"1": [1, 2, 3], "2":3},
-    "array-bubble-sort": {"1": [1, 3, 2], "2":[1, 3, 2]}
+    "array-bubble-sort": {"1": [1, 3, 2], "2":[1, 3, 2]},
+    "array-concat": {"1": "fghij", "2":"abcde"}
 }

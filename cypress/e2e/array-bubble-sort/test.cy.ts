@@ -11,7 +11,7 @@ describe('Array Bubble Sort Sum of two arrays', () => {
     // Load the input data and interact with the UI
     cy.get('@inputData').then((inputData) => {
       const arrayInput1 = (inputData as any)['array-bubble-sort']['1'] as number[];
-      const arrayInput2 = (inputData as any)['array-bubble-sort']['1'] as number[];
+      const arrayInput2 = (inputData as any)['array-bubble-sort']['2'] as number[];
 
       // Ensure the correct role is selected and the inputs are visible
       cy.get('#connectButton').click();
@@ -21,7 +21,7 @@ describe('Array Bubble Sort Sum of two arrays', () => {
       cy.get('#submit1').click();
 
       // Input the array2
-      cy.get('#inputText1').clear().type(JSON.stringify(arrayInput2));
+      cy.get('#inputText2').clear().type(JSON.stringify(arrayInput2));
       cy.get('#submit2').click();
 
       // Check the output

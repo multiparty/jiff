@@ -12,11 +12,13 @@
       JIFFClient = require('../../lib/jiff-client');
       // eslint-disable-next-line no-undef,no-global-assign
       $ = require('jquery-deferred');
+      // eslint-disable-next-line no-undef
       jiff_websockets = require('../../lib/ext/jiff-client-websockets.js');
     }
 
     // eslint-disable-next-line no-undef
     let jiff_instance = new JIFFClient(hostname, computation_id, opt);
+    // eslint-disable-next-line no-undef
     jiff_instance.apply_extension(jiff_websockets, opt);
 
     return jiff_instance;
@@ -41,7 +43,6 @@
   }
 
   exports.compute = function (input, jiff_instance) {
-    // Share the arrays
     let shares = jiff_instance.share_array(input, input.length);
 
     // Sum all shared input arrays element wise
