@@ -24,10 +24,8 @@ function connect(party_id) {
   hostname = hostname + ':' + port;
 
   // eslint-disable-next-line no-undef
-  const type = party_id == 1 ? 'init_array' : 'init_elem';
-
   worker.postMessage({
-    type: type,
+    type: 'init_' + String(party_id),
     hostname: hostname,
     computation_id: computation_id,
     options: options
@@ -35,7 +33,7 @@ function connect(party_id) {
 }
 
 worker.onmessage = function (e) {
-  if (e.data.type === 'array' || e.data.type === 'element') {
+  if (e.data.type === 'result1' || e.data.type === 'result2') {
     const msg = e.data.result === 1 ? 'Element Found' : 'Element Does Not Exist';
     document.querySelector('#output').innerHTML += `<p>${msg}</p>`;
   }
@@ -52,7 +50,7 @@ function submitArray() {
   }
 
   worker.postMessage({
-    type: 'computeArray',
+    type: 'compute1',
     input: arr
   });
 }
@@ -71,7 +69,7 @@ function submitElement() {
   }
 
   worker.postMessage({
-    type: 'computeElement',
+    type: 'compute2',
     input: element
   });
 }

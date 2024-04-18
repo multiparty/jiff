@@ -1,26 +1,26 @@
 importScripts('./mpc.js', '../../../dist/jiff-client.js', '../../../dist/jiff-client-websockets.js');
 
-let elem_instance;
-let array_instance;
+let instance1;
+let instance2;
 
 self.onmessage = function (event) {
   const data = event.data;
 
   switch (data.type) {
-    case 'init_elem':
-      elem_instance = mpc.connect(data.hostname, data.computation_id, data.options);
+    case 'init_1':
+      instance1 = mpc.connect(data.hostname, data.computation_id, data.options);
       break;
-    case 'init_array':
-      array_instance = mpc.connect(data.hostname, data.computation_id, data.options);
+    case 'init_2':
+      instance2 = mpc.connect(data.hostname, data.computation_id, data.options);
       break;
-    case 'computeElement':
-      mpc.compute(data.input, elem_instance).then((result) => {
-        self.postMessage({ result: result, type: 'element' });
+    case 'compute1':
+      mpc.compute(data.input, instance1).then((result) => {
+        self.postMessage({ result: result, type: 'result1' });
       });
       break;
-    case 'computeArray':
-      mpc.compute(data.input, array_instance).then((result) => {
-        self.postMessage({ result: result, type: 'array' });
+    case 'compute2':
+      mpc.compute(data.input, instance2).then((result) => {
+        self.postMessage({ result: result, type: 'result2' });
       });
       break;
   }
