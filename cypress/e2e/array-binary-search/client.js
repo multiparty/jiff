@@ -2,12 +2,12 @@ let worker = new Worker('./web-worker.js');
 
 function connect(party_id) {
   $('#connectButton').prop('disabled', true);
-  var computation_id = $('#computation_id').val();
+  let computation_id = $('#computation_id').val();
 
-  var options = { party_id: party_id, party_count: 2, Zp: 13 };
+  let options = { party_id: party_id, party_count: 2, Zp: 13 };
 
-  var hostname = window.location.hostname.trim();
-  var port = window.location.port;
+  let hostname = window.location.hostname.trim();
+  let port = window.location.port;
   if (port == null || port === '') {
     port = '80';
   }
@@ -43,8 +43,8 @@ worker.onmessage = function (e) {
 
 // eslint-disable-next-line no-unused-vars
 function submitArray() {
-  var arr = JSON.parse($('#inputArray').val());
-  for (var i = 0; i < arr.length; i++) {
+  let arr = JSON.parse($('#inputArray').val());
+  for (let i = 0; i < arr.length; i++) {
     if (arr[i] >= 13) {
       alert('All numbers must be less than 13');
       return;
@@ -59,7 +59,7 @@ function submitArray() {
 
 // eslint-disable-next-line no-unused-vars
 function submitElement() {
-  var element = $('#inputElement').val();
+  let element = $('#inputElement').val();
   element = parseInt(element);
   if (element == null || isNaN(element)) {
     alert('Element must be a whole number');
