@@ -29,7 +29,6 @@
    */
   exports.compute = async function (input, jiff_instance) {
     const char_arr = Array.from(input, (char) => char.charCodeAt(0));
-    console.log(jiff_instance);
 
     return new Promise((resolve, reject) => {
       jiff_instance.wait_for([1, 2], async () => {

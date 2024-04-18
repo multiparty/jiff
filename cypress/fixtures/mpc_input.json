@@ -3,5 +3,6 @@
     "array-bubble-sort": {"1": [1, 3, 2], "2":[1, 3, 2]},
     "array-concat": {"1": "fghij", "2":"abcde"},
     "array-merge-sort": {"1": [1, 3, 2, 4], "2":[1, 3, 2, 4]},
-    "array-shuffle": {"1": [1, 3, 2], "2":[1, 3, 2]}
+    "array-shuffle": {"1": [1, 3, 2], "2":[1, 3, 2]},
+    "array-substring": {"1": "abcde", "2":"c"}
 }
