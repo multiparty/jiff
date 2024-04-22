@@ -22,7 +22,7 @@
     __jiff_instance = new JIFFClient(hostname, computation_id, opt);
     // eslint-disable-next-line no-undef
     __jiff_instance.apply_extension(jiff_restAPI);
-    __jiff_instance.connect();
+
     return __jiff_instance;
   };
   exports.compute = function (input, jiff_instance_) {

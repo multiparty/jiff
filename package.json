@@ -52,6 +52,7 @@
     "build": "browserify lib/jiff-client.js --debug -s JIFFClient -o dist/jiff-client.js && browserify lib/ext/jiff-client-websockets.js --debug -s jiff_websockets -o dist/jiff-client-websockets.js"
   },
   "dependencies": {
+    "axios": "^1.6.8",
     "bignumber.js": "^9.1.2",
     "cross-env": "^7.0.3",
     "docdash": "^1.1.1",
