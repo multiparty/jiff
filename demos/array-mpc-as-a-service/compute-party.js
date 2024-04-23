@@ -33,8 +33,7 @@ var JIFFClient = require('../../lib/jiff-client.js');
 var jiffClient = new JIFFClient('http://localhost:8080', computation_id, {
   crypto_provider: config.preprocessing === false, // comment this out if you want to use preprocessing
   party_count: config.party_count,
-  initialization: {role: 'compute'}, // indicate to the server that this is a compute party
-  party_id: process.argv[4]
+  initialization: {role: 'compute'} // indicate to the server that this is a compute party
 });
 
 // the computation code
