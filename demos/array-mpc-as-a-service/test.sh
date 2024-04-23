@@ -20,7 +20,7 @@ for config in tests/*.json; do
   count=$((count-1))
   allIDs=$serverID
   for ((j=1;j<=$count;j++)); do
-    node compute-party.js $config 'test' $j >> $logss &
+    node compute-party.js $config 'test' >> $logss &
     allIDs="$allIDs $!"
   done
 
