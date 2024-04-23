@@ -26,7 +26,7 @@ for config in tests/*.json; do
 
   # run a bunch of input parties via test.js
   export TEST_CONFIG="$config"
-  ../../node_modules/.bin/mocha --full-trace --reporter spec tests/test.js $config # DEBUG add  --inspect--brk
+  ../../node_modules/.bin/mocha --full-trace --reporter spec tests/test.js $config  # DEBUG add  --inspect--brk
   EXIT_CODE=$?
 
   kill $allIDs 2> /dev/null
