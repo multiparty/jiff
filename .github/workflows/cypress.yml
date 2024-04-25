@@ -35,7 +35,7 @@ jobs:
           for TEST in "${TESTS[@]}"
           do
             echo "Running Cypress test: $TEST"
-            npx cypress run --spec "cypress/e2e/$TEST.js"
+            npx cypress run --spec "cypress/e2e/$TEST/test.cy.ts"
             kill $(cat SERVER_PID) # stop the server
             node cypress/support/server.ts & echo $! > SERVER_PID
           done
