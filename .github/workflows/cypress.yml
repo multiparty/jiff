@@ -27,7 +27,7 @@ jobs:
         run: npm ci
 
       - name: Start Server
-        run: node cypress/support/server.ts & echo $! > SERVER_PID
+        run: node demos/support/server.ts & echo $! > SERVER_PID
 
       - name: Run Cypress Tests
         run: |
@@ -36,9 +36,9 @@ jobs:
           do
             echo "Running Cypress test: $TEST"
             sleep 3
-            npx cypress run --spec "cypress/e2e/$TEST/test.cy.ts"
+            npx cypress run --spec "demos/e2e/$TEST/test.cy.ts"
             kill $(cat SERVER_PID) # stop the server
-            node cypress/support/server.ts & echo $! > SERVER_PID
+            node demos/support/server.ts & echo $! > SERVER_PID
           done
 
       - name: Stop Server
