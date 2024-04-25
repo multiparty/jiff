@@ -31,11 +31,11 @@ jobs:
 
       - name: Run Cypress Tests
         run: |
-          TESTS=("array-binary-search" "array-merge-sort" "array-substring" "array-bubble-sort" "array-shell-sort" "the-valentine-question" "array-concat" "array-shuffle")
+          TESTS=("array-concat" "array-binary-search" "array-merge-sort" "array-substring" "array-bubble-sort" "array-shell-sort" "the-valentine-question" "array-shuffle")
           for TEST in "${TESTS[@]}"
           do
             echo "Running Cypress test: $TEST"
-            sleep 3
+            sleep 5
             npx cypress run --config-file demos/cypress.config.ts --spec "demos/$TEST/test.cy.ts"
             kill $(cat SERVER_PID) # stop the server
             node demos/support/server.ts & echo $! > SERVER_PID
