@@ -11,7 +11,7 @@ console.log('<<>> all points coordinates must be between -25 and 25.');
 console.log('<<>> Polygons with sides with very high or infinite slope are not acceptable.');
 
 var geometry = require('./geometry.js');
-var mpc = require('./mpc.js');
+var mpc = require('./mpc');
 
 // Read Command line arguments
 var party_id = parseInt(process.argv[2]);
