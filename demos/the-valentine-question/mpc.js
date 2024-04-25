@@ -1,6 +1,4 @@
 (function (exports, node) {
-  var saved_instance;
-
   /**
    * Connect to the server and initialize the jiff instance
    */
@@ -11,28 +9,27 @@
 
     if (node) {
       // eslint-disable-next-line no-undef
-      JIFFClient = require('../../../lib/jiff-client');
+      JIFFClient = require('../../lib/jiff-client');
+      // eslint-disable-next-line no-undef
+      jiff_websockets = require('../../lib/ext/jiff-client-websockets.js');
     }
 
     // eslint-disable-next-line no-undef
-    saved_instance = new JIFFClient(hostname, computation_id, opt);
-    // if you need any extensions, put them here
+    let jiff_instance = new JIFFClient(hostname, computation_id, opt);
+    // eslint-disable-next-line no-undef
+    jiff_instance.apply_extension(jiff_websockets, opt);
 
-    return saved_instance;
+    return jiff_instance;
   };
 
   /**
    * The MPC computation
    */
   exports.compute = function (input, jiff_instance) {
-    if (jiff_instance == null) {
-      jiff_instance = saved_instance;
-    }
-
     var shares = jiff_instance.share(input);
 
     shares = shares[1].mult(shares[2]);
 
     return shares.open();
   };
-}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
+})(typeof exports === 'undefined' ? (this.mpc = {}) : exports, typeof exports !== 'undefined');
