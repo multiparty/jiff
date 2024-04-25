@@ -28,12 +28,8 @@ describe('Concat two Strings through Secret Array Operation', () => {
       cy.get('#inputText2').clear().type(input2);
       cy.get('#submit2').click();
       
-      cy.wait(10000);
       // Check the output
-      cy.get('#output').should(($el) => {
-        const text = $el.text();
-        expect(text.includes('abcdefghi') || text.includes('efghiabcd')).to.be.true;
-      });
+      cy.get('#output').should('contain', 'abcdefghi');
     });
   });
 });
