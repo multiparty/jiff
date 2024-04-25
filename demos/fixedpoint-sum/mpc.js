@@ -8,17 +8,16 @@
     var opt = Object.assign({}, options);
     opt.warn = false;
     opt.crypto_provider = true;
+    opt.sodium = false;
 
     // Added options goes here
     if (node) {
       // eslint-disable-next-line no-undef
-      JIFFClient = require('../../../lib/jiff-client');
+      JIFFClient = require('../../lib/jiff-client');
       // eslint-disable-next-line no-undef
-      jiff_bignumber = require('../../../lib/ext/jiff-client-bignumber');
+      jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
       // eslint-disable-next-line no-undef
-      jiff_fixedpoint = require('../../../lib/ext/jiff-client-fixedpoint');
-      // eslint-disable-next-line no-undef
-      jiff_negativenumber = require('../../../lib/ext/jiff-client-negativenumber');
+      jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
     }
 
     opt.autoConnect = false;
@@ -28,8 +27,6 @@
     saved_instance.apply_extension(jiff_bignumber, opt);
     // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_fixedpoint, opt); // Max bits after decimal allowed
-    // eslint-disable-next-line no-undef
-    saved_instance.apply_extension(jiff_negativenumber, opt); // Max bits after decimal allowed
     saved_instance.connect();
 
     return saved_instance;
@@ -45,12 +42,11 @@
 
     var shares = jiff_instance.share(input);
 
-    var min = shares[1];
+    var sum = shares[1];
     for (var i = 2; i <= jiff_instance.party_count; i++) {
-      var cmp = min.slt(shares[i]);
-      min = cmp.if_else(min, shares[i]);
+      sum = sum.sadd(shares[i]);
     }
 
-    return min.open();
+    return sum.open();
   };
 }((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));

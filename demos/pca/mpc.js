@@ -14,13 +14,13 @@
     // if you need any extensions, put them here
     if (node) {
       // eslint-disable-next-line no-undef
-      JIFFClient = require('../../../lib/jiff-client');
+      JIFFClient = require('../../lib/jiff-client');
       // eslint-disable-next-line no-undef
-      jiff_bignumber = require('../../../lib/ext/jiff-client-bignumber');
+      jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
       // eslint-disable-next-line no-undef
-      jiff_fixedpoint = require('../../../lib/ext/jiff-client-fixedpoint');
+      jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
       // eslint-disable-next-line no-undef
-      jiff_negativenumber = require('../../../lib/ext/jiff-client-negativenumber');
+      jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber');
       // eslint-disable-next-line no-undef,no-global-assign
       $ = require('jquery-deferred');
       // eslint-disable-next-line no-undef,no-global-assign

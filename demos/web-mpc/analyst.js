@@ -3,7 +3,7 @@ var path = require('path');
 var fs = require('fs');
 var readline = require('readline');
 
-var JIFFClient = require('../../../lib/jiff-client.js');
+var JIFFClient = require('../../lib/jiff-client.js');
 var mpc = require('./mpc.js');
 
 // Handle storing and loading keys

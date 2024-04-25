@@ -9,7 +9,7 @@ app.use('/demos', express.static(path.join(__dirname, '..', '..', 'demos')));
 app.use('/dist', express.static(path.join(__dirname, '..', '..', 'dist')));
 app.use('/lib/ext', express.static(path.join(__dirname, '..', '..', 'lib', 'ext')));
 
-var JIFFServer = require('../../../lib/jiff-server.js');
+var JIFFServer = require('../../lib/jiff-server.js');
 new JIFFServer(http, { logs: true });
 
 // Serve static files.
