@@ -2,12 +2,6 @@
 
 mkdir -p ../../logs
 logs="../../logs/array-mpc-as-a-service.log"
-logss="../../logs/array-mpc-as-a-service-client.log"
-# Check if the file exists
-if [ -f "$logss" ]; then
-    # If the file exists, delete it
-    rm "$logss"
-fi
 
 for config in tests/*.json; do
   # run server
@@ -20,7 +14,7 @@ for config in tests/*.json; do
   count=$((count-1))
   allIDs=$serverID
   for ((j=1;j<=$count;j++)); do
-    node compute-party.js $config 'test' >> $logss &
+    node compute-party.js $config 'test' >> $logs &
     allIDs="$allIDs $!"
   done
 
