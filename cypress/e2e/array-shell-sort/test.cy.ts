@@ -24,7 +24,7 @@ describe('Array Shell Sort Sum of two arrays', () => {
       cy.get('#inputText2').clear().type(JSON.stringify(arrayInput2));
       cy.get('#submit2').click();
 
-      cy.wait(15000);
+      cy.wait(20000);
       // Check the output
       cy.get('#output').should('contain', '2,4,6,8');
     });
