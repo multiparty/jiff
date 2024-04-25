@@ -1,7 +1,7 @@
 // Read command line arguments
 var input = parseInt(process.argv[2], 10);
 
-var JIFFClient = require('../../../lib/jiff-client.js');
+var JIFFClient = require('../../lib/jiff-client.js');
 var jiffClient = new JIFFClient('http://localhost:8080', 'web-mpc');
 
 // Wait for server to connect

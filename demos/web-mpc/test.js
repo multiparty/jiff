@@ -1,5 +1,5 @@
-var ChildProcess = require('../../../tests/utils/process.js');
-var Zp = require('../../../lib/client/util/constants.js').gZp;
+var ChildProcess = require('../../tests/utils/process.js');
+var Zp = require('../../lib/client/util/constants.js').gZp;
 
 var TEST_COUNT = 5;
 

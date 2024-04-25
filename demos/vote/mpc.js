@@ -13,7 +13,7 @@
 
     if (node) {
       // eslint-disable-next-line no-undef
-      JIFFClient = require('../../../lib/jiff-client');
+      JIFFClient = require('../../lib/jiff-client');
       // eslint-disable-next-line no-undef, no-global-assign
       $ = require('jquery-deferred');
     }

@@ -1,6 +1,6 @@
 // Dependencies
 var http = require('http');
-var JIFFServer = require('../../../lib/jiff-server.js');
+var JIFFServer = require('../../lib/jiff-server.js');
 var mpc = require('./mpc.js');
 
 // Create express and http servers

@@ -2,10 +2,10 @@ var path = require('path');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var JIFFServer = require('../../../lib/jiff-server');
+var JIFFServer = require('../../lib/jiff-server');
 var base_instance = new JIFFServer(http, { logs:true });
 
-var jiffBigNumberServer = require('../../../lib/ext/jiff-server-bignumber');
+var jiffBigNumberServer = require('../../lib/ext/jiff-server-bignumber');
 base_instance.apply_extension(jiffBigNumberServer);
 
 // Serve static files.

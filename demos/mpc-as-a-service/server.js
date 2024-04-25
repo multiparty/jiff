@@ -66,8 +66,8 @@ var options = {
 };
 
 // Create the server
-var JIFFServer = require('../../../lib/jiff-server');
-var jiffRestAPIServer = require('../../../lib/ext/jiff-server-restful.js');
+var JIFFServer = require('../../lib/jiff-server');
+var jiffRestAPIServer = require('../../lib/ext/jiff-server-restful.js');
 var jiffServer = new JIFFServer(http, options);
 jiffServer.apply_extension(jiffRestAPIServer, {app: app});
 

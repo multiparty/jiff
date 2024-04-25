@@ -5,7 +5,7 @@ describe('MPC-as-a-service', function () {
   // eslint-disable-next-line no-undef
   it(process.env.TEST_CONFIG, function (done) {
     var config = require('./../' + process.env.TEST_CONFIG);
-    var clientMPC = require('../client-mpc.js');
+    var clientMPC = require('./../client-mpc.js');
 
     // read config
     var compute_parties = config.compute_parties;
