@@ -27,7 +27,8 @@ describe('Concat two Strings through Secret Array Operation', () => {
       input2 = input2.slice(1, -1);
       cy.get('#inputText2').clear().type(input2);
       cy.get('#submit2').click();
-
+      
+      cy.wait(10000);
       // Check the output
       cy.get('#output').should(($el) => {
         const text = $el.text();
