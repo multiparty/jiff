@@ -1,9 +1,5 @@
-/**
- * Do not modify this file unless you have too
- * This file has UI handlers.
- */
-// eslint-disable-next-line no-unused-vars
-function connect() {
+let worker = new Worker('./web-worker.js');
+function connect(party_id) {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
   var party_count = parseInt($('#count').val());
@@ -12,14 +8,7 @@ function connect() {
     $('#output').append('<p class="error">Party count must be a valid number!</p>');
     $('#connectButton').prop('disabled', false);
   } else {
-    var options = { party_count: party_count};
-    options.onError = function (_, error) {
-      $('#output').append('<p class="error">'+error+'</p>');
-    };
-    options.onConnect = function () {
-      $('#button').attr('disabled', false);
-      $('#output').append('<p>All parties Connected!</p>');
-    };
+    var options = { party_count: party_count };
 
     var hostname = window.location.hostname.trim();
     var port = window.location.port;
@@ -30,7 +19,7 @@ function connect() {
       hostname = 'http://' + hostname;
     }
     if (hostname.endsWith('/')) {
-      hostname = hostname.substring(0, hostname.length-1);
+      hostname = hostname.substring(0, hostname.length - 1);
     }
     if (hostname.indexOf(':') > -1 && hostname.lastIndexOf(':') > hostname.indexOf(':')) {
       hostname = hostname.substring(0, hostname.lastIndexOf(':'));
@@ -39,16 +28,30 @@ function connect() {
     hostname = hostname + ':' + port;
 
     // eslint-disable-next-line no-undef
-    mpc.connect(hostname, computation_id, options);
+    worker.postMessage({
+      type: 'init_' + String(party_id),
+      hostname: hostname,
+      computation_id: computation_id,
+      options: options
+    });
   }
 }
 
+worker.onmessage = function (e) {
+  if ($('#output').is(':empty') && (e.data.type === 'result1' || e.data.type === 'result2')) {
+    $('#output').append('<p>Result is: ' + e.data.result + '</p>');
+    $('#button').attr('disabled', false);
+  }
+};
+
 // eslint-disable-next-line no-unused-vars
-function submit() {
-  var arr = JSON.parse(document.getElementById('inputText').value);
+function submit(party_id) {
+  $('#submit' + String(party_id)).attr('disabled', true);
+
+  let arr = JSON.parse(document.getElementById('inputText' + String(party_id)).value);
 
   // Ensure array has only numbers
-  for (var i = 0; i < arr.length; i++) {
+  for (let i = 0; i < arr.length; i++) {
     if (isNaN(arr[i])) {
       $('#output').append('<p class="error">Please input an array of valid numbers!</p>');
       return;
@@ -69,16 +72,9 @@ function submit() {
     lg = lg / 2;
   }
 
-  // Disable UI controls
-  $('#button').attr('disabled', true);
-  $('#output').append('<p>Starting...</p>');
-
   // eslint-disable-next-line no-undef
-  var promise = mpc.compute(arr);
-  promise.then(handleResult);
-}
-
-function handleResult(result) {
-  $('#output').append('<p>Result is: ' + result + '</p>');
-  $('#button').attr('disabled', false);
+  worker.postMessage({
+    type: 'compute' + String(party_id),
+    input: arr
+  });
 }

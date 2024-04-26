@@ -1,11 +1,9 @@
 (function (exports, node) {
-  var saved_instance;
-
   /**
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
-    var opt = Object.assign({}, options);
+    let opt = Object.assign({}, options);
     // Added options goes here
     opt.crypto_provider = true;
 
@@ -14,14 +12,16 @@
       JIFFClient = require('../../lib/jiff-client');
       // eslint-disable-next-line no-undef,no-global-assign
       $ = require('jquery-deferred');
+      // eslint-disable-next-line no-undef
+      jiff_websockets = require('../../lib/ext/jiff-client-websockets.js');
     }
 
     // eslint-disable-next-line no-undef
-    saved_instance = new JIFFClient(hostname, computation_id, opt);
-    exports.saved_instance = saved_instance;
-    // if you need any extensions, put them here
+    let jiff_instance = new JIFFClient(hostname, computation_id, opt);
+    // eslint-disable-next-line no-undef
+    jiff_instance.apply_extension(jiff_websockets, opt);
 
-    return saved_instance;
+    return jiff_instance;
   };
 
   /**
@@ -29,13 +29,13 @@
    */
 
   function bubblesort(arr) {
-    for (var i = 0; i < arr.length; i++) {
-      for (var j = 0; j < (arr.length - i - 1); j++) {
-        var a = arr[j];
-        var b = arr[j+1];
-        var cmp = a.slt(b);
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < arr.length - i - 1; j++) {
+        let a = arr[j];
+        let b = arr[j + 1];
+        let cmp = a.slt(b);
         arr[j] = cmp.if_else(a, b);
-        arr[j+1] = cmp.if_else(b, a);
+        arr[j + 1] = cmp.if_else(b, a);
       }
     }
 
@@ -43,25 +43,20 @@
   }
 
   exports.compute = function (input, jiff_instance) {
-    if (jiff_instance == null) {
-      jiff_instance = saved_instance;
-    }
-
-    // Share the arrays
-    var shares = jiff_instance.share_array(input, input.length);
+    let shares = jiff_instance.share_array(input, input.length);
 
     // Sum all shared input arrays element wise
-    var array = shares[1];
-    for (var p = 2; p <= jiff_instance.party_count; p++) {
-      for (var i = 0; i < array.length; i++) {
+    let array = shares[1];
+    for (let p = 2; p <= jiff_instance.party_count; p++) {
+      for (let i = 0; i < array.length; i++) {
         array[i] = array[i].sadd(shares[p][i]);
       }
     }
 
     // Sort new array
-    var sorted = bubblesort(array);
+    let sorted = bubblesort(array);
 
     // Open the array
     return jiff_instance.open_array(sorted);
   };
-}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
+})(typeof exports === 'undefined' ? (this.mpc = {}) : exports, typeof exports !== 'undefined');

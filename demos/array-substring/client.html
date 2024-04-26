@@ -9,7 +9,8 @@
       }
     </style>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script src="/dist/jiff-client.js"></script>
+    <script src="../../../dist/jiff-client.js"></script>
+    <script src="../../../dist/jiff-client-websockets.js"></script>
 
     <!-- Contains UI Handlers and Input Checks -->
     <script type="text/javascript" src="./client.js"></script>
@@ -21,18 +22,14 @@
     <h1>Connect JIFF</h1>
     <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
     <label for="count">Party Count<label> <input id="count" pattern="[0-9]*" value="2" disabled="disabled"><br/><br/>
-    <label for="role">Party Role<label>
-    <select id="role">
-      <option value="1">Provide Input String</option>
-      <option value="2">Provide Substring</option>
-    </select>
-    &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
+    &nbsp; <button id="connectButton" onclick="connect(1);connect(2);">Connect</button>
     
     <br/><br/>
     <hr/>
     <h1>Find Substring in a large String</h1>
     <label for="input">Enter Your Input:</label> <br/><br/>
-    <textarea id="input" rows="5" cols="35"></textarea> &nbsp; <button onclick="submit();" disabled="disabled" id="button">Find Substring</button><br/>
+    <textarea id="inputText1" rows="5" cols="35"></textarea> &nbsp; <button onclick="submit(1);" id="submit1">Find Substring</button><br/>
+    <textarea id="inputText2" rows="5" cols="35"></textarea> &nbsp; <button onclick="submit(2);" id="submit2">Find Substring</button><br/>
     <div id="output"></div>
   </body>
 </html>

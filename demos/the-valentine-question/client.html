@@ -10,6 +10,7 @@
     </style>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="/dist/jiff-client.js"></script>
+    <script src="../../../dist/jiff-client-websockets.js"></script>
 
     <!-- Contains UI Handlers and Input Checks -->
     <script type="text/javascript" src="./client.js"></script>
@@ -20,7 +21,7 @@
   <body>
     <h1>Connect JIFF</h1>
     <label for="computation_id">Computation ID</label><input id="computation_id" value="test"></input><br/><br/>
-    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*" value="2" disabled="disabled"> &nbsp; <button id="connectButton" onclick="connect();">Connect</button>
+    <label for="count">Party Count<label> <input id="count" pattern="[0-9]*" value="2" disabled="disabled"> &nbsp; <button id="connectButton" onclick="connect(1);connect(2);">Connect</button>
     <br/><br/>
     <hr/>
     <h1>The Valentine Question</h1>
@@ -28,7 +29,8 @@
     <label for="c1">Yes</label>
     <input type="radio" id="c2" name="choice" value="no">
     <label for="c2">No</label>
-    <button onclick="submit();" disabled="disabled" id="submit">Submit</button><br/>
+    <button onclick="submit(1);" id="submit1">Submit</button><br/>
+    <button onclick="submit(2);" id="submit2">Submit</button><br/>
     <div id="output"></div>
   </body>
 </html>

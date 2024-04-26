@@ -1,6 +1,4 @@
 (function (exports, node) {
-  var saved_instance;
-
   /**
    * Connect to the server and initialize the jiff instance
    */
@@ -13,12 +11,16 @@
       JIFFClient = require('../../lib/jiff-client');
       // eslint-disable-next-line no-undef,no-global-assign
       $ = require('jquery-deferred');
+      // eslint-disable-next-line no-undef
+      jiff_websockets = require('../../lib/ext/jiff-client-websockets.js');
     }
 
     // eslint-disable-next-line no-undef
-    saved_instance = new JIFFClient(hostname, computation_id, opt);
-    exports.saved_instance = saved_instance;
-    return saved_instance;
+    let jiff_instance = new JIFFClient(hostname, computation_id, opt);
+    // eslint-disable-next-line no-undef
+    jiff_instance.apply_extension(jiff_websockets, opt);
+
+    return jiff_instance;
   };
 
   /**
@@ -37,13 +39,13 @@
 
   // Returns random integer j st min <= j < max.
   function getRndInteger(min, max) {
-    return Math.floor(Math.random() * (max - min) ) + min;
+    return Math.floor(Math.random() * (max - min)) + min;
   }
 
   //Knuth random permutation algorithm
   function permuteRandom(a) {
     for (var i = 0; i < a.length; i++) {
-      exchange(a,i,getRndInteger(i,a.length));
+      exchange(a, i, getRndInteger(i, a.length));
     }
   }
 
@@ -51,7 +53,8 @@
   function compareRegionsPreprocess(offset) {
     var mate = [];
     var mates = [];
-    for (var count = 0; count < C; count++) { // Do C amount of compare-exchanges
+    for (var count = 0; count < C; count++) {
+      // Do C amount of compare-exchanges
       for (var i = 0; i < offset; i++) {
         mate[i] = i;
       }
@@ -64,7 +67,7 @@
   // Generates all permutations needed for sorting process
   function permutations(offsets) {
     var matesByOffset = [];
-    for (var i = 0; i<offsets.length; i++) {
+    for (var i = 0; i < offsets.length; i++) {
       var offset = offsets[i];
       var mates = compareRegionsPreprocess(offset);
       matesByOffset.push(mates);
@@ -75,7 +78,7 @@
   // Generates all offsets needed for sorting process
   function generateOffsets(n) {
     var offsets = [];
-    for (var offset = Math.floor(n/2); offset > 0; offset = Math.floor(offset / 2)) {
+    for (var offset = Math.floor(n / 2); offset > 0; offset = Math.floor(offset / 2)) {
       offsets.push(offset);
     }
     return offsets;
@@ -99,11 +102,12 @@
   /**************************************Content-agnostic functions**************************************/
   // compare exchange two regions of length offset each
   function compareRegions(a, s, t, offset, mates) {
-    for (var count = 0; count < C; count++) { // Do C amount of compare-exchanges
+    for (var count = 0; count < C; count++) {
+      // Do C amount of compare-exchanges
       for (var i = 0; i < offset; i++) {
         var n = a.length;
-        var index1 = s+i;
-        var index2 = t+mates[count][i];
+        var index1 = s + i;
+        var index2 = t + mates[count][i];
         if (index1 < n && index2 < n) {
           compareExchange(a, index1, index2);
         }
@@ -118,23 +122,29 @@
       var offset = offsets[j];
       var mates = permutationsByOffset[j];
       // do a shaker pass
-      for (var i = 0; i < n - offset; i += offset) { // compare-exchange up
+      for (var i = 0; i < n - offset; i += offset) {
+        // compare-exchange up
         compareRegions(a, i, i + offset, offset, mates);
       }
-      for (i = n - offset; i >= offset; i -= offset) { // compare-exchange down
+      for (i = n - offset; i >= offset; i -= offset) {
+        // compare-exchange down
         compareRegions(a, i - offset, i, offset, mates);
       }
       // do extended brick pass
-      for (i = 0; i < n - 3 * offset; i += offset) { // compare 3 hops up
+      for (i = 0; i < n - 3 * offset; i += offset) {
+        // compare 3 hops up
         compareRegions(a, i, i + 3 * offset, offset, mates);
       }
-      for (i = 0; i < n - 2 * offset; i += offset) { // compare 2 hops up
+      for (i = 0; i < n - 2 * offset; i += offset) {
+        // compare 2 hops up
         compareRegions(a, i, i + 2 * offset, offset, mates);
       }
-      for (i = 0; i < n; i += 2 * offset) { // compare odd-even regions
+      for (i = 0; i < n; i += 2 * offset) {
+        // compare odd-even regions
         compareRegions(a, i, i + offset, offset, mates);
       }
-      for (i = offset; i < n - offset; i += 2 * offset) { // compare even-odd regions
+      for (i = offset; i < n - offset; i += 2 * offset) {
+        // compare even-odd regions
         compareRegions(a, i, i + offset, offset, mates);
       }
     }
@@ -142,10 +152,6 @@
 
   /*********************************** Main Computation ********************************************/
   exports.compute = function (input, jiff_instance) {
-    if (jiff_instance == null) {
-      jiff_instance = saved_instance;
-    }
-
     if (count[jiff_instance.id] == null) {
       count[jiff_instance.id] = 1;
     }
@@ -153,10 +159,6 @@
     // determine which test case is this (which computation)
     var this_count = count[jiff_instance.id];
     count[jiff_instance.id]++;
-
-    // This will resolve to the final result
-    var final_deferred = $.Deferred();
-    var final_promise = final_deferred.promise();
 
     // Set-up stage (No MPC here)
     var offsets = [];
@@ -173,35 +175,38 @@
       jiff_instance.emit('preprocess' + this_count, null, JSON.stringify(toSend));
     }
 
-    // All parties listen for the message with offsets and permutation values, and store the information in it.
-    jiff_instance.listen('preprocess' + this_count, function (sender_id, message) {
-      jiff_instance.remove_listener('preprocess' + this_count);
-      jiff_instance.seed_ids(this_count);
+    return new Promise((resolve, reject) => {
+      // All parties listen for the message with offsets and permutation values, and store the information in it.
+      jiff_instance.listen('preprocess' + this_count, async function (sender_id, message) {
+        jiff_instance.remove_listener('preprocess' + this_count);
+        jiff_instance.seed_ids(this_count);
 
-      var received = JSON.parse(message);
-      offsets = received[0];
-      permutationsByOffset = received[1];
+        try {
+          var received = JSON.parse(message);
+          offsets = received[0];
+          permutationsByOffset = received[1];
 
-      // Share the arrays
-      var shares = jiff_instance.share_array(input, input.length);
+          // Share the arrays
+          var shares = await jiff_instance.share_array(input, input.length);
 
-      // Sum all shared input arrays element wise
-      var array = shares[1];
-      for (var p = 2; p <= jiff_instance.party_count; p++) {
-        for (var i = 0; i < array.length; i++) {
-          array[i] = array[i].sadd(shares[p][i]);
+          // Sum all shared input arrays element wise
+          var array = shares[1];
+          for (var p = 2; p <= jiff_instance.party_count; p++) {
+            for (var i = 0; i < array.length; i++) {
+              array[i] = await array[i].sadd(shares[p][i]);
+            }
+          }
+
+          // Sort new array
+          randomizedShellSort(array, offsets, permutationsByOffset);
+
+          // Open the array
+          const result = await jiff_instance.open_array(array);
+          resolve(result);
+        } catch (error) {
+          reject(error);
         }
-      }
-
-      // Sort new array
-      randomizedShellSort(array, offsets, permutationsByOffset);
-
-      // Open the array
-      jiff_instance.open_array(array).then(function (results) {
-        final_deferred.resolve(results);
       });
     });
-
-    return final_promise;
   };
-}((typeof exports === 'undefined' ? this.mpc = {} : exports), typeof exports !== 'undefined'));
+})(typeof exports === 'undefined' ? (this.mpc = {}) : exports, typeof exports !== 'undefined');

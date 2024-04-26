@@ -1,20 +1,10 @@
-/**
- * Do not modify this file unless you have too
- * This file has UI handlers.
- */
-// eslint-disable-next-line no-unused-vars
-function connect() {
+let worker = new Worker('./web-worker.js');
+function connect(party_id) {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
   var party_count = parseInt($('#count').val());
 
-  var options = { party_count: party_count};
-  options.onError = function (_, error) {
-    $('#output').append("<p class='error'>"+error+'</p>');
-  };
-  options.onConnect = function () {
-    $('#submit').attr('disabled', false); $('#output').append('<p>All parties Connected!</p>');
-  };
+  var options = { party_count: party_count };
 
   var hostname = window.location.hostname.trim();
   var port = window.location.port;
@@ -25,34 +15,43 @@ function connect() {
     hostname = 'http://' + hostname;
   }
   if (hostname.endsWith('/')) {
-    hostname = hostname.substring(0, hostname.length-1);
+    hostname = hostname.substring(0, hostname.length - 1);
   }
   if (hostname.indexOf(':') > -1 && hostname.lastIndexOf(':') > hostname.indexOf(':')) {
     hostname = hostname.substring(0, hostname.lastIndexOf(':'));
   }
 
   hostname = hostname + ':' + port;
+
   // eslint-disable-next-line no-undef
-  mpc.connect(hostname, computation_id, options);
+  worker.postMessage({
+    type: 'init_' + String(party_id),
+    hostname: hostname,
+    computation_id: computation_id,
+    options: options
+  });
 }
 
+worker.onmessage = function (e) {
+  if ($('#output').is(':empty') && (e.data.type === 'result1' || e.data.type === 'result2')) {
+    const msg = e.data.result === 1 ? 'Looks like you have a date! Enjoy your special day.' : 'Unlucky! Taking a rain check';
+    $('#output').append('<p> ' + msg + '</p>');
+  }
+};
+
 // eslint-disable-next-line no-unused-vars
-function submit() {
-  var input = $('input[name=choice]:checked').val()
+function submit(party_id) {
+  var input = $('input[name=choice]:checked').val();
   if (input !== 'yes' && input !== 'no') {
     $('#output').append("<p class='error'>Please select a choice.</p>");
     return;
   }
   input = input === 'yes' ? 1 : 0;
   $('#submit').attr('disabled', true);
-  $('#output').append('<p>Starting...</p>');
 
   // eslint-disable-next-line no-undef
-  var promise = mpc.compute(input);
-  promise.then(handleResult);
-}
-
-function handleResult(result) {
-  $('#output').append('<p>Result is: ' + result + '</p>');
-  $('#submit').attr('disabled', false);
+  worker.postMessage({
+    type: 'compute' + String(party_id),
+    input: input
+  });
 }
