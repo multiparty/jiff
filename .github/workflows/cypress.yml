@@ -31,7 +31,7 @@ jobs:
 
       - name: Run Cypress Tests
         run: |
-          TESTS=("array-concat" "array-binary-search" "array-merge-sort" "array-substring" "array-bubble-sort" "array-shell-sort" "the-valentine-question" "array-shuffle")
+          TESTS=("array-mpc-as-a-service", "array-concat" "array-binary-search" "array-merge-sort" "array-substring" "array-bubble-sort" "array-shell-sort" "the-valentine-question" "array-shuffle")
           for TEST in "${TESTS[@]}"
           do
             echo "Running Cypress test: $TEST"
