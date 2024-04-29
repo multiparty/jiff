@@ -26,9 +26,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Start Server
-        run: node demos/support/server.ts & echo $! > SERVER_PID
-
       - name: Run Cypress for array mpc as a service
         run: |
           echo "Running Cypress test: array-mpc-as-a-service"
@@ -39,6 +36,9 @@ jobs:
           sleep 5
           npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-mpc-as-a-service/test.cy.ts"
           kill $(cat SERVER_PID_) # stop the server
+
+      - name: Start Server
+        run: node demos/support/server.ts & echo $! > SERVER_PID
 
       - name: Run Cypress Tests
         run: |
