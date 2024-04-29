@@ -31,7 +31,7 @@ jobs:
 
       - name: Run Cypress Tests
         run: |
-          TESTS=("array-mpc-as-a-service", "array-concat" "array-binary-search" "array-merge-sort" "array-substring" "array-bubble-sort" "array-shell-sort" "the-valentine-question" "array-shuffle")
+          TESTS=("array-concat" "array-binary-search" "array-merge-sort" "array-substring" "array-bubble-sort" "array-shell-sort" "the-valentine-question" "array-shuffle")
           for TEST in "${TESTS[@]}"
           do
             echo "Running Cypress test: $TEST"
@@ -40,6 +40,16 @@ jobs:
             kill $(cat SERVER_PID) # stop the server
             node demos/support/server.ts & echo $! > SERVER_PID
           done
+          kill $(cat SERVER_PID) # stop the server
+
+          echo "Running Cypress test: array-mpc-as-a-service"
+          node demos/array-mpc-as-a-service/server.js > SERVER_PID
+          node demos/array-mpc-as-a-service/compute-party.js demos/array-mpc-as-a-service/config.json
+          node demos/array-mpc-as-a-service/compute-party.js demos/array-mpc-as-a-service/config.json
+          node demos/array-mpc-as-a-service/compute-party.js demos/array-mpc-as-a-service/config.json
+          sleep 5
+          npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-mpc-as-a-service/test.cy.ts"
+          kill $(cat SERVER_PID) # stop the server
 
       - name: Stop Server
         if: always()
