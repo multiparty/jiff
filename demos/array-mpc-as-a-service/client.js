@@ -1,19 +1,12 @@
-/**
- * Do not modify this file unless you have to.
- * This file has UI handlers.
- */
-
+let worker = new Worker('./web-worker.js');
 /* global config */
 
 // eslint-disable-next-line no-unused-vars
-function connect() {
+function connect(party_id) {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
 
   var options = { party_count: config.party_count };
-  options.onError = function (_, error) {
-    $('#output').append("<p class='error'>"+error+'</p>');
-  };
 
   var hostname = window.location.hostname.trim();
   var port = window.location.port;
@@ -31,16 +24,18 @@ function connect() {
   }
 
   hostname = hostname + ':' + port;
-  // eslint-disable-next-line no-undef
-  var jiff = mpc.connect(hostname, computation_id, options, config);
-  jiff.wait_for(config.compute_parties, function () {
-    $('#processButton').attr('disabled', false); $('#output').append('<p>Connected to the compute parties!</p>');
+  worker.postMessage({
+    type: 'init_' + String(party_id),
+    hostname: hostname,
+    computation_id: computation_id,
+    options: options,
+    config: config
   });
 }
 
 // eslint-disable-next-line no-unused-vars
-function submit() {
-  var arr = JSON.parse(document.getElementById('inputText').value);
+function submit(party_id) {
+  var arr = JSON.parse(document.getElementById('inputText' + String(party_id)).value);
 
   if (arr.length !== config.input_length) {
     alert('Please input an array of length ' + config.input_length + '.');
@@ -53,22 +48,16 @@ function submit() {
       return;
     }
   }
-
-  $('#processButton').attr('disabled', true);
-  $('#output').append('<p>Starting...</p>');
-
   // eslint-disable-next-line no-undef
-  var promise = mpc.compute(arr);
-  promise.then(function (opened_array) {
-    var results = {
-      sum: opened_array[0],
-      product: opened_array[1]
-    };
-    handleResult(results);
+  worker.postMessage({
+    type: 'compute' + String(party_id),
+    input: arr
   });
 }
 
-function handleResult(results) {
-  $('#output').append('<p>The sum is ' + results.sum + ' and the inner product is ' + results.product + '.</p>');
-  $('#button').attr('disabled', false);
-}
+worker.onmessage = function (e) {
+  if ($('#output').is(':empty') && (e.data.type === 'result1' || e.data.type === 'result2')) {
+    $('#output').append('<p>The sum is ' + e.data.result[0] + ' and the inner product is ' + e.data.result[1] + '.</p>');
+    $('#button').attr('disabled', false);
+  }
+};
