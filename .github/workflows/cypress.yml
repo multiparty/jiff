@@ -31,10 +31,10 @@ jobs:
           echo "Running Cypress test: array-mpc-as-a-service"
           node demos/array-mpc-as-a-service/server.js & echo $! > SERVER_PID
           echo "Initiating three computational parties"
-          node demos/array-mpc-as-a-service/compute-party.js config.json
-          node demos/array-mpc-as-a-service/compute-party.js config.json
-          node demos/array-mpc-as-a-service/compute-party.js config.json
-          echo "Running the cypress test for two input parties"
+          node demos/array-mpc-as-a-service/compute-party.js config.json &
+          node demos/array-mpc-as-a-service/compute-party.js config.json &
+          node demos/array-mpc-as-a-service/compute-party.js config.json &
+          echo "Running the cypress test for two input parties" &
           npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-mpc-as-a-service/test.cy.ts"
           kill $(cat SERVER_PID) || true
 
