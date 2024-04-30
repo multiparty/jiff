@@ -26,30 +26,28 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Cypress for array mpc as a service
+      - name: Run Cypress Test for Array MPC as a Service
         run: |
           echo "Running Cypress test: array-mpc-as-a-service"
-          node demos/array-mpc-as-a-service/server.js > SERVER_PID_
-          node demos/array-mpc-as-a-service/compute-party.js demos/array-mpc-as-a-service/config.json
-          node demos/array-mpc-as-a-service/compute-party.js demos/array-mpc-as-a-service/config.json
-          node demos/array-mpc-as-a-service/compute-party.js demos/array-mpc-as-a-service/config.json
+          node demos/array-mpc-as-a-service/server.js & echo $! > SERVER_PID
+          sleep 5
+          node demos/array-mpc-as-a-service/compute-party.js demos/array-mpc-as-a-service/config.json &
+          node demos/array-mpc-as-a-service/compute-party.js demos/array-mpc-as-a-service/config.json &
+          node demos/array-mpc-as-a-service/compute-party.js demos/array-mpc-as-a-service/config.json &
           sleep 5
           npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-mpc-as-a-service/test.cy.ts"
-          kill $(cat SERVER_PID_) # stop the server
+          kill $(cat SERVER_PID) || true
 
-      - name: Start Server
-        run: node demos/support/server.ts & echo $! > SERVER_PID
-
-      - name: Run Cypress Tests
+      - name: Run Cypress Tests for Standard Tests
         run: |
           TESTS=("array-concat" "array-binary-search" "array-merge-sort" "array-substring" "array-bubble-sort" "array-shell-sort" "the-valentine-question" "array-shuffle")
           for TEST in "${TESTS[@]}"
           do
             echo "Running Cypress test: $TEST"
+            node demos/support/server.ts & echo $! > SERVER_PID
             sleep 5
             npx cypress run --config-file demos/cypress.config.ts --spec "demos/$TEST/test.cy.ts"
-            kill $(cat SERVER_PID) # stop the server
-            node demos/support/server.ts & echo $! > SERVER_PID
+            kill $(cat SERVER_PID)
           done
 
       - name: Stop Server
