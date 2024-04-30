@@ -30,7 +30,7 @@ jobs:
         run: |
           echo "Running Cypress test: array-mpc-as-a-service"
           ts-node demos/array-mpc-as-a-service/server.js & echo $! > SERVER_PID
-          sleep 5
+          sleep 10
           echo "Initiating three computational parties"
           ts-node demos/array-mpc-as-a-service/compute-party.js config.json &
           ts-node demos/array-mpc-as-a-service/compute-party.js config.json &
