@@ -26,15 +26,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install dependencies
+        run: tsc -p lib/common/tsconfig.json
+
       - name: Run Cypress Test for Array MPC as a Service
         run: |
           echo "Running Cypress test: array-mpc-as-a-service"
-          ./node_modules/.bin/ts-node demos/array-mpc-as-a-service/server.js & echo $! > SERVER_PID
+          node demos/array-mpc-as-a-service/server.js & echo $! > SERVER_PID
           sleep 10
           echo "Initiating three computational parties"
-          ./node_modules/.bin/ts-node demos/array-mpc-as-a-service/compute-party.js config.json &
-          ./node_modules/.bin/ts-node demos/array-mpc-as-a-service/compute-party.js config.json &
-          ./node_modules/.bin/ts-node demos/array-mpc-as-a-service/compute-party.js config.json &
+          node demos/array-mpc-as-a-service/compute-party.js config.json &
+          node demos/array-mpc-as-a-service/compute-party.js config.json &
+          node demos/array-mpc-as-a-service/compute-party.js config.json &
           sleep 5
           echo "Running the cypress test for two input parties"
           npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-mpc-as-a-service/test.cy.ts"
@@ -46,7 +49,7 @@ jobs:
           for TEST in "${TESTS[@]}"
           do
             echo "Running Cypress test: $TEST"
-            ./node_modules/.bin/ts-node demos/support/server.ts & echo $! > SERVER_PID
+            node demos/support/server.ts & echo $! > SERVER_PID
             sleep 5
             npx cypress run --config-file demos/cypress.config.ts --spec "demos/$TEST/test.cy.ts"
             kill $(cat SERVER_PID)
