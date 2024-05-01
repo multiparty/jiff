@@ -22,6 +22,7 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm ci
-
+      - name: Transpile TypeScript files
+        run: tsc -p lib/common/tsconfig.json
       - name: Run Jest Tests
         run: npx jest --coverage --runInBand tests/regr-tests --silent
