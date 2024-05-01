@@ -5,6 +5,7 @@ interface ExtendedCrypto extends Crypto {
 let crypto_: ExtendedCrypto;
 
 if (typeof window !== 'undefined') {
+  // Browser environment
   const webCrypto = window.crypto || (window as any).msCrypto;
   crypto_ = {
     ...webCrypto,
@@ -14,6 +15,13 @@ if (typeof window !== 'undefined') {
       return randomBytes;
     }
   } as ExtendedCrypto;
+} else {
+  // Node environment
+  const nodeCrypto = require('crypto');
+  crypto_ = {
+    ...nodeCrypto,
+    __randomBytesWrapper: (bytesNeeded: number) => new Uint8Array(nodeCrypto.randomBytes(bytesNeeded))
+  };
 }
 
 // Secure randomness via rejection sampling.
@@ -35,17 +43,11 @@ exports.random = function (max: number): number {
   // Keep trying until we find a random value within bounds
   while (true) {
     let randomBytes;
-    if(typeof window === 'undefined') {
-      const nodeCrypto = require('crypto');
-      randomBytes = nodeCrypto.randomBytes(bytesNeeded);
-    }
-    else{
-      randomBytes = crypto_.__randomBytesWrapper(bytesNeeded);
-    }
+    randomBytes = crypto_.__randomBytesWrapper(bytesNeeded);
     let randomValue = 0;
 
     for (let i = 0; i < bytesNeeded; i++) {
-      randomValue = randomValue * 256 + (randomBytes[i] ?? 0);
+      randomValue = randomValue * 256 + randomBytes[i];
     }
 
     // randomValue should be smaller than largest multiple of max within maxBytes
