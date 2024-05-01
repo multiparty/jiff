@@ -1,5 +1,5 @@
 /* global describe it */
-var helpers = require('./config/bigNumber/helpers.js');
+var helpers = require('./config/bigNumber/helpers.ts');
 
 // Catch and log any uncaught exceptions
 process.on('uncaughtException', function (err) {
