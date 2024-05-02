@@ -36,6 +36,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Cache Node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: npm install
       - name: Check Code Formatting
         run: npm run prettier
 
@@ -43,10 +54,16 @@ jobs:
     name: Jest Test
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Run Jest Tests
-      run: npx jest --coverage --runInBand tests/regr-tests --silent
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Run Jest Tests
+        run: npx jest --coverage --runInBand tests/regr-tests --silent
 
   cypress-test:
     name: Cypress Test
@@ -54,6 +71,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
       - name: Run Cypress Test for Array MPC as a Service
         run: |
           echo "Running Cypress test: array-mpc-as-a-service"
