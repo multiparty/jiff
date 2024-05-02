@@ -1,0 +1,81 @@
+name: CI/CD
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    tags:
+      - "v*.*.*"
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  setup-dependencies:
+    name: Setup Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Upload node_modules
+        uses: actions/upload-artifact@v3
+        with:
+          name: node-modules
+          path: node_modules
+
+  format:
+    name: Format
+    needs: setup-dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download node_modules
+        uses: actions/download-artifact@v3
+        with:
+          name: node-modules
+          path: node_modules
+      - name: Check Code Formatting
+        run: npm run prettier
+
+  jest-test:
+    name: Jest Test
+    needs: setup-dependencies
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Download node_modules
+      uses: actions/download-artifact@v3
+      with:
+        name: node-modules
+        path: node_modules
+    - name: Run Jest Tests
+      run: npx jest --coverage --runInBand tests/regr-tests --silent
+
+  cypress-test:
+    name: Cypress Test
+    needs: setup-dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download node_modules
+        uses: actions/download-artifact@v3
+        with:
+          name: node-modules
+          path: node_modules
+      - name: Run Cypress Tests
+        run: |
+          # (Include your Cypress tests execution commands here)
+
+      - name: Stop Server
+        if: always()
+        run: kill $(cat SERVER_PID) || true
