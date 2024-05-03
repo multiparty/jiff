@@ -41,7 +41,7 @@ worker.onmessage = function (e) {
 
 // eslint-disable-next-line no-unused-vars
 function submit(party_id) {
-  const input = $('input[name=choice]:checked').val();
+  let input = $('input[name=choice]:checked').val();
   if (input !== 'yes' && input !== 'no') {
     $('#output').append("<p class='error'>Please select a choice.</p>");
     return;
