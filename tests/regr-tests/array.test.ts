@@ -12,7 +12,7 @@ describe('JIFF Array Operations', () => {
 
   beforeEach(async () => {
     // Server Setup
-    let port: number = 8113;
+    const port: number = 8113;
     const servers = init_server(port);
     (jiffServer = servers[0]), (server = servers[1]);
     await new Promise((resolve) => server.on('listening', resolve)); // Wait for server to be ready
@@ -45,7 +45,7 @@ describe('JIFF Array Operations', () => {
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            let array = await jiffClient.share_array(arrays[id]);
+            const array = await jiffClient.share_array(arrays[id]);
             let result = array[1];
             for (let party = 2; party <= jiffClient.party_count; party++) {
               for (let idx = 0; idx < result.length; idx++) {
@@ -121,7 +121,7 @@ describe('JIFF Array Operations', () => {
 
               const mid = Math.floor(array.length / 2);
               const cmp = await element.lt(array[mid]);
-              let nArray = [];
+              const nArray = [];
               for (let i = 0; i < mid; i++) {
                 const c1 = array[i];
                 const c2 = array[mid + i];
