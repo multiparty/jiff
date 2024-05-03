@@ -26,7 +26,7 @@
     return __jiff_instance;
   };
   exports.compute = function (input, jiff_instance_) {
-    const jiff_instance = __jiff_instance;
+    let jiff_instance = __jiff_instance;
     if (jiff_instance_) {
       jiff_instance = jiff_instance_;
     }
