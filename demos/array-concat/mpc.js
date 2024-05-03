@@ -3,7 +3,7 @@
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
-    let opt = Object.assign({}, options);
+    const opt = Object.assign({}, options);
     // Added options goes here
     opt.crypto_provider = true;
 

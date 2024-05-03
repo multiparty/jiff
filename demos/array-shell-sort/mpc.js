@@ -3,7 +3,7 @@
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
-    var opt = Object.assign({}, options);
+    const opt = Object.assign({}, options);
     opt.crypto_provider = true;
 
     if (node) {
@@ -16,7 +16,7 @@
     }
 
     // eslint-disable-next-line no-undef
-    let jiff_instance = new JIFFClient(hostname, computation_id, opt);
+    const jiff_instance = new JIFFClient(hostname, computation_id, opt);
     // eslint-disable-next-line no-undef
     jiff_instance.apply_extension(jiff_websockets, opt);
 
@@ -26,13 +26,13 @@
   /**
    * The MPC computation
    */
-  var C = 4; // number of region compare-exchange repetitions
-  var count = {}; // counts how many test_cases, used to generate unique IDs.
+  const C = 4; // number of region compare-exchange repetitions
+  const count = {}; // counts how many test_cases, used to generate unique IDs.
 
   /*******************Pre-generation of randomness in the clean by party 1 for performance*********/
   // Swap elements at location i and j in array
   function exchange(arr, i, j) {
-    var temp = arr[i];
+    const temp = arr[i];
     arr[i] = arr[j];
     arr[j] = temp;
   }
@@ -51,8 +51,8 @@
 
   //Does C compare-exchanges for i < offset and stores them.
   function compareRegionsPreprocess(offset) {
-    var mate = [];
-    var mates = [];
+    const mate = [];
+    const mates = [];
     for (var count = 0; count < C; count++) {
       // Do C amount of compare-exchanges
       for (var i = 0; i < offset; i++) {
@@ -66,10 +66,10 @@
 
   // Generates all permutations needed for sorting process
   function permutations(offsets) {
-    var matesByOffset = [];
-    for (var i = 0; i < offsets.length; i++) {
-      var offset = offsets[i];
-      var mates = compareRegionsPreprocess(offset);
+    const matesByOffset = [];
+    for (let i = 0; i < offsets.length; i++) {
+      const offset = offsets[i];
+      const mates = compareRegionsPreprocess(offset);
       matesByOffset.push(mates);
     }
     return matesByOffset;
@@ -77,8 +77,8 @@
 
   // Generates all offsets needed for sorting process
   function generateOffsets(n) {
-    var offsets = [];
-    for (var offset = Math.floor(n / 2); offset > 0; offset = Math.floor(offset / 2)) {
+    const offsets = [];
+    for (let offset = Math.floor(n / 2); offset > 0; offset = Math.floor(offset / 2)) {
       offsets.push(offset);
     }
     return offsets;
@@ -87,9 +87,9 @@
   /***********************************Content-dependent********************************************/
   // Check if order of values in array at indexes i, j is correct using MPC, if not, swap.
   function compareExchange(arr, i, j) {
-    var a = arr[i];
-    var b = arr[j];
-    var cmp = a.slt(b);
+    const a = arr[i];
+    const b = arr[j];
+    const cmp = a.slt(b);
     if (i < j) {
       arr[i] = cmp.if_else(a, b);
       arr[j] = cmp.if_else(b, a);
@@ -102,12 +102,12 @@
   /**************************************Content-agnostic functions**************************************/
   // compare exchange two regions of length offset each
   function compareRegions(a, s, t, offset, mates) {
-    for (var count = 0; count < C; count++) {
+    for (let count = 0; count < C; count++) {
       // Do C amount of compare-exchanges
-      for (var i = 0; i < offset; i++) {
-        var n = a.length;
-        var index1 = s + i;
-        var index2 = t + mates[count][i];
+      for (let i = 0; i < offset; i++) {
+        const n = a.length;
+        const index1 = s + i;
+        const index2 = t + mates[count][i];
         if (index1 < n && index2 < n) {
           compareExchange(a, index1, index2);
         }
@@ -117,33 +117,33 @@
 
   //Main sorting function
   function randomizedShellSort(a, offsets, permutationsByOffset) {
-    var n = a.length;
-    for (var j = 0; j < offsets.length; j++) {
-      var offset = offsets[j];
-      var mates = permutationsByOffset[j];
+    const n = a.length;
+    for (let j = 0; j < offsets.length; j++) {
+      const offset = offsets[j];
+      const mates = permutationsByOffset[j];
       // do a shaker pass
-      for (var i = 0; i < n - offset; i += offset) {
+      for (let i = 0; i < n - offset; i += offset) {
         // compare-exchange up
         compareRegions(a, i, i + offset, offset, mates);
       }
-      for (i = n - offset; i >= offset; i -= offset) {
+      for (let i = n - offset; i >= offset; i -= offset) {
         // compare-exchange down
         compareRegions(a, i - offset, i, offset, mates);
       }
       // do extended brick pass
-      for (i = 0; i < n - 3 * offset; i += offset) {
+      for (let i = 0; i < n - 3 * offset; i += offset) {
         // compare 3 hops up
         compareRegions(a, i, i + 3 * offset, offset, mates);
       }
-      for (i = 0; i < n - 2 * offset; i += offset) {
+      for (let i = 0; i < n - 2 * offset; i += offset) {
         // compare 2 hops up
         compareRegions(a, i, i + 2 * offset, offset, mates);
       }
-      for (i = 0; i < n; i += 2 * offset) {
+      for (let i = 0; i < n; i += 2 * offset) {
         // compare odd-even regions
         compareRegions(a, i, i + offset, offset, mates);
       }
-      for (i = offset; i < n - offset; i += 2 * offset) {
+      for (let i = offset; i < n - offset; i += 2 * offset) {
         // compare even-odd regions
         compareRegions(a, i, i + offset, offset, mates);
       }
@@ -157,20 +157,20 @@
     }
 
     // determine which test case is this (which computation)
-    var this_count = count[jiff_instance.id];
+    const this_count = count[jiff_instance.id];
     count[jiff_instance.id]++;
 
     // Set-up stage (No MPC here)
-    var offsets = [];
-    var permutationsByOffset = [];
+    let offsets = [];
+    let permutationsByOffset = [];
 
     // Party 1 sends message with offsets and permutation values to all parties.
     if (jiff_instance.id === 1) {
-      var n = input.length;
+      const n = input.length;
 
       offsets = generateOffsets(n);
       permutationsByOffset = permutations(offsets);
-      var toSend = [offsets, permutationsByOffset];
+      const toSend = [offsets, permutationsByOffset];
 
       jiff_instance.emit('preprocess' + this_count, null, JSON.stringify(toSend));
     }
@@ -182,17 +182,17 @@
         jiff_instance.seed_ids(this_count);
 
         try {
-          var received = JSON.parse(message);
+          const received = JSON.parse(message);
           offsets = received[0];
           permutationsByOffset = received[1];
 
           // Share the arrays
-          var shares = await jiff_instance.share_array(input, input.length);
+          const shares = await jiff_instance.share_array(input, input.length);
 
           // Sum all shared input arrays element wise
-          var array = shares[1];
-          for (var p = 2; p <= jiff_instance.party_count; p++) {
-            for (var i = 0; i < array.length; i++) {
+          const array = shares[1];
+          for (let p = 2; p <= jiff_instance.party_count; p++) {
+            for (let i = 0; i < array.length; i++) {
               array[i] = await array[i].sadd(shares[p][i]);
             }
           }

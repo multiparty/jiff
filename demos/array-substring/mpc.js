@@ -4,7 +4,7 @@
    */
   exports.connect = function (hostname, computation_id, options) {
     // Added options goes here
-    var opt = Object.assign({}, options);
+    const opt = Object.assign({}, options);
     opt.crypto_provider = true;
 
     if (node) {
@@ -34,23 +34,23 @@
     return new Promise((resolve, reject) => {
       jiff_instance.wait_for([1, 2], async () => {
         // Now secret share the array of numbers
-        var shares = await jiff_instance.share_array(asciiCodes);
+        const shares = await jiff_instance.share_array(asciiCodes);
 
         // Party 1 provides the haystack in which to look
-        var haystack = shares[1];
+        const haystack = shares[1];
 
         // Party 2 provides the needle to find
-        var needle = shares[2];
+        const needle = shares[2];
 
         // Store a promise to the result of looking for the needle in every index
-        var results = [];
+        const results = [];
 
         // Look for needle at every index in the haystack
-        for (var i = 0; i <= haystack.length - needle.length; i++) {
+        for (let i = 0; i <= haystack.length - needle.length; i++) {
           // Compare all the characters till the end of the substring
-          var comparison = await haystack[i].seq(needle[0]);
-          for (var j = 1; j < needle.length; j++) {
-            let _comp = await haystack[i + j].seq(needle[j]);
+          let comparison = await haystack[i].seq(needle[0]);
+          for (let j = 1; j < needle.length; j++) {
+            const _comp = await haystack[i + j].seq(needle[j]);
             comparison = await comparison.smult(_comp);
           }
           results.push(comparison.open());
