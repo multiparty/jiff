@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Read configuration
-const config = './config.json';
+let config = './config.json';
 if (process.argv[2] != null) {
   config = './' + process.argv[2];
 }

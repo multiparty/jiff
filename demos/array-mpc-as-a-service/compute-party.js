@@ -12,7 +12,7 @@ const path = require('path');
 console.log('Command line arguments: [/path/to/configuration/file.json] [computation_id]');
 
 // Read config
-const config = './config.json';
+let config = './config.json';
 if (process.argv[2] != null) {
   config = './' + process.argv[2];
 }
