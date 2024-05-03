@@ -1,4 +1,4 @@
-name: Cypress
+name: CI/CD
 
 on:
   workflow_dispatch:
@@ -12,23 +12,71 @@ on:
       - master
 
 jobs:
-  build:
+  setup:
+    name: Setup environment & Install Dependencies
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-
+      - name: Cache Node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Transpile TypeScript files
-        run: tsc -p lib/common/tsconfig.json
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Cache Node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        run: npm install
+      - name: Check Code Formatting
+        run: npm run prettier
 
+  jest-test:
+    name: Jest Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+      - name: Run Jest Tests
+        run: npx jest --coverage --runInBand tests/regr-tests --silent
+
+  cypress-test:
+    name: Cypress Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
       - name: Run Cypress Test for Array MPC as a Service
         run: |
           echo "Running Cypress test: array-mpc-as-a-service"
@@ -42,7 +90,6 @@ jobs:
           echo "Running the cypress test for two input parties"
           npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-mpc-as-a-service/test.cy.ts"
           kill $(cat SERVER_PID) || true
-
       - name: Run Cypress Tests for Standard Tests
         run: |
           TESTS=("array-concat" "array-binary-search" "array-merge-sort" "array-substring" "array-bubble-sort" "array-shell-sort" "the-valentine-question" "array-shuffle")
