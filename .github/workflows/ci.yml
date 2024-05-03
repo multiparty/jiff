@@ -62,6 +62,8 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm install
+      - name: Transpile TypeScript files
+        run: tsc -p lib/common/tsconfig.json
       - name: Run Jest Tests
         run: npx jest --coverage --runInBand tests/regr-tests --silent
 
@@ -77,6 +79,8 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: npm install
+      - name: Transpile TypeScript files
+        run: tsc -p lib/common/tsconfig.json
       - name: Run Cypress Test for Array MPC as a Service
         run: |
           echo "Running Cypress test: array-mpc-as-a-service"
