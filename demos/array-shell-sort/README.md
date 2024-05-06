@@ -3,7 +3,7 @@
 ## Before Getting Started
 This demo is run by Cypress. The package.json includes Cypress installation, however, if needed, you can install it separately with `npm install cypress --save-dev`.
 
-## Protocol
+## Protocol PC 🖥️
 Each party inputs an array of length N. The protocol sums element-wise, shell-sort the resulting array, and outputs the sorted array. The implementation of this protocol is located in <a href="https://github.com/multiparty/jiff/blob/master/demos/array-shell-sort/mpc.js">mpc.js</a> 
 
 This demo also includes the use of the jiff_websockets extension, superseding the original socket.io functionalities.
