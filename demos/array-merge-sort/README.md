@@ -11,13 +11,13 @@ For the use of the `jiff_websockets` extension, client.html must include the <b>
 
 ## Running Demo 🏃🏃‍♀️🏃‍♂️
 
-1. Run the server
+1. Get the server up and running
     ```shell
     node demos/support/server.ts   
     ```
 > **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.</I> 
 
-2. Run from the Cypress Test Runner 🎥 (with video demos)
+2. Open from the Cypress Test Runner 🎥 (with video demos)
     1) Run `npm run cypress:open` in CML
 
     2) Choose a browser (Chrome Recommended)
@@ -38,10 +38,12 @@ After a second to a few seconds of executing the test by above 2 steps, you will
         <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/4c585335-57e7-4240-a2d5-ab5da3779af2">
     </div>
 
+Remember that this image is just an example. Your result may look slightly different.
+
 ## Alternatively... ☞☞
 The demo/test can be run from the command line without videos.
 
-1. Run the server in the same way
+1. Get the server up and running
    ```shell
    node demos/support/server.ts
    ```
