@@ -1,4 +1,4 @@
-# Bubble Sort Demo
+# Sum Arrays of Integers and Bubble Sort
 
 ## Before Getting Started
 This demo is run by Cypress. The package.json includes Cypress installation, however, if needed, you can install it separately with `npm install cypress --save-dev`.
