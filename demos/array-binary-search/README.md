@@ -1,4 +1,4 @@
-# Binary Search Demo
+# Binary Search
 
 ## Before Getting Started
 This demo is run by Cypress. The package.json includes Cypress installation, however, if needed, you can install it separately with `npm install cypress --save-dev`.
