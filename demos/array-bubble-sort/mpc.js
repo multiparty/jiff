@@ -3,7 +3,7 @@
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
-    let opt = Object.assign({}, options);
+    const opt = Object.assign({}, options);
     // Added options goes here
     opt.crypto_provider = true;
 
@@ -17,7 +17,7 @@
     }
 
     // eslint-disable-next-line no-undef
-    let jiff_instance = new JIFFClient(hostname, computation_id, opt);
+    const jiff_instance = new JIFFClient(hostname, computation_id, opt);
     // eslint-disable-next-line no-undef
     jiff_instance.apply_extension(jiff_websockets, opt);
 
@@ -31,9 +31,9 @@
   function bubblesort(arr) {
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < arr.length - i - 1; j++) {
-        let a = arr[j];
-        let b = arr[j + 1];
-        let cmp = a.slt(b);
+        const a = arr[j];
+        const b = arr[j + 1];
+        const cmp = a.slt(b);
         arr[j] = cmp.if_else(a, b);
         arr[j + 1] = cmp.if_else(b, a);
       }
@@ -43,10 +43,10 @@
   }
 
   exports.compute = function (input, jiff_instance) {
-    let shares = jiff_instance.share_array(input, input.length);
+    const shares = jiff_instance.share_array(input, input.length);
 
     // Sum all shared input arrays element wise
-    let array = shares[1];
+    const array = shares[1];
     for (let p = 2; p <= jiff_instance.party_count; p++) {
       for (let i = 0; i < array.length; i++) {
         array[i] = array[i].sadd(shares[p][i]);
@@ -54,7 +54,7 @@
     }
 
     // Sort new array
-    let sorted = bubblesort(array);
+    const sorted = bubblesort(array);
 
     // Open the array
     return jiff_instance.open_array(sorted);

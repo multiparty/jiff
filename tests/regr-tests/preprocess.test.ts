@@ -9,12 +9,12 @@ describe('JIFF Preprocessing Operations', () => {
   let jiffServer: any;
   let server: any;
   const entries: { [key: number]: number[] | null[] } = { 1: [1.32, 10.22, 5.67], 2: [5.91, 3.73, 50.03], 3: [null, null, null] };
-  let computation_id = 'test-preprocessing';
+  const computation_id = 'test-preprocessing';
   const party_count = 3;
 
   beforeEach(async () => {
     // Server Setup
-    let port: number = 8115;
+    const port: number = 8115;
     const extensions = [jiff_s_bignumber];
     const servers = init_server(port, extensions);
     (jiffServer = servers[0]), (server = servers[1]);
@@ -55,8 +55,8 @@ describe('JIFF Preprocessing Operations', () => {
             let sec_ttl: any = 0;
             await jiffClient.executePreprocessing(async function () {
               const input = await jiffClient.share_array(entries[id], null, 3, [1, 2, 3], [1, 2]);
-              let array1 = input[1];
-              let array2 = input[2];
+              const array1 = input[1];
+              const array2 = input[2];
               sec_ttl = await array1[0].mult(array2[0], null, false);
               for (let i = 1; i < array1.length; i++) {
                 sec_ttl = await sec_ttl.add(await array1[i].mult(array2[i], null, false));

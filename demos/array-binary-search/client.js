@@ -1,10 +1,10 @@
-let worker = new Worker('./web-worker.js');
+const worker = new Worker('./web-worker.js');
 
 function connect(party_id) {
   $('#connectButton').prop('disabled', true);
-  let computation_id = $('#computation_id').val();
+  const computation_id = $('#computation_id').val();
 
-  let options = { party_id: party_id, party_count: 2, Zp: 13 };
+  const options = { party_id: party_id, party_count: 2, Zp: 13 };
 
   let hostname = window.location.hostname.trim();
   let port = window.location.port;

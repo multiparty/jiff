@@ -7,12 +7,12 @@ describe('JIFF Voting', () => {
   let jiffServer: any;
   let server: any;
   const entries: { [key: number]: number[] } = { 1: [1, 0, 0, 0], 2: [0, 0, 0, 1], 3: [0, 0, 0, 1] };
-  let computation_id = 'test-voting';
+  const computation_id = 'test-voting';
   const party_count = 3;
 
   beforeEach(async () => {
     // Server Setup
-    let port: number = 8112;
+    const port: number = 8112;
     const servers = init_server(port);
     (jiffServer = servers[0]), (server = servers[1]);
     await new Promise((resolve) => server.on('listening', resolve)); // Wait for server to be ready
@@ -48,7 +48,7 @@ describe('JIFF Voting', () => {
       for (let i = 1; i < shares.length; i++) {
         sum = await sum.add(shares[i]);
       }
-      let check1 = await sum.eq(1);
+      const check1 = await sum.eq(1);
 
       // second check: if all elements are <= 1
       let check2 = await shares[0].lteq(1);
@@ -74,7 +74,7 @@ describe('JIFF Voting', () => {
             sanity_flag = await sanity_flag.eq(3);
 
             // Aggregating all votes into the array named 'vote'
-            let vote = input[1];
+            const vote = input[1];
             for (let party = 2; party <= jiffClient.party_count; party++) {
               for (let idx = 0; idx < vote.length; idx++) {
                 vote[idx] = await vote[idx].add(input[party][idx]);
@@ -83,9 +83,9 @@ describe('JIFF Voting', () => {
 
             // Check who's got the majority vote
             let majo_idx = 0;
-            let curr_max = vote[0];
+            const curr_max = vote[0];
             for (let i = 1; i < vote.length; i++) {
-              let iIsMax = await vote[i].gt(curr_max);
+              const iIsMax = await vote[i].gt(curr_max);
               majo_idx = await iIsMax.if_else(i, majo_idx);
             }
             majo_idx = await sanity_flag.if_else(majo_idx, -1);

@@ -4,12 +4,12 @@ let worker = new Worker('./web-worker.js');
 // eslint-disable-next-line no-unused-vars
 function connect(party_id) {
   $('#connectButton').prop('disabled', true);
-  var computation_id = $('#computation_id').val();
+  const computation_id = $('#computation_id').val();
 
-  var options = { party_count: config.party_count };
+  const options = { party_count: config.party_count };
 
-  var hostname = window.location.hostname.trim();
-  var port = window.location.port;
+  let hostname = window.location.hostname.trim();
+  let port = window.location.port;
   if (port == null || port === '') {
     port = '80';
   }
@@ -35,14 +35,14 @@ function connect(party_id) {
 
 // eslint-disable-next-line no-unused-vars
 function submit(party_id) {
-  var arr = JSON.parse(document.getElementById('inputText' + String(party_id)).value);
+  const arr = JSON.parse(document.getElementById('inputText' + String(party_id)).value);
 
   if (arr.length !== config.input_length) {
     alert('Please input an array of length ' + config.input_length + '.');
     return;
   }
 
-  for (var i = 0; i < arr.length; i++) {
+  for (let i = 0; i < arr.length; i++) {
     if (typeof(arr[i]) !== 'number') {
       alert('Please input an array of integers.');
       return;

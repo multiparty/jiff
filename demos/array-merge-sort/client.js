@@ -1,17 +1,17 @@
-let worker = new Worker('./web-worker.js');
+const worker = new Worker('./web-worker.js');
 function connect(party_id) {
   $('#connectButton').prop('disabled', true);
-  var computation_id = $('#computation_id').val();
-  var party_count = parseInt($('#count').val());
+  const computation_id = $('#computation_id').val();
+  const party_count = parseInt($('#count').val());
 
   if (isNaN(party_count)) {
     $('#output').append('<p class="error">Party count must be a valid number!</p>');
     $('#connectButton').prop('disabled', false);
   } else {
-    var options = { party_count: party_count };
+    const options = { party_count: party_count };
 
-    var hostname = window.location.hostname.trim();
-    var port = window.location.port;
+    let hostname = window.location.hostname.trim();
+    let port = window.location.port;
     if (port == null || port === '') {
       port = '80';
     }
@@ -48,7 +48,7 @@ worker.onmessage = function (e) {
 function submit(party_id) {
   $('#submit' + String(party_id)).attr('disabled', true);
 
-  let arr = JSON.parse(document.getElementById('inputText' + String(party_id)).value);
+  const arr = JSON.parse(document.getElementById('inputText' + String(party_id)).value);
 
   // Ensure array has only numbers
   for (let i = 0; i < arr.length; i++) {
@@ -62,7 +62,7 @@ function submit(party_id) {
   }
 
   // Ensure array length is a power of 2
-  var lg = arr.length;
+  let lg = arr.length;
   while (lg > 1) {
     if (lg % 2 !== 0) {
       $('#output').append('<p class="error">Input array length must be a power of 2!</p>');

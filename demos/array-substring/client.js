@@ -1,14 +1,14 @@
-let worker = new Worker('./web-worker.js');
+const worker = new Worker('./web-worker.js');
 function connect(party_id) {
   $('#connectButton').prop('disabled', true);
-  let computation_id = $('#computation_id').val();
-  let party_count = parseInt($('#count').val());
+  const computation_id = $('#computation_id').val();
+  const party_count = parseInt($('#count').val());
 
   if (isNaN(party_count)) {
     $('#output').append("<p class='error'>Party count must be a valid number!</p>");
     $('#connectButton').prop('disabled', false);
   } else {
-    let options = { party_count: party_count, party_id: party_id };
+    const options = { party_count: party_count, party_id: party_id };
 
     let hostname = window.location.hostname.trim();
     let port = window.location.port;
@@ -50,7 +50,7 @@ worker.onmessage = function (e) {
 // eslint-disable-next-line no-unused-vars
 function submit(party_id) {
   $('#submit' + String(party_id)).attr('disabled', true);
-  let input = $('#inputText' + String(party_id)).val();
+  const input = $('#inputText' + String(party_id)).val();
 
   if (input.length == null) {
     $('#output').append("<p class='error'>Input a valid string!</p>");
