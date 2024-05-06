@@ -3,8 +3,6 @@
 ## Before Getting Started
 This demo is run by Cypress. The package.json includes Cypress installation, however, if needed, you can install it separately with `npm install cypress --save-dev`.
 
-Description and guide for a randomized shell sort on element-wise summation of input lists with secure MPC.
-
 ## Protocol
 Each party inputs an array of length N. The protocol sums element-wise, shell-sort the resulting array, and outputs the sorted array. The implementation of this protocol is located in <a href="https://github.com/multiparty/jiff/blob/master/demos/array-shell-sort/mpc.js">mpc.js</a> 
 
