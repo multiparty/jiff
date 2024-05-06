@@ -1,6 +1,6 @@
 # Bubble Sort Demo
 
-## Description and guide for binary search with secure MPC
+## Before Getting Started
 This demo is run by Cypress. The package.json includes Cypress installation, however, if needed, you can install it separately with `npm install cypress --save-dev`.
 
 
