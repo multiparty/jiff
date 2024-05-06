@@ -1,53 +1,82 @@
-#MPC As a Service
+# Compute the Sum of Arrays with MPC as a Service
 
-In many circumstances, some parties might want to participate in a secure MPC protocol but not have the computational
-resources to conduct the full protocol themselves. In this case, they might choose to outsource some of the computation
-to third parties who offer MPC as a service. This demo is a simple example of how JIFF might be used in such a scenario.
+## Before Getting Started
+This demo is run by Cypress. The package.json includes Cypress installation, however, if needed, you can install it separately with `npm install cypress --save-dev`.
 
-Here, we have two types of parties: *input* parties who provide input to the computation, and *compute* parties, who do
-not provide input but participate in the computation process. In this simplistic example, they compute the sum of the
-inputs.
+## Protocol💻
+This example demonstrates a distributed MPC computation that sums two arrays of integers, involving three computing parties and two input parties. 
+This unique implementation allows even resource-restricted participants to engage by outsourcing the actual calculations to third parties.
 
-## Running Demo
-Unlike many of the other demos provided here, parameters such as party count are not specified as in-line arguments.
-Instead, this information as well as the information for which of the parties are input parties and which are compute
-parties is set in config.json.
+## Running Demo 🏃🏃‍♀️🏃‍♂️
+> **Beware that this protocol utilizes an independent server and follows a unique process.**
 
-Another different from the other demos is that here only the compute parties may be run through the terminal, while input
-parties must be run through a web browser.
+1. Run the server
+    ```shell
+    node demos/array-mpc-as-a-service/server.js
+    ```
+> **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.
 
-As currently configured in config.json, there are 3 compute parties and 2 input parties.
+2. Initiate computing parties
+   Run this in three different terminals (By now, you ought to have at least three terminals open)
+   ```
+   node demos/array-mpc-as-a-service/compute-party.js config.json
+   ```
 
-Additionally, config.json specifies whether to use preprocessing or crypto provider. For more on this, please
-check the preprocessing tutorial.
+3. Open the Cypress Test Runner 🎥 (with video demos)
+    1) Run `npm run cypress:open` in CML
 
-1. Running the server:
-```shell
-node demos/array-mpc-as-a-service/server.js
-```
+    2) Choose a browser (Chrome Recommended)
+    <div align="center">
+        <img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
+    </div>
+    
+    3) Click a demo protocol of your choice
+    <div align="center">
+        <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
+    </div>
 
-2. Running compute parties:
-```shell
-# run a single compute party
-node demos/array-mpc-as-a-service/compute-party.js
-```
 
-3. For the input parties, go to *http://localhost:8080/demos/array-mpc-as-a-service/client.html* in a web browser.
+4. Interpret the Result
+After a second to a few seconds of executing the test by the above 2 steps, you will see the following results, if successful:
 
-## File structure
-The demo consists of the following parts:
-1. Server script: *server.js*
-2. Web Based input parties:
-    * *client.html*: UI for the browser.
-    * *client.js*: Handlers for UI buttons and input validations.
-    * *client-mpc.js*: MPC protocol for parties that provide input of computation.
-3. Compute parties:
-    * *compute-party.js*: MPC protocol for parties that help compute but do not receive output.
-4. Configuration file:
-    * *config.json*
-5. Documentation:
-    * This *README.md* file.
-6. Tests:
-    * *tests/config-*.json*: configuration files for various tests.
-    * *tests/test.js*: mocha testing suite.
-    * *test.sh*: entry point for tests.
+    <div align="center">
+        <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/4c585335-57e7-4240-a2d5-ab5da3779af2">
+    </div>
+
+Remember that this image is just an example. Your result may look slightly different.
+
+## Alternatively... ☞☞
+The demo/test can be run from the command line without videos.
+
+1. Run the following block of code in your terminal
+   ```shell
+      node demos/array-mpc-as-a-service/server.js & echo $! > SERVER_PID
+      sleep 10
+      echo "Initiating three computational parties"
+      node demos/array-mpc-as-a-service/compute-party.js config.json &
+      node demos/array-mpc-as-a-service/compute-party.js config.json &
+      node demos/array-mpc-as-a-service/compute-party.js config.json &
+      sleep 5
+      echo "Running the cypress test for two input parties"
+      npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-mpc-as-a-service/test.cy.ts"
+      kill $(cat SERVER_PID) || true
+   ```
+    
+2. Interpret the result in the CML
+    <div align="center">
+        <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
+    </div>
+
+## Code Structure 💻
+
+This Cypress-based demo adopts the web-worker system to emulate multiple threaded execution. 
+In the real-world MPC implementation, clients act in a distributed manner, allowing multiple users to send data from separate browsers.
+However, the Cypress test framework does not allow multiple tabs/windows, and therefore, it is necessary to make the demo test run as if multiple inputs were submitted from their own browsers.
+
+Here, the web-worker system plays a central role. `client.js` interfaces with the `client.html`, containing UI components. `client.js` sends the required instructions to the `web-worker.js`.
+The web worker then calls MPC functions, connects & computes, and returns results to the `client.js`, which then gets displayed in the UI. In this example, the computing parties are initiated by `compute-party.js`, which performs the actual computations and sends the computed results to the client-mpc via the server.
+
+<div align="center">
+        <img width="80%" height="80%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/dcaf3e52-1cdc-4465-a4d4-4fad1cdbadfe">
+</div>
+
