@@ -1,52 +1,78 @@
 # Binary Search Demo
 
-Description and guide for binary search with secure MPC. 
+## Description and guide for binary search with secure MPC
+This demo is run by Cypress. The package.json includes Cypress installation, however, if needed, you can install it separately with `npm install cypress --save-dev`.
 
-## Protocol
-Player 1 inputs an array of integer values. Player 2 inputs a single "search" integer. If that integer is present in player 1's 
-input array, then 1 is output. Otherwise, 0 is output. A binary search is performed to determine this presence or absence
-of the search integer in the array. 
+## Protocol💻
+Player-1 inputs an array of integer values. Player 2 inputs a single "search" integer. If that integer is present in Player 1's input array, then 1 is output. Otherwise, 0 is output. A binary search is performed to determine the presence or absence of the integer in the array. The implementation of this protocol is located in <a href="https://github.com/multiparty/jiff/blob/master/demos/array-binary-search/mpc.js">mpc.js</a> and executed in the following way. Note that in this demo, Player-1 inputs an array and Player-2 inputs a search integer. In real-world use cases, such restrictions may not apply; this demo is simplified for ease of understanding.
 
-The implementation of this protocol is located in lines 25 through 81 of mpc.js. First, the input array is sorted. Second,
-the inputs are secret shared. Since each player executes both of these steps, both players technically share an input value 
-and an array; one of these will just be null for each. Finally, a binary search is recursively called on the array, using 
-MPC protocols for the comparison of secret shares. 
+<ul>
+    <li> <I>First, the input array gets sorted. </li>
+    <li> Second, the inputs are secretly shared. Since each player executes both of these steps, both players technically share an input value 
+and an array; one of these shares will just be null for each. </li>
+    <li> Finally, a binary search is recursively called on the array, using  MPC protocols for the comparison of secret shares.  </I></li>
+</ul>
 
-NOTE: As currently implemented, the input array is hard-coded into the MPC protocol as player 1's input. 
-If player 1 inputs the search integer and player 2 inputs the array, the protocol will not perform as expected. 
+This demo also includes the use of the jiff_websockets extension, superseding the original socket.io functionalities.
+For the use of the `jiff_websockets` extension, client.html must include the <b> latest </b> <a href="https://github.com/multiparty/jiff/blob/master/dist/jiff-client-websockets.js"> dist/jiff-client-websockets.js file</a>. Therefore, whenever any change is made in the <a href="https://github.com/multiparty/jiff/blob/master/lib/ext/jiff-client-websockets.js"> /lib/ext/jiff-client-websockets.js file</a>, you must run `npm run build` in CML before running this demo.
 
-This demo also includes the use of the jiff_websockets extension. This extension allows JIFF to use the ws WebSocket library
-instead of socket.io. The jiff_websockets extension requires that the distribution file be included in client.html as opposed
-to lib/ext/jiff-client-websockets.
+## Running Demo 🏃🏃‍♀️🏃‍♂️
 
-## Running Demo
-
-1. Running a server:
+1. Run the server
     ```shell
-    node demos/array-binary-search/server.js
+    node demos/support/server.ts   
     ```
+> **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.</I> 
 
-2. Either open browser based parties by going to *http://localhost:8080/demos/array-binary-search/client.html* in the browser, or a node.js party by running 
+2. Run from the Cypress Test Runner 🎥 (with video demos)
+    1) Run `npm run cypress:open` in CML
+
+    2) Choose a browser (Chrome Recommended)
+    <div align="center">
+        <img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
+    </div>
+    
+    3) Click a demo protocol of your choice
+    <div align="center">
+        <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
+    </div>
+
+
+3. Interpret the Result
+After a second to a few seconds of executing the test by above 2 steps, you will see the following results, if successful:
+
+    <div align="center">
+        <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/4c585335-57e7-4240-a2d5-ab5da3779af2">
+    </div>
+
+## Alternatively... ☞☞
+The demo/test can be run from the command line without videos.
+
+1. Run the server in the same way
+   ```shell
+   node demos/support/server.ts
+   ```
+
+2. Run from the command line ⌨️ (without visual demos)
     ```shell
-    node demos/array-binary-search/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
+    npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-binary-search/test.cy.ts"
     ```
-    Party 1's input should be an array of integers with no spaces. Party 2's input should be a single integer value.  
+    
+3. Interpret the result in the CML
+    <div align="center">
+        <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
+    </div>
 
-3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.
-    ```shell
-    npm run-script test-demo -- demos/array-binary-search/test.js
-    ```
+## Code Structure 💻
 
-## File structure
-The demo consists of the following parts:
-1. Server script: *server.js*
-2. Web Based Party: Made from the following files:
-    * *client.html*: UI for the browser.
-    * *client.js*: Handlers for UI buttons and input validations.
-3. Node.js-Based Party: 
-    * *party.js*: Main entry point. Parses input from the command line and initializes the computation.
-4. The MPC protocol: Implemented in *mpc.js*. This file is used in both the browser and node.js versions of the demo.
-5. test.js: mocha unit tests.
-6. Documentation:
-    * This *README.md* file.
+This Cypress-based demo adopts the web-worker system to emulate multiple threaded execution. 
+In the real world MPC implementation, clients acts in a distributed manner, allowing multiple users send data from separate browsers.
+However, the Cypress test framework does not allow multi tabs/windows, and therefore, it is necessary to make the demo test run as if multiple inputs were submitted from their own browsers.
+
+Here, the web-worker system plays a central role. The `client.js` interfaces with the `client.html`, containing UI components. `client.js` sends required instructions to the `web-worker.js`.
+The web-worker then calls MPC functions, connect & compute, and returns results back to the `client.js`, which then get displayed in the UI.
+
+<div align="center">
+        <img width="80%" height="80%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/26575bf5-fbaa-45da-8a53-e323f252da02">
+</div>
 
