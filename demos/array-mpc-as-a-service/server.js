@@ -29,9 +29,9 @@ console.log('Using config file: ', path.join(__dirname, config));
 config = require(config);
 
 // Keep track of assigned ids
-let assignedCompute = {};
-let assignedInput = {};
-let options = {
+const assignedCompute = {};
+const assignedInput = {};
+const options = {
   logs: true,
   hooks: {
     beforeInitialization: [
@@ -48,8 +48,8 @@ let options = {
           check = assignedInput;
         }
 
-        for (var p = 0; p < search.length; p++) {
-          let id = search[p];
+        for (let p = 0; p < search.length; p++) {
+          const id = search[p];
           if (check[id] === true) {
             continue;
           }
@@ -68,7 +68,7 @@ let options = {
 // Create the server
 const JIFFServer = require('../../lib/jiff-server');
 const jiffRestAPIServer = require('../../lib/ext/jiff-server-restful.js');
-let jiffServer = new JIFFServer(http, options);
+const jiffServer = new JIFFServer(http, options);
 jiffServer.apply_extension(jiffRestAPIServer, {app: app});
 
 // Serve static files.

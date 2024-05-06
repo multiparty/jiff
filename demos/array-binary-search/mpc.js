@@ -3,7 +3,7 @@
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
-    let opt = Object.assign({}, options);
+    const opt = Object.assign({}, options);
     // Added options goes here
     opt.crypto_provider = true;
 
@@ -17,7 +17,7 @@
     }
 
     // eslint-disable-next-line no-undef
-    let jiff_instance = new JIFFClient(hostname, computation_id, opt);
+    const jiff_instance = new JIFFClient(hostname, computation_id, opt);
     // eslint-disable-next-line no-undef
     jiff_instance.apply_extension(jiff_websockets, opt);
 
@@ -54,14 +54,14 @@
     }
 
     // comparison
-    let mid = Math.floor(array.length / 2);
-    let cmp = element.slt(array[mid]);
+    const mid = Math.floor(array.length / 2);
+    const cmp = element.slt(array[mid]);
 
     // Slice array in half, choose slice depending on cmp
-    let nArray = [];
+    const nArray = [];
     for (let i = 0; i < mid; i++) {
-      let c1 = array[i];
-      let c2 = array[mid + i];
+      const c1 = array[i];
+      const c2 = array[mid + i];
       nArray[i] = cmp.if_else(c1, c2);
     }
 

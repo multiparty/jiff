@@ -6,13 +6,13 @@
     jiff_restAPI = require('../../lib/ext/jiff-client-restful.js');
   }
 
-  var __jiff_instance, config, all_parties;
+  let __jiff_instance, config, all_parties;
   exports.connect = function (hostname, computation_id, options, _config) {
     config = _config;
 
     all_parties = config.compute_parties.concat(config.input_parties);
 
-    var opt = Object.assign({}, options);
+    const opt = Object.assign({}, options);
     opt['crypto_provider'] = config.preprocessing === false;
     opt['initialization'] = { role: 'input' };
     opt['party_count'] = config.party_count;
@@ -26,15 +26,15 @@
     return __jiff_instance;
   };
   exports.compute = function (input, jiff_instance_) {
-    var jiff_instance = __jiff_instance;
+    let jiff_instance = __jiff_instance;
     if (jiff_instance_) {
       jiff_instance = jiff_instance_;
     }
 
     // Set up array sharing
-    var skeleton = jiff_instance.skeleton_of(input);
-    var skeletons = {};
-    var i, p_id;
+    const skeleton = jiff_instance.skeleton_of(input);
+    const skeletons = {};
+    let i, p_id;
     for (i = 0; i < config.input_parties.length; i++) {
       p_id = config.input_parties[i];
       skeletons[p_id] = skeleton;  // Assume same skeleton for all parties
@@ -46,7 +46,7 @@
     // If this party is still connected after the compute parties are done, it will
     // receive the result.
 
-    var promise = jiff_instance.receive_open_array(all_parties, config.compute_parties);
+    const promise = jiff_instance.receive_open_array(all_parties, config.compute_parties);
 
     promise.then(function (value) {
       jiff_instance.disconnect(true, true);
