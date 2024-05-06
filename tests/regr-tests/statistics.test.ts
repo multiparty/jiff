@@ -10,12 +10,12 @@ describe('JIFF Statistics Operations', () => {
   let jiffServer: any;
   let server: any;
   const entries: { [key: number]: number } = { 1: 60, 2: 60, 3: 60, 4: 60 };
-  let computation_id = 'test-stats';
+  const computation_id = 'test-stats';
   const party_count = 4;
 
   beforeEach(async () => {
     // Server Setup
-    let port: number = 8114;
+    const port: number = 8114;
     const extensions = [jiff_s_bignumber];
     const servers = init_server(port, extensions);
     (jiffServer = servers[0]), (server = servers[1]);
@@ -48,14 +48,14 @@ describe('JIFF Statistics Operations', () => {
   });
 
   async function average(jiffclient: any, input: number) {
-    let sshare = await jiffclient.share(input);
+    const sshare = await jiffclient.share(input);
     let sec_sum = sshare[1];
     for (let i = 2; i <= jiffclient.party_count; i++) {
       jiffclient.start_barrier();
       sec_sum = await sec_sum.add(sshare[i]);
       jiffclient.end_barrier();
     }
-    let result = await sec_sum.open();
+    const result = await sec_sum.open();
     return result.toString(10) / jiffclient.party_count;
   }
 

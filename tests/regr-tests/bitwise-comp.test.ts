@@ -8,12 +8,12 @@ describe('JIFF bitshare Comparison', () => {
   let jiffServer: any;
   let server: any;
   const entries: { [key: number]: number } = { 1: 60, 2: 50 };
-  let computation_id = 'test-bitshare-comparison';
+  const computation_id = 'test-bitshare-comparison';
   const party_count = 2;
 
   beforeEach(async () => {
     // Server Setup
-    let port: number = 8117;
+    const port: number = 8117;
     const extensions = [jiff_s_bignumber];
     const servers = await init_server(port, extensions);
     (jiffServer = servers[0]), (server = servers[1]);

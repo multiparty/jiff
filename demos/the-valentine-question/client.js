@@ -1,13 +1,13 @@
-let worker = new Worker('./web-worker.js');
+const worker = new Worker('./web-worker.js');
 function connect(party_id) {
   $('#connectButton').prop('disabled', true);
-  var computation_id = $('#computation_id').val();
-  var party_count = parseInt($('#count').val());
+  const computation_id = $('#computation_id').val();
+  const party_count = parseInt($('#count').val());
 
-  var options = { party_count: party_count };
+  const options = { party_count: party_count };
 
-  var hostname = window.location.hostname.trim();
-  var port = window.location.port;
+  let hostname = window.location.hostname.trim();
+  let port = window.location.port;
   if (port == null || port === '') {
     port = '80';
   }
@@ -41,7 +41,7 @@ worker.onmessage = function (e) {
 
 // eslint-disable-next-line no-unused-vars
 function submit(party_id) {
-  var input = $('input[name=choice]:checked').val();
+  let input = $('input[name=choice]:checked').val();
   if (input !== 'yes' && input !== 'no') {
     $('#output').append("<p class='error'>Please select a choice.</p>");
     return;

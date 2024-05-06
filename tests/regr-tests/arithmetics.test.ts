@@ -10,12 +10,12 @@ describe('JIFF Arithmetic Operations', () => {
   let jiffServer: any;
   let server: any;
   const entries: { [key: number]: number } = { 1: 60.05, 2: 60.05 };
-  let computation_id = 'test-arithmetics';
+  const computation_id = 'test-arithmetics';
   const party_count = 2;
 
   beforeEach(async () => {
     // Server Setup
-    let port: number = 8111;
+    const port: number = 8111;
     const extensions = [jiff_s_bignumber];
     const servers = init_server(port, extensions);
     (jiffServer = servers[0]), (server = servers[1]);

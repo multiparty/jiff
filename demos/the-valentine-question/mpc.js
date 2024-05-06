@@ -3,7 +3,7 @@
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
-    var opt = Object.assign({}, options);
+    const opt = Object.assign({}, options);
     // Added options goes here
     opt.crypto_provider = true;
 
@@ -15,7 +15,7 @@
     }
 
     // eslint-disable-next-line no-undef
-    let jiff_instance = new JIFFClient(hostname, computation_id, opt);
+    const jiff_instance = new JIFFClient(hostname, computation_id, opt);
     // eslint-disable-next-line no-undef
     jiff_instance.apply_extension(jiff_websockets, opt);
 
@@ -26,7 +26,7 @@
    * The MPC computation
    */
   exports.compute = function (input, jiff_instance) {
-    var shares = jiff_instance.share(input);
+    let shares = jiff_instance.share(input);
 
     shares = shares[1].mult(shares[2]);
 

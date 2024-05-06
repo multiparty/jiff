@@ -9,12 +9,12 @@ describe('JIFF Preprocessing Operations', () => {
   let jiffServer: any;
   let server: any;
   const entries: { [key: number]: number } = { 1: 60, 2: 50 };
-  let computation_id = 'test-bit-preprocessing';
+  const computation_id = 'test-bit-preprocessing';
   const party_count = 2;
 
   beforeEach(async () => {
     // Server Setup
-    let port: number = 8115;
+    const port: number = 8115;
     const extensions = [jiff_s_bignumber];
     const servers = init_server(port, extensions);
     (jiffServer = servers[0]), (server = servers[1]);
@@ -54,7 +54,7 @@ describe('JIFF Preprocessing Operations', () => {
           try {
             const jiff_bits = jiffClient.protocols.bits;
             const input = await jiff_bits.share(entries[id]);
-            let sec_ttl = await jiff_bits.smult(input[1], input[2]);
+            const sec_ttl = await jiff_bits.smult(input[1], input[2]);
             const result = await jiff_bits.open(sec_ttl);
             resolve(result.toString(10));
           } catch (error) {

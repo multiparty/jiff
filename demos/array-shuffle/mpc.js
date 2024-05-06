@@ -3,7 +3,7 @@
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
-    var opt = Object.assign({}, options);
+    const opt = Object.assign({}, options);
     // Added options goes here
     opt.crypto_provider = true;
 
@@ -17,7 +17,7 @@
     }
 
     // eslint-disable-next-line no-undef
-    let jiff_instance = new JIFFClient(hostname, computation_id, opt);
+    const jiff_instance = new JIFFClient(hostname, computation_id, opt);
     // eslint-disable-next-line no-undef
     jiff_instance.apply_extension(jiff_websockets, opt);
 
@@ -26,33 +26,33 @@
 
   exports.compute = function (input, jiff_instance) {
     // Share the arrays
-    var shares = jiff_instance.share_array(input, input.length);
+    const shares = jiff_instance.share_array(input, input.length);
 
     // Concatenate input arrays
-    var full_array = [];
-    for (var p = 1; p <= jiff_instance.party_count; p++) {
+    let full_array = [];
+    for (let p = 1; p <= jiff_instance.party_count; p++) {
       full_array = full_array.concat(shares[p]);
     }
 
     // Shuffle new array
-    var shuffled = shuffle(full_array, jiff_instance);
+    const shuffled = shuffle(full_array, jiff_instance);
 
     // Open the array
     return jiff_instance.open_array(shuffled);
   };
 
   function shuffle(array, jiff_instance) {
-    var result = [];
-    var n = array.length - 1;
-    for (var i = n; i > 0; i--) {
+    const result = [];
+    const n = array.length - 1;
+    for (let i = n; i > 0; i--) {
       array = array.slice(0, i + 1);
 
-      var bits = jiff_instance.protocols.bits.rejection_sampling(0, i + 1);
-      var random = jiff_instance.protocols.bits.bit_composition(bits);
+      const bits = jiff_instance.protocols.bits.rejection_sampling(0, i + 1);
+      const random = jiff_instance.protocols.bits.bit_composition(bits);
 
       array = binary_swap(array, random, array[i]);
       // swap element found into last position of array
-      var tmp = array[1];
+      const tmp = array[1];
       array = array[0];
       array[i] = tmp;
       result[i] = array[i];
@@ -64,20 +64,20 @@
 
   function binary_swap(array, element, last) {
     if (array.length === 1) {
-      var tmp = array[0];
+      const tmp = array[0];
       array[0] = last;
       return [array, tmp];
     }
 
     // comparison
-    var mid = Math.floor(array.length / 2);
-    var cmp = element.clt(mid);
+    const mid = Math.floor(array.length / 2);
+    const cmp = element.clt(mid);
 
     // Slice array in half, choose slice depending on cmp
-    var nArray = [];
-    for (var i = 0; i < mid; i++) {
-      var c1 = array[i];
-      var c2 = array[mid + i];
+    const nArray = [];
+    for (let i = 0; i < mid; i++) {
+      const c1 = array[i];
+      const c2 = array[mid + i];
       nArray[i] = cmp.if_else(c1, c2);
     }
 
@@ -87,7 +87,7 @@
     }
     // change element to search for depending on array split decision
     element = cmp.if_else(element, element.csub(mid));
-    var result = binary_swap(nArray, element, last);
+    const result = binary_swap(nArray, element, last);
 
     for (i = 0; i < mid; i++) {
       array[i] = cmp.if_else(result[0][i], array[i]);

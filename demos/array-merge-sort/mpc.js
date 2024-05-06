@@ -3,7 +3,7 @@
    * Connect to the server and initialize the jiff instance
    */
   exports.connect = function (hostname, computation_id, options) {
-    let opt = Object.assign({}, options);
+    const opt = Object.assign({}, options);
     // Added options goes here
     opt.crypto_provider = true;
 
@@ -17,7 +17,7 @@
     }
 
     // eslint-disable-next-line no-undef
-    let jiff_instance = new JIFFClient(hostname, computation_id, opt);
+    const jiff_instance = new JIFFClient(hostname, computation_id, opt);
     // eslint-disable-next-line no-undef
     jiff_instance.apply_extension(jiff_websockets, opt);
 
@@ -30,7 +30,7 @@
 
   function oddEvenSort(a, lo, n) {
     if (n > 1) {
-      let m = Math.floor(n / 2);
+      const m = Math.floor(n / 2);
       oddEvenSort(a, lo, m);
       oddEvenSort(a, lo + m, m);
       oddEvenMerge(a, lo, n, 1);
@@ -39,7 +39,7 @@
 
   // lo: lower bound of indices, n: number of elements, r: step
   function oddEvenMerge(a, lo, n, r) {
-    let m = r * 2;
+    const m = r * 2;
     if (m < n) {
       oddEvenMerge(a, lo, n, m);
       oddEvenMerge(a, lo + r, n, m);
@@ -57,19 +57,19 @@
       return;
     }
 
-    let x = a[i];
-    let y = a[j];
+    const x = a[i];
+    const y = a[j];
 
-    let cmp = x.lt(y);
+    const cmp = x.lt(y);
     a[i] = cmp.if_else(x, y);
     a[j] = cmp.if_else(y, x);
   }
 
   exports.compute = function (input, jiff_instance) {
-    let shares = jiff_instance.share_array(input, input.length);
+    const shares = jiff_instance.share_array(input, input.length);
 
     // Sum all shared input arrays element wise
-    let array = shares[1];
+    const array = shares[1];
     for (let p = 2; p <= jiff_instance.party_count; p++) {
       for (let i = 0; i < array.length; i++) {
         array[i] = array[i].sadd(shares[p][i]);
