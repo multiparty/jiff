@@ -1,6 +1,7 @@
-# String Concatenation Demo
+# String Concatenation
 
-Description and guide for array concatenation with secure MPC. 
+## Before Getting Started
+This demo is run by Cypress. The package.json includes Cypress installation, however, if needed, you can install it separately with `npm install cypress --save-dev`.
 
 ## Protocol💻
 Player 1 and Player 2 input respective strings, and the protocol outputs the concatenation of these strings. The implementation of this protocol is located in <a href="https://github.com/multiparty/jiff/blob/master/demos/array-concat/mpc.js">mpc.js</a> and executed in the following way. 
