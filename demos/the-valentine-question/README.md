@@ -3,7 +3,7 @@
 ## Before Getting Started
 This demo is run by Cypress. The package.json includes Cypress installation, however, if needed, you can install it separately with `npm install cypress --save-dev`.
 
-## Protocol💻
+## Protocol 💻
 This protocol allows two parties to privately indicate their interest in a Valentine's Day date. Each party submits either "yes" or "no." The date proceeds only if both parties answer "yes"; otherwise, it is canceled. To maintain privacy, a negative response is kept confidential from the other party. Responses are encoded as "yes" = 1 and "no" = 0, allowing the protocol to compute the outcome by multiplication. The result "1 x 1" signifies the date is on, while any multiplication involving a "0" (i.e., "0 x 0" or "0 x 1") leads to cancellation.
 
 The implementation of this protocol is located in <a href="https://github.com/multiparty/jiff/blob/master/demos/the-valentine-question/mpc.js">mpc.js</a>.
@@ -30,12 +30,14 @@ The implementation of this protocol is located in <a href="https://github.com/mu
     </div>
 
 
-3. Interpret the Result
+3. Interpret the Result 🧐
 After a second to a few seconds of executing the test by above 2 steps, you will see the following results, if successful:
 
     <div align="center">
         <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/4c585335-57e7-4240-a2d5-ab5da3779af2">
     </div>
+
+Remember that this image is just an example. Your result may look slightly different.
 
 ## Alternatively... ☞☞
 The demo/test can be run from the command line without videos.
@@ -55,14 +57,14 @@ The demo/test can be run from the command line without videos.
         <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
     </div>
 
-## Code Structure 💻
+## Code Structure ⌨️
 
 This Cypress-based demo adopts the web-worker system to emulate multiple threaded execution. 
-In the real world MPC implementation, clients acts in a distributed manner, allowing multiple users send data from separate browsers.
-However, the Cypress test framework does not allow multi tabs/windows, and therefore, it is necessary to make the demo test run as if multiple inputs were submitted from their own browsers.
+In the real-world MPC implementation, clients act in a distributed manner, allowing multiple users to send data from separate browsers.
+However, the Cypress test framework does not allow multiple tabs/windows, and therefore, it is necessary to make the demo test run as if multiple inputs were submitted from their browsers.
 
-Here, the web-worker system plays a central role. The `client.js` interfaces with the `client.html`, containing UI components. `client.js` sends required instructions to the `web-worker.js`.
-The web-worker then calls MPC functions, connect & compute, and returns results back to the `client.js`, which then get displayed in the UI.
+Here, the web-worker system plays a central role. The `client.js` interfaces with the `client.html`, containing UI components. `client.js` sends the required instructions to the `web-worker.js`.
+The web worker then calls MPC functions, connects & computes, and returns results to the `client.js`, which then gets displayed in the UI.
 
 <div align="center">
         <img width="80%" height="80%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/26575bf5-fbaa-45da-8a53-e323f252da02">

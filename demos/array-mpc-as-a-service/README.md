@@ -3,7 +3,7 @@
 ## Before Getting Started
 This demo is run by Cypress. The package.json includes Cypress installation, however, if needed, you can install it separately with `npm install cypress --save-dev`.
 
-## Protocol💻
+## Protocol 💻
 This example demonstrates a distributed MPC computation that sums two arrays of integers, involving three computing parties and two input parties. 
 This unique implementation allows even resource-restricted participants to engage by outsourcing the actual calculations to third parties.
 
@@ -36,7 +36,7 @@ This unique implementation allows even resource-restricted participants to engag
     </div>
 
 
-4. Interpret the Result
+4. Interpret the Result 🧐
 After a second to a few seconds of executing the test by the above 2 steps, you will see the following results, if successful:
 
     <div align="center">
@@ -67,13 +67,13 @@ The demo/test can be run from the command line without videos.
         <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
     </div>
 
-## Code Structure 💻
+## Code Structure ⌨️
 
 This Cypress-based demo adopts the web-worker system to emulate multiple threaded execution. 
 In the real-world MPC implementation, clients act in a distributed manner, allowing multiple users to send data from separate browsers.
-However, the Cypress test framework does not allow multiple tabs/windows, and therefore, it is necessary to make the demo test run as if multiple inputs were submitted from their own browsers.
+However, the Cypress test framework does not allow multiple tabs/windows, and therefore, it is necessary to make the demo test run as if multiple inputs were submitted from their browsers.
 
-Here, the web-worker system plays a central role. `client.js` interfaces with the `client.html`, containing UI components. `client.js` sends the required instructions to the `web-worker.js`.
+Here, the web-worker system plays a central role. The `client.js` interfaces with the `client.html`, containing UI components. `client.js` sends the required instructions to the `web-worker.js`.
 The web worker then calls MPC functions, connects & computes, and returns results to the `client.js`, which then gets displayed in the UI. In this example, the computing parties are initiated by `compute-party.js`, which performs the actual computations and sends the computed results to the client-mpc via the server.
 
 <div align="center">
