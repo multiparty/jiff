@@ -69,6 +69,27 @@ npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-substr
     <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
 </div>
 
+## There is something more... 📦
+The demo can be run without Cypress
+
+**1. Run the server in the same way**
+
+```shell
+node demos/support/server.ts
+```
+
+**2. Experiment on a Browser**
+   
+Visit http://localhost:8080/demos/array-substring/client.html
+
+**3. Connect and Submit**
+
+<div align="center">
+<img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/7dcfcbb2-be22-442f-924f-5805fa9acd9c">
+</div>
+
+> For this demo, participant 1 must submit a string, and participant 2 must submit a character to find in the P1's string.
+
 ## Code Structure ⌨️
 
 This Cypress-based demo adopts the web-worker system to emulate multiple threaded execution. 
