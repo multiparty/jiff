@@ -10,9 +10,9 @@ Each party inputs an array of length N. Each party inputs an array of length N. 
 
 **1. Run the server**
 
-    ```shell
-    node demos/support/server.ts   
-    ```
+```shell
+node demos/support/server.ts   
+```
 > **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.</I> 
 
 **2. Run from the Cypress Test Runner 🎥 (with video demos)**
@@ -45,15 +45,15 @@ The demo/test can be run from the command line without videos.
 
 **1. Run the server in the same way**
 
-   ```shell
-   node demos/support/server.ts
-   ```
+```shell
+node demos/support/server.ts
+```
 
 **2. Run from the command line ⌨️ (without visual demos)**
 
-    ```shell
-    npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-shuffle/test.cy.ts"
-    ```
+```shell
+npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-shuffle/test.cy.ts"
+```
     
 **3. Interpret the result in the CML**
 
