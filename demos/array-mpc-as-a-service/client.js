@@ -1,7 +1,6 @@
 let worker = new Worker('./web-worker.js');
 /* global config */
 
-// eslint-disable-next-line no-unused-vars
 function connect(party_id) {
   $('#connectButton').prop('disabled', true);
   const computation_id = $('#computation_id').val();
@@ -33,7 +32,6 @@ function connect(party_id) {
   });
 }
 
-// eslint-disable-next-line no-unused-vars
 function submit(party_id) {
   const arr = JSON.parse(document.getElementById('inputText' + String(party_id)).value);
 
@@ -48,7 +46,6 @@ function submit(party_id) {
       return;
     }
   }
-  // eslint-disable-next-line no-undef
   worker.postMessage({
     type: 'compute' + String(party_id),
     input: arr
