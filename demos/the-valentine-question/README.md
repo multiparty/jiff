@@ -15,18 +15,18 @@ The implementation of this protocol is located in <a href="https://github.com/mu
 ```shell
 node demos/support/server.ts   
 ```
-> **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.</I> 
+> **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.
 
 **2. Run from the Cypress Test Runner 🎥 (with video demos)**
 
-    1) Run `npm run cypress:open` in CML
+1) Run `npm run cypress:open` in CML
 
-    2) Choose a browser (Chrome Recommended)
+2) Choose a browser (Chrome Recommended)
 <div align="center">
     <img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
 </div>
     
-    3) Click a demo protocol of your choice
+3) Click a demo protocol of your choice
 <div align="center">
     <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
 </div>
