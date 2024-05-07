@@ -23,23 +23,23 @@ For the use of the `jiff_websockets` extension, client.html must include the <b>
     1) Run `npm run cypress:open` in CML
 
     2) Choose a browser (Chrome Recommended)
-    <div align="center">
-        <img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
-    </div>
+<div align="center">
+    <img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
+</div>
     
     3) Click a demo protocol of your choice
-    <div align="center">
-        <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
-    </div>
+<div align="center">
+    <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
+</div>
 
 
 **3. Interpret the Result 🧐**
 
 After a second to a few seconds of executing the test by the above 2 steps, you will see the following results, if successful:
 
-    <div align="center">
-        <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/4c585335-57e7-4240-a2d5-ab5da3779af2">
-    </div>
+<div align="center">
+    <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/4c585335-57e7-4240-a2d5-ab5da3779af2">
+</div>
 
 Remember that this image is just an example. Your result may look slightly different.
 
@@ -60,9 +60,9 @@ The demo/test can be run from the command line without videos.
     
 **3. Interpret the result in the CML**
 
-    <div align="center">
-        <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
-    </div>
+<div align="center">
+    <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
+</div>
 
 ## Code Structure ⌨️
 
