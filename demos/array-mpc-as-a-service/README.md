@@ -12,17 +12,17 @@ This unique implementation allows even resource-restricted participants to engag
 
 **1. Run the server**
 
-    ```shell
-    node demos/array-mpc-as-a-service/server.js
-    ```
+```shell
+node demos/array-mpc-as-a-service/server.js
+```
 > **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.
 
 **2. Initiate computing parties**
 
-   Run this in three different terminals (By now, you ought to have at least three terminals open)
-   ```
-   node demos/array-mpc-as-a-service/compute-party.js config.json
-   ```
+   Run this **three times** in **different terminals** (By this operation, you ought to have at least three terminals open)
+```
+node demos/array-mpc-as-a-service/compute-party.js config.json
+```
 
 **3. Open the Cypress Test Runner 🎥 (with video demos)**
 
@@ -54,18 +54,18 @@ The demo/test can be run from the command line without videos.
 
 **1. Run the following block of code in your terminal**
    
-   ```shell
-      node demos/array-mpc-as-a-service/server.js & echo $! > SERVER_PID
-      sleep 10
-      echo "Initiating three computational parties"
-      node demos/array-mpc-as-a-service/compute-party.js config.json &
-      node demos/array-mpc-as-a-service/compute-party.js config.json &
-      node demos/array-mpc-as-a-service/compute-party.js config.json &
-      sleep 5
-      echo "Running the cypress test for two input parties"
-      npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-mpc-as-a-service/test.cy.ts"
-      kill $(cat SERVER_PID) || true
-   ```
+```shell
+  node demos/array-mpc-as-a-service/server.js & echo $! > SERVER_PID
+  sleep 10
+  echo "Initiating three computational parties"
+  node demos/array-mpc-as-a-service/compute-party.js config.json &
+  node demos/array-mpc-as-a-service/compute-party.js config.json &
+  node demos/array-mpc-as-a-service/compute-party.js config.json &
+  sleep 5
+  echo "Running the cypress test for two input parties"
+  npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-mpc-as-a-service/test.cy.ts"
+  kill $(cat SERVER_PID) || true
+```
     
 **2. Interpret the result in the CML**
 
