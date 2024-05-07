@@ -85,7 +85,7 @@ Visit http://localhost:8080/demos/array-substring/client.html
 **3. Connect and Submit**
 
 <div align="center">
-<img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/7dcfcbb2-be22-442f-924f-5805fa9acd9c">
+<img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/0dee18f1-8bdc-4f06-90d0-0a9779bf5059">
 </div>
 
 > For this demo, participant 1 must submit a string, and participant 2 must submit a character to find in the P1's string.
