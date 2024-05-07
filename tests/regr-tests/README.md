@@ -1,24 +1,24 @@
-# Regression Test
+# Regression Test 📝
 
-This directory consists of a set of regression tests covering from simple arithmetics to statistics performed in the MPC protocol.
+This directory consists of a set of regression tests covering test cases from simple arithmetics to statistics performed in the MPC protocol.
 
 ## Before Getting Started
-The integration tests in this directory are run by JEST. The package.json includes JEST installation, however, if needed, you can install it separately with `npm install --save-dev jest`.
+The e2e tests in this directory are run by JEST. The package.json includes JEST installation, however, if needed, you can install it separately with `npm install --save-dev jest`.
 
 ## What is covered 🛒
 
 <table border="1">
     <tr>
-        <th>Name</th>
-        <th>Description</th>
+        <b><th>Name</th></b>
+        <b><th>Description</th></b>
     </tr>
     <tr>
         <td>Arithmetics</td>
-        <td>Arithmetic operations with Secret Integers and Normal Integers </td>
+        <td>Arithmetic operations with Secret Shares and Normal Integers </td>
     </tr>
     <tr>
         <td>Array</td>
-        <td>Arithmetic operations and Linear/Binary SearchDescription with Secret Array elements </td>
+        <td>Arithmetic operations and Linear/Binary Search with Secret Array elements </td>
     </tr>
     <tr>
         <td>Bits Share Comparison</td>
@@ -47,15 +47,18 @@ The integration tests in this directory are run by JEST. The package.json includ
 </table>
 
 
-Each party inputs an array of length N. Each party inputs an array of length N. The protocol concatenates these arrays and shuffles them randomly, such that the order of the resulting array remains unknown to any party until it is revealed. The implementation of this protocol is located in <a href="https://github.com/multiparty/jiff/blob/master/demos/array-shuffle/mpc.js">mpc.js</a> 
-
 ## How to Run 🏃🏃‍♀️🏃‍♂️
 
 **Run them All**
 
 ```shell
-npx jest --runInBand --coverage tests/regr-tests --silent
+npx jest --no-chache --runInBand --coverage tests/regr-tests --silent
 ```
+
+> ⚠️ Note
+> - `--runInBand` tag is important because simultaneous execution without this tag causes deadlocks due to conflicts/congestion
+> - `--coverage` tag generates a coverage report
+> - `--silent` is optional but recommended, because it prevents noisy verbose.
 
 **Run a single test**
 
@@ -68,14 +71,21 @@ Replace <TestName> with an actual test name, such as `arithmetic`
 
 ## Code Structure ⌨️
 
-This Cypress-based demo adopts the web-worker system to emulate multiple threaded execution. 
-In the real-world MPC implementation, clients act in a distributed manner, allowing multiple users to send data from separate browsers.
-However, the Cypress test framework does not allow multiple tabs/windows, and therefore, it is necessary to make the demo test run as if multiple inputs were submitted from their browsers.
+The e2e tests in this directory follow the same code structure. 
 
-Here, the web-worker system plays a central role. The `client.js` interfaces with the `client.html`, containing UI components. `client.js` sends the required instructions to the `web-worker.js`.
-The web worker then calls MPC functions, connects & computes, and returns results to the `client.js`, which then gets displayed in the UI.
+The Setup Section underneath the `describe` statement imports necessary files and configures variables used in the test cases.
 
 <div align="center">
-        <img width="80%" height="80%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/26575bf5-fbaa-45da-8a53-e323f252da02">
+<img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/c368e155-5150-4a82-8b74-aa60ae5fbddb">
 </div>
 
+The `beforeEach` block initiates the Jiff server, establishes Jiff Client, and apply necessary extensions.
+
+<div align="center">
+<img width="60%" height="60%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/7c730ff0-29d2-4034-901d-8d86cff4f52f">
+</div>
+
+The `afterEach` block terminates the Jiff server, closing sockets and freeing up computation.
+<div align="center">
+<img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/f32272b8-6dba-42a9-b597-e7f6489909bc">
+</div>
