@@ -73,6 +73,32 @@ The demo/test can be run from the command line without videos.
     <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
 </div>
 
+
+## There is something more... 📦
+The demo can be run without Cypress
+
+**1. Run the server & computation parties**
+
+```shell
+  node demos/array-mpc-as-a-service/server.js & echo $! > SERVER_PID
+  sleep 10
+  echo "Initiating three computational parties"
+  node demos/array-mpc-as-a-service/compute-party.js config.json &
+  node demos/array-mpc-as-a-service/compute-party.js config.json &
+  node demos/array-mpc-as-a-service/compute-party.js config.json 
+```
+
+**2. Experiment on a Browser**
+   
+Visit http://localhost:8080/demos/array-mpc-as-a-service/client.html
+
+**3. Connect and Submit**
+
+<div align="center">
+<img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/946d64b0-0b51-445a-9104-d11fefa43a1c">
+</div>
+
+
 ## Code Structure ⌨️
 
 This Cypress-based demo adopts the web-worker system to emulate multiple threaded execution. 
