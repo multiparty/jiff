@@ -64,6 +64,25 @@ npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-merge-
     <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
 </div>
 
+## There is something more... 📦
+The demo can be run without Cypress
+
+**1. Run the server in the same way**
+
+```shell
+node demos/support/server.ts
+```
+
+**2. Experiment on a Browser**
+   
+Visit http://localhost:8080/demos/array-merge-sort/client.html
+
+**3. Connect and Submit**
+
+<div align="center">
+    <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/91f468fe-bf54-4759-919c-cb285d3219e2">
+</div>
+
 ## Code Structure ⌨️
 
 This Cypress-based demo adopts the web-worker system to emulate multiple threaded execution. 
