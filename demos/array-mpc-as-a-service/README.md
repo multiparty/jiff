@@ -10,19 +10,22 @@ This unique implementation allows even resource-restricted participants to engag
 ## Running Demo 🏃🏃‍♀️🏃‍♂️
 > **Beware that this protocol utilizes an independent server and follows a unique process.**
 
-1. Run the server
+**1. Run the server**
+
     ```shell
     node demos/array-mpc-as-a-service/server.js
     ```
 > **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.
 
-2. Initiate computing parties
+**2. Initiate computing parties**
+
    Run this in three different terminals (By now, you ought to have at least three terminals open)
    ```
    node demos/array-mpc-as-a-service/compute-party.js config.json
    ```
 
-3. Open the Cypress Test Runner 🎥 (with video demos)
+**3. Open the Cypress Test Runner 🎥 (with video demos)**
+
     1) Run `npm run cypress:open` in CML
 
     2) Choose a browser (Chrome Recommended)
@@ -36,7 +39,8 @@ This unique implementation allows even resource-restricted participants to engag
     </div>
 
 
-4. Interpret the Result 🧐
+**4. Interpret the Result 🧐**
+
 After a second to a few seconds of executing the test by the above 2 steps, you will see the following results, if successful:
 
     <div align="center">
@@ -48,7 +52,8 @@ Remember that this image is just an example. Your result may look slightly diffe
 ## Alternatively... ☞☞
 The demo/test can be run from the command line without videos.
 
-1. Run the following block of code in your terminal
+**1. Run the following block of code in your terminal**
+   
    ```shell
       node demos/array-mpc-as-a-service/server.js & echo $! > SERVER_PID
       sleep 10
@@ -62,7 +67,8 @@ The demo/test can be run from the command line without videos.
       kill $(cat SERVER_PID) || true
    ```
     
-2. Interpret the result in the CML
+**2. Interpret the result in the CML**
+
     <div align="center">
         <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
     </div>
