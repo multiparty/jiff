@@ -1,8 +1,6 @@
-// eslint-disable-next-line no-undef
 describe('MPC-as-a-service (Array Version)', function () {
   this.timeout(0);
 
-  // eslint-disable-next-line no-undef
   it(process.env.TEST_CONFIG, function (done) {
     const config = require('./../' + process.env.TEST_CONFIG);
     const clientMPC = require('./../client-mpc.js');

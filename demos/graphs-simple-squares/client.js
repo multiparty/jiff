@@ -19,7 +19,6 @@ window.onload = function () {
     xAxes: [{ type: 'linear', position: 'bottom', ticks: { min: minX, max: maxX, maxTicksLimit: 20 } }]
   };
 
-  // eslint-disable-next-line no-undef
   myChart = new Chart(ctx, {
     type: 'line',
     data: { datasets: [
@@ -34,7 +33,6 @@ window.onload = function () {
 };
 
 
-// eslint-disable-next-line no-unused-vars
 function pushCoordinate() {
   var xInput = Number($('#xVal').val());
   var yInput = Number($('#yVal').val());
@@ -69,7 +67,6 @@ function pushCoordinate() {
   $('#yVal').val('');
 }
 
-// eslint-disable-next-line no-unused-vars
 function clearCoordinates() {
   while (coordinates.length > 0) {
     coordinates.pop();
@@ -78,7 +75,6 @@ function clearCoordinates() {
   $('#output').innerHTML = '';
 }
 
-// eslint-disable-next-line no-unused-vars
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
@@ -132,11 +128,9 @@ function connect() {
   }
 
   hostname = hostname + ':' + port;
-  // eslint-disable-next-line no-undef
   jiff_instance = mpc.connect(hostname, computation_id, options);
 }
 
-// eslint-disable-next-line no-unused-vars
 function submit() {
   if (coordinates.length < 1) {
     alert('Please input at least one point.');
@@ -144,12 +138,10 @@ function submit() {
   }
   $('#submitButton').prop('disabled', true);
 
-  // eslint-disable-next-line no-undef
   var promise = mpc.compute(coordinates);
   promise.then(handleResult);
 }
 
-// eslint-disable-next-line no-unused-vars
 function handleResult(result) {
   $('#submitButton').prop('disabled', false);
   var m = result.m; // slope

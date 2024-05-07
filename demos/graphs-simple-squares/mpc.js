@@ -15,32 +15,20 @@
     opt.crypto_provider = true;
 
     if (node) {
-      // eslint-disable-next-line no-undef
       JIFFClient = require('../../lib/jiff-client');
-      // eslint-disable-next-line no-undef
       jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
-      // eslint-disable-next-line no-undef
       jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
-      // eslint-disable-next-line no-undef
       jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber');
-      // eslint-disable-next-line no-undef
       jiff_performance = require('../../lib/ext/jiff-client-performance');
-      // eslint-disable-next-line no-undef
       BigNumber = require('bignumber.js');
-      // eslint-disable-next-line no-undef,no-global-assign
       $ = require('jquery-deferred');
     }
 
     opt.autoConnect = false;
-    // eslint-disable-next-line no-undef
     saved_instance = new JIFFClient(hostname, computation_id, opt);
-    // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_bignumber, opt);
-    // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_fixedpoint, opt);
-    // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_negativenumber, opt);
-    // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_performance, { elementId: 'perfDiv' });
 
     saved_instance.connect();

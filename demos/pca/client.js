@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
@@ -37,16 +36,13 @@ function connect() {
     }
 
     hostname = hostname + ':' + port;
-    // eslint-disable-next-line no-undef
     mpc.connect(hostname, computation_id, options);
   }
 }
 
-// eslint-disable-next-line no-unused-vars
 function pca() {
   var input = JSON.parse($('#inputText').val());
 
-  // eslint-disable-next-line no-undef
   var promise = mpc.compute(input);
 
   promise.then(function (result) {

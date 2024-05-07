@@ -10,13 +10,10 @@
     opt.crypto_provider = true;
 
     if (node) {
-      // eslint-disable-next-line no-undef
       JIFFClient = require('../../lib/jiff-client');
-      // eslint-disable-next-line no-undef,no-global-assign
       $ = require('jquery-deferred');
     }
 
-    // eslint-disable-next-line no-undef
     saved_instance = new JIFFClient(hostname, computation_id, opt);
     // if you need any extensions, put them here
 

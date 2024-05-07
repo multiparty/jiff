@@ -1,9 +1,4 @@
-/**
- * Do not modify this file unless you have to.
- * This file has UI handlers.
- */
 
-// eslint-disable-next-line no-unused-vars
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
@@ -37,12 +32,10 @@ function connect() {
     }
 
     hostname = hostname + ':' + port;
-    // eslint-disable-next-line no-undef
     mpc.connect(hostname, computation_id, options);
   }
 }
 
-// eslint-disable-next-line no-unused-vars
 function submit() {
   var input = parseInt($('#number').val());
 
@@ -53,7 +46,6 @@ function submit() {
   } else {
     $('#button').attr('disabled', true);
     $('#output').append('<p>Starting...</p>');
-    // eslint-disable-next-line no-undef
     var promise = mpc.compute(input);
     promise.then(handleResult);
   }

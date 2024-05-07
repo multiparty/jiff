@@ -130,7 +130,6 @@ function render(data) {
   }
 }
 
-// eslint-disable-next-line no-unused-vars
 function updateGraph(inputText) {
   var graph = JSON.parse(inputText);
   render(graph);

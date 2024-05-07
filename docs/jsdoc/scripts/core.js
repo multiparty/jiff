@@ -7,7 +7,6 @@ var html = document.querySelector('html');
 var MAX_FONT_SIZE = 30;
 var MIN_FONT_SIZE = 10;
 
-// eslint-disable-next-line no-undef
 var localStorage = window.localStorage;
 
 function getTheme() {
@@ -23,9 +22,7 @@ function getTheme() {
             return theme;
         case 'fallback-dark':
             if (
-                // eslint-disable-next-line no-undef
                 window.matchMedia('(prefers-color-scheme)').matches &&
-                // eslint-disable-next-line no-undef
                 window.matchMedia('(prefers-color-scheme: light)').matches
             ) {
                 return 'light';
@@ -35,9 +32,7 @@ function getTheme() {
 
         case 'fallback-light':
             if (
-                // eslint-disable-next-line no-undef
                 window.matchMedia('(prefers-color-scheme)').matches &&
-                // eslint-disable-next-line no-undef
                 window.matchMedia('(prefers-color-scheme: dark)').matches
             ) {
                 return 'dark';
@@ -174,10 +169,8 @@ function bringElementIntoView(element, updateHistory = true) {
      * It is defined when we are initializing tocbot.
      *
      */
-    // eslint-disable-next-line no-undef
     if (tocbotInstance) {
         setTimeout(
-            // eslint-disable-next-line no-undef
             () => tocbotInstance.updateTocListActiveElement(element),
             60
         );
@@ -197,12 +190,10 @@ function bringElementIntoView(element, updateHistory = true) {
     }
 
     if (updateHistory) {
-        // eslint-disable-next-line no-undef
         history.pushState(null, null, '#' + element.id);
     }
 }
 
-// eslint-disable-next-line no-unused-vars
 function bringLinkToView(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -224,7 +215,6 @@ function bringIdToViewOnMount() {
         return;
     }
 
-    // eslint-disable-next-line no-undef
     var id = window.location.hash;
 
     if (id === '') {
@@ -373,7 +363,6 @@ function processAllPre() {
         navbarHeight = navbar.getBoundingClientRect().height;
     }
 
-    // eslint-disable-next-line no-undef
     var preMaxHeight = window.innerHeight - navbarHeight - footerHeight - 250;
 
     targets.forEach(function (pre, idx) {
@@ -400,7 +389,6 @@ function processAllPre() {
 }
 
 function highlightAndBringLineIntoView() {
-    // eslint-disable-next-line no-undef
     var lineNumber = window.location.hash.replace('#line', '');
 
     try {
@@ -463,7 +451,6 @@ function updateFontSize(fontSize) {
     }
 })();
 
-// eslint-disable-next-line no-unused-vars
 function incrementFont(event) {
     var n = getFontSize();
 
@@ -472,7 +459,6 @@ function incrementFont(event) {
     }
 }
 
-// eslint-disable-next-line no-unused-vars
 function decrementFont(event) {
     var n = getFontSize();
 
@@ -515,37 +501,31 @@ function fontSizeTooltip() {
 
 function initTooltip() {
     // add tooltip to navbar item
-    // eslint-disable-next-line no-undef
     tippy('.theme-toggle', {
         content: 'Toggle Theme',
         delay: 500,
     });
 
-    // eslint-disable-next-line no-undef
     tippy('.search-button', {
         content: 'Search',
         delay: 500,
     });
 
-    // eslint-disable-next-line no-undef
     tippy('.font-size', {
         content: 'Change font size',
         delay: 500,
     });
 
-    // eslint-disable-next-line no-undef
     tippy('.codepen-button', {
         content: 'Open code in CodePen',
         placement: 'left',
     });
 
-    // eslint-disable-next-line no-undef
     tippy('.copy-code', {
         content: 'Copy this code',
         placement: 'left',
     });
 
-    // eslint-disable-next-line no-undef
     tippy('.font-size', {
         content: fontSizeTooltip(),
         trigger: 'click',
@@ -627,7 +607,6 @@ function addHrefToSidebarTitle() {
     var titles = document.querySelectorAll('.sidebar-title-anchor');
 
     titles.forEach(function (title) {
-        // eslint-disable-next-line no-undef
         title.setAttribute('href', baseURL);
     });
 }
@@ -644,8 +623,6 @@ function onDomContentLoaded() {
     }
 
     // Highlighting code
-
-    // eslint-disable-next-line no-undef
     hljs.addPlugin({
         'after:highlightElement': function (obj) {
             // Replace 'code' with result.language when
@@ -654,9 +631,7 @@ function onDomContentLoaded() {
             obj.el.parentNode.setAttribute('data-lang', 'code');
         },
     });
-    // eslint-disable-next-line no-undef
     hljs.highlightAll();
-    // eslint-disable-next-line no-undef
     hljs.initLineNumbersOnLoad({
         singleLine: true,
     });
@@ -678,10 +653,8 @@ function onDomContentLoaded() {
     addHrefToSidebarTitle();
 }
 
-// eslint-disable-next-line no-undef
 window.addEventListener('DOMContentLoaded', onDomContentLoaded);
 
-// eslint-disable-next-line no-undef
 window.addEventListener('hashchange', (event) => {
     const url = new URL(event.newURL);
 
@@ -690,7 +663,6 @@ window.addEventListener('hashchange', (event) => {
     }
 });
 
-// eslint-disable-next-line no-undef
 window.addEventListener('storage', (event) => {
     if (event.newValue === 'undefined') return;
 

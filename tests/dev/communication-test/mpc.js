@@ -21,7 +21,6 @@
 
     // eslint-disable-next-line no-global-assign,no-undef
     saved_instance = new JIFFClient(hostname, computation_id, opt);
-    // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_performance);
 
     exports.saved_instance = saved_instance;
