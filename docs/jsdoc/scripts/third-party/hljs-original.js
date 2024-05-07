@@ -984,8 +984,6 @@ var hljs = (function () {
     seenDeprecations[`${version}/${message}`] = true;
   };
 
-  /* eslint-disable no-throw-literal */
-
   /**
   @typedef {import('highlight.js').CompiledMode} CompiledMode
   */

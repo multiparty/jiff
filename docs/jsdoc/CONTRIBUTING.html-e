@@ -68,7 +68,7 @@
 <p>When contributing to this repository, please first discuss the change you wish to make via an issue, unless it's entirely trivial (typo fixes, etc.). If there is already an issue that describes the change you have in mind, comment on it indicating that you're going to work on that. This way we can avoid the situation when several people work on the same thing.</p>
 <h2>Guidelines</h2>
 <ul>
-<li>Code should follow the <a href="https://github.com/airbnb/javascript">AirBnB style guide</a> (with a few exceptions), check for linting errors before submitting a PR</li>
+<li>Code should follow the <a href="https://github.com/airbnb/javascript">AirBnB style guide</a> (with a few exceptions)</li>
 <li>New pull requests must be accompanied by <strong>passing tests</strong> written by the task owner
 <ul>
 <li>see <a href="https://github.com/multiparty/jiff/tree/master/tests.html">tests.html</a></li>

@@ -120,7 +120,6 @@ article ul p {
     margin: 0;
 }
 
-/* stylelint-disable-next-line */
 
 .variation {
     display: none;
@@ -187,17 +186,14 @@ dt {
     word-break: break-word;
 }
 
-/* stylelint-disable-next-line */
 .details ul li p {
     margin: 0;
 }
 
-/* stylelint-disable */
 .details pre.prettyprint {
     margin: 0;
 }
 
-/* stylelint-enable */
 
 .details .object-value {
     padding-top: 0;
@@ -307,7 +303,6 @@ td {
     font-weight: bold;
 }
 
-/* stylelint-disable */
 .params .params thead tr,
 .props .props thead tr {
     font-weight: bold;
@@ -330,7 +325,6 @@ dl.param-type {
     padding-bottom: 1rem;
 }
 
-/* stylelint-enable */
 
 .param-type dt,
 .param-type dd {

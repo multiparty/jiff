@@ -287,7 +287,6 @@ function showTooltip(id) {
     }, 3000);
 }
 
-/* eslint-disable-next-line */
 function copyFunction(id) {
     // selecting the pre element
     var code = document.getElementById(id);

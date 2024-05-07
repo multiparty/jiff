@@ -193,7 +193,6 @@ samp {
     color: #eee;
 }
 
-/* stylelint-enable */
 
 table .name,
 .params .name,
@@ -214,7 +213,6 @@ table thead th,
     color: #fff;
 }
 
-/* stylelint-disable */
 table .params thead tr,
 .params .params thead tr,
 .props .props thead tr {
