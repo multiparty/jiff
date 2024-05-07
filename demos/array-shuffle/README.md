@@ -8,13 +8,15 @@ Each party inputs an array of length N. Each party inputs an array of length N. 
 
 ## Running Demo 🏃🏃‍♀️🏃‍♂️
 
-1. Run the server
+**1. Run the server**
+
     ```shell
     node demos/support/server.ts   
     ```
 > **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.</I> 
 
-2. Run from the Cypress Test Runner 🎥 (with video demos)
+**2. Run from the Cypress Test Runner 🎥 (with video demos)**
+
     1) Run `npm run cypress:open` in CML
 
     2) Choose a browser (Chrome Recommended)
@@ -28,7 +30,8 @@ Each party inputs an array of length N. Each party inputs an array of length N. 
     </div>
 
 
-3. Interpret the Result 🧐
+**3. Interpret the Result 🧐**
+
 After a second to a few seconds of executing the test by the above 2 steps, you will see the following results, if successful:
 
     <div align="center">
@@ -40,17 +43,20 @@ Remember that this image is just an example. Your result may look slightly diffe
 ## Alternatively... ☞☞
 The demo/test can be run from the command line without videos.
 
-1. Run the server in the same way
+**1. Run the server in the same way**
+
    ```shell
    node demos/support/server.ts
    ```
 
-2. Run from the command line ⌨️ (without visual demos)
+**2. Run from the command line ⌨️ (without visual demos)**
+
     ```shell
     npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-shuffle/test.cy.ts"
     ```
     
-3. Interpret the result in the CML
+**3. Interpret the result in the CML**
+
     <div align="center">
         <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
     </div>
