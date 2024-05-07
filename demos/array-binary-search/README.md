@@ -6,64 +6,70 @@ This demo is run by Cypress. The package.json includes Cypress installation, how
 ## Protocol 💻
 Player-1 inputs an array of integer values. Player 2 inputs a single "search" integer. If that integer is present in Player 1's input array, then 1 is output. Otherwise, 0 is output. A binary search is performed to determine the presence or absence of the integer in the array. The implementation of this protocol is located in <a href="https://github.com/multiparty/jiff/blob/master/demos/array-binary-search/mpc.js">mpc.js</a> and executed in the following way. Note that in this demo, Player-1 inputs an array and Player-2 inputs a search integer. In real-world use cases, such restrictions may not apply; this demo is simplified for ease of understanding.
 
-<ul>
-    <li> <I>First, the input array gets sorted. </li>
-    <li> Second, the inputs are secretly shared. Since each player executes both of these steps, both players technically share an input value 
+<ol type="1">
+    <li> The input array gets sorted. </li>
+    <li> The inputs are secretly shared. Since each player executes both of these steps, both players technically share an input value 
 and an array; one of these shares will just be null for each. </li>
-    <li> Finally, a binary search is recursively called on the array, using  MPC protocols for the comparison of secret shares.  </I></li>
-</ul>
+    <li> Binary search is recursively called on the array, using  MPC protocols for the comparison of secret shares.  </li>
+</ol>
 
 This demo also includes the use of the jiff_websockets extension, superseding the original socket.io functionalities.
 For the use of the `jiff_websockets` extension, client.html must include the <b> latest </b> <a href="https://github.com/multiparty/jiff/blob/master/dist/jiff-client-websockets.js"> dist/jiff-client-websockets.js file</a>. Therefore, whenever any change is made in the <a href="https://github.com/multiparty/jiff/blob/master/lib/ext/jiff-client-websockets.js"> /lib/ext/jiff-client-websockets.js file</a>, you must run `npm run build` in CML before running this demo.
 
 ## Running Demo 🏃🏃‍♀️🏃‍♂️
 
-1. Run the server
-    ```shell
-    node demos/support/server.ts   
-    ```
+**1. Run the server**
+
+```shell
+node demos/support/server.ts   
+```
 > **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.</I> 
 
-2. Run from the Cypress Test Runner 🎥 (with video demos)
+**2. Run from the Cypress Test Runner 🎥 (with video demos)**
+
     1) Run `npm run cypress:open` in CML
 
     2) Choose a browser (Chrome Recommended)
-    <div align="center">
-        <img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
-    </div>
+<div align="center">
+    <img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
+</div>
     
     3) Click a demo protocol of your choice
-    <div align="center">
-        <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
-    </div>
+<div align="center">
+    <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
+</div>
 
 
-3. Interpret the Result 🧐
+**3. Interpret the Result 🧐**
+
 After a second to a few seconds of executing the test by above 2 steps, you will see the following results, if successful:
 
-    <div align="center">
-        <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/4c585335-57e7-4240-a2d5-ab5da3779af2">
-    </div>
+<div align="center">
+    <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/4c585335-57e7-4240-a2d5-ab5da3779af2">
+</div>
 
 Remember that this image is just an example. Your result may look slightly different.
 
 ## Alternatively... ☞☞
 The demo/test can be run from the command line without videos.
 
-1. Run the server in the same way
-   ```shell
-   node demos/support/server.ts
-   ```
+**1. Run the server in the same way**
 
-2. Run from the command line ⌨️ (without visual demos)
-    ```shell
-    npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-binary-search/test.cy.ts"
-    ```
+```shell
+node demos/support/server.ts
+```
+
+**2. Run from the command line ⌨️ (without visual demos)**
+   
+```shell
+npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-binary-search/test.cy.ts"
+```
     
-3. Interpret the result in the CML
-    <div align="center">
-        <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
-    </div>
+**3. Interpret the result in the CML**
+    
+<div align="center">
+    <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
+</div>
 
 ## Code Structure ⌨️
 
