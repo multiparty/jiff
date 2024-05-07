@@ -26,16 +26,16 @@ node demos/array-mpc-as-a-service/compute-party.js config.json
 
 **3. Open the Cypress Test Runner 🎥 (with video demos)**
 
-    1) Run `npm run cypress:open` in CML
+ 1) Run `npm run cypress:open` in CML
 
-    2) Choose a browser (Chrome Recommended)
+ 2) Choose a browser (Chrome Recommended)
 <div align="center">
-    <img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
+ <img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
 </div>
-    
-    3) Click a demo protocol of your choice
+ 
+ 3) Click a demo protocol of your choice
 <div align="center">
-    <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
+ <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
 </div>
 
 
@@ -72,6 +72,32 @@ The demo/test can be run from the command line without videos.
 <div align="center">
     <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
 </div>
+
+
+## There is something more... 📦
+The demo can be run without Cypress
+
+**1. Run the server & computation parties**
+
+```shell
+  node demos/array-mpc-as-a-service/server.js & echo $! > SERVER_PID
+  sleep 10
+  echo "Initiating three computational parties"
+  node demos/array-mpc-as-a-service/compute-party.js config.json &
+  node demos/array-mpc-as-a-service/compute-party.js config.json &
+  node demos/array-mpc-as-a-service/compute-party.js config.json 
+```
+
+**2. Experiment on a Browser**
+   
+Visit http://localhost:8080/demos/array-mpc-as-a-service/client.html
+
+**3. Connect and Submit**
+
+<div align="center">
+<img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/946d64b0-0b51-445a-9104-d11fefa43a1c">
+</div>
+
 
 ## Code Structure ⌨️
 

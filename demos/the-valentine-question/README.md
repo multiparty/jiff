@@ -15,18 +15,18 @@ The implementation of this protocol is located in <a href="https://github.com/mu
 ```shell
 node demos/support/server.ts   
 ```
-> **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.</I> 
+> **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.
 
 **2. Run from the Cypress Test Runner 🎥 (with video demos)**
 
-    1) Run `npm run cypress:open` in CML
+1) Run `npm run cypress:open` in CML
 
-    2) Choose a browser (Chrome Recommended)
+2) Choose a browser (Chrome Recommended)
 <div align="center">
     <img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
 </div>
     
-    3) Click a demo protocol of your choice
+3) Click a demo protocol of your choice
 <div align="center">
     <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
 </div>
@@ -60,6 +60,25 @@ npx cypress run --config-file demos/cypress.config.ts --spec "demos/the-valentin
     <div align="center">
         <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
     </div>
+
+## There is something more... 📦
+The demo can be run without Cypress
+
+**1. Run the server in the same way**
+
+```shell
+node demos/support/server.ts
+```
+
+**2. Experiment on a Browser**
+   
+Visit http://localhost:8080/demos/the-valentine-question/client.html
+
+**3. Connect and Submit**
+
+<div align="center">
+   <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/afc7be2f-2aa5-4997-87ef-0f40aa465964">
+</div>
 
 ## Code Structure ⌨️
 

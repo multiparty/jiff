@@ -25,16 +25,16 @@ node demos/support/server.ts
 
 **2. Run from the Cypress Test Runner 🎥 (with video demos)**
 
-    1) Run `npm run cypress:open` in CML
+1) Run `npm run cypress:open` in CML
 
-    2) Choose a browser (Chrome Recommended)
+2) Choose a browser (Chrome Recommended)
 <div align="center">
-    <img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
+<img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
 </div>
-    
-    3) Click a demo protocol of your choice
+
+3) Click a demo protocol of your choice
 <div align="center">
-    <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
+<img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
 </div>
 
 
@@ -68,6 +68,27 @@ npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-substr
 <div align="center">
     <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
 </div>
+
+## There is something more... 📦
+The demo can be run without Cypress
+
+**1. Run the server in the same way**
+
+```shell
+node demos/support/server.ts
+```
+
+**2. Experiment on a Browser**
+   
+Visit http://localhost:8080/demos/array-substring/client.html
+
+**3. Connect and Submit**
+
+<div align="center">
+<img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/0dee18f1-8bdc-4f06-90d0-0a9779bf5059">
+</div>
+
+> For this demo, participant 1 must submit a string, and participant 2 must submit a character to find in the P1's string.
 
 ## Code Structure ⌨️
 
