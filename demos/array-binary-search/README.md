@@ -71,6 +71,27 @@ npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-binary
     <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
 </div>
 
+
+## There is something more... 📦
+The demo can be run without Cypress
+
+**1. Run the server in the same way**
+
+```shell
+node demos/support/server.ts
+```
+
+**2. Experiment on a Browser**
+   
+Visit http://localhost:8080/demos/array-binary-search/client.html
+
+**3. Connect and Submit**
+
+<div align="center">
+<img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/be403bb0-e7be-4f6d-ba90-3e24e125a77d">
+</div>
+
+
 ## Code Structure ⌨️
 
 This Cypress-based demo adopts the web-worker system to emulate multiple threaded execution. 
