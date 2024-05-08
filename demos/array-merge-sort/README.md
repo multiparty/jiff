@@ -1,38 +1,98 @@
-# Merge Sort Demo
+# Sum Arrays of Integers and Merge Sort
 
-Description and guide for merge sort on element-wise summation of input lists with secure MPC.
+## Before Getting Started
+This demo is run by Cypress. The package.json includes Cypress installation, however, if needed, you can install it separately with `npm install cypress --save-dev`.
 
-## Protocol
-Each party inputs an array of length n. The protocol sums these arrays element-wise, and outputs that summed list, sorted
-via mergesort. 
+## Protocol 💻
+Each input party submits an array of length N, and the protocol sums these submitted arrays element-wise, merge-sorts, and outputs the summed list. The implementation of this protocol is located in <a href="https://github.com/multiparty/jiff/blob/master/demos/array-merge-sort/mpc.js">mpc.js</a>.
 
-## Running Demo
+This demo also includes the use of the jiff_websockets extension, superseding the original socket.io functionalities.
+For the use of the `jiff_websockets` extension, client.html must include the <b> latest </b> <a href="https://github.com/multiparty/jiff/blob/master/dist/jiff-client-websockets.js"> dist/jiff-client-websockets.js file</a>. Therefore, whenever any change is made in the <a href="https://github.com/multiparty/jiff/blob/master/lib/ext/jiff-client-websockets.js"> /lib/ext/jiff-client-websockets.js file</a>, you must run `npm run build` in CML before running this demo.
 
-1. Running a server:
-    ```shell
-    node demos/array-bubble-sort/server.js
-    ```
+## Running Demo 🏃🏃‍♀️🏃‍♂️
 
-2. Either open browser based parties by going to *http://localhost:8080/demos/array-merge-sort/client.html* in the browser, or a node.js party by running 
-    ```shell
-    node demos/array-merge-sort/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
-    ``` 
+**1. Get the server up and running**
 
-3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.
-    ```shell
-    npm run-script test-demo -- demos/array-merge-sort/test.js
-    ```
+```shell
+node demos/support/server.ts   
+```
+> **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.</I> 
 
-## File structure
-The demo consists of the following parts:
-1. Server script: *server.js*
-2. Web Based Party: Made from the following files:
-    * *client.html*: UI for the browser.
-    * *client.js*: Handlers for UI buttons and input validations.
-3. Node.js-Based Party: 
-    * *party.js*: Main entry point. Parses input from the command line and initializes the computation.
-4. The MPC protocol: Implemented in *mpc.js*. This file is used in both the browser and node.js versions of the demo.
-5. test.js: mocha unit tests.
-6. Documentation:
-    * This *README.md* file.
+**2. Open from the Cypress Test Runner 🎥 (with video demos)**
+
+1) Run `npm run cypress:open` in CML
+
+2) Choose a browser (Chrome Recommended)
+<div align="center">
+<img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
+</div>
+
+3) Click a demo protocol of your choice
+<div align="center">
+<img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
+</div>
+
+
+**4. Interpret the Result 🧐**
+   
+After a second to a few seconds of executing the test by above 2 steps, you will see the following results, if successful:
+
+<div align="center">
+    <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/4c585335-57e7-4240-a2d5-ab5da3779af2">
+</div>
+
+Remember that this image is just an example. Your result may look slightly different.
+
+## Alternatively... ☞☞
+The demo/test can be run from the command line without videos.
+
+**1. Get the server up and running**
+
+```shell
+node demos/support/server.ts
+```
+
+**2. Run from the command line ⌨️ (without visual demos)**
+
+```shell
+npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-merge-sort/test.cy.ts"
+```
+    
+**3. Interpret the result in the CML**
+
+<div align="center">
+    <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
+</div>
+
+## There is something more... 📦
+The demo can be run without Cypress
+
+**1. Run the server in the same way**
+
+```shell
+node demos/support/server.ts
+```
+
+**2. Experiment on a Browser**
+   
+Visit http://localhost:8080/demos/array-merge-sort/client.html
+
+**3. Connect and Submit**
+
+<div align="center">
+    <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/91f468fe-bf54-4759-919c-cb285d3219e2">
+</div>
+
+## Code Structure ⌨️
+
+This Cypress-based demo adopts the web-worker system to emulate multiple threaded execution. 
+In the real-world MPC implementation, clients act in a distributed manner, allowing multiple users to send data from separate browsers.
+However, the Cypress test framework does not allow multiple tabs/windows, and therefore, it is necessary to make the demo test run as if multiple inputs were submitted from their browsers.
+
+Here, the web-worker system plays a central role. The `client.js` interfaces with the `client.html`, containing UI components. `client.js` sends the required instructions to the `web-worker.js`.
+The web worker then calls MPC functions, connects & computes, and returns results to the `client.js`, which then gets displayed in the UI.
+
+<div align="center">
+        <img width="80%" height="80%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/26575bf5-fbaa-45da-8a53-e323f252da02">
+</div>
 

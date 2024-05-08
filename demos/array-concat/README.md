@@ -1,44 +1,105 @@
-# Concatenation Demo
+# String Concatenation
 
-Description and guide for array concatenation with secure MPC. 
+## Before Getting Started
+This demo is run by Cypress. The package.json includes Cypress installation, however, if needed, you can install it separately with `npm install cypress --save-dev`.
 
-## Protocol
-Each party inputs a string, and the protocol outputs the concatenation of these strings.
+## Protocol 💻
+Player 1 and Player 2 input respective strings, and the protocol outputs the concatenation of these strings. The implementation of this protocol is located in <a href="https://github.com/multiparty/jiff/blob/master/demos/array-concat/mpc.js">mpc.js</a> and executed in the following way. 
 
-## Security
-Note that inputs are not hidden. Who submitted which input may be somewhat hidden, in the sense that it may not be clear
-which substring belonged to which party. This will only be true for parties larger than three people, since in the three-
-party case if P1 inputs "abc", P2 inputs "def", and P3 inputs "ghi", then given output "abcdefghi", P2 will be able to 
-successfully determine the inputs of P1 and P2. In general, any participant will be able to make some estimate about 
-which inputs came from which parties due to the location of their input string in the final concatenated output string.
+Note that inputs are not entirely confidential. In scenarios involving only two parties, each party can easily determine the other's submission by subtracting their own input from the concatenated result. For example, if Party 1 submits "ABC" and Party 2 submits "DEF", the resultant string "ABCDEF" clearly reveals what each party contributed.
 
-## Running Demo
+Conversely, in a three-party system—where Party 1 inputs "ABC", Party 2 inputs "DEF", and Party 3 inputs "GHI"—the combined output "ABCDEFGHI" allows each party to recognize the substrings contributed by the others but not necessarily which substring belongs to whom. Thus, while Party 2 can identify "ABC" and "GHI" as inputs from the other parties, it cannot ascertain which of the other two parties submitted each substring. Similarly, Party 1 and Party 3 would have limited insight into the specific contributions of the other participants.
 
-1. Running a server:
-    ```shell
-    node demos/array-concat/server.js
-    ```
+In general, any participant can make some educated guesses about the origins of each input based on the positioning of their input within the final concatenated output string.
 
-2. Either open browser based parties by going to *http://localhost:8080/demos/array-concat/client.html* in the browser, or a node.js party by running 
-    ```shell
-    node demos/array-concat/party.js <input> [<party count> [<computation_id> [<party id>]]]]'
-    ``` 
+This demo also includes the use of the jiff_websockets extension, superseding the original socket.io functionalities.
+For the use of the `jiff_websockets` extension, client.html must include the <b> latest </b> <a href="https://github.com/multiparty/jiff/blob/master/dist/jiff-client-websockets.js"> dist/jiff-client-websockets.js file</a>. Therefore, whenever any change is made in the <a href="https://github.com/multiparty/jiff/blob/master/lib/ext/jiff-client-websockets.js"> /lib/ext/jiff-client-websockets.js file</a>, you must run `npm run build` in CML before running this demo.
 
-3. Running tests: run the following. Note that you *do not* need to have the server running when running the tests; they run the server on their own.
-    ```shell
-    npm run-script test-demo -- demos/array-concat/test.js
-    ```
 
-## File structure
-The demo consists of the following parts:
-1. Server script: *server.js*
-2. Web Based Party: Made from the following files:
-    * *client.html*: UI for the browser.
-    * *client.js*: Handlers for UI buttons and input validations.
-3. Node.js-Based Party: 
-    * *party.js*: Main entry point. Parses input from the command line and initializes the computation.
-4. The MPC protocol: Implemented in *mpc.js*. This file is used in both the browser and node.js versions of the demo.
-5. test.js: mocha unit tests.
-6. Documentation:
-    * This *README.md* file.
+## Running Demo 🏃🏃‍♀️🏃‍♂️
+
+**1. Run the server**
+
+```shell
+node demos/support/server.ts   
+```
+> **⚠️Important:** You must run a fresh server every time. For example, if a test is paused at any point, it is required to terminate the server and restart it before running the rest of the demo.</I> 
+
+**2. Run from the Cypress Test Runner 🎥 (with video demos)**
+
+1) Run `npm run cypress:open` in CML
+
+2) Choose a browser (Chrome Recommended)
+<div align="center">
+<img width="40%" height="40%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/894b3f2d-4a8b-4368-a81b-4b94ae87cd3a">
+</div>
+
+3) Click a demo protocol of your choice
+<div align="center">
+<img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/9137615f-9aec-41ab-8880-cf8c5e6b72ce">
+</div>
+
+
+**3. Interpret the Result 🧐**
+
+After a second to a few seconds of executing the test by above 2 steps, you will see the following results, if successful:
+
+<div align="center">
+    <img width="30%" height="30%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/4c585335-57e7-4240-a2d5-ab5da3779af2">
+</div>
+
+Remember that this image is just an example. Your result may look slightly different.
+
+## Alternatively... ☞☞
+The demo/test can be run from the command line without videos.
+
+**1. Run the server in the same way**
+
+```shell
+node demos/support/server.ts
+```
+
+**2. Run from the command line ⌨️ (without visual demos)**
+
+```shell
+npx cypress run --config-file demos/cypress.config.ts --spec "demos/array-concat/test.cy.ts"
+```
+    
+**3. Interpret the result in the CML**
+
+<div align="center">
+    <img width="50%" height="50%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/eeb84a82-d8ab-43b5-b66e-48966355a24e">
+</div>
+
+## There is something more... 📦
+The demo can be run without Cypress
+
+**1. Run the server in the same way**
+
+```shell
+node demos/support/server.ts
+```
+
+**2. Experiment on a Browser**
+   
+Visit http://localhost:8080/demos/array-concat/client.html
+
+**3. Connect and Submit**
+
+<div align="center">
+<img width="50%" height="50%" width="614" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/3108d1da-2407-4acd-a85e-e2109d243716">
+</div>
+
+## Code Structure ⌨️
+
+This Cypress-based demo adopts the web-worker system to emulate multiple threaded execution. 
+In the real-world MPC implementation, clients act in a distributed manner, allowing multiple users to send data from separate browsers.
+However, the Cypress test framework does not allow multiple tabs/windows, and therefore, it is necessary to make the demo test run as if multiple inputs were submitted from their browsers.
+
+Here, the web-worker system plays a central role. The `client.js` interfaces with the `client.html`, containing UI components. `client.js` sends the required instructions to the `web-worker.js`.
+The web worker then calls MPC functions, connects & computes, and returns results to the `client.js`, which then gets displayed in the UI.
+
+<div align="center">
+        <img width="80%" height="80%" alt="image" src="https://github.com/multiparty/jiff/assets/62607343/26575bf5-fbaa-45da-8a53-e323f252da02">
+</div>
 
