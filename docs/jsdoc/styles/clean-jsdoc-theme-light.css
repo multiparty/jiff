@@ -216,7 +216,6 @@ body.light {
     color: #111;
 }
 
-/* stylelint-disable */
 .light table .params thead tr,
 .light .params .params thead tr,
 .light .props .props thead tr {

@@ -27,7 +27,6 @@ function connect(party_id) {
 
     hostname = hostname + ':' + port;
 
-    // eslint-disable-next-line no-undef
     worker.postMessage({
       type: 'init_' + String(party_id),
       hostname: hostname,
@@ -44,13 +43,11 @@ worker.onmessage = function (e) {
   }
 };
 
-// eslint-disable-next-line no-unused-vars
 function submit(party_id) {
   $('#submit' + String(party_id)).attr('disabled', true);
 
   const _string = document.getElementById('inputText' + String(party_id)).value;
 
-  // eslint-disable-next-line no-undef
   worker.postMessage({
     type: 'compute' + String(party_id),
     input: _string

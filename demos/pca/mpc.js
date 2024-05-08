@@ -13,30 +13,19 @@
 
     // if you need any extensions, put them here
     if (node) {
-      // eslint-disable-next-line no-undef
       JIFFClient = require('../../lib/jiff-client');
-      // eslint-disable-next-line no-undef
       jiff_bignumber = require('../../lib/ext/jiff-client-bignumber');
-      // eslint-disable-next-line no-undef
       jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint');
-      // eslint-disable-next-line no-undef
       jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber');
-      // eslint-disable-next-line no-undef,no-global-assign
       $ = require('jquery-deferred');
-      // eslint-disable-next-line no-undef,no-global-assign
       numeric = require('numeric/numeric-1.2.6');
-      // eslint-disable-next-line no-undef,no-global-assign
       math = require('mathjs');
       math.import(numeric, {wrap: true, silent: true});
     }
 
-    // eslint-disable-next-line no-undef
     saved_instance = new JIFFClient(hostname, computation_id, opt);
-    // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_bignumber, opt);
-    // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_fixedpoint, opt);
-    // eslint-disable-next-line no-undef
     saved_instance.apply_extension(jiff_negativenumber, opt);
 
     return saved_instance;

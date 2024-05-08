@@ -1,18 +1,14 @@
 (function (exports, node) {
   if (node) {
-    // eslint-disable-next-line no-undef
     BigNumber = require('bignumber.js');
   }
-  // eslint-disable-next-line no-undef
   var ZERO = new BigNumber('0.01');
 
   exports.toBigNumber = function (points) {
     var result = [];
     for (var k = 0; k < points.length; k++) {
       result[k] = {};
-      // eslint-disable-next-line no-undef
       result[k].x = new BigNumber(points[k].x);
-      // eslint-disable-next-line no-undef
       result[k].y = new BigNumber(points[k].y);
     }
     return result;
@@ -22,9 +18,7 @@
     var result = [];
     for (var k = 0; k < points.length; k++) {
       result[k] = {};
-      // eslint-disable-next-line no-undef
       result[k].x = points[k].x.toNumber();
-      // eslint-disable-next-line no-undef
       result[k].y = points[k].y.toNumber();
     }
     return result;

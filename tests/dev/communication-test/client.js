@@ -1,11 +1,3 @@
-/**
- * Do not modify this file unless you have to.
- * This file has UI handlers.
- */
-
-/* global mpc */
-
-// eslint-disable-next-line no-unused-vars
 function connect() {
   $('#connectButton').prop('disabled', true);
   var computation_id = $('#computation_id').val();
@@ -44,7 +36,6 @@ function connect() {
   }
 }
 
-// eslint-disable-next-line no-unused-vars
 function submit() {
   var input = parseInt($('#number').val());
 

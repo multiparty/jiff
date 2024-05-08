@@ -65,10 +65,6 @@ function computeResults(inputs, upper, lower, n) {
   return results;
 }
 
-/**
- * Do not change unless you have to.
- */
-// eslint-disable-next-line no-undef
 describe('Test', function () {
   this.timeout(0); // Remove timeout
 
@@ -77,7 +73,6 @@ describe('Test', function () {
     var upper_count = experiment.upper;
     var lower_count = experiment.lower;
 
-    // eslint-disable-next-line no-undef
     it('Upper ' + upper_count + ' - Lower ' + lower_count, (function (experimentIndex) {
       return function (done) {
         var experiment = experiments[experimentIndex];

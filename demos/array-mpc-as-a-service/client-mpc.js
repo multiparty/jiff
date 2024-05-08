@@ -1,8 +1,6 @@
 (function (exports, node) {
   if (node) {
-    // eslint-disable-next-line no-undef
     JIFFClient = require('../../lib/jiff-client.js');
-    // eslint-disable-next-line no-undef
     jiff_restAPI = require('../../lib/ext/jiff-client-restful.js');
   }
 
@@ -18,9 +16,7 @@
     opt['party_count'] = config.party_count;
     opt['autoConnect'] = false;
 
-    // eslint-disable-next-line no-undef
     __jiff_instance = new JIFFClient(hostname, computation_id, opt);
-    // eslint-disable-next-line no-undef
     __jiff_instance.apply_extension(jiff_restAPI);
     __jiff_instance.connect();
     return __jiff_instance;

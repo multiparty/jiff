@@ -10,7 +10,6 @@
     var opt = Object.assign({}, options);
 
     if (node) {
-      // eslint-disable-next-line no-global-assign
       JIFFClient = require('../../../lib/jiff-client');
     }
 

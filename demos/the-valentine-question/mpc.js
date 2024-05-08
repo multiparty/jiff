@@ -8,15 +8,11 @@
     opt.crypto_provider = true;
 
     if (node) {
-      // eslint-disable-next-line no-undef
       JIFFClient = require('../../lib/jiff-client');
-      // eslint-disable-next-line no-undef
       jiff_websockets = require('../../lib/ext/jiff-client-websockets.js');
     }
 
-    // eslint-disable-next-line no-undef
     const jiff_instance = new JIFFClient(hostname, computation_id, opt);
-    // eslint-disable-next-line no-undef
     jiff_instance.apply_extension(jiff_websockets, opt);
 
     return jiff_instance;

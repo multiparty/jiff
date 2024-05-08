@@ -45,12 +45,10 @@ var checkOutput = function (output, analyst, server) {
   });
 };
 
-// eslint-disable-next-line no-undef
 describe('web-mpc', function () {
   this.timeout(0);
 
   for (var i = 0; i < TEST_COUNT; i++) {
-    // eslint-disable-next-line no-undef
     it('10 input parties - no disconnect', function (done) {
       var res = generateInputs(10);
       var inputs = res.inputs;
@@ -78,7 +76,6 @@ describe('web-mpc', function () {
   }
 
   for (i = 0; i < TEST_COUNT; i++) {
-    // eslint-disable-next-line no-undef
     it('20 input parties - with disconnect', function (done) {
       var res = generateInputs(20);
       var inputs = res.inputs;

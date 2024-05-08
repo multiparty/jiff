@@ -65,11 +65,9 @@ function computeResults(inputs) {
 /**
  * Do not change unless you have to.
  */
-// eslint-disable-next-line no-undef
 describe('Test', function () {
   this.timeout(0); // Remove timeout
 
-  // eslint-disable-next-line no-undef
   it('Exhaustive', function (done) {
     var count = 0;
 

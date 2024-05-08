@@ -10,7 +10,6 @@ var NAVBAR_OPTIONS = {};
   var footer = document.querySelector('#footer');
   var mainSection = document.querySelector('#main');
   var localStorageResizeObject = JSON.parse(
-    // eslint-disable-next-line no-undef
     localStorage.getItem(NAVBAR_RESIZE_LOCAL_STORAGE_KEY)
   );
 
@@ -54,14 +53,11 @@ var NAVBAR_OPTIONS = {};
   }
 
   function setupEventListeners() {
-    // eslint-disable-next-line no-undef
     window.addEventListener('mousemove', resizeNavbar);
-    // eslint-disable-next-line no-undef
     window.addEventListener('touchmove', resizeNavbar);
   }
 
   function afterRemovingEventListeners() {
-    // eslint-disable-next-line no-undef
     localStorage.setItem(
       NAVBAR_RESIZE_LOCAL_STORAGE_KEY,
       JSON.stringify({
@@ -71,20 +67,16 @@ var NAVBAR_OPTIONS = {};
   }
 
   function removeEventListeners() {
-    // eslint-disable-next-line no-undef
     window.removeEventListener('mousemove', resizeNavbar);
-    // eslint-disable-next-line no-undef
     window.removeEventListener('touchend', resizeNavbar);
     afterRemovingEventListeners();
   }
 
   navbarSlider.addEventListener('mousedown', setupEventListeners);
   navbarSlider.addEventListener('touchstart', setupEventListeners);
-  // eslint-disable-next-line no-undef
   window.addEventListener('mouseup', removeEventListeners);
 })();
 
-// eslint-disable-next-line no-unused-vars
 function setupResizeOptions(options) {
   NAVBAR_OPTIONS = options;
 }
