@@ -12,6 +12,15 @@ describe('JIFF Preprocessing Operations', () => {
   const computation_id = 'test-preprocessing';
   const party_count = 3;
 
+  async function createClient(baseUrl: string, computation_id: string, options: any, index: number) {
+    const clientOptions = { ...options };
+    const client = new JIFFClient(baseUrl, computation_id, clientOptions);
+    console.log('1 connect called in jiff-client');
+    await client.initPromise; // Wait for initialization to complete and ensure the id is assigned
+    console.log('5 jiff id must be assigned by now', client.id);
+    return client;
+  }
+
   beforeEach(async () => {
     // Server Setup
     const port: number = 8115;
@@ -26,8 +35,7 @@ describe('JIFF Preprocessing Operations', () => {
       party_count: party_count,
       crypto_provider: true
     };
-
-    jiffClients = Array.from({ length: party_count }, () => new JIFFClient(baseUrl, computation_id, options));
+    jiffClients = await Promise.all(Array.from({ length: party_count }, (_, index) => createClient(baseUrl, computation_id, options, index)));
 
     async function apply_extension(jiff: any) {
       await jiff.apply_extension(jiff_bignumber, options);
@@ -47,10 +55,15 @@ describe('JIFF Preprocessing Operations', () => {
 
   it('should correctly preprocess inner product of the input array and return 329.59', async () => {
     async function innerprod(jiffClient: any, id: number) {
+      console.log('A. jiffClient.id', jiffClient.id);
       await jiffClient.preprocessing('smult', entries[id].length, null, null, null, null, null, null, { div: false });
+      console.log('Preprocess for smult done');
       await jiffClient.preprocessing('open', 1);
+      console.log('Preprocess for smult done');
       return new Promise((resolve, reject) => {
+        console.log('B. jiffClient.id', jiffClient.id);
         jiffClient.wait_for([1, 2, 3], async () => {
+          console.log('C. jiffClient.id', jiffClient.id);
           try {
             let sec_ttl: any = 0;
             await jiffClient.executePreprocessing(async function () {
@@ -72,6 +85,7 @@ describe('JIFF Preprocessing Operations', () => {
     }
 
     const results = await Promise.all(jiffClients.map((client, idx) => innerprod(client, idx + 1)));
+    console.log('D. jiffClient.id', jiffClients[0].id);
     results.map((res) => expect(res).toEqual('329.59'));
   }, 15000);
 });
