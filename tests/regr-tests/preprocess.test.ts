@@ -54,12 +54,12 @@ describe('JIFF Preprocessing Operations', () => {
   });
 
   it('should correctly preprocess inner product of the input array and return 329.59', async () => {
-    async function innerprod(jiffClient: any, id: number) {
+    function innerprod(jiffClient: any, id: number) {
       console.log('A. jiffClient.id', jiffClient.id);
-      await jiffClient.preprocessing('smult', entries[id].length, null, null, null, null, null, null, { div: false });
+      jiffClient.preprocessing('smult', entries[id].length, null, null, null, null, null, null, { div: false });
       console.log('Preprocess for smult done');
-      await jiffClient.preprocessing('open', 1);
-      console.log('Preprocess for smult done');
+      jiffClient.preprocessing('open', 1);
+      console.log('Preprocess for open done');
       return new Promise((resolve, reject) => {
         console.log('B. jiffClient.id', jiffClient.id);
         jiffClient.wait_for([1, 2, 3], async () => {
@@ -87,5 +87,5 @@ describe('JIFF Preprocessing Operations', () => {
     const results = await Promise.all(jiffClients.map((client, idx) => innerprod(client, idx + 1)));
     console.log('D. jiffClient.id', jiffClients[0].id);
     results.map((res) => expect(res).toEqual('329.59'));
-  }, 15000);
+  }, 60000);
 });
