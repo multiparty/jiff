@@ -15,9 +15,7 @@ describe('JIFF Preprocessing Operations', () => {
   async function createClient(baseUrl: string, computation_id: string, options: any, index: number) {
     const clientOptions = { ...options };
     const client = new JIFFClient(baseUrl, computation_id, clientOptions);
-    console.log('1 connect called in jiff-client');
     await client.initPromise; // Wait for initialization to complete and ensure the id is assigned
-    console.log('5 jiff id must be assigned by now', client.id);
     return client;
   }
 
