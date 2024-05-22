@@ -1,7 +1,7 @@
 describe('JIFF Preprocessing Operations', () => {
   const init_server = require('./server');
+  const createClient = require('./common');
   const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
-  const JIFFClient = require('../../lib/jiff-client.js');
   const jiff_bignumber = require('../../lib/ext/jiff-client-bignumber.js');
   const jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint.js');
 
@@ -11,13 +11,6 @@ describe('JIFF Preprocessing Operations', () => {
   const entries: { [key: number]: number } = { 1: 60, 2: 50 };
   const computation_id = 'test-bit-preprocessing';
   const party_count = 2;
-
-  async function createClient(baseUrl: string, computation_id: string, options: any, index: number) {
-    const clientOptions = { ...options };
-    const client = new JIFFClient(baseUrl, computation_id, clientOptions);
-    await client.initPromise; // Wait for initialization to complete and ensure the id is assigned
-    return client;
-  }
 
   beforeEach(async () => {
     // Server Setup

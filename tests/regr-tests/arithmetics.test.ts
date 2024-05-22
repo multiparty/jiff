@@ -1,7 +1,7 @@
 describe('JIFF Arithmetic Operations', () => {
   const init_server = require('./server');
+  const createClient = require('./common');
   const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
-  const JIFFClient = require('../../lib/jiff-client.js');
   const jiff_bignumber = require('../../lib/ext/jiff-client-bignumber.js');
   const jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint.js');
   const jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber.js');
@@ -30,7 +30,7 @@ describe('JIFF Arithmetic Operations', () => {
       Zp: 562949948117
     };
 
-    jiffClients = Array.from({ length: party_count }, () => new JIFFClient(baseUrl, computation_id, options));
+    jiffClients = await Promise.all(Array.from({ length: party_count }, (_, index) => createClient(baseUrl, computation_id, options, index)));
 
     async function apply_extension(jiff: any) {
       await jiff.apply_extension(jiff_bignumber, options);

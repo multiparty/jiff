@@ -1,7 +1,7 @@
 describe('JIFF Preprocessing Operations', () => {
   const init_server = require('./server');
+  const createClient = require('./common');
   const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
-  const JIFFClient = require('../../lib/jiff-client.js');
   const jiff_bignumber = require('../../lib/ext/jiff-client-bignumber.js');
   const jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint.js');
 
@@ -11,13 +11,6 @@ describe('JIFF Preprocessing Operations', () => {
   const entries: { [key: number]: number[] | null[] } = { 1: [1.32, 10.22, 5.67], 2: [5.91, 3.73, 50.03], 3: [null, null, null] };
   const computation_id = 'test-preprocessing';
   const party_count = 3;
-
-  async function createClient(baseUrl: string, computation_id: string, options: any, index: number) {
-    const clientOptions = { ...options };
-    const client = new JIFFClient(baseUrl, computation_id, clientOptions);
-    await client.initPromise; // Wait for initialization to complete and ensure the id is assigned
-    return client;
-  }
 
   beforeEach(async () => {
     // Server Setup
@@ -33,7 +26,7 @@ describe('JIFF Preprocessing Operations', () => {
       party_count: party_count,
       crypto_provider: true
     };
-    jiffClients = await Promise.all(Array.from({ length: party_count }, (_, index) => createClient(baseUrl, computation_id, options, index)));
+    jiffClients = await Promise.all(Array.from({ length: party_count }, (_, idx) => createClient(baseUrl, computation_id, options)));
 
     async function apply_extension(jiff: any) {
       await jiff.apply_extension(jiff_bignumber, options);
