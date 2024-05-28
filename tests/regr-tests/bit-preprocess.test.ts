@@ -1,7 +1,7 @@
 describe('JIFF Preprocessing Operations', () => {
   const init_server = require('./server');
+  const createClient = require('./common');
   const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
-  const JIFFClient = require('../../lib/jiff-client.js');
   const jiff_bignumber = require('../../lib/ext/jiff-client-bignumber.js');
   const jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint.js');
 
@@ -27,7 +27,7 @@ describe('JIFF Preprocessing Operations', () => {
       crypto_provider: true
     };
 
-    jiffClients = Array.from({ length: party_count }, () => new JIFFClient(baseUrl, computation_id, options));
+    jiffClients = await Promise.all(Array.from({ length: party_count }, (_, index) => createClient(baseUrl, computation_id, options, index)));
 
     async function apply_extension(jiff: any) {
       await jiff.apply_extension(jiff_bignumber, options);
@@ -46,17 +46,19 @@ describe('JIFF Preprocessing Operations', () => {
   });
 
   it('should correctly preprocess bitwise operation and return 3000', async () => {
-    async function bit_smult(jiffClient: any, id: number) {
-      await jiffClient.preprocessing('smult', 2, 'bits', null, null, null, null, null, { div: false });
-      await jiffClient.preprocessing('open', 1);
+    function bit_smult(jiffClient: any, id: number) {
+      jiffClient.preprocessing('smult', 2, null, null, null, null, null, null, { div: false });
+      jiffClient.preprocessing('open', 1);
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            const jiff_bits = jiffClient.protocols.bits;
-            const input = await jiff_bits.share(entries[id]);
-            const sec_ttl = await jiff_bits.smult(input[1], input[2]);
-            const result = await jiff_bits.open(sec_ttl);
-            resolve(result.toString(10));
+            await jiffClient.executePreprocessing(async function () {
+              const jiff_bits = jiffClient.protocols.bits;
+              const input = await jiff_bits.share(entries[id]);
+              const sec_ttl = await jiff_bits.smult(input[1], input[2]);
+              const result = await jiff_bits.open(sec_ttl);
+              resolve(result.toString(10));
+            });
           } catch (error) {
             reject(error);
           }

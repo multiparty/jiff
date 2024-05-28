@@ -1,7 +1,7 @@
 describe('JIFF Preprocessing Operations', () => {
   const init_server = require('./server');
+  const createClient = require('./common');
   const jiff_s_bignumber = require('../../lib/ext/jiff-server-bignumber.js');
-  const JIFFClient = require('../../lib/jiff-client.js');
   const jiff_bignumber = require('../../lib/ext/jiff-client-bignumber.js');
   const jiff_fixedpoint = require('../../lib/ext/jiff-client-fixedpoint.js');
 
@@ -26,8 +26,7 @@ describe('JIFF Preprocessing Operations', () => {
       party_count: party_count,
       crypto_provider: true
     };
-
-    jiffClients = Array.from({ length: party_count }, () => new JIFFClient(baseUrl, computation_id, options));
+    jiffClients = await Promise.all(Array.from({ length: party_count }, (_, idx) => createClient(baseUrl, computation_id, options)));
 
     async function apply_extension(jiff: any) {
       await jiff.apply_extension(jiff_bignumber, options);
@@ -46,9 +45,9 @@ describe('JIFF Preprocessing Operations', () => {
   });
 
   it('should correctly preprocess inner product of the input array and return 329.59', async () => {
-    async function innerprod(jiffClient: any, id: number) {
-      await jiffClient.preprocessing('smult', entries[id].length, null, null, null, null, null, null, { div: false });
-      await jiffClient.preprocessing('open', 1);
+    function innerprod(jiffClient: any, id: number) {
+      jiffClient.preprocessing('smult', entries[id].length, null, null, null, null, null, null, { div: false });
+      jiffClient.preprocessing('open', 1);
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2, 3], async () => {
           try {
