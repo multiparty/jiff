@@ -47,12 +47,12 @@ describe('JIFF Preprocessing Operations', () => {
 
   it('should correctly preprocess bitwise operation and return 3000', async () => {
     function bit_smult(jiffClient: any, id: number) {
-      jiffClient.preprocess.preprocessing('smult', 2, null, null, null, null, null, null, { div: false });
-      jiffClient.preprocess.preprocessing('open', 1);
+      jiffClient.preprocess.api.preprocessing('smult', 2, null, null, null, null, null, null, { div: false });
+      jiffClient.preprocess.api.preprocessing('open', 1);
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2], async () => {
           try {
-            await jiffClient.preprocess.executePreprocessing(async function () {
+            await jiffClient.preprocess.api.executePreprocessing(async function () {
               const jiff_bits = jiffClient.protocols.bits;
               const input = await jiff_bits.share(entries[id]);
               const sec_ttl = await jiff_bits.smult(input[1], input[2]);

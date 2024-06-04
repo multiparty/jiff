@@ -46,13 +46,13 @@ describe('JIFF Preprocessing Operations', () => {
 
   it('should correctly preprocess inner product of the input array and return 329.59', async () => {
     function innerprod(jiffClient: any, id: number) {
-      jiffClient.preprocess.preprocessing('smult', entries[id].length, null, null, null, null, null, null, { div: false });
-      jiffClient.preprocess.preprocessing('open', 1);
+      jiffClient.preprocess.api.preprocessing('smult', entries[id].length, null, null, null, null, null, null, { div: false });
+      jiffClient.preprocess.api.preprocessing('open', 1);
       return new Promise((resolve, reject) => {
         jiffClient.wait_for([1, 2, 3], async () => {
           try {
             let sec_ttl: any = 0;
-            await jiffClient.preprocess.executePreprocessing(async function () {
+            await jiffClient.preprocess.api.executePreprocessing(async function () {
               const input = await jiffClient.share_array(entries[id], null, 3, [1, 2, 3], [1, 2]);
               const array1 = input[1];
               const array2 = input[2];
