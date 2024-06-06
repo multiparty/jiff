@@ -1,6 +1,6 @@
 describe('JIFF Voting', () => {
   const init_server = require('./server');
-  const JIFFClient = require('../../lib/jiff-client.js');
+  const createClient = require('./common');
   const jiff_negativenumber = require('../../lib/ext/jiff-client-negativenumber.js');
 
   let jiffClients: any[] = [];
@@ -24,7 +24,7 @@ describe('JIFF Voting', () => {
       crypto_provider: true
     };
 
-    jiffClients = Array.from({ length: party_count }, () => new JIFFClient(baseUrl, computation_id, options));
+    jiffClients = await Promise.all(Array.from({ length: party_count }, (_, index) => createClient(baseUrl, computation_id, options, index)));
 
     async function apply_extension(jiff: any) {
       await jiff.apply_extension(jiff_negativenumber, options);

@@ -1,6 +1,6 @@
 describe('JIFF Array Operations', () => {
   const init_server = require('./server');
-  const JIFFClient = require('../../lib/jiff-client.js');
+  const createClient = require('./common');
 
   let jiffClients: any[] = [];
   let jiffServer: any;
@@ -24,7 +24,7 @@ describe('JIFF Array Operations', () => {
       crypto_provider: true
     };
 
-    jiffClients = Array.from({ length: party_count }, () => new JIFFClient(baseUrl, computation_id, options));
+    jiffClients = await Promise.all(Array.from({ length: party_count }, (_, index) => createClient(baseUrl, computation_id, options, index)));
   });
 
   afterEach(async () => {
