@@ -9,6 +9,7 @@
  * computation_id is optional, by default it will be 'test'.
  */
 const path = require('path');
+jiff_restAPI = require('../../lib/ext/jiff-client-restful.js');
 console.log('Command line arguments: [/path/to/configuration/file.json] [computation_id]');
 
 // Read config
@@ -35,6 +36,7 @@ const jiffClient = new JIFFClient('http://localhost:8080', computation_id, {
   party_count: config.party_count,
   initialization: {role: 'compute'} // indicate to the server that this is a compute party
 });
+jiffClient.apply_extension(jiff_restAPI);
 
 // the computation code
 const compute = function () {
