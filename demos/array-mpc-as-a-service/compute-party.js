@@ -9,7 +9,7 @@
  * computation_id is optional, by default it will be 'test'.
  */
 const path = require('path');
-jiff_restAPI = require('../../lib/ext/jiff-client-restful.js');
+const jiff_restAPI = require('../../lib/ext/jiff-client-restful.js');
 console.log('Command line arguments: [/path/to/configuration/file.json] [computation_id]');
 
 // Read config
