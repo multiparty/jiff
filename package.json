@@ -63,7 +63,7 @@
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
     "websocket": "^1.0.32",
-    "ws": "^8.16.0"
+    "ws": "^8.17.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
