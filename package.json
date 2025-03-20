@@ -46,8 +46,9 @@
     "fix-memory-limit": "cross-env LIMIT=4096 increase-memory-limit",
     "prettier": "npx prettier --check '**/*.{js,ts}'",
     "prettier:fix": "npx prettier --write '**/*.{js,ts}'",
-    "tutorial": "npm install && cd tutorials && node index.js",
-    "build": "browserify lib/jiff-client.js --debug -s JIFFClient -o dist/jiff-client.js && browserify lib/ext/jiff-client-websockets.js --debug -s jiff_websockets -o dist/jiff-client-websockets.js"
+    "compile:ts": "npx tsc -p lib/common/tsconfig.json",
+    "tutorial": "npm run compile:ts && cd tutorials && node index.js",
+    "build": "npm run compile:ts && browserify lib/jiff-client.js --debug -s JIFFClient -o dist/jiff-client.js && browserify lib/ext/jiff-client-websockets.js --debug -s jiff_websockets -o dist/jiff-client-websockets.js"
   },
   "dependencies": {
     "bignumber.js": "^9.1.2",
